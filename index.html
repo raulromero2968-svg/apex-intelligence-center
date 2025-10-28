@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Intelligence - Underground Intel for Serious Collectors</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00d9ff;
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 2px solid #00d9ff;
+            color: #00d9ff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #00d9ff;
+            color: #1a0b2e;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 120px 0 80px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            color: #00d9ff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 72px;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #ff006e;
+            color: #ff006e;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #ff006e;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d9ff 0%, #8338ec 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 217, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        /* Latest Intel Section */
+        .latest-intel {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+        }
+
+        .view-all {
+            color: #00d9ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: gap 0.3s;
+        }
+
+        .view-all:hover {
+            gap: 12px;
+        }
+
+        .intel-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .intel-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .intel-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 217, 255, 0.3);
+        }
+
+        .intel-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .intel-content {
+            padding: 24px;
+        }
+
+        .intel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .intel-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
+            }
+
+            .stats,
+            .features-grid,
+            .intel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.disconnected {
+            background: #ff006e;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Notion Integration Configuration
+        const NOTION_CONFIG = {
+            // Replace with your Notion database ID
+            databaseId: 'YOUR_NOTION_DATABASE_ID',
+            // This would be configured with your Notion API key (keep it secure!)
+            apiKey: 'YOUR_NOTION_API_KEY',
+            apiUrl: 'https://api.notion.com/v1'
+        };
+
+        // Notion Integration Functions
+        const NotionService = {
+            // Fetch items from Notion database
+            async fetchIntelItems() {
+                try {
+                    // This is a placeholder - implement actual Notion API call
+                    console.log('Fetching from Notion database:', NOTION_CONFIG.databaseId);
+                    
+                    // Example API call structure (commented out until you add real credentials)
+                    /*
+                    const response = await fetch(`${NOTION_CONFIG.apiUrl}/databases/${NOTION_CONFIG.databaseId}/query`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${NOTION_CONFIG.apiKey}`,
+                            'Notion-Version': '2022-06-28',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            page_size: 6
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    return this.parseNotionData(data.results);
+                    */
+                    
+                    // Return mock data for demo
+                    return this.getMockData();
+                } catch (error) {
+                    console.error('Error fetching from Notion:', error);
+                    return this.getMockData();
+                }
+            },
+
+            // Parse Notion database results into usable format
+            parseNotionData(results) {
+                return results.map(item => ({
+                    id: item.id,
+                    title: item.properties.Name?.title[0]?.plain_text || 'Untitled',
+                    description: item.properties.Description?.rich_text[0]?.plain_text || '',
+                    category: item.properties.Category?.select?.name || 'General',
+                    date: item.properties.Date?.date?.start || new Date().toISOString(),
+                    emoji: item.icon?.emoji || '📊'
+                }));
+            },
+
+            // Mock data for demonstration
+            getMockData() {
+                return [
+                    {
+                        id: '1',
+                        title: 'Market Trends Q4 2024',
+                        description: 'Deep dive into trading card market movements and investment opportunities',
+                        emoji: '📈',
+                        category: 'Market Analysis'
+                    },
+                    {
+                        id: '2',
+                        title: 'Upcoming Drops Alert',
+                        description: 'Exclusive intelligence on major card releases and limited editions',
+                        emoji: '🎯',
+                        category: 'Intel Drop'
+                    },
+                    {
+                        id: '3',
+                        title: 'Collector Spotlight',
+                        description: 'Interview with top collectors and insights into their strategies',
+                        emoji: '⭐',
+                        category: 'Community'
+                    },
+                    {
+                        id: '4',
+                        title: 'Price Movement Analysis',
+                        description: 'Track significant price changes and market volatility',
+                        emoji: '💹',
+                        category: 'Analysis'
+                    },
+                    {
+                        id: '5',
+                        title: 'Authentication Guide',
+                        description: 'Expert tips on verifying card authenticity and avoiding counterfeits',
+                        emoji: '🔍',
+                        category: 'Education'
+                    },
+                    {
+                        id: '6',
+                        title: 'Investment Strategies',
+                        description: 'Data-driven approaches to building a profitable collection',
+                        emoji: '💎',
+                        category: 'Strategy'
+                    }
+                ];
+            },
+
+            // Create new item in Notion database
+            async createIntelItem(data) {
+                console.log('Creating new item in Notion:', data);
+                // Implement actual Notion API call here
+                return true;
+            },
+
+            // Update existing item
+            async updateIntelItem(id, data) {
+                console.log('Updating Notion item:', id, data);
+                // Implement actual Notion API call here
+                return true;
+            }
+        };
+
+        function App() {
+            const [intelItems, setIntelItems] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [notionConnected, setNotionConnected] = useState(false);
+
+            useEffect(() => {
+                loadIntelData();
+            }, []);
+
+            async function loadIntelData() {
+                setLoading(true);
+                try {
+                    const items = await NotionService.fetchIntelItems();
+                    setIntelItems(items);
+                    setNotionConnected(true);
+                } catch (error) {
+                    console.error('Failed to load intel:', error);
+                    setNotionConnected(false);
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            return (
+                <>
+                    <div className="container">
+                        <nav>
+                            <div className="logo">
+                                <div className="logo-icon">A</div>
+                                <span>APEX INTELLIGENCE</span>
+                            </div>
+                            <div className="nav-links">
+                                <a href="#home">Home</a>
+                                <a href="#intel">Intel</a>
+                                <a href="#about">About</a>
+                                <a href="#subscribe">Subscribe</a>
+                                <a href="#get-intel" className="btn-primary">Get Intel</a>
+                            </div>
+                        </nav>
+
+                        <section className="hero">
+                            <div className="badge">TCG INTELLIGENCE NETWORK</div>
+                            <h1>
+                                Underground Intel<br />
+                                <span className="gradient-text">For Serious<br />Collectors</span>
+                            </h1>
+                            <p className="hero-subtitle">
+                                Premium TCG market analysis, data-driven insights, and exclusive intelligence. 
+                                Morning Brew meets the underground—delivered to your inbox.
+                            </p>
+                            <div className="cta-buttons">
+                                <a href="#get-intel" className="btn-primary">Get Free Intel →</a>
+                                <a href="#archives" className="btn-secondary">Browse Archives</a>
+                            </div>
+
+                            <div className="stats">
+                                <div className="stat-item">
+                                    <div className="stat-number">1.2K+</div>
+                                    <div className="stat-label">Collectors</div>
+                                </div>
+                                <div className="stat-item">
+                                    <div className="stat-number">50+</div>
+                                    <div className="stat-label">Intel Drops</div>
+                                </div>
+                                <div className="stat-item">
+                                    <div className="stat-number">$2M+</div>
+                                    <div className="stat-label">Cards Tracked</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="features">
+                            <div className="features-grid">
+                                <div className="feature-card">
+                                    <div className="feature-icon">📊</div>
+                                    <h3 className="feature-title">Market Intelligence</h3>
+                                    <p className="feature-description">
+                                        Real-time TCG market data and trend analysis to stay ahead of the curve
+                                    </p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">📈</div>
+                                    <h3 className="feature-title">Price Tracking</h3>
+                                    <p className="feature-description">
+                                        Track card values and identify investment opportunities before they peak
+                                    </p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">👥</div>
+                                    <h3 className="feature-title">Community Intel</h3>
+                                    <p className="feature-description">
+                                        Insights from serious collectors and investors in the TCG space
+                                    </p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon">🔒</div>
+                                    <h3 className="feature-title">Alpha Access</h3>
+                                    <p className="feature-description">
+                                        Get the edge with exclusive market intelligence and early access
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="latest-intel">
+                            <div className="section-header">
+                                <div>
+                                    <h2 className="section-title">Latest Intel</h2>
+                                    <p className="section-subtitle">Free samples from the vault</p>
+                                </div>
+                                <a href="#all-intel" className="view-all">
+                                    View All →
+                                </a>
+                            </div>
+
+                            {loading ? (
+                                <div className="loading">Loading intel from Notion...</div>
+                            ) : (
+                                <div className="intel-grid">
+                                    {intelItems.map(item => (
+                                        <div key={item.id} className="intel-card">
+                                            <div className="intel-image">{item.emoji}</div>
+                                            <div className="intel-content">
+                                                <h4 className="intel-title">{item.title}</h4>
+                                                <p className="intel-description">{item.description}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    </div>
+
+                    <div className="connection-status">
+                        <div className={`status-indicator ${notionConnected ? '' : 'disconnected'}`}></div>
+                        {notionConnected ? 'Connected to Notion' : 'Using Demo Data'}
+                    </div>
+                </>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
