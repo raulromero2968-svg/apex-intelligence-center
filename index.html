@@ -284,6 +284,7 @@
             object-fit: contain;
             background: transparent !important;
             display: block;
+            mix-blend-mode: screen;
         }
 
         .nav-links {
@@ -408,6 +409,7 @@
                     drop-shadow(0 0 60px rgba(147, 51, 234, 0.6))
                     drop-shadow(0 0 90px rgba(0, 217, 255, 0.4));
             animation: wolfPulse 3s ease-in-out infinite;
+            mix-blend-mode: screen;
         }
 
         @keyframes wolfPulse {
@@ -780,18 +782,30 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            background: rgba(0, 255, 240, 0.1);
-            border: 1px solid rgba(0, 255, 240, 0.3);
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(147, 51, 234, 0.1));
+            border: 1px solid rgba(0, 217, 255, 0.4);
             border-radius: 8px;
             color: var(--apex-cyan);
             text-decoration: none;
             transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
+            animation: socialPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes socialPulse {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 217, 255, 0.5), inset 0 0 15px rgba(147, 51, 234, 0.3);
+            }
         }
 
         .social-link:hover {
-            background: var(--apex-cyan);
-            color: var(--bg-dark);
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(147, 51, 234, 0.3));
+            border-color: var(--apex-cyan);
             transform: translateY(-2px);
+            box-shadow: 0 4px 25px rgba(0, 217, 255, 0.6), inset 0 0 20px rgba(147, 51, 234, 0.4);
         }
 
         .footer-bottom {
@@ -841,14 +855,14 @@
             <div class="nav-container">
                 <a href="/" class="logo">
                     <div class="logo-icon">
-                        <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence Wolf" />
+                        <img src="apex-wolf-logo-hybrid.png" alt="Apex Intelligence Wolf" />
                     </div>
                     <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
                 </a>
                 <ul class="nav-links">
                     <li><a href="intel.html">Intel</a></li>
                     <li><a href="about.html">About</a></li>
-                    <li><a href="https://apexomnis.com" target="_blank">Services</a></li>
+                    <li><a href="https://apexomnis.io" target="_blank">Services</a></li>
                     <li><a href="#subscribe" class="btn-subscribe">Subscribe</a></li>
                 </ul>
             </div>
@@ -871,7 +885,7 @@
             <!-- Right side: 3D Wolf Logo with Holographic Glow and Circle -->
             <div class="wolf-logo-container">
                 <div class="wolf-logo">
-                    <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence Wolf" />
+                    <img src="apex-wolf-logo-hybrid.png" alt="Apex Intelligence Wolf" />
                 </div>
             </div>
         </section>
@@ -1064,7 +1078,7 @@
                     <ul>
                         <li><a href="intel.html">Intel</a></li>
                         <li><a href="about.html">About</a></li>
-                        <li><a href="https://apexomnis.com" target="_blank">ApexOmnis Services</a></li>
+                        <li><a href="https://apexomnis.io" target="_blank">Apex Omnis Studios</a></li>
                         <li><a href="https://apexcommons.org" target="_blank">Apex Commons</a></li>
                     </ul>
                 </div>

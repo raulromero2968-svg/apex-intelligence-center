@@ -275,6 +275,7 @@
             object-fit: contain;
             background: transparent !important;
             display: block;
+            mix-blend-mode: screen;
         }
 
         .nav-links {
@@ -368,6 +369,28 @@
             color: #00D9FF;
             margin-bottom: 1rem;
             font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .holographic-warning-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 8px var(--apex-cyan)) drop-shadow(0 0 12px rgba(147, 51, 234, 0.6));
+            animation: warningPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 8px var(--apex-cyan)) drop-shadow(0 0 12px rgba(147, 51, 234, 0.6));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 15px var(--apex-cyan)) drop-shadow(0 0 20px rgba(147, 51, 234, 0.9));
+                transform: scale(1.05);
+            }
         }
 
         .warning-box p {
@@ -448,7 +471,7 @@
             <div class="nav-container">
                 <a href="/" class="logo">
                     <div class="logo-icon">
-                        <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence Wolf" />
+                        <img src="apex-wolf-logo-hybrid.png" alt="Apex Intelligence Wolf" />
                     </div>
                     <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
                 </a>
@@ -467,7 +490,14 @@
             <p class="last-updated">Last Updated: November 14, 2025</p>
 
             <div class="warning-box">
-                <h3>⚠️ Not Financial Advice</h3>
+                <h3>
+                    <svg class="holographic-warning-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="var(--apex-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="12" y1="9" x2="12" y2="13" stroke="var(--apex-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="17" r="0.5" fill="var(--apex-cyan)" stroke="var(--apex-cyan)" stroke-width="1.5"/>
+                    </svg>
+                    Not Financial Advice
+                </h3>
                 <p>
                     The information provided by Apex Intelligence (operated by Apex Omnis Studios) is for educational and informational purposes only.
                     Nothing on this website, in our newsletter, or any of our content constitutes financial advice, investment advice, trading advice,
