@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Grading Optimizer - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+        }
+
+        .input-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .budget-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: end;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .add-card-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: end;
+        }
+
+        .add-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--apex-cyan);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: white;
+        }
+
+        .cards-table {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+            color: var(--apex-cyan);
+            font-weight: 700;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .priority-medium {
+            background: rgba(0, 217, 255, 0.2);
+            color: var(--apex-cyan);
+        }
+
+        .priority-low {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+        }
+
+        .priority-skip {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .delete-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid rgba(255, 68, 68, 0.5);
+            border-radius: 6px;
+            color: #ff4444;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 68, 68, 0.4);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(0, 217, 255, 0.1));
+            border: 2px solid var(--apex-cyan);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-title {
+            font-size: 1.5rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .optimize-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .optimize-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--apex-cyan);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .add-card-section {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <h1>🎯 Bulk Grading Optimizer</h1>
+            <div class="premium-badge">PREMIUM FEATURE</div>
+            <p class="subtitle">Maximize ROI by grading the right cards in the right order based on your budget</p>
+        </div>
+
+        <div class="input-section">
+            <h2 class="section-title">Your Grading Budget</h2>
+            <div class="budget-input">
+                <div class="input-group">
+                    <label for="budget">Total Budget ($)</label>
+                    <input type="number" id="budget" placeholder="e.g., 500" value="500" step="50">
+                </div>
+                <div class="input-group">
+                    <label for="gradingCompany">Grading Company</label>
+                    <select id="gradingCompany">
+                        <option value="psa">PSA</option>
+                        <option value="bgs">BGS</option>
+                        <option value="cgc">CGC</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="serviceLevel">Service Level</label>
+                    <select id="serviceLevel">
+                        <option value="regular">Regular ($25/card)</option>
+                        <option value="express" selected>Express ($50/card)</option>
+                        <option value="super">Super Express ($150/card)</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2 class="section-title">Add Cards to Grade</h2>
+            <div class="add-card-section">
+                <div class="input-group">
+                    <label for="cardName">Card Name</label>
+                    <input type="text" id="cardName" placeholder="e.g., Charizard VMAX">
+                </div>
+                <div class="input-group">
+                    <label for="rawValue">Raw Value ($)</label>
+                    <input type="number" id="rawValue" placeholder="Current" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="gradedValue">Graded Value ($)</label>
+                    <input type="number" id="gradedValue" placeholder="Expected" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="condition">Condition</label>
+                    <select id="condition">
+                        <option value="gem">Gem Mint (10)</option>
+                        <option value="mint" selected>Mint (9)</option>
+                        <option value="near">Near Mint (8)</option>
+                    </select>
+                </div>
+                <button class="add-btn" onclick="addCard()">+ Add</button>
+            </div>
+        </div>
+
+        <div class="cards-table" id="cardsSection" style="display: none;">
+            <h2 class="section-title">Your Cards (<span id="cardCount">0</span> cards)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Card Name</th>
+                        <th>Raw Value</th>
+                        <th>Graded Value</th>
+                        <th>Profit</th>
+                        <th>ROI</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cardsTableBody"></tbody>
+            </table>
+
+            <button class="optimize-btn" onclick="optimize()">⚡ Optimize Grading Order</button>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="results-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Cards to Grade</div>
+                    <div class="stat-value" id="cardsToGrade">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Cost</div>
+                    <div class="stat-value" id="totalCost">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Expected Profit</div>
+                    <div class="stat-value" id="expectedProfit" style="color: #00ff00;">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average ROI</div>
+                    <div class="stat-value" id="avgROI">0%</div>
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <h2 class="recommendation-title">📊 Optimization Results</h2>
+                <div id="recommendationText"></div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="tools.html" class="back-link">← Back to Tools</a>
+        </div>
+    </div>
+
+    <script>
+        let cards = [];
+
+        const GRADING_FEES = {
+            psa: { regular: 25, express: 50, super: 150 },
+            bgs: { regular: 30, express: 60, super: 175 },
+            cgc: { regular: 20, express: 40, super: 125 }
+        };
+
+        function addCard() {
+            const name = document.getElementById('cardName').value.trim();
+            const rawValue = parseFloat(document.getElementById('rawValue').value) || 0;
+            const gradedValue = parseFloat(document.getElementById('gradedValue').value) || 0;
+            const condition = document.getElementById('condition').value;
+
+            if (!name || rawValue === 0 || gradedValue === 0) {
+                alert('Please fill in all card details.');
+                return;
+            }
+
+            const company = document.getElementById('gradingCompany').value;
+            const service = document.getElementById('serviceLevel').value;
+            const gradingCost = GRADING_FEES[company][service];
+
+            const profit = gradedValue - rawValue - gradingCost;
+            const roi = ((profit / (rawValue + gradingCost)) * 100);
+
+            cards.push({
+                name,
+                rawValue,
+                gradedValue,
+                condition,
+                gradingCost,
+                profit,
+                roi
+            });
+
+            // Clear inputs
+            document.getElementById('cardName').value = '';
+            document.getElementById('rawValue').value = '';
+            document.getElementById('gradedValue').value = '';
+
+            updateCardsTable();
+        }
+
+        function removeCard(index) {
+            cards.splice(index, 1);
+            updateCardsTable();
+        }
+
+        function updateCardsTable() {
+            const tbody = document.getElementById('cardsTableBody');
+
+            if (cards.length === 0) {
+                document.getElementById('cardsSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('cardsSection').style.display = 'block';
+            document.getElementById('cardCount').textContent = cards.length;
+
+            tbody.innerHTML = cards.map((card, index) => {
+                let priorityClass = 'priority-medium';
+                let priorityText = 'Medium';
+
+                if (card.roi >= 50) {
+                    priorityClass = 'priority-high';
+                    priorityText = 'High';
+                } else if (card.roi >= 20) {
+                    priorityClass = 'priority-medium';
+                    priorityText = 'Medium';
+                } else if (card.roi >= 0) {
+                    priorityClass = 'priority-low';
+                    priorityText = 'Low';
+                } else {
+                    priorityClass = 'priority-skip';
+                    priorityText = 'Skip';
+                }
+
+                return `
+                    <tr>
+                        <td>${card.name}</td>
+                        <td>$${card.rawValue.toFixed(2)}</td>
+                        <td>$${card.gradedValue.toFixed(2)}</td>
+                        <td style="color: ${card.profit > 0 ? '#00ff00' : '#ff4444'};">
+                            $${card.profit.toFixed(2)}
+                        </td>
+                        <td>${card.roi.toFixed(1)}%</td>
+                        <td><span class="priority-badge ${priorityClass}">${priorityText}</span></td>
+                        <td><button class="delete-btn" onclick="removeCard(${index})">Remove</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function optimize() {
+            const budget = parseFloat(document.getElementById('budget').value) || 0;
+            const company = document.getElementById('gradingCompany').value;
+            const service = document.getElementById('serviceLevel').value;
+            const gradingCost = GRADING_FEES[company][service];
+
+            if (budget === 0) {
+                alert('Please enter a budget amount.');
+                return;
+            }
+
+            // Sort cards by ROI (descending)
+            const sortedCards = [...cards].sort((a, b) => b.roi - a.roi);
+
+            // Select cards within budget
+            let selectedCards = [];
+            let totalCost = 0;
+            let totalProfit = 0;
+
+            for (let card of sortedCards) {
+                if (card.profit < 0) break; // Skip unprofitable cards
+
+                if (totalCost + gradingCost <= budget) {
+                    selectedCards.push(card);
+                    totalCost += gradingCost;
+                    totalProfit += card.profit;
+                }
+            }
+
+            // Display results
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('cardsToGrade').textContent = selectedCards.length;
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+            document.getElementById('expectedProfit').textContent = '$' + totalProfit.toFixed(2);
+
+            const avgROI = selectedCards.length > 0 ?
+                (selectedCards.reduce((sum, c) => sum + c.roi, 0) / selectedCards.length) : 0;
+            document.getElementById('avgROI').textContent = avgROI.toFixed(1) + '%';
+
+            // Generate recommendation
+            let recommendation = '';
+
+            if (selectedCards.length === 0) {
+                recommendation = `
+                    <p style="color: #ff4444;"><strong>⚠️ NO CARDS RECOMMENDED</strong></p>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        None of your cards show positive ROI at current grading costs ($${gradingCost}/card).
+                        Consider waiting for lower-cost grading specials or reassessing card values.
+                    </p>
+                `;
+            } else {
+                const skipped = cards.length - selectedCards.length;
+
+                recommendation = `
+                    <p><strong>🎯 Optimized Grading Plan</strong></p>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Based on your $${budget} budget and ${company.toUpperCase()} ${service} service ($${gradingCost}/card),
+                        we recommend grading ${selectedCards.length} of your ${cards.length} cards.
+                    </p>
+
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem;">
+                        <h3 style="color: var(--apex-cyan); margin-bottom: 1rem;">Priority Order:</h3>
+                        <ol style="line-height: 2; color: var(--text-secondary);">
+                            ${selectedCards.map(card => `
+                                <li>
+                                    <strong style="color: white;">${card.name}</strong> -
+                                    ROI: <span style="color: #00ff00;">${card.roi.toFixed(1)}%</span>,
+                                    Profit: <span style="color: #00ff00;">$${card.profit.toFixed(2)}</span>
+                                </li>
+                            `).join('')}
+                        </ol>
+                    </div>
+
+                    ${skipped > 0 ? `
+                        <p style="margin-top: 1.5rem; color: var(--text-secondary);">
+                            <strong>Cards to Skip:</strong> ${skipped} cards excluded due to budget constraints
+                            or low ROI. ${cards.filter(c => c.profit < 0).length > 0 ?
+                                `${cards.filter(c => c.profit < 0).length} cards show negative ROI and should not be graded.` :
+                                'Consider grading remaining cards when budget allows.'}
+                        </p>
+                    ` : ''}
+
+                    <div style="background: rgba(0, 217, 255, 0.05); border-left: 4px solid var(--apex-cyan); padding: 1rem; margin-top: 1.5rem; border-radius: 4px;">
+                        <strong style="color: var(--apex-cyan);">💡 Pro Tip:</strong>
+                        <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                            ${avgROI > 50 ? 'Excellent ROI! These cards are prime grading candidates. Consider increasing your budget to grade more high-return cards.' :
+                              avgROI > 20 ? 'Solid ROI. Your budget is well-allocated to profitable cards.' :
+                              'Marginal ROI. Consider waiting for grading specials or focusing only on highest-value cards.'}
+                        </p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('recommendationText').innerHTML = recommendation;
+        }
+    </script>
+</body>
+</html>
