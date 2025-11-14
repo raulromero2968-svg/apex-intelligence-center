@@ -467,30 +467,18 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(147, 51, 234, 0.1));
-            border: 1px solid rgba(0, 217, 255, 0.4);
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid rgba(0, 255, 240, 0.3);
             border-radius: 8px;
             color: var(--apex-cyan);
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
-            animation: socialPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes socialPulse {
-            0%, 100% {
-                box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(0, 217, 255, 0.5), inset 0 0 15px rgba(147, 51, 234, 0.3);
-            }
         }
 
         .social-link:hover {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(147, 51, 234, 0.3));
-            border-color: var(--apex-cyan);
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 25px rgba(0, 217, 255, 0.6), inset 0 0 20px rgba(147, 51, 234, 0.4);
         }
 
         .footer-bottom {
@@ -816,6 +804,47 @@
             column.style.animationDelay = `${delay}s`;
 
             matrixContainer.appendChild(column);
+        }
+    </script>
+
+    <!-- Articles Database -->
+    <script src="articles.js"></script>
+
+    <!-- Dynamic Insights Loader -->
+    <script>
+        const insightsGrid = document.querySelector('.intel-grid');
+        const insightsArticles = getArticlesByCategory('insights');
+
+        if (insightsArticles && insightsArticles.length > 0) {
+            insightsGrid.innerHTML = '';
+
+            insightsArticles.forEach(article => {
+                const card = document.createElement('a');
+                card.href = `article.html?id=${article.id}`;
+                card.className = 'intel-card';
+
+                const tierBadge = article.tier !== 'free' ? `<span style="
+                    display: inline-block;
+                    background: ${article.tier === 'pro' ? 'linear-gradient(135deg, #9333EA, #00D9FF)' : 'var(--apex-cyan)'};
+                    color: var(--bg-dark);
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 12px;
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    margin-left: 0.5rem;
+                ">${article.tier.toUpperCase()}</span>` : '';
+
+                card.innerHTML = `
+                    <div class="intel-date">${article.date} • ${article.readTime}</div>
+                    <h3 class="intel-title">${article.title}${tierBadge}</h3>
+                    <p class="intel-excerpt">${article.excerpt}</p>
+                    ${article.tags.map(tag => `<span class="intel-tag">${tag}</span>`).join('')}
+                `;
+
+                insightsGrid.appendChild(card);
+            });
+        } else {
+            insightsGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 4rem 0;">No insights articles found.</p>';
         }
     </script>
 </body>

@@ -513,51 +513,11 @@
                 Article summary will appear here. This is a placeholder for the article introduction.
             </p>
 
-            <div class="content-section">
-                <p>
-                    <strong>Note:</strong> This is a template page for individual articles. In a full implementation,
-                    this page would dynamically load content from your Notion database or other content management system.
+            <!-- Dynamic Article Content -->
+            <div id="articleContent">
+                <p style="text-align: center; color: var(--text-secondary); padding: 4rem 0;">
+                    Loading article content...
                 </p>
-                <p>
-                    For now, this serves as a placeholder showing what an individual article page would look like
-                    when the Notion integration is complete.
-                </p>
-            </div>
-
-            <div class="content-section">
-                <h2>Sample Article Section</h2>
-                <p>
-                    This is where the full article content would appear. Articles can include:
-                </p>
-                <ul>
-                    <li>Detailed analysis and commentary</li>
-                    <li>Data visualizations and charts</li>
-                    <li>Tables comparing products or strategies</li>
-                    <li>Historical performance data</li>
-                    <li>Practical recommendations and insights</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <h3>Key Takeaway Example</h3>
-                <p>
-                    Highlighted boxes like this would be used to call out important insights, key data points,
-                    or actionable recommendations within the article content.
-                </p>
-            </div>
-
-            <div class="content-section">
-                <h2>Next Steps</h2>
-                <p>
-                    To complete this article system, you'll need to:
-                </p>
-                <ul>
-                    <li>Set up Notion API integration to pull article content</li>
-                    <li>Create JavaScript to parse URL parameters (article ID) and load appropriate content</li>
-                    <li>Populate article metadata (title, date, category, tags)</li>
-                    <li>Render the full article body from your Notion database</li>
-                    <li>Add related articles or "read next" suggestions</li>
-                </ul>
             </div>
 
             <div class="cta-section">
@@ -678,6 +638,135 @@
             column.style.animationDelay = `${delay}s`;
 
             matrixContainer.appendChild(column);
+        }
+    </script>
+
+    <!-- Articles Database -->
+    <script src="articles.js"></script>
+
+    <!-- Dynamic Article Loader -->
+    <script>
+        // Get article ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        // Load article content
+        if (articleId) {
+            const article = getArticleById(articleId);
+
+            if (article) {
+                // Update page title
+                document.title = article.title + ' - Apex Intelligence';
+
+                // Update article metadata
+                document.getElementById('articleCategory').textContent = article.category.toUpperCase();
+                document.getElementById('articleDate').textContent = article.date + ' • ' + article.readTime;
+                document.getElementById('articleTitle').textContent = article.title;
+                document.getElementById('articleSummary').textContent = article.excerpt;
+
+                // Insert article content
+                document.getElementById('articleContent').innerHTML = article.content;
+
+                // Add tier badge if premium/pro
+                if (article.tier !== 'free') {
+                    const tierBadge = document.createElement('span');
+                    tierBadge.className = 'tier-badge';
+                    tierBadge.textContent = article.tier.toUpperCase();
+                    tierBadge.style.cssText = `
+                        display: inline-block;
+                        background: ${article.tier === 'pro' ? 'linear-gradient(135deg, #9333EA, #00D9FF)' : 'var(--apex-cyan)'};
+                        color: var(--bg-dark);
+                        padding: 0.25rem 0.75rem;
+                        border-radius: 20px;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        margin-left: 1rem;
+                    `;
+                    document.getElementById('articleCategory').appendChild(tierBadge);
+                }
+
+                // Add tags
+                if (article.tags && article.tags.length > 0) {
+                    const tagsContainer = document.createElement('div');
+                    tagsContainer.style.cssText = 'margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;';
+                    article.tags.forEach(tag => {
+                        const tagEl = document.createElement('span');
+                        tagEl.textContent = tag;
+                        tagEl.style.cssText = `
+                            background: rgba(0, 217, 255, 0.1);
+                            border: 1px solid rgba(0, 217, 255, 0.3);
+                            color: var(--apex-cyan);
+                            padding: 0.25rem 0.75rem;
+                            border-radius: 20px;
+                            font-size: 0.85rem;
+                        `;
+                        tagsContainer.appendChild(tagEl);
+                    });
+                    document.querySelector('.article-meta').appendChild(tagsContainer);
+                }
+            } else {
+                // Article not found
+                document.getElementById('articleTitle').textContent = 'Article Not Found';
+                document.getElementById('articleSummary').textContent = 'The article you are looking for could not be found.';
+                document.getElementById('articleContent').innerHTML = `
+                    <div style="text-align: center; padding: 4rem 2rem;">
+                        <h2 style="color: var(--apex-cyan); margin-bottom: 1rem;">404 - Article Not Found</h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            The article you're looking for doesn't exist or may have been moved.
+                        </p>
+                        <a href="intel.html" style="
+                            display: inline-block;
+                            background: var(--apex-cyan);
+                            color: var(--bg-dark);
+                            padding: 0.75rem 2rem;
+                            border-radius: 8px;
+                            text-decoration: none;
+                            font-weight: 600;
+                        ">Browse All Articles</a>
+                    </div>
+                `;
+            }
+        } else {
+            // No article ID provided
+            document.getElementById('articleTitle').textContent = 'No Article Selected';
+            document.getElementById('articleSummary').textContent = 'Please select an article to view.';
+            document.getElementById('articleContent').innerHTML = `
+                <div style="text-align: center; padding: 4rem 2rem;">
+                    <h2 style="color: var(--apex-cyan); margin-bottom: 1rem;">No Article Selected</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Browse our intelligence reports and research articles.
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="insights.html" style="
+                            display: inline-block;
+                            background: var(--apex-cyan);
+                            color: var(--bg-dark);
+                            padding: 0.75rem 2rem;
+                            border-radius: 8px;
+                            text-decoration: none;
+                            font-weight: 600;
+                        ">Insights</a>
+                        <a href="blog.html" style="
+                            display: inline-block;
+                            background: var(--apex-purple);
+                            color: white;
+                            padding: 0.75rem 2rem;
+                            border-radius: 8px;
+                            text-decoration: none;
+                            font-weight: 600;
+                        ">Blog</a>
+                        <a href="research.html" style="
+                            display: inline-block;
+                            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+                            color: white;
+                            padding: 0.75rem 2rem;
+                            border-radius: 8px;
+                            text-decoration: none;
+                            font-weight: 600;
+                        ">Research</a>
+                    </div>
+                </div>
+            `;
         }
     </script>
 </body>
