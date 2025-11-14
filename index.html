@@ -412,6 +412,18 @@
             mix-blend-mode: screen;
         }
 
+        /* CSS fixes for subtle wolf logo */
+        .hero-wolf-logo {
+            mix-blend-mode: screen; /* Makes black background transparent */
+            background: transparent;
+        }
+
+        .hero-wolf-container {
+            box-shadow: none !important; /* Removes blue glow box */
+            border: none !important;
+            background: transparent !important;
+        }
+
         @keyframes wolfPulse {
             0%, 100% {
                 filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.7))
@@ -883,9 +895,9 @@
             </div>
 
             <!-- Right side: 3D Wolf Logo with Holographic Glow and Circle -->
-            <div class="wolf-logo-container">
+            <div class="wolf-logo-container hero-wolf-container">
                 <div class="wolf-logo">
-                    <img src="apex-wolf-logo-hybrid.png" alt="Apex Intelligence Wolf" />
+                    <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" class="hero-wolf-logo" />
                 </div>
             </div>
         </section>
