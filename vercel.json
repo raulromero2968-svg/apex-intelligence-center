@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "env": {
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
+    "SITE_URL": "@site_url"
+  },
+  "build": {
+    "env": {
+      "STRIPE_SECRET_KEY": "@stripe_secret_key",
+      "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
+      "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret"
+    }
+  },
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 10
+    }
+  }
+}

@@ -303,7 +303,7 @@
 
             <div class="cta-buttons">
                 <a href="index.html" class="btn btn-primary">Explore Platform</a>
-                <a href="insights.html" class="btn btn-secondary">Read Insights</a>
+                <a href="account.html" class="btn btn-secondary" id="manageAccountBtn">Manage Subscription</a>
             </div>
         </div>
 
@@ -323,11 +323,19 @@
 
         if (sessionId) {
             console.log('Checkout Session ID:', sessionId);
-            // You can send this to your backend for verification or analytics
+
+            // Store session ID in localStorage for account management
+            localStorage.setItem('stripe_session_id', sessionId);
+
+            // Update the manage account button to include session ID
+            const manageBtn = document.getElementById('manageAccountBtn');
+            if (manageBtn) {
+                manageBtn.href = `account.html?session_id=${sessionId}`;
+            }
         }
 
         // Optional: Track conversion event for analytics
-        if (window.gtag) {
+        if (window.gtag && sessionId) {
             gtag('event', 'purchase', {
                 'transaction_id': sessionId,
                 'value': 9.99, // Update based on plan

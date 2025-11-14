@@ -1,0 +1,25 @@
+{
+  "name": "apex-intelligence-center",
+  "version": "1.0.0",
+  "description": "Apex Intelligence - TCG Market Intelligence Platform",
+  "main": "index.html",
+  "scripts": {
+    "setup-stripe": "node setup-stripe-products.js",
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "tcg",
+    "trading-cards",
+    "market-intelligence",
+    "stripe"
+  ],
+  "author": "Apex Intelligence",
+  "license": "MIT",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
