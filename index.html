@@ -250,8 +250,8 @@
 
         /* Wolf Logo with Holographic Glow */
         .wolf-logo {
-            width: 400px;
-            height: 400px;
+            width: 600px;
+            height: 600px;
             margin: 0 auto 3rem;
             position: relative;
             display: flex;
@@ -263,6 +263,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            mix-blend-mode: screen;
             filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.7))
                     drop-shadow(0 0 60px rgba(138, 43, 226, 0.5))
                     drop-shadow(0 0 90px rgba(0, 255, 240, 0.3));
@@ -286,8 +287,8 @@
 
         @media (max-width: 768px) {
             .wolf-logo {
-                width: 280px;
-                height: 280px;
+                width: 350px;
+                height: 350px;
                 margin-bottom: 2rem;
             }
         }
@@ -319,6 +320,83 @@
             font-size: 1.25rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1.25rem 3.5rem 1.25rem 3.5rem;
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid rgba(0, 255, 240, 0.2);
+            border-radius: 50px;
+            font-size: 1.125rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .search-box::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-box:focus {
+            border-color: var(--apex-cyan);
+            box-shadow: 0 0 30px rgba(0, 255, 240, 0.2);
+            background: rgba(20, 20, 30, 0.95);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--apex-cyan);
+            pointer-events: none;
+        }
+
+        .search-filter-tags {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-filter-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid rgba(0, 255, 240, 0.3);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-filter-tag:hover,
+        .search-filter-tag.active {
+            background: rgba(0, 255, 240, 0.2);
+            color: var(--apex-cyan);
+            border-color: var(--apex-cyan);
+        }
+
+        .search-results-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         /* Intel Section (Main Content) */
@@ -668,6 +746,31 @@
             </p>
         </section>
 
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input
+                    type="text"
+                    class="search-box"
+                    id="searchInput"
+                    placeholder="Search articles, research, market insights..."
+                    autocomplete="off"
+                />
+            </div>
+            <div class="search-filter-tags">
+                <span class="search-filter-tag active" data-filter="all">All Content</span>
+                <span class="search-filter-tag" data-filter="articles">Articles</span>
+                <span class="search-filter-tag" data-filter="research">Research</span>
+                <span class="search-filter-tag" data-filter="analysis">Market Analysis</span>
+                <span class="search-filter-tag" data-filter="insights">Insights</span>
+            </div>
+            <div class="search-results-info" id="searchResults"></div>
+        </section>
+
         <!-- Latest Intel Section -->
         <section class="intel-section" id="intel">
             <div class="section-header">
@@ -958,6 +1061,73 @@
             column.style.animationDelay = `${delay}s`;
 
             matrixContainer.appendChild(column);
+        }
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const filterTags = document.querySelectorAll('.search-filter-tag');
+        const intelCards = document.querySelectorAll('.intel-card');
+
+        let currentFilter = 'all';
+
+        // Filter tag functionality
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                // Remove active class from all tags
+                filterTags.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tag
+                this.classList.add('active');
+                // Update current filter
+                currentFilter = this.getAttribute('data-filter');
+                // Trigger search
+                performSearch();
+            });
+        });
+
+        // Search input functionality
+        searchInput.addEventListener('input', performSearch);
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            intelCards.forEach(card => {
+                const title = card.querySelector('.intel-title').textContent.toLowerCase();
+                const excerpt = card.querySelector('.intel-excerpt').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.intel-tag')).map(tag => tag.textContent.toLowerCase());
+                const allText = title + ' ' + excerpt + ' ' + tags.join(' ');
+
+                // Check if matches search term
+                const matchesSearch = searchTerm === '' || allText.includes(searchTerm);
+
+                // Check if matches filter
+                let matchesFilter = true;
+                if (currentFilter !== 'all') {
+                    matchesFilter = allText.includes(currentFilter.toLowerCase());
+                }
+
+                // Show or hide card
+                if (matchesSearch && matchesFilter) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update results info
+            if (searchTerm !== '' || currentFilter !== 'all') {
+                if (visibleCount === 0) {
+                    searchResults.textContent = 'No results found. Try a different search term or filter.';
+                } else if (visibleCount === 1) {
+                    searchResults.textContent = '1 result found';
+                } else {
+                    searchResults.textContent = `${visibleCount} results found`;
+                }
+            } else {
+                searchResults.textContent = '';
+            }
         }
     </script>
 </body>
