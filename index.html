@@ -352,51 +352,8 @@
             align-items: center;
             justify-content: center;
             background: transparent !important;
-        }
-
-        .wolf-logo::before {
-            content: '';
-            position: absolute;
-            width: 120%;
-            height: 120%;
-            background: radial-gradient(circle, rgba(147, 51, 234, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: glowPulse 3s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        .wolf-logo::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px solid transparent;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(147, 51, 234, 0.3)) border-box;
-            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: rotateBorder 10s linear infinite;
-        }
-
-        @keyframes glowPulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.6;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.9;
-            }
-        }
-
-        @keyframes rotateBorder {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            border: none !important;
+            border-radius: 0 !important;
         }
 
         .wolf-logo img {
@@ -405,10 +362,8 @@
             object-fit: contain;
             background: transparent !important;
             display: block;
-            filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.7))
-                    drop-shadow(0 0 60px rgba(147, 51, 234, 0.6))
-                    drop-shadow(0 0 90px rgba(0, 217, 255, 0.4));
-            animation: wolfPulse 3s ease-in-out infinite;
+            filter: none;
+            animation: none !important;
             mix-blend-mode: screen;
         }
 
@@ -416,27 +371,14 @@
         .hero-wolf-logo {
             mix-blend-mode: screen; /* Makes black background transparent */
             background: transparent;
+            animation: none !important;
+            filter: none !important;
         }
 
         .hero-wolf-container {
             box-shadow: none !important; /* Removes blue glow box */
             border: none !important;
             background: transparent !important;
-        }
-
-        @keyframes wolfPulse {
-            0%, 100% {
-                filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.7))
-                        drop-shadow(0 0 60px rgba(147, 51, 234, 0.6))
-                        drop-shadow(0 0 90px rgba(0, 217, 255, 0.4));
-                transform: scale(1);
-            }
-            50% {
-                filter: drop-shadow(0 0 50px rgba(0, 217, 255, 0.9))
-                        drop-shadow(0 0 90px rgba(147, 51, 234, 0.8))
-                        drop-shadow(0 0 120px rgba(147, 51, 234, 0.5));
-                transform: scale(1.05);
-            }
         }
 
         @media (max-width: 768px) {
@@ -562,6 +504,109 @@
             margin-top: 1rem;
             color: var(--text-secondary);
             font-size: 0.875rem;
+        }
+
+        /* AI Assistant Response */
+        .ai-response-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: none;
+        }
+
+        .ai-response-container.active {
+            display: block;
+        }
+
+        .ai-response-box {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(147, 51, 234, 0.05));
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-response-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--apex-cyan), var(--apex-purple));
+        }
+
+        .ai-response-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--apex-cyan);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-response-header svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--apex-cyan);
+        }
+
+        .ai-response-text {
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-response-text strong {
+            color: var(--apex-cyan);
+        }
+
+        .ai-related-heading {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .ai-typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--apex-cyan);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .ai-typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
         }
 
         /* Intel Section (Main Content) */
@@ -794,30 +839,18 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(147, 51, 234, 0.1));
-            border: 1px solid rgba(0, 217, 255, 0.4);
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid rgba(0, 255, 240, 0.3);
             border-radius: 8px;
             color: var(--apex-cyan);
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
-            animation: socialPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes socialPulse {
-            0%, 100% {
-                box-shadow: 0 0 10px rgba(0, 217, 255, 0.3), inset 0 0 10px rgba(147, 51, 234, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(0, 217, 255, 0.5), inset 0 0 15px rgba(147, 51, 234, 0.3);
-            }
         }
 
         .social-link:hover {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(147, 51, 234, 0.3));
-            border-color: var(--apex-cyan);
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 25px rgba(0, 217, 255, 0.6), inset 0 0 20px rgba(147, 51, 234, 0.4);
         }
 
         .footer-bottom {
@@ -867,7 +900,7 @@
             <div class="nav-container">
                 <a href="/" class="logo">
                     <div class="logo-icon">
-                        <img src="apex-wolf-logo-hybrid.png" alt="Apex Intelligence Wolf" />
+                        <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" />
                     </div>
                     <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
                 </a>
@@ -913,7 +946,7 @@
                     type="text"
                     class="search-box"
                     id="searchInput"
-                    placeholder="Search articles, research, market insights..."
+                    placeholder="Ask me anything or search our intelligence... (e.g., 'Should I invest in One Piece cards?')"
                     autocomplete="off"
                 />
             </div>
@@ -926,6 +959,20 @@
             </div>
             <div class="search-results-info" id="searchResults"></div>
         </section>
+
+        <!-- AI Response Section -->
+        <div class="ai-response-container" id="aiResponseContainer">
+            <div class="ai-response-box">
+                <div class="ai-response-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>AI Assistant Response</span>
+                </div>
+                <div class="ai-response-text" id="aiResponseText"></div>
+            </div>
+            <div class="ai-related-heading">Related Intelligence From Our Database:</div>
+        </div>
 
         <!-- Latest Intel Section -->
         <section class="intel-section" id="intel">
@@ -1264,51 +1311,121 @@
             matrixContainer.appendChild(column);
         }
 
-        // Search Functionality
+        // AI-Powered Search Functionality
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         const filterTags = document.querySelectorAll('.search-filter-tag');
         const intelCards = document.querySelectorAll('.intel-card');
+        const aiResponseContainer = document.getElementById('aiResponseContainer');
+        const aiResponseText = document.getElementById('aiResponseText');
 
         let currentFilter = 'all';
+        let typingTimeout;
+
+        // AI Response Knowledge Base
+        const aiKnowledge = {
+            'one piece': {
+                keywords: ['one piece', 'op tcg', 'optcg'],
+                response: "Based on current market trends, <strong>One Piece TCG shows strong growth potential</strong>. The game has experienced meteoric rise with consistent player base expansion and competitive tournament support. Key factors to consider: <strong>popular character cards maintain value</strong>, sealed product from early sets is appreciating, and the Japanese market shows strong long-term stability. However, as with any TCG investment, <strong>diversification is crucial</strong>—don't put all resources into a single game."
+            },
+            'pokemon': {
+                keywords: ['pokemon', 'pokémon', 'ptcg', 'charizard', 'pikachu'],
+                response: "<strong>Pokemon remains the most stable TCG investment</strong> with 25+ years of proven market history. Our data shows vintage cards (especially WOTC era) have appreciated 34% in the last year. <strong>Key investment strategies:</strong> Focus on PSA 9+ graded cards from Base Set, Jungle, and Fossil. Modern chase cards from special sets maintain value. Sealed vintage product continues strong appreciation. The Pokemon brand's cultural staying power makes it a <strong>blue-chip TCG investment</strong>."
+            },
+            'magic': {
+                keywords: ['magic', 'mtg', 'magic the gathering', 'modern horizons', 'commander'],
+                response: "Magic: The Gathering is the <strong>longest-running TCG with the most mature market</strong>. Investment strategy depends on format: <strong>Reserved List cards</strong> (cards Wizards pledged never to reprint) show consistent appreciation. Modern Horizons sets contain high-value chase cards. <strong>Commander format drives significant demand</strong>—cards that see Commander play maintain strong prices. Our analysis suggests focusing on <strong>staple cards across multiple formats</strong> and sealed boxes from well-regarded sets."
+            },
+            'yugioh': {
+                keywords: ['yugioh', 'yu-gi-oh', 'ygo'],
+                response: "Yu-Gi-Oh! celebrates its 25th anniversary with <strong>strong collector interest in vintage and anniversary products</strong>. The market tends to be more volatile due to frequent reprints, but <strong>1st Edition cards from early sets</strong> maintain collector value. <strong>Championship prize cards</strong> and tournament-exclusive items show exceptional appreciation. For investment, focus on <strong>sealed product from discontinued sets</strong> and high-grade graded cards from the early era. The game's global popularity provides market stability."
+            },
+            'grading': {
+                keywords: ['grade', 'grading', 'psa', 'bgs', 'cgc', 'beckett'],
+                response: "<strong>Grading strategy significantly impacts ROI</strong>. PSA typically commands highest premiums for vintage cards, especially Pokemon and sports cards. BGS (Beckett) preferred for modern cards where pristine condition matters—their 10 Black Label is most prestigious. <strong>When to grade:</strong> Cards valued $100+ raw, potential PSA 9+, or historically significant cards. <strong>Cost-benefit analysis is crucial</strong>—grading fees, shipping, and time must justify premium over raw card value. Our data shows <strong>PSA 10 premiums range from 3x to 10x over PSA 9</strong> depending on card rarity."
+            },
+            'invest': {
+                keywords: ['invest', 'investment', 'roi', 'return', 'portfolio', 'buy'],
+                response: "<strong>TCG investment requires strategic diversification</strong>. Our research recommends: <strong>60% established games</strong> (Pokemon, Magic) for stability, <strong>30% growing games</strong> (One Piece, Lorcana) for growth potential, <strong>10% speculative</strong>. Key principles: <strong>sealed product appreciates most reliably</strong>, graded cards from established sets show consistent gains, and <strong>condition is paramount</strong>—always prioritize quality over quantity. <strong>Market timing matters</strong>—buy during mid-cycle dips, not peak hype. Track print runs and understand supply dynamics."
+            },
+            'sealed': {
+                keywords: ['sealed', 'booster box', 'sealed product', 'boxes'],
+                response: "<strong>Sealed product historically provides the most reliable returns</strong> in TCG investing. Our analysis shows vintage sealed Pokemon booster boxes appreciated 200-500% over 5 years. <strong>Key factors:</strong> Lower print run sets appreciate faster, first editions command premiums, and <strong>storage condition is critical</strong>—maintain in climate-controlled environment. <strong>Modern sealed strategy:</strong> Hold minimum 3-5 years, focus on special/limited sets, and <strong>avoid unlimited print runs</strong>. Sealed product becomes increasingly scarce as boxes are opened, driving long-term value."
+            },
+            'market': {
+                keywords: ['market', 'trend', 'trends', 'analysis', 'forecast'],
+                response: "<strong>Current TCG market shows mature growth with selective opportunities</strong>. Post-COVID correction has stabilized, creating <strong>strategic entry points</strong>. Key trends: <strong>One Piece TCG rapid expansion</strong>, Disney Lorcana strong debut, vintage Pokemon maintaining blue-chip status. <strong>Watch for:</strong> New game launches with strong IP, tournament circuit announcements, and reprint policies. <strong>Risk factors:</strong> Oversaturation in certain games, economic conditions affecting discretionary spending. Our data suggests <strong>focus on established IP with proven player bases</strong>."
+            },
+            'default': {
+                keywords: [],
+                response: "Great question! Based on our market intelligence and research data, the TCG market offers diverse opportunities. <strong>Key considerations:</strong> Focus on established games for stability (Pokemon, Magic: The Gathering), explore emerging games for growth potential (One Piece TCG, Lorcana), and always <strong>prioritize condition and authenticity</strong>. Our database contains extensive analysis on specific games, cards, and investment strategies. <strong>Remember:</strong> TCG collecting should balance passion and investment—collect what you enjoy while making informed financial decisions."
+            }
+        };
 
         // Filter tag functionality
         filterTags.forEach(tag => {
             tag.addEventListener('click', function() {
-                // Remove active class from all tags
                 filterTags.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked tag
                 this.classList.add('active');
-                // Update current filter
                 currentFilter = this.getAttribute('data-filter');
-                // Trigger search
-                performSearch();
+                performSearchWithAI();
             });
         });
 
-        // Search input functionality
-        searchInput.addEventListener('input', performSearch);
+        // Search input functionality with AI
+        searchInput.addEventListener('input', function() {
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(performSearchWithAI, 300);
+        });
 
-        function performSearch() {
+        function isQuestion(text) {
+            const questionWords = ['should', 'what', 'how', 'why', 'when', 'which', 'where', 'can', 'is', 'are', 'do', 'does', 'will', 'best', 'recommend'];
+            const lowerText = text.toLowerCase();
+            return text.includes('?') || questionWords.some(word => lowerText.includes(word + ' '));
+        }
+
+        function getAIResponse(searchTerm) {
+            const lowerTerm = searchTerm.toLowerCase();
+
+            // Find matching knowledge base entry
+            for (const [key, knowledge] of Object.entries(aiKnowledge)) {
+                if (knowledge.keywords.some(keyword => lowerTerm.includes(keyword))) {
+                    return knowledge.response;
+                }
+            }
+
+            return aiKnowledge.default.response;
+        }
+
+        function performSearchWithAI() {
             const searchTerm = searchInput.value.toLowerCase().trim();
             let visibleCount = 0;
 
+            // Hide AI response if search is empty
+            if (searchTerm === '') {
+                aiResponseContainer.classList.remove('active');
+            } else if (isQuestion(searchTerm)) {
+                // Show AI response for questions
+                aiResponseContainer.classList.add('active');
+                aiResponseText.innerHTML = getAIResponse(searchTerm);
+            } else {
+                // Hide AI response for simple searches
+                aiResponseContainer.classList.remove('active');
+            }
+
+            // Perform article search
             intelCards.forEach(card => {
                 const title = card.querySelector('.intel-title').textContent.toLowerCase();
                 const excerpt = card.querySelector('.intel-excerpt').textContent.toLowerCase();
                 const tags = Array.from(card.querySelectorAll('.intel-tag')).map(tag => tag.textContent.toLowerCase());
                 const allText = title + ' ' + excerpt + ' ' + tags.join(' ');
 
-                // Check if matches search term
                 const matchesSearch = searchTerm === '' || allText.includes(searchTerm);
-
-                // Check if matches filter
                 let matchesFilter = true;
                 if (currentFilter !== 'all') {
                     matchesFilter = allText.includes(currentFilter.toLowerCase());
                 }
 
-                // Show or hide card
                 if (matchesSearch && matchesFilter) {
                     card.style.display = 'block';
                     visibleCount++;
@@ -1320,11 +1437,11 @@
             // Update results info
             if (searchTerm !== '' || currentFilter !== 'all') {
                 if (visibleCount === 0) {
-                    searchResults.textContent = 'No results found. Try a different search term or filter.';
+                    searchResults.textContent = 'No articles found. Try a different search term or filter.';
                 } else if (visibleCount === 1) {
-                    searchResults.textContent = '1 result found';
+                    searchResults.textContent = '1 article found';
                 } else {
-                    searchResults.textContent = `${visibleCount} results found`;
+                    searchResults.textContent = `${visibleCount} articles found`;
                 }
             } else {
                 searchResults.textContent = '';
