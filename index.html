@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apex Intelligence - TCG Market Intelligence & Research</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
     <style>
         * {
             margin: 0;
@@ -12,8 +13,9 @@
         }
 
         :root {
-            --apex-cyan: #00FFF0;
-            --bg-dark: #0a0a0f;
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
             --bg-card: rgba(20, 20, 30, 0.8);
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
@@ -25,6 +27,35 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Nebular Space Background with Soft Glows */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(147, 51, 234, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: nebulaFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes nebulaFloat {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
         }
 
         /* Animated Grid Background */
@@ -37,8 +68,8 @@
             pointer-events: none;
             z-index: 0;
             background-image:
-                linear-gradient(rgba(0, 255, 240, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 240, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: gridMove 40s linear infinite;
         }
@@ -61,14 +92,35 @@
 
         .star {
             position: absolute;
-            background: white;
             border-radius: 50%;
             animation: twinkle 5s infinite;
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        .star.cyan {
+            background: var(--apex-cyan);
+            color: var(--apex-cyan);
+        }
+
+        .star.purple {
+            background: var(--apex-purple);
+            color: var(--apex-purple);
+        }
+
+        .star.white {
+            background: white;
+            color: white;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.15; }
-            50% { opacity: 0.8; }
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
         }
 
         /* Matrix River Effect - Vertical columns on sides */
@@ -94,11 +146,9 @@
             line-height: 1.5;
         }
 
-        /* Enhanced visibility on desktop */
-        @media (min-width: 769px) {
-            .matrix-column {
-                opacity: 0.6;
-            }
+        /* Consistent visibility on all devices */
+        .matrix-column {
+            opacity: 0.35;
         }
 
         /* Left side columns */
@@ -117,10 +167,10 @@
                 opacity: 0;
             }
             5% {
-                opacity: 0.25;
+                opacity: 0.35;
             }
             95% {
-                opacity: 0.25;
+                opacity: 0.35;
             }
             100% {
                 top: 100%;
@@ -128,23 +178,53 @@
             }
         }
 
-        /* Enhanced keyframes for desktop */
-        @media (min-width: 769px) {
-            @keyframes matrixFall {
-                0% {
-                    top: -100%;
-                    opacity: 0;
-                }
-                5% {
-                    opacity: 0.6;
-                }
-                95% {
-                    opacity: 0.6;
-                }
-                100% {
-                    top: 100%;
-                    opacity: 0;
-                }
+        /* Floating Diamond Shapes */
+        .floating-diamonds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .diamond {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 2px solid var(--apex-purple);
+            transform: rotate(45deg);
+            opacity: 0.3;
+            animation: diamondFloat linear infinite;
+            box-shadow:
+                0 0 20px rgba(147, 51, 234, 0.4),
+                inset 0 0 20px rgba(147, 51, 234, 0.2);
+        }
+
+        .diamond.cyan {
+            border-color: var(--apex-cyan);
+            box-shadow:
+                0 0 20px rgba(0, 217, 255, 0.4),
+                inset 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        @keyframes diamondFloat {
+            0% {
+                transform: rotate(45deg) translateY(0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: rotate(405deg) translateY(-100vh) scale(1.5);
+                opacity: 0;
             }
         }
 
@@ -190,21 +270,18 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            filter: drop-shadow(0 0 8px var(--apex-cyan));
+            filter: drop-shadow(0 0 8px var(--apex-cyan)) drop-shadow(0 0 12px rgba(147, 51, 234, 0.5));
         }
 
-        .logo-icon polygon,
-        .logo-icon line {
-            fill: none;
-            stroke: var(--apex-cyan);
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .nav-links {
@@ -243,20 +320,78 @@
         /* Hero Section */
         .hero {
             padding: 6rem 2rem 4rem;
-            text-align: center;
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
 
-        /* Wolf Logo with Holographic Glow */
-        .wolf-logo {
-            width: 600px;
-            height: 600px;
-            margin: 0 auto 3rem;
+        .hero-content {
+            text-align: left;
+        }
+
+        /* Wolf Logo with Holographic Glow and Circle */
+        .wolf-logo-container {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .wolf-logo {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wolf-logo::before {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 3s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .wolf-logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(147, 51, 234, 0.3)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotateBorder 10s linear infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes rotateBorder {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .wolf-logo img {
@@ -264,32 +399,43 @@
             height: 100%;
             object-fit: contain;
             mix-blend-mode: screen;
-            filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.7))
-                    drop-shadow(0 0 60px rgba(138, 43, 226, 0.5))
-                    drop-shadow(0 0 90px rgba(0, 255, 240, 0.3));
+            filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.7))
+                    drop-shadow(0 0 60px rgba(147, 51, 234, 0.6))
+                    drop-shadow(0 0 90px rgba(0, 217, 255, 0.4));
             animation: wolfPulse 3s ease-in-out infinite;
         }
 
         @keyframes wolfPulse {
             0%, 100% {
-                filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.7))
-                        drop-shadow(0 0 60px rgba(138, 43, 226, 0.5))
-                        drop-shadow(0 0 90px rgba(0, 255, 240, 0.3));
+                filter: drop-shadow(0 0 30px rgba(0, 217, 255, 0.7))
+                        drop-shadow(0 0 60px rgba(147, 51, 234, 0.6))
+                        drop-shadow(0 0 90px rgba(0, 217, 255, 0.4));
                 transform: scale(1);
             }
             50% {
-                filter: drop-shadow(0 0 50px rgba(0, 255, 240, 0.9))
-                        drop-shadow(0 0 90px rgba(138, 43, 226, 0.7))
-                        drop-shadow(0 0 120px rgba(138, 43, 226, 0.4));
+                filter: drop-shadow(0 0 50px rgba(0, 217, 255, 0.9))
+                        drop-shadow(0 0 90px rgba(147, 51, 234, 0.8))
+                        drop-shadow(0 0 120px rgba(147, 51, 234, 0.5));
                 transform: scale(1.05);
             }
         }
 
         @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+                padding: 4rem 2rem 3rem;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
             .wolf-logo {
-                width: 350px;
-                height: 350px;
-                margin-bottom: 2rem;
+                width: 280px;
+                height: 280px;
+                margin: 0 auto;
             }
         }
 
@@ -681,44 +827,17 @@
     <!-- Matrix River Effect -->
     <div class="matrix-river" id="matrixRiver"></div>
 
+    <!-- Floating Diamonds -->
+    <div class="floating-diamonds" id="floatingDiamonds"></div>
+
     <div class="content">
         <!-- Navigation -->
         <nav>
             <div class="nav-container">
                 <a href="/" class="logo">
-                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Geometric/Polygonal Wolf Head -->
-                        <!-- Outer face -->
-                        <polygon points="50,10 65,25 70,40 65,55 50,70 35,55 30,40 35,25" />
-                        <!-- Inner geometric details -->
-                        <polygon points="50,20 58,28 60,38 58,48 50,56 42,48 40,38 42,28" />
-                        <!-- Eyes -->
-                        <polygon points="42,35 45,32 48,35 45,38" />
-                        <polygon points="58,35 55,32 52,35 55,38" />
-                        <!-- Snout -->
-                        <polygon points="50,45 46,50 50,54 54,50" />
-                        <!-- Ears - left -->
-                        <polygon points="35,18 30,10 38,15 40,22" />
-                        <line x1="35" y1="18" x2="30" y2="10" />
-                        <line x1="35" y1="18" x2="38" y2="15" />
-                        <line x1="38" y1="15" x2="40" y2="22" />
-                        <!-- Ears - right -->
-                        <polygon points="65,18 70,10 62,15 60,22" />
-                        <line x1="65" y1="18" x2="70" y2="10" />
-                        <line x1="65" y1="18" x2="62" y2="15" />
-                        <line x1="62" y1="15" x2="60" y2="22" />
-                        <!-- Face details - geometric lines -->
-                        <line x1="35" y1="40" x2="30" y2="40" />
-                        <line x1="65" y1="40" x2="70" y2="40" />
-                        <line x1="50" y1="20" x2="50" y2="56" />
-                        <line x1="42" y1="28" x2="35" y2="25" />
-                        <line x1="58" y1="28" x2="65" y2="25" />
-                        <line x1="42" y1="48" x2="35" y2="55" />
-                        <line x1="58" y1="48" x2="65" y2="55" />
-                        <!-- Additional geometric detail -->
-                        <line x1="40" y1="38" x2="35" y2="40" />
-                        <line x1="60" y1="38" x2="65" y2="40" />
-                    </svg>
+                    <div class="logo-icon">
+                        <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence Wolf" />
+                    </div>
                     <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
                 </a>
                 <ul class="nav-links">
@@ -732,18 +851,24 @@
 
         <!-- Hero Section -->
         <section class="hero">
-            <!-- 3D Wolf Logo with Holographic Glow -->
-            <div class="wolf-logo">
-                <img src="image_2025-11-13_234427840.png" alt="Apex Intelligence Wolf" />
+            <!-- Left side: Content -->
+            <div class="hero-content">
+                <div class="hero-badge">TCG INTELLIGENCE NETWORK</div>
+                <h1 class="hero-title">
+                    <span class="hero-title-accent">Underground</span> Intel<br>
+                    For Serious Collectors
+                </h1>
+                <p class="hero-subtitle">
+                    Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
+                </p>
             </div>
-            <div class="hero-badge">TCG INTELLIGENCE NETWORK</div>
-            <h1 class="hero-title">
-                <span class="hero-title-accent">Underground</span> Intel<br>
-                For Serious Collectors
-            </h1>
-            <p class="hero-subtitle">
-                Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
-            </p>
+
+            <!-- Right side: 3D Wolf Logo with Holographic Glow and Circle -->
+            <div class="wolf-logo-container">
+                <div class="wolf-logo">
+                    <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence Wolf" />
+                </div>
+            </div>
         </section>
 
         <!-- Search Section -->
@@ -984,15 +1109,28 @@
         </footer>
     </div>
 
-    <!-- Starfield + Matrix JavaScript -->
+    <!-- Starfield + Matrix + Diamonds JavaScript -->
     <script>
-        // Create starfield
+        // Create starfield with colors
         const starsContainer = document.getElementById('stars');
         const numStars = 200;
+        const starColors = ['cyan', 'purple', 'white'];
 
         for (let i = 0; i < numStars; i++) {
             const star = document.createElement('div');
-            star.className = 'star';
+
+            // Random color distribution: 40% cyan, 30% purple, 30% white
+            const rand = Math.random();
+            let colorClass;
+            if (rand < 0.4) {
+                colorClass = 'cyan';
+            } else if (rand < 0.7) {
+                colorClass = 'purple';
+            } else {
+                colorClass = 'white';
+            }
+
+            star.className = `star ${colorClass}`;
 
             // Random position
             star.style.left = `${Math.random() * 100}%`;
@@ -1004,9 +1142,41 @@
             star.style.height = `${size}px`;
 
             // Random animation delay
-            star.style.animationDelay = `${Math.random() * 3}s`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
 
             starsContainer.appendChild(star);
+        }
+
+        // Create floating diamonds
+        const diamondsContainer = document.getElementById('floatingDiamonds');
+        const numDiamonds = 15;
+
+        for (let i = 0; i < numDiamonds; i++) {
+            const diamond = document.createElement('div');
+
+            // Alternate between purple and cyan diamonds
+            const diamondClass = i % 2 === 0 ? 'purple' : 'cyan';
+            diamond.className = `diamond ${diamondClass}`;
+
+            // Random horizontal position
+            diamond.style.left = `${Math.random() * 100}%`;
+
+            // Start from bottom of screen
+            diamond.style.top = '100%';
+
+            // Random size variation
+            const size = 30 + Math.random() * 30; // 30-60px
+            diamond.style.width = `${size}px`;
+            diamond.style.height = `${size}px`;
+
+            // Random animation duration (slower floats)
+            const duration = 20 + Math.random() * 20; // 20-40 seconds
+            diamond.style.animationDuration = `${duration}s`;
+
+            // Random delay
+            diamond.style.animationDelay = `${Math.random() * 10}s`;
+
+            diamondsContainer.appendChild(diamond);
         }
 
         // Create Matrix columns on LEFT and RIGHT sides - SLOW & MEDITATIVE
