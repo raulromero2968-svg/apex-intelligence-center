@@ -1451,5 +1451,60 @@
             }
         }
     </script>
+
+    <!-- Articles Database -->
+    <script src="articles.js"></script>
+
+    <!-- Dynamic Article Loading -->
+    <script>
+        // Load latest articles from database
+        document.addEventListener('DOMContentLoaded', function() {
+            const intelGrid = document.querySelector('.intel-grid');
+
+            if (intelGrid && typeof ARTICLES !== 'undefined') {
+                // Get all articles and sort by date (newest first)
+                const allArticles = Object.values(ARTICLES);
+                const sortedArticles = allArticles.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateB - dateA; // Newest first
+                });
+
+                // Get latest 6 articles
+                const latestArticles = sortedArticles.slice(0, 6);
+
+                // Clear existing hardcoded articles
+                intelGrid.innerHTML = '';
+
+                // Populate with dynamic articles
+                latestArticles.forEach(article => {
+                    const card = document.createElement('a');
+                    card.href = `article.html?id=${article.id}`;
+                    card.className = 'intel-card';
+
+                    // Add tier badge if not free
+                    const tierBadge = article.tier !== 'free' ?
+                        `<span style="display: inline-block; background: ${article.tier === 'pro' ?
+                            'linear-gradient(135deg, #9333EA, #00D9FF)' :
+                            'var(--apex-cyan)'}; color: ${article.tier === 'pro' ? 'white' : 'var(--bg-dark)'}; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem;">
+                            ${article.tier.toUpperCase()}
+                        </span>` : '';
+
+                    card.innerHTML = `
+                        <div class="intel-date">${article.date} • ${article.readTime}</div>
+                        <h3 class="intel-title">${article.title}${tierBadge}</h3>
+                        <p class="intel-excerpt">${article.excerpt}</p>
+                        ${article.tags.slice(0, 2).map(tag => `<span class="intel-tag">${tag}</span>`).join('\n                        ')}
+                    `;
+
+                    intelGrid.appendChild(card);
+                });
+
+                console.log(`✅ Loaded ${latestArticles.length} latest articles dynamically from articles.js`);
+            } else {
+                console.warn('⚠️ Articles database not found or intel-grid missing');
+            }
+        });
+    </script>
 </body>
 </html>
