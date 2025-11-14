@@ -399,7 +399,7 @@
                     <li>Email support</li>
                     <li>Ad-free experience</li>
                 </ul>
-                <button class="subscribe-btn" onclick="alert('Stripe integration coming soon! For now, subscribe to our newsletter at apexintelligence.beehiiv.com')">
+                <button class="subscribe-btn" onclick="handleStripeCheckout('premium', 'monthly')">
                     Subscribe Now
                 </button>
                 <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
@@ -428,7 +428,7 @@
                     <li>Downloadable datasets & tools</li>
                     <li>Monthly research calls</li>
                 </ul>
-                <button class="subscribe-btn pro" onclick="alert('Stripe integration coming soon! For now, subscribe to our newsletter at apexintelligence.beehiiv.com')">
+                <button class="subscribe-btn pro" onclick="handleStripeCheckout('pro', 'monthly')">
                     Go Pro
                 </button>
                 <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
@@ -486,5 +486,76 @@
             </p>
         </footer>
     </div>
+
+    <!-- Stripe Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Initialize Stripe with your publishable key
+        // IMPORTANT: Replace 'pk_test_...' with your actual Stripe publishable key
+        const stripe = Stripe('pk_test_51PLACEHOLDER_REPLACE_WITH_YOUR_STRIPE_KEY');
+
+        // Stripe Price IDs (replace with your actual price IDs from Stripe Dashboard)
+        const STRIPE_PRICES = {
+            premium_monthly: 'price_premium_monthly_placeholder',
+            premium_yearly: 'price_premium_yearly_placeholder',
+            pro_monthly: 'price_pro_monthly_placeholder',
+            pro_yearly: 'price_pro_yearly_placeholder'
+        };
+
+        function handleStripeCheckout(tier, billing) {
+            const priceKey = `${tier}_${billing}`;
+            const priceId = STRIPE_PRICES[priceKey];
+
+            // Show loading state
+            const buttons = document.querySelectorAll('.subscribe-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+
+            // Redirect to Stripe Checkout
+            stripe.redirectToCheckout({
+                lineItems: [{
+                    price: priceId,
+                    quantity: 1
+                }],
+                mode: 'subscription',
+                successUrl: window.location.origin + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+                cancelUrl: window.location.origin + '/subscribe.html',
+                customerEmail: null, // Let customer enter email
+                billingAddressCollection: 'auto',
+            }).then(function (result) {
+                // Re-enable buttons if there's an error
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                });
+
+                if (result.error) {
+                    alert('Error: ' + result.error.message);
+                }
+            });
+        }
+
+        // Demo mode fallback - remove this when Stripe is configured
+        if (!stripe || stripe._keyMode === 'test') {
+            console.warn('Stripe is in demo mode. Update with your actual Stripe publishable key and price IDs.');
+
+            // Override the function for demo purposes
+            window.handleStripeCheckout = function(tier, billing) {
+                const tierNames = { premium: 'Premium', pro: 'Pro' };
+                const billingNames = { monthly: 'Monthly', yearly: 'Yearly' };
+
+                alert(`🔧 Stripe Integration Setup Required\n\n` +
+                      `Selected Plan: ${tierNames[tier]} - ${billingNames[billing]}\n\n` +
+                      `To enable payments:\n` +
+                      `1. Sign up at stripe.com\n` +
+                      `2. Create products and prices in Stripe Dashboard\n` +
+                      `3. Replace placeholder keys in subscribe.html\n\n` +
+                      `For now, you can subscribe to our newsletter at:\n` +
+                      `apexintelligence.beehiiv.com`);
+            };
+        }
+    </script>
 </body>
 </html>
