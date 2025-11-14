@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Value Calculator - Apex Intelligence</title>
+    <title>Trade Fairness Evaluator - Apex Intelligence</title>
     <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
     <style>
         * {
@@ -175,8 +175,142 @@
             border-bottom: 1px solid rgba(0, 217, 255, 0.1);
         }
 
+        .trend-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .trend-up {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .trend-down {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .trend-stable {
+            background: rgba(0, 217, 255, 0.2);
+            color: var(--apex-cyan);
+        }
+
+        .premium-section {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(0, 217, 255, 0.1));
+            border: 2px solid var(--apex-cyan);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .premium-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .premium-title {
+            font-size: 1.5rem;
+            color: var(--apex-cyan);
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .probability-score {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+
+        .score-favorable {
+            color: #00ff00;
+        }
+
+        .score-neutral {
+            color: var(--apex-cyan);
+        }
+
+        .score-unfavorable {
+            color: #ff4444;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .analysis-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .analysis-card h4 {
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .metric-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .upgrade-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .upgrade-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -185,8 +319,8 @@
 <body>
     <div class="content">
         <div class="header">
-            <h1>💱 Trade Value Calculator</h1>
-            <p class="subtitle">Calculate fair trade values with market pricing</p>
+            <h1>💱 Trade Fairness Evaluator</h1>
+            <p class="subtitle">Calculate fair trade values with trend predictions and market analysis</p>
         </div>
 
         <div class="calculator-grid">
@@ -221,6 +355,72 @@
             <h2>Trade Analysis</h2>
             <div class="result-value" id="resultText">Add cards to analyze trade</div>
             <p id="resultDetail" style="color: var(--text-secondary); margin-top: 1rem;"></p>
+        </div>
+
+        <div class="premium-section" id="premiumSection" style="display: none;">
+            <div class="premium-header">
+                <h2 class="premium-title">📈 Advanced Trade Analysis</h2>
+                <span class="premium-badge">PREMIUM</span>
+            </div>
+
+            <div class="probability-score">
+                <div style="color: var(--text-secondary); margin-bottom: 0.5rem;">Trade Win Probability</div>
+                <div class="score-value" id="winProbability">--</div>
+                <div id="probabilityVerdict" style="color: var(--text-secondary); font-size: 1.1rem;"></div>
+            </div>
+
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h4>Your Cards Analysis</h4>
+                    <div id="yourAnalysis">
+                        <p style="color: var(--text-secondary);">Add cards to see trend analysis</p>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <h4>Their Cards Analysis</h4>
+                    <div id="theirAnalysis">
+                        <p style="color: var(--text-secondary);">Add cards to see trend analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0, 217, 255, 0.05); border-left: 4px solid var(--apex-cyan); padding: 1rem; border-radius: 4px; margin-top: 1.5rem;">
+                <strong style="color: var(--apex-cyan);">💡 Recommendation:</strong>
+                <p id="tradeRecommendation" style="margin-top: 0.5rem; color: var(--text-secondary);"></p>
+            </div>
+        </div>
+
+        <div class="premium-section" id="upgradePrompt" style="display: block;">
+            <div class="upgrade-box">
+                <h2 style="color: var(--apex-cyan); margin-bottom: 1rem;">🔐 Unlock Advanced Features</h2>
+                <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 1.5rem;">
+                    Get trade win probability scores, 30-day price trends, market momentum indicators, and AI-powered recommendations to make smarter trading decisions.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 800px; margin: 0 auto 2rem;">
+                    <div style="padding: 1rem; background: rgba(0, 217, 255, 0.05); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📈</div>
+                        <strong>Price Trends</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">30-day price movement</span>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(0, 217, 255, 0.05); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎯</div>
+                        <strong>Win Probability</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">AI-calculated fairness score</span>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(0, 217, 255, 0.05); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔥</div>
+                        <strong>Market Momentum</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">Hot/cold card indicators</span>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(0, 217, 255, 0.05); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💡</div>
+                        <strong>Smart Recommendations</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">Data-driven trade advice</span>
+                    </div>
+                </div>
+                <a href="subscribe.html" class="upgrade-btn">Upgrade to Premium - $9.99/mo</a>
+            </div>
         </div>
 
         <div style="text-align: center; margin-top: 2rem;">
@@ -321,6 +521,141 @@
                 resultDetail.textContent = `Difference: $${difference.toFixed(2)} (${percentage.toFixed(1)}%). Trade ${favoring}.`;
             }
         }
+
+        // Price trend database (sample data - in production would come from API)
+        const PRICE_TRENDS = {
+            'charizard vmax': { trend: 'up', change: 15.2, momentum: 'hot' },
+            'pikachu vmax': { trend: 'stable', change: 0.5, momentum: 'neutral' },
+            'mewtwo v': { trend: 'down', change: -8.3, momentum: 'cold' },
+            'umbreon vmax': { trend: 'up', change: 22.1, momentum: 'hot' },
+            'rayquaza vmax': { trend: 'up', change: 12.5, momentum: 'hot' },
+            'mew vmax': { trend: 'stable', change: 1.2, momentum: 'neutral' },
+            'giratina vstar': { trend: 'down', change: -5.8, momentum: 'cold' },
+            'lugia v': { trend: 'up', change: 9.7, momentum: 'warm' }
+        };
+
+        function getTrend(cardName) {
+            const key = cardName.toLowerCase();
+            for (let card in PRICE_TRENDS) {
+                if (key.includes(card)) {
+                    return PRICE_TRENDS[card];
+                }
+            }
+            return { trend: 'stable', change: 0, momentum: 'neutral' };
+        }
+
+        function calculateTradeWinProbability() {
+            if (yourCards.length === 0 || theirCards.length === 0) {
+                return null;
+            }
+
+            let score = 50; // Start neutral
+
+            // Analyze your cards
+            yourCards.forEach(card => {
+                const trend = getTrend(card.name);
+                if (trend.trend === 'up') score += 8;
+                if (trend.trend === 'down') score -= 8;
+                if (trend.momentum === 'hot') score += 3;
+                if (trend.momentum === 'cold') score -= 3;
+            });
+
+            // Analyze their cards
+            theirCards.forEach(card => {
+                const trend = getTrend(card.name);
+                if (trend.trend === 'down') score += 6; // Good for you if their cards declining
+                if (trend.trend === 'up') score -= 6;   // Bad for you if their cards rising
+                if (trend.momentum === 'cold') score += 2;
+                if (trend.momentum === 'hot') score -= 2;
+            });
+
+            return Math.max(0, Math.min(100, score)); // Clamp 0-100
+        }
+
+        function updatePremiumAnalysis() {
+            const probability = calculateTradeWinProbability();
+
+            if (probability === null) {
+                document.getElementById('premiumSection').style.display = 'none';
+                return;
+            }
+
+            // Show premium section (in production, check if user has premium)
+            // For demo purposes, we'll show it when cards are added
+            const hasCards = yourCards.length > 0 && theirCards.length > 0;
+            document.getElementById('upgradePrompt').style.display = hasCards ? 'none' : 'block';
+            document.getElementById('premiumSection').style.display = hasCards ? 'block' : 'none';
+
+            // Update probability score
+            const probEl = document.getElementById('winProbability');
+            probEl.textContent = probability.toFixed(0) + '%';
+
+            if (probability >= 60) {
+                probEl.className = 'score-value score-favorable';
+                document.getElementById('probabilityVerdict').textContent = '🟢 FAVORABLE - This trade benefits you';
+            } else if (probability >= 45) {
+                probEl.className = 'score-value score-neutral';
+                document.getElementById('probabilityVerdict').textContent = '🟡 NEUTRAL - Trade is relatively balanced';
+            } else {
+                probEl.className = 'score-value score-unfavorable';
+                document.getElementById('probabilityVerdict').textContent = '🔴 UNFAVORABLE - This trade favors them';
+            }
+
+            // Analyze your cards
+            let yourHtml = '';
+            yourCards.forEach(card => {
+                const trend = getTrend(card.name);
+                const trendClass = trend.trend === 'up' ? 'trend-up' : trend.trend === 'down' ? 'trend-down' : 'trend-stable';
+                const trendIcon = trend.trend === 'up' ? '📈' : trend.trend === 'down' ? '📉' : '➡️';
+
+                yourHtml += `
+                    <div class="metric-line">
+                        <span>${card.name}</span>
+                        <span class="trend-indicator ${trendClass}">${trendIcon} ${trend.change > 0 ? '+' : ''}${trend.change}%</span>
+                    </div>
+                `;
+            });
+            document.getElementById('yourAnalysis').innerHTML = yourHtml;
+
+            // Analyze their cards
+            let theirHtml = '';
+            theirCards.forEach(card => {
+                const trend = getTrend(card.name);
+                const trendClass = trend.trend === 'up' ? 'trend-up' : trend.trend === 'down' ? 'trend-down' : 'trend-stable';
+                const trendIcon = trend.trend === 'up' ? '📈' : trend.trend === 'down' ? '📉' : '➡️';
+
+                theirHtml += `
+                    <div class="metric-line">
+                        <span>${card.name}</span>
+                        <span class="trend-indicator ${trendClass}">${trendIcon} ${trend.change > 0 ? '+' : ''}${trend.change}%</span>
+                    </div>
+                `;
+            });
+            document.getElementById('theirAnalysis').innerHTML = theirHtml;
+
+            // Generate recommendation
+            let recommendation = '';
+            if (probability >= 65) {
+                recommendation = 'This trade strongly favors you based on current market trends. Your cards are appreciating while their cards are losing value. Consider completing this trade.';
+            } else if (probability >= 55) {
+                recommendation = 'This trade slightly favors you. The value difference is modest but trends suggest your cards have better momentum. Reasonable trade to accept.';
+            } else if (probability >= 45) {
+                recommendation = 'This trade is relatively balanced. Both sides have mixed trends. The fairness depends more on your personal collection goals than market dynamics.';
+            } else if (probability >= 35) {
+                recommendation = 'This trade slightly favors them. Their cards show better price trends than yours. Consider negotiating for additional cards or cash to balance the trade.';
+            } else {
+                recommendation = 'This trade significantly favors them. Your cards are declining in value while theirs are appreciating. Not recommended unless you have specific collection goals.';
+            }
+
+            document.getElementById('tradeRecommendation').textContent = recommendation;
+        }
+
+        // Update the existing updateDisplay function to call premium analysis
+        const originalUpdate = updateDisplay;
+        updateDisplay = function() {
+            originalUpdate();
+            updatePremiumAnalysis();
+        };
 
         // Allow Enter key to add cards
         document.addEventListener('keypress', (e) => {
