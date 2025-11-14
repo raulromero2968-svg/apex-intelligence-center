@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Apex Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00FFF0;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 240, 0.1);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        /* Content */
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--apex-cyan);
+        }
+
+        .intro-text {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--apex-cyan);
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .content-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .highlight-box {
+            background: rgba(0, 255, 240, 0.1);
+            border: 2px solid rgba(0, 255, 240, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .highlight-box p {
+            color: var(--text-primary);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .value-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 240, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .value-card h3 {
+            color: var(--apex-cyan);
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        .value-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .cta-section {
+            background: var(--bg-card);
+            border: 2px solid var(--apex-cyan);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-section h2 {
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .btn-subscribe {
+            display: inline-block;
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-subscribe:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 255, 240, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 15, 0.9);
+            border-top: 1px solid rgba(0, 255, 240, 0.1);
+            padding: 3rem 2rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-apex">APEX</span> INTELLIGENCE
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="https://apexintelligence.beehiiv.com/subscribe" target="_blank">Subscribe</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+        <h1 class="page-title">About Apex Intelligence</h1>
+
+        <p class="intro-text">
+            Apex Intelligence is your underground source for data-driven trading card game (TCG) market intelligence, research, and analysis. We cut through the noise to deliver actionable insights for serious collectors and investors.
+        </p>
+
+        <div class="content-section">
+            <h2>Our Mission</h2>
+            <p>
+                In a market flooded with hype and speculation, we provide collectors and investors with objective, data-backed analysis they can trust. Our mission is to democratize access to professional-grade TCG market intelligence, empowering our community to make informed decisions.
+            </p>
+        </div>
+
+        <div class="highlight-box">
+            <h3>What Makes Us Different</h3>
+            <p>
+                We don't chase trends or promote hype. Instead, we focus on fundamental analysis, historical data patterns, and market mechanics that drive real value. Our research is transparent, methodical, and designed for long-term success.
+            </p>
+        </div>
+
+        <div class="content-section">
+            <h2>What We Cover</h2>
+            <ul>
+                <li><strong>Pokemon TCG:</strong> Vintage and modern market analysis, set reviews, and investment strategies</li>
+                <li><strong>Magic: The Gathering:</strong> Format analysis, reserved list tracking, and competitive meta insights</li>
+                <li><strong>Yu-Gi-Oh!:</strong> Market trends, rarity analysis, and collector perspectives</li>
+                <li><strong>One Piece TCG:</strong> Emerging market coverage and growth analysis</li>
+                <li><strong>Sealed Product:</strong> ROI tracking, storage strategies, and long-term hold recommendations</li>
+                <li><strong>Grading Strategies:</strong> Cost-benefit analysis, company comparisons, and submission timing</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>Our Core Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>Data-Driven</h3>
+                    <p>Every recommendation is backed by research, historical trends, and market data—never just opinion.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Transparent</h3>
+                    <p>We show our work. You'll understand the reasoning behind every analysis and conclusion.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Independent</h3>
+                    <p>We're not sponsored by card shops, grading companies, or sellers. Our only loyalty is to accurate information.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Educational</h3>
+                    <p>We don't just tell you what to buy—we teach you how to think about the market.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Who We Serve</h2>
+            <p>
+                Apex Intelligence is built for serious collectors and investors who want more than surface-level content:
+            </p>
+            <ul>
+                <li>Collectors building long-term portfolios</li>
+                <li>Investors seeking data-driven opportunities</li>
+                <li>TCG enthusiasts who want to understand market dynamics</li>
+                <li>Shop owners and dealers looking for market insights</li>
+                <li>Anyone tired of hype-driven content and speculation</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>Our Approach</h2>
+            <p>
+                We combine quantitative analysis with qualitative market understanding. Our research methodology includes:
+            </p>
+            <ul>
+                <li>Historical price trend analysis and pattern recognition</li>
+                <li>Supply and demand dynamics across different TCG markets</li>
+                <li>Competitive format impact on card values</li>
+                <li>Collector psychology and market sentiment analysis</li>
+                <li>Macro trends affecting the entire TCG industry</li>
+                <li>Risk assessment and portfolio diversification strategies</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>Not Financial Advice</h2>
+            <p>
+                While we provide research and analysis, we are not financial advisors. All content is for educational and informational purposes only. TCG investing carries risk, and past performance doesn't guarantee future results. Always do your own research and consult with qualified professionals before making investment decisions.
+            </p>
+        </div>
+
+        <div class="cta-section">
+            <h2>Join the Intelligence Network</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Get weekly market intelligence, exclusive research, and data-driven insights delivered to your inbox. Free forever.
+            </p>
+            <a href="https://apexintelligence.beehiiv.com/subscribe" target="_blank" class="btn-subscribe">
+                Subscribe for Free
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bottom">
+            © 2025 Apex Intelligence. All rights reserved. | <a href="privacy.html" style="color: var(--apex-cyan);">Privacy Policy</a> | <a href="terms.html" style="color: var(--apex-cyan);">Terms of Service</a>
+        </div>
+    </footer>
+</body>
+</html>
