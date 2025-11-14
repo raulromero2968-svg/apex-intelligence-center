@@ -94,6 +94,13 @@
             line-height: 1.5;
         }
 
+        /* Enhanced visibility on desktop */
+        @media (min-width: 769px) {
+            .matrix-column {
+                opacity: 0.6;
+            }
+        }
+
         /* Left side columns */
         .matrix-column.left {
             left: 0;
@@ -118,6 +125,26 @@
             100% {
                 top: 100%;
                 opacity: 0;
+            }
+        }
+
+        /* Enhanced keyframes for desktop */
+        @media (min-width: 769px) {
+            @keyframes matrixFall {
+                0% {
+                    top: -100%;
+                    opacity: 0;
+                }
+                5% {
+                    opacity: 0.6;
+                }
+                95% {
+                    opacity: 0.6;
+                }
+                100% {
+                    top: 100%;
+                    opacity: 0;
+                }
             }
         }
 
@@ -852,7 +879,8 @@
 
             // SLOW, MEDITATIVE timing (40-80 seconds!)
             const duration = Math.random() * 40 + 40; // 40-80 seconds per fall
-            const delay = Math.random() * 20; // 0-20 second stagger
+            // Start immediately on desktop, keep original delay on mobile
+            const delay = window.innerWidth > 768 ? Math.random() * 3 : Math.random() * 20; // 0-3 second stagger on desktop, 0-20 on mobile
             column.style.animationDuration = `${duration}s`;
             column.style.animationDelay = `${delay}s`;
 
@@ -876,7 +904,8 @@
 
             // SLOW, MEDITATIVE timing (40-80 seconds!)
             const duration = Math.random() * 40 + 40; // 40-80 seconds per fall
-            const delay = Math.random() * 20; // 0-20 second stagger
+            // Start immediately on desktop, keep original delay on mobile
+            const delay = window.innerWidth > 768 ? Math.random() * 3 : Math.random() * 20; // 0-3 second stagger on desktop, 0-20 on mobile
             column.style.animationDuration = `${duration}s`;
             column.style.animationDelay = `${delay}s`;
 
