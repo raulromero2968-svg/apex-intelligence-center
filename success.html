@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Apex Intelligence!</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Nebula Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 14, 26, 0.95);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--apex-cyan));
+        }
+
+        /* Success Container */
+        .success-container {
+            max-width: 800px;
+            margin: 6rem auto;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .success-message {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .info-card h2 {
+            color: var(--apex-cyan);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-list {
+            list-style: none;
+            color: var(--text-secondary);
+        }
+
+        .info-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-list li::before {
+            content: '✓';
+            color: var(--apex-cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--apex-cyan);
+            color: var(--apex-cyan);
+        }
+
+        .btn-secondary:hover {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .success-message {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" />
+                    </div>
+                    <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Success Container -->
+        <div class="success-container">
+            <div class="success-icon">🎉</div>
+
+            <h1 class="success-title">Welcome Aboard!</h1>
+
+            <p class="success-message">
+                Your subscription is now active. Thank you for joining Apex Intelligence!<br>
+                You now have full access to premium content and tools.
+            </p>
+
+            <div class="info-card">
+                <h2>📧 What's Next?</h2>
+                <ul class="info-list">
+                    <li>Check your email for a confirmation receipt from Stripe</li>
+                    <li>Bookmark your favorite articles and tools</li>
+                    <li>Explore the Portfolio Tracker and Trade Value Calculator</li>
+                    <li>Join our newsletter at <a href="https://apexintelligence.beehiiv.com" style="color: var(--apex-cyan);">apexintelligence.beehiiv.com</a></li>
+                    <li>Access exclusive weekly market reports</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>🛠️ Manage Your Subscription</h2>
+                <ul class="info-list">
+                    <li>Update payment method or billing details anytime</li>
+                    <li>Upgrade or downgrade plans as needed</li>
+                    <li>Cancel anytime (access continues until end of billing period)</li>
+                    <li>View invoices and payment history in your email</li>
+                </ul>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="index.html" class="btn btn-primary">Explore Platform</a>
+                <a href="account.html" class="btn btn-secondary" id="manageAccountBtn">Manage Subscription</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Apex Intelligence. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                Questions? Contact us at <a href="mailto:support@apexintelligence.com" style="color: var(--apex-cyan);">support@apexintelligence.com</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Get session_id from URL if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (sessionId) {
+            console.log('Checkout Session ID:', sessionId);
+
+            // Store session ID in localStorage for account management
+            localStorage.setItem('stripe_session_id', sessionId);
+
+            // Update the manage account button to include session ID
+            const manageBtn = document.getElementById('manageAccountBtn');
+            if (manageBtn) {
+                manageBtn.href = `account.html?session_id=${sessionId}`;
+            }
+        }
+
+        // Optional: Track conversion event for analytics
+        if (window.gtag && sessionId) {
+            gtag('event', 'purchase', {
+                'transaction_id': sessionId,
+                'value': 9.99, // Update based on plan
+                'currency': 'USD'
+            });
+        }
+    </script>
+</body>
+</html>
