@@ -248,6 +248,50 @@
             margin: 0 auto;
         }
 
+        /* Wolf Logo with Holographic Glow */
+        .wolf-logo {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 3rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wolf-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.7))
+                    drop-shadow(0 0 60px rgba(138, 43, 226, 0.5))
+                    drop-shadow(0 0 90px rgba(0, 255, 240, 0.3));
+            animation: wolfPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes wolfPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.7))
+                        drop-shadow(0 0 60px rgba(138, 43, 226, 0.5))
+                        drop-shadow(0 0 90px rgba(0, 255, 240, 0.3));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 50px rgba(0, 255, 240, 0.9))
+                        drop-shadow(0 0 90px rgba(138, 43, 226, 0.7))
+                        drop-shadow(0 0 120px rgba(138, 43, 226, 0.4));
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wolf-logo {
+                width: 280px;
+                height: 280px;
+                margin-bottom: 2rem;
+            }
+        }
+
         .hero-badge {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -610,6 +654,10 @@
 
         <!-- Hero Section -->
         <section class="hero">
+            <!-- 3D Wolf Logo with Holographic Glow -->
+            <div class="wolf-logo">
+                <img src="image_2025-11-13_234479840.png" alt="Apex Intelligence Wolf" />
+            </div>
             <div class="hero-badge">TCG INTELLIGENCE NETWORK</div>
             <h1 class="hero-title">
                 <span class="hero-title-accent">Underground</span> Intel<br>
