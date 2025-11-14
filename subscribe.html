@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Nebula Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 14, 26, 0.95);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--apex-cyan));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        /* Page Header */
+        .page-header {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 2px solid rgba(0, 217, 255, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--apex-cyan);
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--apex-cyan);
+            box-shadow: 0 4px 24px rgba(0, 217, 255, 0.2);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            color: white;
+            padding: 0.4rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .tier-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .tier-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            color: var(--apex-cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .subscribe-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .subscribe-btn:hover {
+            background: white;
+            transform: scale(1.02);
+        }
+
+        .subscribe-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--apex-cyan);
+            color: var(--apex-cyan);
+        }
+
+        .subscribe-btn.secondary:hover {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        .subscribe-btn.pro {
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .faq-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--apex-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-answer {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" />
+                    </div>
+                    <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="intel.html">Intel</a></li>
+                    <li><a href="insights.html">Insights</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="research.html">Research</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Choose Your Plan</h1>
+            <p class="page-subtitle">
+                Get access to world-class TCG market intelligence, research, and tools.
+                <br>Join thousands of informed collectors and investors.
+            </p>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="pricing-grid">
+            <!-- Free Tier -->
+            <div class="pricing-card">
+                <h2 class="tier-name">Free</h2>
+                <div class="tier-price">
+                    $0
+                    <span>/month</span>
+                </div>
+                <p class="tier-description">
+                    Perfect for casual collectors exploring the TCG market
+                </p>
+                <ul class="features-list">
+                    <li>6 FREE articles per month</li>
+                    <li>Basic market insights</li>
+                    <li>Newsletter access</li>
+                    <li>Search functionality</li>
+                    <li>Community discussions</li>
+                </ul>
+                <a href="https://apexintelligence.beehiiv.com/subscribe" target="_blank" class="subscribe-btn secondary">
+                    Get Started Free
+                </a>
+            </div>
+
+            <!-- Premium Tier -->
+            <div class="pricing-card featured">
+                <div class="featured-badge">MOST POPULAR</div>
+                <h2 class="tier-name">Premium</h2>
+                <div class="tier-price">
+                    $9.99
+                    <span>/month</span>
+                </div>
+                <p class="tier-description">
+                    For serious collectors who want an edge in the market
+                </p>
+                <ul class="features-list">
+                    <li>UNLIMITED access to Insights & Blog</li>
+                    <li>Advanced collector tools</li>
+                    <li>Portfolio Tracker</li>
+                    <li>Trade Value Calculator</li>
+                    <li>Weekly market reports</li>
+                    <li>Email support</li>
+                    <li>Ad-free experience</li>
+                </ul>
+                <button class="subscribe-btn" onclick="alert('Stripe integration coming soon! For now, subscribe to our newsletter at apexintelligence.beehiiv.com')">
+                    Subscribe Now
+                </button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
+                    Or save 17% with annual: $99/year
+                </p>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="pricing-card">
+                <h2 class="tier-name">Pro</h2>
+                <div class="tier-price">
+                    $29.99
+                    <span>/month</span>
+                </div>
+                <p class="tier-description">
+                    For professional investors and data-driven collectors
+                </p>
+                <ul class="features-list">
+                    <li>Everything in Premium</li>
+                    <li>Full Research articles with raw data</li>
+                    <li>Custom market analysis requests</li>
+                    <li>Priority support</li>
+                    <li>Early access to new content</li>
+                    <li>Grading ROI Calculator</li>
+                    <li>Sealed Product Analyzer</li>
+                    <li>Downloadable datasets & tools</li>
+                    <li>Monthly research calls</li>
+                </ul>
+                <button class="subscribe-btn pro" onclick="alert('Stripe integration coming soon! For now, subscribe to our newsletter at apexintelligence.beehiiv.com')">
+                    Go Pro
+                </button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.85rem;">
+                    Or save 17% with annual: $299/year
+                </p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I cancel anytime?</div>
+                <div class="faq-answer">
+                    Yes! You can cancel your subscription at any time. You'll continue to have access until the end of your billing period.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What payment methods do you accept?</div>
+                <div class="faq-answer">
+                    We accept all major credit cards (Visa, Mastercard, Amex, Discover) via Stripe. Annual plans also support PayPal.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Do you offer refunds?</div>
+                <div class="faq-answer">
+                    Yes, we offer a 30-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 30 days for a full refund.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I upgrade or downgrade my plan?</div>
+                <div class="faq-answer">
+                    Absolutely! You can change your plan at any time. Upgrades take effect immediately, and downgrades will apply at the end of your current billing period.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is there a team/multi-user option?</div>
+                <div class="faq-answer">
+                    Not yet, but we're working on team plans for shops, investment groups, and professional collectors. Contact us if you're interested in early access.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Apex Intelligence. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="privacy.html" style="color: var(--apex-cyan); margin: 0 1rem;">Privacy Policy</a>
+                <a href="terms.html" style="color: var(--apex-cyan); margin: 0 1rem;">Terms of Service</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
