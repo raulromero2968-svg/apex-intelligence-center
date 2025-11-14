@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Intelligence - Underground Intel for Serious Collectors</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Apex Intelligence - TCG Market Intelligence & Research</title>
     <style>
         * {
             margin: 0;
@@ -14,638 +11,877 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #0f3460 100%);
-            color: #ffffff;
-            min-height: 100vh;
+        :root {
+            --apex-cyan: #00FFF0;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Grid Background */
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(0, 255, 240, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 240, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 40s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* Starfield Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Matrix River Effect - Vertical columns on sides */
+        .matrix-river {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--apex-cyan);
+            opacity: 0.25;
+            animation: matrixFall linear infinite;
+            line-height: 1.5;
+        }
+
+        /* Left side columns */
+        .matrix-column.left {
+            left: 0;
+        }
+
+        /* Right side columns */
+        .matrix-column.right {
+            right: 0;
+        }
+
+        @keyframes matrixFall {
+            0% {
+                top: -100%;
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.25;
+            }
+            95% {
+                opacity: 0.25;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Content Wrapper */
+        /* Content Wrapper */
+        .content {
+            position: relative;
+            z-index: 10;
         }
 
         /* Navigation */
         nav {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 240, 0.1);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
+            gap: 0.75rem;
+            background: transparent !important;
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
         }
 
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: drop-shadow(0 0 8px var(--apex-cyan));
+        }
+
+        .logo-icon polygon,
+        .logo-icon line {
+            fill: none;
+            stroke: var(--apex-cyan);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .nav-links {
             display: flex;
-            gap: 40px;
+            list-style: none;
+            gap: 2rem;
             align-items: center;
         }
 
         .nav-links a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-primary);
             text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: #00d9ff;
+            color: var(--apex-cyan);
         }
 
-        .btn-primary {
-            background: transparent;
-            border: 2px solid #00d9ff;
-            color: #00d9ff;
-            padding: 10px 24px;
-            border-radius: 6px;
+        .btn-subscribe {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
             text-decoration: none;
-            display: inline-block;
+            transition: transform 0.2s ease;
         }
 
-        .btn-primary:hover {
-            background: #00d9ff;
-            color: #1a0b2e;
+        .btn-subscribe:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 255, 240, 0.3);
         }
 
         /* Hero Section */
         .hero {
+            padding: 6rem 2rem 4rem;
             text-align: center;
-            padding: 120px 0 80px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .badge {
+        .hero-badge {
             display: inline-block;
-            background: rgba(0, 217, 255, 0.1);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            color: #00d9ff;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid var(--apex-cyan);
+            border-radius: 50px;
+            font-size: 0.875rem;
             font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            color: var(--apex-cyan);
+            margin-bottom: 2rem;
         }
 
-        h1 {
-            font-size: 72px;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            font-weight: 700;
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .hero-title-accent {
+            color: var(--apex-cyan);
         }
 
         .hero-subtitle {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid #ff006e;
-            color: #ff006e;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-secondary:hover {
-            background: #ff006e;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 48px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d9ff 0%, #8338ec 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 40px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .feature-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(0, 217, 255, 0.3);
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 217, 255, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-
-        .feature-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .feature-description {
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.6;
-        }
-
-        /* Latest Intel Section */
-        .latest-intel {
-            padding: 100px 0;
+        /* Intel Section (Main Content) */
+        .intel-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
         }
 
         .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
         .section-title {
-            font-size: 36px;
+            font-size: 2.5rem;
             font-weight: 700;
+            margin-bottom: 1rem;
         }
 
         .section-subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 16px;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
         }
 
-        .view-all {
-            color: #00d9ff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            transition: gap 0.3s;
-        }
-
-        .view-all:hover {
-            gap: 12px;
-        }
-
+        /* Intel Grid */
         .intel-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
 
         .intel-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 240, 0.1);
             border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            cursor: pointer;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .intel-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 217, 255, 0.3);
+            transform: translateY(-4px);
+            border-color: var(--apex-cyan);
+            box-shadow: 0 8px 30px rgba(0, 255, 240, 0.2);
         }
 
-        .intel-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-        }
-
-        .intel-content {
-            padding: 24px;
+        .intel-date {
+            color: var(--apex-cyan);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
         .intel-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
         }
 
-        .intel-description {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            line-height: 1.5;
+        .intel-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .intel-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 255, 240, 0.1);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            color: var(--apex-cyan);
+        }
+
+        /* Free Tools Section */
+        .tools-section {
+            max-width: 1200px;
+            margin: 6rem auto;
+            padding: 0 2rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 240, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--apex-cyan);
+        }
+
+        .tool-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        /* Holographic SVG Icon Styles */
+        .holographic-icon {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px var(--apex-cyan));
+            animation: holographicPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes holographicPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px var(--apex-cyan)) brightness(1);
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 20px var(--apex-cyan)) brightness(1.2);
+                transform: scale(1.05);
+            }
+        }
+
+        .holographic-icon path,
+        .holographic-icon circle,
+        .holographic-icon rect {
+            fill: none;
+            stroke: var(--apex-cyan);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .tool-card:hover .holographic-icon {
+            animation: holographicActive 0.5s ease-in-out infinite;
+        }
+
+        @keyframes holographicActive {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.1); }
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-tool {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid var(--apex-cyan);
+            border-radius: 8px;
+            color: var(--apex-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-tool:hover {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 15, 0.9);
+            border-top: 1px solid rgba(0, 255, 240, 0.1);
+            padding: 3rem 2rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid rgba(0, 255, 240, 0.3);
+            border-radius: 8px;
+            color: var(--apex-cyan);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 240, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 40px;
-            }
-
-            .stats,
-            .features-grid,
-            .intel-grid {
-                grid-template-columns: 1fr;
+            .hero-title {
+                font-size: 2.5rem;
             }
 
             .nav-links {
-                display: none;
-            }
-
-            .cta-buttons {
                 flex-direction: column;
+                gap: 1rem;
             }
-        }
 
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .connection-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            animation: pulse 2s infinite;
-        }
-
-        .status-indicator.disconnected {
-            background: #ff006e;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            .intel-grid,
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <!-- Animated Grid Background -->
+    <div class="grid-background"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <!-- Starfield Background -->
+    <div class="stars" id="stars"></div>
 
-        // Notion Integration Configuration
-        const NOTION_CONFIG = {
-            // Replace with your Notion database ID
-            databaseId: 'YOUR_NOTION_DATABASE_ID',
-            // This would be configured with your Notion API key (keep it secure!)
-            apiKey: 'YOUR_NOTION_API_KEY',
-            apiUrl: 'https://api.notion.com/v1'
-        };
+    <!-- Matrix River Effect -->
+    <div class="matrix-river" id="matrixRiver"></div>
 
-        // Notion Integration Functions
-        const NotionService = {
-            // Fetch items from Notion database
-            async fetchIntelItems() {
-                try {
-                    // This is a placeholder - implement actual Notion API call
-                    console.log('Fetching from Notion database:', NOTION_CONFIG.databaseId);
-                    
-                    // Example API call structure (commented out until you add real credentials)
-                    /*
-                    const response = await fetch(`${NOTION_CONFIG.apiUrl}/databases/${NOTION_CONFIG.databaseId}/query`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${NOTION_CONFIG.apiKey}`,
-                            'Notion-Version': '2022-06-28',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            page_size: 6
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    return this.parseNotionData(data.results);
-                    */
-                    
-                    // Return mock data for demo
-                    return this.getMockData();
-                } catch (error) {
-                    console.error('Error fetching from Notion:', error);
-                    return this.getMockData();
-                }
-            },
+    <div class="content">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Geometric/Polygonal Wolf Head -->
+                        <!-- Outer face -->
+                        <polygon points="50,10 65,25 70,40 65,55 50,70 35,55 30,40 35,25" />
+                        <!-- Inner geometric details -->
+                        <polygon points="50,20 58,28 60,38 58,48 50,56 42,48 40,38 42,28" />
+                        <!-- Eyes -->
+                        <polygon points="42,35 45,32 48,35 45,38" />
+                        <polygon points="58,35 55,32 52,35 55,38" />
+                        <!-- Snout -->
+                        <polygon points="50,45 46,50 50,54 54,50" />
+                        <!-- Ears - left -->
+                        <polygon points="35,18 30,10 38,15 40,22" />
+                        <line x1="35" y1="18" x2="30" y2="10" />
+                        <line x1="35" y1="18" x2="38" y2="15" />
+                        <line x1="38" y1="15" x2="40" y2="22" />
+                        <!-- Ears - right -->
+                        <polygon points="65,18 70,10 62,15 60,22" />
+                        <line x1="65" y1="18" x2="70" y2="10" />
+                        <line x1="65" y1="18" x2="62" y2="15" />
+                        <line x1="62" y1="15" x2="60" y2="22" />
+                        <!-- Face details - geometric lines -->
+                        <line x1="35" y1="40" x2="30" y2="40" />
+                        <line x1="65" y1="40" x2="70" y2="40" />
+                        <line x1="50" y1="20" x2="50" y2="56" />
+                        <line x1="42" y1="28" x2="35" y2="25" />
+                        <line x1="58" y1="28" x2="65" y2="25" />
+                        <line x1="42" y1="48" x2="35" y2="55" />
+                        <line x1="58" y1="48" x2="65" y2="55" />
+                        <!-- Additional geometric detail -->
+                        <line x1="40" y1="38" x2="35" y2="40" />
+                        <line x1="60" y1="38" x2="65" y2="40" />
+                    </svg>
+                    <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="intel.html">Intel</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="https://apexomnis.com" target="_blank">Services</a></li>
+                    <li><a href="#subscribe" class="btn-subscribe">Subscribe</a></li>
+                </ul>
+            </div>
+        </nav>
 
-            // Parse Notion database results into usable format
-            parseNotionData(results) {
-                return results.map(item => ({
-                    id: item.id,
-                    title: item.properties.Name?.title[0]?.plain_text || 'Untitled',
-                    description: item.properties.Description?.rich_text[0]?.plain_text || '',
-                    category: item.properties.Category?.select?.name || 'General',
-                    date: item.properties.Date?.date?.start || new Date().toISOString(),
-                    emoji: item.icon?.emoji || '📊'
-                }));
-            },
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">TCG INTELLIGENCE NETWORK</div>
+            <h1 class="hero-title">
+                <span class="hero-title-accent">Underground</span> Intel<br>
+                For Serious Collectors
+            </h1>
+            <p class="hero-subtitle">
+                Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
+            </p>
+        </section>
 
-            // Mock data for demonstration
-            getMockData() {
-                return [
-                    {
-                        id: '1',
-                        title: 'Market Trends Q4 2024',
-                        description: 'Deep dive into trading card market movements and investment opportunities',
-                        emoji: '📈',
-                        category: 'Market Analysis'
-                    },
-                    {
-                        id: '2',
-                        title: 'Upcoming Drops Alert',
-                        description: 'Exclusive intelligence on major card releases and limited editions',
-                        emoji: '🎯',
-                        category: 'Intel Drop'
-                    },
-                    {
-                        id: '3',
-                        title: 'Collector Spotlight',
-                        description: 'Interview with top collectors and insights into their strategies',
-                        emoji: '⭐',
-                        category: 'Community'
-                    },
-                    {
-                        id: '4',
-                        title: 'Price Movement Analysis',
-                        description: 'Track significant price changes and market volatility',
-                        emoji: '💹',
-                        category: 'Analysis'
-                    },
-                    {
-                        id: '5',
-                        title: 'Authentication Guide',
-                        description: 'Expert tips on verifying card authenticity and avoiding counterfeits',
-                        emoji: '🔍',
-                        category: 'Education'
-                    },
-                    {
-                        id: '6',
-                        title: 'Investment Strategies',
-                        description: 'Data-driven approaches to building a profitable collection',
-                        emoji: '💎',
-                        category: 'Strategy'
-                    }
-                ];
-            },
+        <!-- Latest Intel Section -->
+        <section class="intel-section" id="intel">
+            <div class="section-header">
+                <h2 class="section-title">Latest Intelligence</h2>
+                <p class="section-subtitle">Deep-dive analysis and market research for serious collectors</p>
+            </div>
 
-            // Create new item in Notion database
-            async createIntelItem(data) {
-                console.log('Creating new item in Notion:', data);
-                // Implement actual Notion API call here
-                return true;
-            },
+            <div class="intel-grid">
+                <!-- Intel Card 1 -->
+                <a href="intel-post.html?id=1" class="intel-card">
+                    <div class="intel-date">November 10, 2025</div>
+                    <h3 class="intel-title">The 2025 Pokemon Market Shift: What Data Says</h3>
+                    <p class="intel-excerpt">
+                        Comprehensive analysis of market trends showing a 34% increase in vintage card values.
+                        Our data reveals key buying opportunities before the next surge.
+                    </p>
+                    <span class="intel-tag">Market Analysis</span>
+                    <span class="intel-tag">Pokemon</span>
+                </a>
 
-            // Update existing item
-            async updateIntelItem(id, data) {
-                console.log('Updating Notion item:', id, data);
-                // Implement actual Notion API call here
-                return true;
-            }
-        };
+                <!-- Intel Card 2 -->
+                <a href="intel-post.html?id=2" class="intel-card">
+                    <div class="intel-date">November 5, 2025</div>
+                    <h3 class="intel-title">MTG Modern Horizons 3: Investment Guide</h3>
+                    <p class="intel-excerpt">
+                        Breaking down the most undervalued cards from MH3. Technical analysis shows
+                        these 5 cards are poised for significant growth in Q1 2026.
+                    </p>
+                    <span class="intel-tag">Magic: The Gathering</span>
+                    <span class="intel-tag">Investment</span>
+                </a>
 
-        function App() {
-            const [intelItems, setIntelItems] = useState([]);
-            const [loading, setLoading] = useState(true);
-            const [notionConnected, setNotionConnected] = useState(false);
+                <!-- Intel Card 3 -->
+                <a href="intel-post.html?id=3" class="intel-card">
+                    <div class="intel-date">October 28, 2025</div>
+                    <h3 class="intel-title">Sealed Product vs Singles: 2025 ROI Analysis</h3>
+                    <p class="intel-excerpt">
+                        Data-driven comparison of investment returns across sealed boxes and singles.
+                        Surprising findings that challenge conventional wisdom.
+                    </p>
+                    <span class="intel-tag">Research</span>
+                    <span class="intel-tag">Strategy</span>
+                </a>
 
-            useEffect(() => {
-                loadIntelData();
-            }, []);
+                <!-- Intel Card 4 -->
+                <a href="intel-post.html?id=4" class="intel-card">
+                    <div class="intel-date">October 20, 2025</div>
+                    <h3 class="intel-title">Yu-Gi-Oh! 25th Anniversary: Market Predictions</h3>
+                    <p class="intel-excerpt">
+                        Historical data analysis of anniversary releases and their long-term market impact.
+                        What collectors should know about upcoming releases.
+                    </p>
+                    <span class="intel-tag">Yu-Gi-Oh!</span>
+                    <span class="intel-tag">Forecast</span>
+                </a>
 
-            async function loadIntelData() {
-                setLoading(true);
-                try {
-                    const items = await NotionService.fetchIntelItems();
-                    setIntelItems(items);
-                    setNotionConnected(true);
-                } catch (error) {
-                    console.error('Failed to load intel:', error);
-                    setNotionConnected(false);
-                } finally {
-                    setLoading(false);
-                }
-            }
+                <!-- Intel Card 5 -->
+                <a href="intel-post.html?id=5" class="intel-card">
+                    <div class="intel-date">October 15, 2025</div>
+                    <h3 class="intel-title">Grading Strategy: PSA vs BGS in 2025</h3>
+                    <p class="intel-excerpt">
+                        Comprehensive analysis of grading company premiums and ROI calculations.
+                        When to grade, which service to use, and expected returns.
+                    </p>
+                    <span class="intel-tag">Grading</span>
+                    <span class="intel-tag">Strategy</span>
+                </a>
 
-            return (
-                <>
-                    <div className="container">
-                        <nav>
-                            <div className="logo">
-                                <div className="logo-icon">A</div>
-                                <span>APEX INTELLIGENCE</span>
-                            </div>
-                            <div className="nav-links">
-                                <a href="#home">Home</a>
-                                <a href="#intel">Intel</a>
-                                <a href="#about">About</a>
-                                <a href="#subscribe">Subscribe</a>
-                                <a href="#get-intel" className="btn-primary">Get Intel</a>
-                            </div>
-                        </nav>
+                <!-- Intel Card 6 -->
+                <a href="intel-post.html?id=6" class="intel-card">
+                    <div class="intel-date">October 10, 2025</div>
+                    <h3 class="intel-title">The One Piece TCG Phenomenon</h3>
+                    <p class="intel-excerpt">
+                        Breaking down the meteoric rise of One Piece TCG and what it means for
+                        existing TCG markets. Data shows surprising correlations.
+                    </p>
+                    <span class="intel-tag">One Piece</span>
+                    <span class="intel-tag">Market Trends</span>
+                </a>
+            </div>
+        </section>
 
-                        <section className="hero">
-                            <div className="badge">TCG INTELLIGENCE NETWORK</div>
-                            <h1>
-                                Underground Intel<br />
-                                <span className="gradient-text">For Serious<br />Collectors</span>
-                            </h1>
-                            <p className="hero-subtitle">
-                                Premium TCG market analysis, data-driven insights, and exclusive intelligence. 
-                                Morning Brew meets the underground—delivered to your inbox.
-                            </p>
-                            <div className="cta-buttons">
-                                <a href="#get-intel" className="btn-primary">Get Free Intel →</a>
-                                <a href="#archives" className="btn-secondary">Browse Archives</a>
-                            </div>
+        <!-- Free Tools Section -->
+        <section class="tools-section" id="tools">
+            <div class="section-header">
+                <h2 class="section-title">Free Collector Tools</h2>
+                <p class="section-subtitle">Simple, powerful tools for serious collectors</p>
+            </div>
 
-                            <div className="stats">
-                                <div className="stat-item">
-                                    <div className="stat-number">1.2K+</div>
-                                    <div className="stat-label">Collectors</div>
-                                </div>
-                                <div className="stat-item">
-                                    <div className="stat-number">50+</div>
-                                    <div className="stat-label">Intel Drops</div>
-                                </div>
-                                <div className="stat-item">
-                                    <div className="stat-number">$2M+</div>
-                                    <div className="stat-label">Cards Tracked</div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="features">
-                            <div className="features-grid">
-                                <div className="feature-card">
-                                    <div className="feature-icon">📊</div>
-                                    <h3 className="feature-title">Market Intelligence</h3>
-                                    <p className="feature-description">
-                                        Real-time TCG market data and trend analysis to stay ahead of the curve
-                                    </p>
-                                </div>
-                                <div className="feature-card">
-                                    <div className="feature-icon">📈</div>
-                                    <h3 className="feature-title">Price Tracking</h3>
-                                    <p className="feature-description">
-                                        Track card values and identify investment opportunities before they peak
-                                    </p>
-                                </div>
-                                <div className="feature-card">
-                                    <div className="feature-icon">👥</div>
-                                    <h3 className="feature-title">Community Intel</h3>
-                                    <p className="feature-description">
-                                        Insights from serious collectors and investors in the TCG space
-                                    </p>
-                                </div>
-                                <div className="feature-card">
-                                    <div className="feature-icon">🔒</div>
-                                    <h3 className="feature-title">Alpha Access</h3>
-                                    <p className="feature-description">
-                                        Get the edge with exclusive market intelligence and early access
-                                    </p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="latest-intel">
-                            <div className="section-header">
-                                <div>
-                                    <h2 className="section-title">Latest Intel</h2>
-                                    <p className="section-subtitle">Free samples from the vault</p>
-                                </div>
-                                <a href="#all-intel" className="view-all">
-                                    View All →
-                                </a>
-                            </div>
-
-                            {loading ? (
-                                <div className="loading">Loading intel from Notion...</div>
-                            ) : (
-                                <div className="intel-grid">
-                                    {intelItems.map(item => (
-                                        <div key={item.id} className="intel-card">
-                                            <div className="intel-image">{item.emoji}</div>
-                                            <div className="intel-content">
-                                                <h4 className="intel-title">{item.title}</h4>
-                                                <p className="intel-description">{item.description}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
+            <div class="tools-grid">
+                <!-- Tool 1: Trade Calculator -->
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Money Bag Icon -->
+                            <circle cx="50" cy="65" r="25" />
+                            <path d="M 35 40 Q 50 25 65 40" />
+                            <text x="50" y="72" text-anchor="middle" fill="var(--apex-cyan)" font-size="20" font-weight="bold">$</text>
+                        </svg>
                     </div>
+                    <h3 class="tool-title">Trade Value Calculator</h3>
+                    <p class="tool-description">
+                        Calculate fair trade values with real-time pricing data.
+                        Perfect for trades and negotiations.
+                    </p>
+                    <a href="tool-calculator.html" class="btn-tool">Launch Tool</a>
+                </div>
 
-                    <div className="connection-status">
-                        <div className={`status-indicator ${notionConnected ? '' : 'disconnected'}`}></div>
-                        {notionConnected ? 'Connected to Notion' : 'Using Demo Data'}
+                <!-- Tool 2: Portfolio Tracker -->
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Chart Icon -->
+                            <polyline points="10,80 30,60 50,70 70,40 90,50" />
+                            <circle cx="10" cy="80" r="4" fill="var(--apex-cyan)" />
+                            <circle cx="30" cy="60" r="4" fill="var(--apex-cyan)" />
+                            <circle cx="50" cy="70" r="4" fill="var(--apex-cyan)" />
+                            <circle cx="70" cy="40" r="4" fill="var(--apex-cyan)" />
+                            <circle cx="90" cy="50" r="4" fill="var(--apex-cyan)" />
+                            <line x1="10" y1="90" x2="90" y2="90" />
+                            <line x1="10" y1="20" x2="10" y2="90" />
+                        </svg>
                     </div>
-                </>
-            );
+                    <h3 class="tool-title">Portfolio Tracker</h3>
+                    <p class="tool-description">
+                        Track your collection's value over time.
+                        Simple interface, powerful insights.
+                    </p>
+                    <a href="tool-tracker.html" class="btn-tool">Launch Tool</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscribe Section -->
+        <section class="intel-section" id="subscribe">
+            <div class="section-header">
+                <h2 class="section-title">Get Weekly Intel</h2>
+                <p class="section-subtitle">Free market analysis and insights delivered to your inbox every week</p>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="https://apexintelligence.beehiiv.com/subscribe" target="_blank" class="btn-subscribe" style="display: inline-block; padding: 1rem 2rem; font-size: 1.125rem;">
+                    Subscribe for Free →
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <!-- About Column -->
+                <div class="footer-section">
+                    <h3>Apex Intelligence</h3>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                        Underground intelligence for serious TCG collectors and investors.
+                    </p>
+                </div>
+
+                <!-- Quick Links Column -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="intel.html">Intel</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="https://apexomnis.com" target="_blank">ApexOmnis Services</a></li>
+                        <li><a href="https://apexcommons.org" target="_blank">Apex Commons</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Column -->
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="disclaimer.html">Disclaimer</a></li>
+                        <li><a href="company.html">Company Info</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social Column -->
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="https://discord.gg/apexintelligence" target="_blank" class="social-link" title="Discord">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
+                        </a>
+                        <a href="https://x.com/apexcollectionz" target="_blank" class="social-link" title="X (Twitter)">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="https://instagram.com/apexintelligence" target="_blank" class="social-link" title="Instagram">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="https://linkedin.com/company/apex-intelligence" target="_blank" class="social-link" title="LinkedIn">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                © 2025 Apex Intelligence. All rights reserved. | Not financial advice. Do your own research.
+            </div>
+        </footer>
+    </div>
+
+    <!-- Starfield + Matrix JavaScript -->
+    <script>
+        // Create starfield
+        const starsContainer = document.getElementById('stars');
+        const numStars = 200;
+
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            // Random position
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+
+            // Random size (1-3px)
+            const size = Math.random() * 2 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+
+            // Random animation delay
+            star.style.animationDelay = `${Math.random() * 3}s`;
+
+            starsContainer.appendChild(star);
         }
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        // Create Matrix columns on LEFT and RIGHT sides - SLOW & MEDITATIVE
+        const matrixContainer = document.getElementById('matrixRiver');
+        const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+
+        // Left side columns
+        const leftColumns = 8; // Number of columns on left
+        for (let i = 0; i < leftColumns; i++) {
+            const column = document.createElement('div');
+            column.className = 'matrix-column left';
+            column.style.left = `${i * 15}px`; // Spacing between columns
+
+            // Create vertical string of characters
+            let text = '';
+            const numChars = Math.floor(Math.random() * 25) + 15; // Fewer characters
+            for (let j = 0; j < numChars; j++) {
+                text += matrixChars.charAt(Math.floor(Math.random() * matrixChars.length)) + '<br>';
+            }
+            column.innerHTML = text;
+
+            // SLOW, MEDITATIVE timing (40-80 seconds!)
+            const duration = Math.random() * 40 + 40; // 40-80 seconds per fall
+            const delay = Math.random() * 20; // 0-20 second stagger
+            column.style.animationDuration = `${duration}s`;
+            column.style.animationDelay = `${delay}s`;
+
+            matrixContainer.appendChild(column);
+        }
+
+        // Right side columns
+        const rightColumns = 8; // Number of columns on right
+        for (let i = 0; i < rightColumns; i++) {
+            const column = document.createElement('div');
+            column.className = 'matrix-column right';
+            column.style.right = `${i * 15}px`; // Spacing between columns
+
+            // Create vertical string of characters
+            let text = '';
+            const numChars = Math.floor(Math.random() * 25) + 15; // Fewer characters
+            for (let j = 0; j < numChars; j++) {
+                text += matrixChars.charAt(Math.floor(Math.random() * matrixChars.length)) + '<br>';
+            }
+            column.innerHTML = text;
+
+            // SLOW, MEDITATIVE timing (40-80 seconds!)
+            const duration = Math.random() * 40 + 40; // 40-80 seconds per fall
+            const delay = Math.random() * 20; // 0-20 second stagger
+            column.style.animationDuration = `${duration}s`;
+            column.style.animationDelay = `${delay}s`;
+
+            matrixContainer.appendChild(column);
+        }
     </script>
 </body>
 </html>
