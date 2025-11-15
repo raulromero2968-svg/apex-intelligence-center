@@ -1,0 +1,13 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="holographic-trade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF00FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9333EA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="40" fill="none" stroke="url(#holographic-trade)" stroke-width="3"/>
+  <path d="M 44 54 L 54 64 L 44 74" fill="none" stroke="url(#holographic-trade)" stroke-width="2"/>
+  <path d="M 84 54 L 74 64 L 84 74" fill="none" stroke="url(#holographic-trade)" stroke-width="2"/>
+  <line x1="54" y1="64" x2="74" y2="64" stroke="url(#holographic-trade)" stroke-width="2"/>
+</svg>

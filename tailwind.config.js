@@ -9,8 +9,12 @@ module.exports = {
     extend: {
       colors: {
         ink: '#0A0E1A',
+        magenta: {
+          500: '#FF00FF',
+        },
         cyan: {
           400: '#00D9FF',
+          500: '#00D9FF',
         },
         purple: {
           500: '#9333EA',

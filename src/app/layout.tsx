@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
-import AnimatedBackground from '@/components/background/AnimatedBackground';
+import AuroraFX from '@/components/fx/AuroraFX';
+import BackgroundFX from '@/components/fx/BackgroundFX';
+import BackgroundStack from '@/components/fx/BackgroundStack';
+import CursorFX from '@/components/fx/CursorFX';
+import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'TCG Intelligence Center - Market Intelligence Platform',
@@ -18,15 +19,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {/* Animated Background */}
-        <AnimatedBackground />
+    <html lang="en" className="h-full">
+      <body className="min-h-dvh font-sans antialiased [cursor:none] md:[cursor:none] [&_a]:cursor-none [&_button]:cursor-none [&_input]:cursor-text">
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
+          Skip to main content
+        </a>
+
+        {/* Aurora Background */}
+        <AuroraFX />
+
+        {/* Animated Background FX */}
+        <BackgroundFX />
+
+        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
+        <BackgroundStack />
+
+        {/* Custom Cursor */}
+        <CursorFX />
 
         {/* Main Content */}
-        <div className="relative z-10">
+        <div className="relative z-10" id="main">
           {children}
         </div>
+
+        {/* Footer */}
+        <Footer />
 
         {/* Toast Notifications */}
         <Toaster
