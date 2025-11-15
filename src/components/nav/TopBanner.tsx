@@ -9,8 +9,8 @@ export const TopBanner = () => {
   
   return (
     <div className="fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-md border-b border-cyan-500/20 z-50">
-      <div className="container mx-auto h-full flex items-center justify-between px-6">
-        {/* Left: Logo + Brand (aligned to content edge) */}
+      <div className="h-full flex items-center justify-between px-6">
+        {/* Left: Logo + Brand (pushed to leftmost edge) */}
         <Link 
           href="/" 
           className="flex items-center gap-3"
@@ -30,7 +30,7 @@ export const TopBanner = () => {
           </span>
         </Link>
         
-        {/* Right: Navigation (aligned to content edge) */}
+        {/* Right: Navigation (pushed to rightmost edge) */}
         <nav className="flex items-center gap-6">
           <Link href="/" className="text-white hover:text-cyan-400 transition-colors text-sm">Home</Link>
           <Link href="/insights" className="text-white hover:text-cyan-400 transition-colors text-sm">Insights</Link>
