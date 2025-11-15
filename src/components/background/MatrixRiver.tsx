@@ -23,32 +23,54 @@ export const MatrixRiver = () => {
     const characters = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
     const fontSize = 14;
     
-    // Create columns with VARIED spacing (like reference)
+    // Create balanced columns on both sides with meditative rhythm
     const columnSpacing: number[] = [];
-    const drops: { y: number; chars: string[]; color: string }[] = [];
+    const drops: { y: number; chars: string[]; color: string; side: 'left' | 'right' }[] = [];
     
-    let xPos = 0;
-    while (xPos < canvas.width) {
-      // Random spacing between 15-40px (creates uneven columns)
-      const spacing = Math.random() * 25 + 15;
+    // Left side columns (first 12% of screen)
+    const leftSideWidth = canvas.width * 0.12;
+    let leftXPos = 0;
+    const leftSpacing = 25; // Consistent spacing for meditative rhythm
+    
+    while (leftXPos < leftSideWidth) {
+      columnSpacing.push(leftXPos);
       
-      // LEFT side (first 15%) AND RIGHT side (pushed all the way to edge)
-      if (xPos < canvas.width * 0.15 || xPos > canvas.width * 0.95) {
-        columnSpacing.push(xPos);
-        
-        // Random color: 60% cyan, 40% purple
-        const color = Math.random() > 0.4 // Changed from 0.5 to 0.4 (60% cyan, 40% purple)
-          ? `rgba(0, 255, 255, ` // Cyan (60%)
-          : `rgba(138, 43, 226, `; // Purple (40%)
-        
-        drops.push({
-          y: Math.random() * -canvas.height, // Start above screen
-          chars: [], // Characters build up one at a time
-          color: color
-        });
-      }
+      // 60% cyan, 40% purple
+      const color = Math.random() > 0.4
+        ? `rgba(0, 255, 255, ` // Cyan (60%)
+        : `rgba(138, 43, 226, `; // Purple (40%)
       
-      xPos += spacing;
+      drops.push({
+        y: Math.random() * -canvas.height,
+        chars: [],
+        color: color,
+        side: 'left'
+      });
+      
+      leftXPos += leftSpacing;
+    }
+    
+    // Right side columns (last 12% of screen, mirrored from left)
+    const rightSideStart = canvas.width * 0.88;
+    let rightXPos = rightSideStart;
+    const rightSpacing = 25; // Match left side spacing
+    
+    while (rightXPos < canvas.width) {
+      columnSpacing.push(rightXPos);
+      
+      // 60% cyan, 40% purple (mirror the left side pattern)
+      const color = Math.random() > 0.4
+        ? `rgba(0, 255, 255, ` // Cyan (60%)
+        : `rgba(138, 43, 226, `; // Purple (40%)
+      
+      drops.push({
+        y: Math.random() * -canvas.height,
+        chars: [],
+        color: color,
+        side: 'right'
+      });
+      
+      rightXPos += rightSpacing;
     }
     
     let animationId: number;
@@ -85,8 +107,8 @@ export const MatrixRiver = () => {
           }
         });
         
-        // Move drop down slowly (meditative speed)
-        drop.y += fontSize * 0.4;
+        // Move drop down slowly (meditative speed - consistent rhythm)
+        drop.y += fontSize * 0.35; // Slightly slower for more meditative feel
         
         // Reset when off screen
         if (drop.y > canvas.height + 100) {
