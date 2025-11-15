@@ -1,5 +1,6 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
+import LiveScatter from "@/components/charts/LiveScatter";
 
 type ArticleItem = {
   href: string;
@@ -73,6 +74,13 @@ const items: ArticleItem[] = [
 export default function IntelPage() {
   return (
     <SectionShell title="Intel" kicker="Apex Intelligence">
+      <div className="mb-12">
+        <LiveScatter
+          title="Risk-Adjusted Returns Across TCG Categories"
+          subtitle="Real-time market signals. Clusters moving right = momentum building."
+        />
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((a) => <ArticleCard key={a.href} a={a} />)}
       </div>

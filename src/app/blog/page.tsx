@@ -1,5 +1,6 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
+import LiveScatter from "@/components/charts/LiveScatter";
 
 const items = [
   {
@@ -61,6 +62,13 @@ const items = [
 export default function BlogPage() {
   return (
     <SectionShell title="Blog" kicker="Latest Updates">
+      <div className="mb-12">
+        <LiveScatter
+          title="Market Volatility vs ROI Potential"
+          subtitle="Watch how card values shift over time. Bigger bubbles = higher trading volume."
+        />
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((a) => <ArticleCard key={a.href} a={a} />)}
       </div>

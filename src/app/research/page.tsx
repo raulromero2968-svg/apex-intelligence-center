@@ -1,5 +1,6 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
+import LiveScatter from "@/components/charts/LiveScatter";
 
 type ArticleItem = {
   href: string;
@@ -74,6 +75,13 @@ const items: ArticleItem[] = [
 export default function ResearchPage() {
   return (
     <SectionShell title="Research" kicker="In-Depth Analysis">
+      <div className="mb-12">
+        <LiveScatter
+          title="Grading ROI vs Liquidity Matrix"
+          subtitle="Bigger bubbles = more market activity. Track how different grades perform."
+        />
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((a) => <ArticleCard key={a.href} a={a} />)}
       </div>
