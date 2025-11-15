@@ -1,0 +1,518 @@
+/* ============================================
+   APEX INTELLIGENCE - UI/UX ENHANCEMENTS
+   ============================================ */
+
+/* ========================================
+   1. ENHANCED CUSTOM CURSOR (Desktop Only)
+   ======================================== */
+@media (min-width: 769px) {
+    body {
+        cursor: none;
+    }
+
+    a, button, input, textarea, select, .search-filter-tag,
+    .tool-card, .intel-card, .market-card, .stat-card,
+    .analysis-card, .comparison-card, .use-case-card,
+    .testimonial-card, .btn-subscribe, .btn-tool,
+    .btn-primary, .btn-secondary {
+        cursor: none !important;
+    }
+
+    .custom-cursor {
+        width: 8px;
+        height: 8px;
+        background: var(--apex-cyan);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10001;
+        mix-blend-mode: screen;
+        transform: translate(-50%, -50%);
+        transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 0 10px var(--apex-cyan), 0 0 20px rgba(0, 217, 255, 0.5);
+    }
+
+    .cursor-follower {
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, rgba(147, 51, 234, 0.1) 70%);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10000;
+        filter: blur(15px);
+        transform: translate(-50%, -50%);
+        transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                    height 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                    background 0.3s ease;
+    }
+
+    .cursor-follower.hover {
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(0, 217, 255, 0.5) 0%, rgba(147, 51, 234, 0.2) 70%);
+    }
+
+    .custom-cursor.expand {
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+/* ========================================
+   2. PS5-STYLE CARD HOVER EFFECTS
+   ======================================== */
+
+/* Base card hover styles */
+.tool-card,
+.intel-card,
+.market-card,
+.stat-card,
+.analysis-card,
+.comparison-card,
+.use-case-card,
+.testimonial-card {
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform, box-shadow;
+}
+
+.tool-card:hover,
+.intel-card:hover,
+.market-card:hover,
+.stat-card:hover,
+.analysis-card:hover,
+.comparison-card:hover,
+.use-case-card:hover,
+.testimonial-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow:
+        0 8px 30px rgba(0, 217, 255, 0.3),
+        0 4px 15px rgba(0, 217, 255, 0.2),
+        0 0 40px rgba(0, 217, 255, 0.15),
+        inset 0 1px 0 rgba(0, 217, 255, 0.3);
+    border-color: var(--apex-cyan);
+}
+
+/* Button hover effects */
+.btn-subscribe,
+.btn-tool,
+.btn-primary,
+.btn-secondary,
+.btn-export,
+.analyze-btn,
+.add-card-btn {
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform, box-shadow;
+}
+
+.btn-subscribe:hover,
+.btn-tool:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-export:hover,
+.analyze-btn:hover,
+.add-card-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 8px 25px rgba(0, 217, 255, 0.4),
+        0 4px 12px rgba(0, 217, 255, 0.3);
+}
+
+/* ========================================
+   3. PAGE TRANSITIONS
+   ======================================== */
+
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+.page-transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.page-content {
+    animation: pageSlideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes pageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.stagger-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: staggerReveal 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes staggerReveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply stagger delays dynamically via JavaScript */
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+.stagger-item:nth-child(7) { animation-delay: 300ms; }
+.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(9) { animation-delay: 400ms; }
+.stagger-item:nth-child(10) { animation-delay: 450ms; }
+
+/* ========================================
+   4. SKELETON SCREENS
+   ======================================== */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(30, 30, 40, 0.8) 0%,
+        rgba(40, 40, 50, 0.9) 50%,
+        rgba(30, 30, 40, 0.8) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 217, 255, 0.08) 50%,
+        transparent 100%
+    );
+    animation: shimmerGlow 1.5s infinite;
+}
+
+@keyframes shimmerGlow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Skeleton variations */
+.skeleton-card {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    width: 100%;
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-title {
+    width: 80%;
+    height: 24px;
+    margin-bottom: 12px;
+}
+
+.skeleton-button {
+    width: 120px;
+    height: 40px;
+}
+
+.skeleton-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+/* Fade in when content loads */
+.skeleton-container {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.skeleton-container.loaded {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.content-loaded {
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   5. ACHIEVEMENT-STYLE NOTIFICATIONS
+   ======================================== */
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10002;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.achievement-notification {
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    border: 1px solid var(--apex-cyan);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow:
+        0 8px 32px rgba(0, 217, 255, 0.3),
+        0 4px 16px rgba(0, 217, 255, 0.2),
+        0 0 60px rgba(0, 217, 255, 0.15),
+        inset 0 1px 0 rgba(0, 217, 255, 0.4);
+    transform: translateX(450px);
+    opacity: 0;
+    pointer-events: all;
+    animation: slideInNotification 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 217, 255, 0.1) 50%,
+        transparent 100%
+    );
+    animation: notificationGlow 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes slideInNotification {
+    0% {
+        transform: translateX(450px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notificationGlow {
+    0%, 100% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+.achievement-notification.dismissing {
+    animation: slideOutNotification 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes slideOutNotification {
+    0% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(450px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--apex-cyan) 0%, var(--apex-purple) 100%);
+    flex-shrink: 0;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.8), 0 0 40px rgba(147, 51, 234, 0.4);
+    }
+}
+
+.notification-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.notification-title {
+    color: var(--apex-cyan);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.notification-message {
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.notification-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary);
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+/* Progress bar */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--apex-cyan) 0%, var(--apex-purple) 100%);
+    width: 100%;
+    transform-origin: left;
+    animation: progressShrink 3s linear forwards;
+}
+
+@keyframes progressShrink {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .achievement-notification {
+        padding: 12px 16px;
+    }
+
+    .notification-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .notification-title,
+    .notification-message {
+        font-size: 13px;
+    }
+}
+
+/* ========================================
+   6. LOADING STATE IMPROVEMENTS
+   ======================================== */
+
+/* Hide default spinners when skeleton is active */
+.loading.skeleton-active .spinner {
+    display: none;
+}
+
+/* Enhanced loading container */
+.loading-container {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-container.with-skeleton {
+    min-height: auto;
+}

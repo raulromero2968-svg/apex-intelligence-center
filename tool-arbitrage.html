@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cross-Market Arbitrage Finder - Apex Intelligence</title>
     <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <link rel="stylesheet" href="apex-enhancements.css">
     <style>
         * {
             margin: 0;
@@ -410,7 +411,11 @@
     </style>
 </head>
 <body>
-    <div class="content">
+    <!-- Custom Cursor (Desktop Only) -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+<div class="content">
         <div class="header">
             <h1>🌍 Cross-Market Arbitrage Finder</h1>
             <div class="premium-badge">PREMIUM FEATURE</div>
@@ -784,5 +789,8 @@
             document.getElementById('recommendation').innerHTML = recommendation;
         }
     </script>
+    <!-- Apex Enhancements -->
+    <script src="apex-enhancements.js"></script>
+
 </body>
 </html>
