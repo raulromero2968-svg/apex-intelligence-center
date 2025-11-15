@@ -1,4 +1,4 @@
-import { Discord, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { MessageCircle, Twitter, Instagram, Linkedin } from 'lucide-react';
 import Link from 'next/link';
 
 export const Footer = () => {
@@ -69,17 +69,41 @@ export const Footer = () => {
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
             <div className="flex gap-4">
-              <a aria-label="Join our Discord" href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <Discord className="w-5 h-5 text-cyan-400" />
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Join our Discord"
+                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
+              >
+                <MessageCircle className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
               </a>
-              <a aria-label="Follow on Twitter" href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <Twitter className="w-5 h-5 text-cyan-400" />
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Twitter"
+                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
+              >
+                <Twitter className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
               </a>
-              <a aria-label="Follow on Instagram" href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <Instagram className="w-5 h-5 text-cyan-400" />
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Instagram"
+                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
+              >
+                <Instagram className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
               </a>
-              <a aria-label="Connect on LinkedIn" href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <Linkedin className="w-5 h-5 text-cyan-400" />
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Connect on LinkedIn"
+                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
+              >
+                <Linkedin className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
               </a>
             </div>
           </div>
