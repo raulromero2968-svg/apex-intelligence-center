@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apex Intelligence - TCG Market Intelligence & Research</title>
     <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <link rel="stylesheet" href="apex-enhancements.css">
     <style>
         * {
             margin: 0;
@@ -651,11 +652,7 @@
             display: block;
         }
 
-        .intel-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--apex-cyan);
-            box-shadow: 0 8px 30px rgba(0, 255, 240, 0.2);
-        }
+        /* intel-card:hover - Now handled by apex-enhancements.css with PS5-style effects */
 
         .intel-date {
             color: var(--apex-cyan);
@@ -709,10 +706,7 @@
             transition: all 0.3s ease;
         }
 
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--apex-cyan);
-        }
+        /* tool-card:hover - Now handled by apex-enhancements.css with PS5-style effects */
 
         .tool-icon {
             width: 80px;
@@ -990,46 +984,7 @@
             text-align: center;
         }
 
-        /* Custom Cursor (Desktop Only) */
-        @media (min-width: 769px) {
-            body {
-                cursor: none;
-            }
-
-            a, button, input, .search-filter-tag, .tool-card, .intel-card {
-                cursor: none !important;
-            }
-
-            .custom-cursor {
-                width: 10px;
-                height: 10px;
-                background: var(--apex-cyan);
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 9999;
-                mix-blend-mode: difference;
-                transition: transform 0.1s ease;
-            }
-
-            .cursor-follower {
-                width: 40px;
-                height: 40px;
-                background: rgba(147, 51, 234, 0.3);
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 9998;
-                filter: blur(10px);
-                transition: all 0.15s ease-out;
-            }
-
-            .cursor-follower.hover {
-                width: 60px;
-                height: 60px;
-                background: rgba(0, 217, 255, 0.4);
-            }
-        }
+        /* Custom Cursor - Now handled by apex-enhancements.css */
 
         /* View All Tools Button */
         .view-all-tools {
@@ -1900,54 +1855,8 @@
         });
     </script>
 
-    <!-- Custom Cursor JavaScript (Desktop Only) -->
-    <script>
-        if (window.innerWidth > 768) {
-            const cursor = document.getElementById('customCursor');
-            const follower = document.getElementById('cursorFollower');
-
-            let mouseX = 0;
-            let mouseY = 0;
-            let followerX = 0;
-            let followerY = 0;
-
-            // Track mouse position
-            document.addEventListener('mousemove', function(e) {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                // Main cursor follows instantly
-                cursor.style.left = mouseX + 'px';
-                cursor.style.top = mouseY + 'px';
-            });
-
-            // Delayed follower cursor with smooth easing
-            function animateFollower() {
-                // Smooth easing animation
-                const speed = 0.15;
-                followerX += (mouseX - followerX) * speed;
-                followerY += (mouseY - followerY) * speed;
-
-                follower.style.left = followerX + 'px';
-                follower.style.top = followerY + 'px';
-
-                requestAnimationFrame(animateFollower);
-            }
-            animateFollower();
-
-            // Expand follower on hover over interactive elements
-            const interactiveElements = document.querySelectorAll('a, button, .search-filter-tag, .tool-card, .intel-card, input');
-
-            interactiveElements.forEach(element => {
-                element.addEventListener('mouseenter', function() {
-                    follower.classList.add('hover');
-                });
-                element.addEventListener('mouseleave', function() {
-                    follower.classList.remove('hover');
-                });
-            });
-        }
-    </script>
+    <!-- Custom Cursor JavaScript - Now handled by apex-enhancements.js -->
+    <script src="apex-enhancements.js"></script>
 
     <!-- Enhanced Filter Tabs with URL Parameters -->
     <script>
