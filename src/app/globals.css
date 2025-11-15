@@ -24,4 +24,23 @@
       scroll-behavior: auto;
     }
   }
+
+  /* Cyan CTA Button Utility */
+  .btn-cyan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #22d3ee;
+    color: #000;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out, background-color 150ms ease-out;
+  }
+  .btn-cyan:hover { background: #06b6d4; transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px rgba(34,211,238,0.35); }
+  .btn-cyan:active { transform: scale(0.98); }
+  .btn-cyan:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .btn-cyan { transition-duration: 0.01ms; } }
 }

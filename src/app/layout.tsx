@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
+import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
 
@@ -17,13 +18,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans">
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
+          Skip to main content
+        </a>
+
         {/* Animated Background */}
         <AnimatedBackground />
 
         {/* Main Content */}
-        <div className="relative z-10">
+        <div className="relative z-10" id="main">
           {children}
         </div>
+
+        {/* Footer */}
+        <Footer />
 
         {/* Toast Notifications */}
         <Toaster
