@@ -58,7 +58,7 @@ export default function MobileNav({ links, logo }: MobileNavProps) {
           <div className="flex-shrink-0">
             {logo || (
               <Link href="/" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors duration-300">
-                TCG Intelligence Center
+                <span className="text-cyan-400">APEX</span> INTELLIGENCE
               </Link>
             )}
           </div>
