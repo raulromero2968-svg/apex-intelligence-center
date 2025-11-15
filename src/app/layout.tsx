@@ -8,7 +8,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Apex Intelligence - TCG Market Intelligence Center',
+  title: 'TCG Intelligence Center - Market Intelligence Platform',
   description: 'PS5-style TCG market intelligence platform with advanced tools and analytics',
 };
 

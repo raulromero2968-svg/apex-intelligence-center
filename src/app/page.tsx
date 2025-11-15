@@ -138,10 +138,10 @@ export default function HomePage() {
 
             {/* Demo Toast Button */}
             <button
-              onClick={() => toast.success('Welcome to Apex Intelligence!', {
+              onClick={() => toast.success('Welcome to TCG Intelligence Center!', {
                 description: 'PS5-style notifications are now active',
               })}
-              className="px-6 py-3 bg-cyan-400 text-ink rounded-lg font-medium hover:bg-cyan-300 transition-colors"
+              className="px-6 py-3 bg-cyan-400 text-ink rounded-lg font-medium hover:bg-cyan-300 hover:shadow-lg hover:shadow-cyan-400/50 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Test Notification
             </button>
@@ -152,18 +152,7 @@ export default function HomePage() {
             <SearchBar onSearch={handleSearch} />
           </section>
 
-          {/* Tools Carousel */}
-          <section className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-3xl font-bold text-white">Collector Tools</h2>
-              <p className="text-white/70">
-                Professional-grade tools for TCG market analysis and portfolio management
-              </p>
-            </div>
-            <ToolCarousel tools={tools} />
-          </section>
-
-          {/* Articles Section */}
+          {/* Articles Section - Moved above Tools */}
           <section className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-bold text-white">Latest Intelligence</h2>
@@ -172,6 +161,17 @@ export default function HomePage() {
               </p>
             </div>
             <ArticleFilter articles={sampleArticles} />
+          </section>
+
+          {/* Tools Carousel */}
+          <section className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl font-bold text-white">Free Collector Tools</h2>
+              <p className="text-white/70">
+                Professional-grade tools for TCG market analysis and portfolio management
+              </p>
+            </div>
+            <ToolCarousel tools={tools} />
           </section>
 
           {/* Footer Spacing */}

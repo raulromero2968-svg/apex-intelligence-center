@@ -84,11 +84,11 @@ export default function ArticleFilter({ articles }: ArticleFilterProps) {
               onClick={() => handleCategoryChange(category.id)}
               className={`
                 relative px-6 py-3 min-h-[44px] rounded-lg font-medium
-                transition-all duration-240 ease-[cubic-bezier(0.4,0,0.2,1)]
+                transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
                 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink
                 ${isActive
-                  ? 'bg-cyan-400 text-ink shadow-lg shadow-cyan-400/50'
-                  : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                  ? 'bg-cyan-500/20 border-2 border-cyan-500 text-cyan-400 shadow-lg shadow-cyan-500/50'
+                  : 'bg-transparent border-2 border-white/20 text-white hover:border-cyan-500/50 hover:text-cyan-300'
                 }
               `}
             >
@@ -121,11 +121,11 @@ export default function ArticleFilter({ articles }: ArticleFilterProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{
-                duration: 0.24,
+                duration: 0.3,
                 delay: index * 0.05,
                 ease: [0.4, 0, 0.2, 1],
               }}
-              className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-cyan-400/50 transition-colors"
+              className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-400/20 transition-all duration-300 cursor-pointer"
             >
               <h3 className="text-xl font-semibold text-white mb-2">
                 {article.title}

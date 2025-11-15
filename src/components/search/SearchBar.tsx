@@ -9,7 +9,7 @@ interface SearchBarProps {
 
 export default function SearchBar({
   onSearch,
-  placeholder = 'Search articles, tools, research…'
+  placeholder = 'Search…'
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
