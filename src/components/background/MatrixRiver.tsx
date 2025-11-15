@@ -32,8 +32,8 @@ export const MatrixRiver = () => {
       // Random spacing between 15-40px (creates uneven columns)
       const spacing = Math.random() * 25 + 15;
       
-      // LEFT side (first 15%) AND RIGHT side (last 10%, pushed to edge)
-      if (xPos < canvas.width * 0.15 || xPos > canvas.width * 0.90) {
+      // LEFT side (first 15%) AND RIGHT side (pushed all the way to edge)
+      if (xPos < canvas.width * 0.15 || xPos > canvas.width * 0.95) {
         columnSpacing.push(xPos);
         
         // Random color: 60% cyan, 40% purple
