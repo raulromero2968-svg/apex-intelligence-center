@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 export default function AnimatedBackground() {
   const starfieldRef = useRef<HTMLCanvasElement>(null);
   const matrixRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     // Don't render on small screens

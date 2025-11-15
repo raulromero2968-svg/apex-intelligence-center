@@ -36,7 +36,7 @@ export default function HolographicIcon({
           transition: {
             duration: 3,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: 'easeInOut' as const,
           },
         },
   };
@@ -49,7 +49,7 @@ export default function HolographicIcon({
       filter: 'drop-shadow(0 0 12px rgba(0, 217, 255, 0.6))',
       transition: {
         duration: 0.25,
-        ease: [0.4, 0, 0.2, 1],
+        ease: [0.4, 0, 0.2, 1] as const,
       },
     },
   };
@@ -58,11 +58,10 @@ export default function HolographicIcon({
     <motion.div
       className="relative inline-block"
       style={{ width: size, height: size }}
-      variants={floatVariants}
+      variants={{ ...floatVariants, ...hoverVariants }}
       initial="idle"
       animate="idle"
       whileHover="hover"
-      variants={{ ...floatVariants, ...hoverVariants }}
     >
       <Image
         src={imageSrc}
