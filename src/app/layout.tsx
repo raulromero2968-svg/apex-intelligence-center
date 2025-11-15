@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import AuroraFX from '@/components/fx/AuroraFX';
 import BackgroundFX from '@/components/fx/BackgroundFX';
+import BackgroundStack from '@/components/fx/BackgroundStack';
 import CursorFX from '@/components/fx/CursorFX';
 import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
@@ -29,6 +30,9 @@ export default function RootLayout({
 
         {/* Animated Background FX */}
         <BackgroundFX />
+
+        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
+        <BackgroundStack />
 
         {/* Custom Cursor */}
         <CursorFX />
