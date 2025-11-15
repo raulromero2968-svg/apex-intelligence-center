@@ -8,6 +8,7 @@ export const MatrixRiver = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -18,38 +19,46 @@ export const MatrixRiver = () => {
     resize();
     window.addEventListener('resize', resize);
 
-    const characters = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789@#$%&';
-    const fontSize = 14;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const characters = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    const fontSize = 12;
     const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(columns).fill(0);
+    const drops: number[] = Array.from({ length: columns }, () => Math.random() * -100);
 
-    let animationId: number;
+    let raf = 0;
     const draw = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillStyle = 'rgba(0,0,0,0.03)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00ff41';
       ctx.font = `${fontSize}px monospace`;
 
       drops.forEach((y, index) => {
-        // Only draw on right 20% of screen
-        if (index > columns * 0.8) {
+        if (index < columns * 0.15 || index > columns * 0.85) {
           const char = characters[Math.floor(Math.random() * characters.length)];
           const x = index * fontSize;
-          ctx.globalAlpha = y / canvas.height;
+          const alpha = Math.min(y / canvas.height, 0.6);
+          ctx.fillStyle = `rgba(0,255,255,${alpha})`;
           ctx.fillText(char, x, y);
-          if (y > canvas.height && Math.random() > 0.975) drops[index] = 0;
-          drops[index] += fontSize;
+
+          if (y > canvas.height && Math.random() > 0.99) drops[index] = 0;
+          drops[index] += fontSize * (reduced ? 0.15 : 0.3);
         }
       });
-      animationId = requestAnimationFrame(draw);
+
+      raf = requestAnimationFrame(draw);
     };
-    draw();
+
+    if (reduced) {
+      const step = () => { draw(); setTimeout(step, 60); };
+      step();
+    } else {
+      draw();
+    }
 
     return () => {
       window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(raf);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 opacity-40" style={{ mixBlendMode: 'screen' }} />;
+  return <canvas ref={canvasRef} className="absolute inset-0 opacity-30" style={{ mixBlendMode: 'screen' }} aria-hidden="true" />;
 };

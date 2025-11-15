@@ -132,8 +132,8 @@ export default function HomePage() {
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center py-12 lg:py-24">
             {/* Left side: Content */}
             <div className="text-left space-y-6">
-              <div className="inline-block px-4 py-2 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-semibold uppercase tracking-wider">
-                TCG INTELLIGENCE NETWORK
+              <div className="border border-cyan-500/50 rounded-full px-4 py-2 text-cyan-400 text-sm font-medium">
+                TCG INTELLIGENCE CENTER
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">

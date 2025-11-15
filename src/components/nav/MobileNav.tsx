@@ -76,7 +76,7 @@ export default function MobileNav({ links, logo }: MobileNavProps) {
 
           {/* Desktop Nav - Hidden on mobile */}
           <nav className="hidden lg:flex items-center gap-6">
-            {links.map((link) => (
+            {links.filter(link => link.label !== 'Subscribe').map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -85,6 +85,15 @@ export default function MobileNav({ links, logo }: MobileNavProps) {
                 {link.label}
               </Link>
             ))}
+            {links.find(link => link.label === 'Subscribe') && (
+              <Link
+                href="/subscribe"
+                className="btn-cyan"
+                aria-label="Subscribe"
+              >
+                Subscribe
+              </Link>
+            )}
           </nav>
 
           {/* Hamburger Button - Shown on <1024px */}
