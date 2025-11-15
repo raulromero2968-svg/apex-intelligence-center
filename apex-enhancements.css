@@ -516,3 +516,310 @@
 .loading-container.with-skeleton {
     min-height: auto;
 }
+
+/* ========================================
+   7. CONTENT FILTERING WITH ANIMATIONS
+   ======================================== */
+
+/* Filter bar styling */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+}
+
+.filter-tag {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    cursor: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.filter-tag:hover {
+    background: rgba(0, 217, 255, 0.1);
+    border-color: rgba(0, 217, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.filter-tag.active {
+    background: linear-gradient(to right, rgba(0, 217, 255, 0.2), rgba(147, 51, 234, 0.2));
+    border-color: var(--apex-cyan);
+    color: var(--apex-cyan);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+/* Filter result count */
+.filter-results-count {
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1rem;
+}
+
+/* Animated grid items */
+.filterable-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    position: relative;
+}
+
+.filterable-item {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filterable-item.hidden {
+    opacity: 0;
+    transform: scale(0.98) translateY(12px);
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+}
+
+.filterable-item.entering {
+    animation: filterEnter 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes filterEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.98) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========================================
+   8. PS5-STYLE TOOLS CAROUSEL
+   ======================================== */
+
+.tools-carousel {
+    position: relative;
+    margin: 2rem 0;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+}
+
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-card {
+    flex: 0 0 auto;
+    width: min(80%, 420px);
+    scroll-snap-align: center;
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 217, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-card:hover {
+    transform: translateY(-4px) scale(1.05);
+    border-color: var(--apex-cyan);
+    box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
+}
+
+.carousel-card:focus {
+    outline: 2px solid var(--apex-cyan);
+    outline-offset: 4px;
+}
+
+/* Carousel controls */
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 217, 255, 0.1);
+    border-color: var(--apex-cyan);
+    transform: scale(1.1);
+}
+
+.carousel-dots {
+    display: flex;
+    gap: 0.375rem;
+}
+
+.carousel-dot {
+    width: 1rem;
+    height: 0.375rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: var(--apex-cyan);
+    width: 2rem;
+}
+
+/* ========================================
+   9. ENHANCED HOLOGRAPHIC ICONS
+   ======================================== */
+
+.holo-icon-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    perspective: 1000px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.holo-icon-container:hover {
+    transform: scale(1.06) rotateX(6deg) rotateY(-6deg);
+}
+
+.holo-icon-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background: conic-gradient(from 180deg, var(--apex-cyan), var(--apex-purple), var(--apex-cyan));
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.holo-icon-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background: var(--apex-cyan);
+    opacity: 0.4;
+    filter: blur(12px);
+    z-index: -1;
+}
+
+.holo-icon-content {
+    position: relative;
+    z-index: 10;
+    color: #000;
+    font-size: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .holo-icon-container:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* ========================================
+   10. SEARCH BAR ENHANCEMENTS
+   ======================================== */
+
+.search-shortcut-kbd {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    font-size: 0.625rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-box {
+    font-size: 16px !important; /* Prevent iOS zoom */
+}
+
+/* ========================================
+   11. MOBILE NAVIGATION REFINEMENTS
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .mobile-menu {
+        padding-top: calc(env(safe-area-inset-top) + 4rem);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .mobile-menu ul li a {
+        padding: 0.75rem 1rem;
+        min-height: 44px; /* Touch target size */
+        display: flex;
+        align-items: center;
+        border-radius: 0.5rem;
+    }
+
+    .mobile-menu ul li a:focus {
+        outline: 2px solid var(--apex-cyan);
+        outline-offset: 2px;
+    }
+}
+
+/* ========================================
+   12. REDUCED MOTION SUPPORT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .carousel-track {
+        scroll-behavior: auto;
+    }
+
+    .filterable-item {
+        transition: opacity 0.1s ease;
+    }
+
+    /* Keep essential transforms but remove excessive animations */
+    .tool-card:hover,
+    .intel-card:hover {
+        animation: none;
+    }
+}
