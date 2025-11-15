@@ -3,12 +3,21 @@
  * Endpoint: /api/create-checkout-session
  */
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available (optional for build)
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+const stripe = stripeSecretKey ? require('stripe')(stripeSecretKey) : null;
 
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Check if Stripe is configured
+  if (!stripe || !stripeSecretKey) {
+    return res.status(503).json({ 
+      error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+    });
   }
 
   try {

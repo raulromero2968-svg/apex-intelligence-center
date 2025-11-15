@@ -90,7 +90,7 @@ export default function ToolCarousel({ tools }: ToolCarouselProps) {
         {/* Viewport */}
         <div
           ref={emblaRef}
-          className="overflow-hidden"
+          className="overflow-hidden cursor-grab active:cursor-grabbing"
           tabIndex={0}
           onKeyDown={handleKeyDown}
           aria-live="polite"
@@ -108,7 +108,7 @@ export default function ToolCarousel({ tools }: ToolCarouselProps) {
               >
                 <a
                   href={tool.href}
-                  className="block h-full bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-cyan-400/50 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
+                  className="block h-full bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-400/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
                 >
                   <div className="flex flex-col items-center text-center">
                     <HolographicIcon
@@ -132,7 +132,7 @@ export default function ToolCarousel({ tools }: ToolCarouselProps) {
           onClick={scrollPrev}
           disabled={!canScrollPrev}
           aria-label="Previous tools"
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-cyan-400 text-ink flex items-center justify-center shadow-lg shadow-cyan-400/50 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-cyan-400 text-ink flex items-center justify-center shadow-lg shadow-cyan-400/50 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-110 hover:shadow-xl hover:shadow-cyan-400/70 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
         >
           <svg
             className="w-6 h-6"
@@ -154,7 +154,7 @@ export default function ToolCarousel({ tools }: ToolCarouselProps) {
           onClick={scrollNext}
           disabled={!canScrollNext}
           aria-label="Next tools"
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-cyan-400 text-ink flex items-center justify-center shadow-lg shadow-cyan-400/50 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-cyan-400 text-ink flex items-center justify-center shadow-lg shadow-cyan-400/50 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-110 hover:shadow-xl hover:shadow-cyan-400/70 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink"
         >
           <svg
             className="w-6 h-6"
@@ -188,11 +188,11 @@ export default function ToolCarousel({ tools }: ToolCarouselProps) {
               aria-selected={isActive}
               onClick={() => scrollTo(index)}
               className={`
-                rounded-full transition-all duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]
+                rounded-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
                 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-ink
                 ${isActive
-                  ? 'w-8 h-2 bg-cyan-400'
-                  : 'w-2 h-2 bg-white/30 hover:bg-white/50'
+                  ? 'w-8 h-2 bg-cyan-400 shadow-lg shadow-cyan-400/50'
+                  : 'w-2 h-2 bg-white/30 hover:bg-white/50 hover:scale-125'
                 }
               `}
             />

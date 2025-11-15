@@ -5,16 +5,11 @@
  * Handles Stripe webhook events for subscription lifecycle
  */
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available (optional for build)
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+const stripe = stripeSecretKey ? require('stripe')(stripeSecretKey) : null;
 
-// We need to get the raw body for webhook signature verification
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-// Helper to get raw body
+// Helper to get raw body (Vercel provides raw body in req.body for serverless functions)
 const getRawBody = (req) => {
   return new Promise((resolve, reject) => {
     let buffer = [];
@@ -29,7 +24,14 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // Check if Stripe is configured
+  if (!stripe || !stripeSecretKey) {
+    return res.status(503).json({ 
+      error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.' 
+    });
+  }
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
   if (!webhookSecret) {
     console.error('⚠️ STRIPE_WEBHOOK_SECRET is not set');
@@ -39,8 +41,14 @@ module.exports = async (req, res) => {
   let event;
 
   try {
-    // Get raw body for signature verification
-    const rawBody = await getRawBody(req);
+    // Vercel provides raw body, but we need it as a Buffer for signature verification
+    // If req.body is already a string/buffer, use it directly
+    const rawBody = typeof req.body === 'string' 
+      ? Buffer.from(req.body) 
+      : Buffer.isBuffer(req.body) 
+        ? req.body 
+        : await getRawBody(req);
+    
     const signature = req.headers['stripe-signature'];
 
     // Verify webhook signature
