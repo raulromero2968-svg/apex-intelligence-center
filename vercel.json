@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "env": {},
-  "build": {
-    "env": {}
-  }
-}
   "functions": {
     "api/**/*.js": {
       "maxDuration": 10
     }
+  },
+  "env": {
+    "VITE_STRIPE_PUBLISHABLE_KEY": "",
+    "STRIPE_SECRET_KEY": "",
+    "STRIPE_WEBHOOK_SECRET": ""
   }
 }
