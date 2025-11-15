@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
-import AnimatedBackground from '@/components/background/AnimatedBackground';
+import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 import '@/styles/animations.css';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'TCG Intelligence Center - Market Intelligence Platform',
@@ -19,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="font-sans">
         {/* Animated Background */}
         <AnimatedBackground />
 
