@@ -54,3 +54,31 @@
 input, textarea, button, a {
   cursor: none !important;
 }
+
+/* Light mode overrides */
+html.light {
+  --background: 240 10% 95%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+html.light body {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  color: #1e293b;
+}
+
+html.light .bg-black\/90 {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .text-white {
+  color: #1e293b !important;
+}
+
+html.light .border-cyan-500\/20 {
+  border-color: rgba(0, 200, 255, 0.3) !important;
+}
+
+/* Adjust background animations for light mode */
+html.light canvas {
+  opacity: 0.3 !important;
+}

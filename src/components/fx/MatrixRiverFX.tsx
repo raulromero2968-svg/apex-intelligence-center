@@ -6,13 +6,12 @@ const GLYPHS = "水海流波濤浪滴流川河湖池泉源湧滝瀧渓溪流波�
 
 export default function MatrixRiverFX() {
   const reduced = useReducedMotion();
-  // Create columns only on left and right sides
+  // Create columns only on left side
   const leftCols = 4; // 4 columns on left side
-  const rightCols = 4; // 4 columns on right side
   const colWidth = 2.5; // Width in rem for each column
   const dur = (i: number) => 30 + (i % 8) * 2; // 30–44s (faster for water flow)
 
-  // Left side columns (0-3)
+  // Left side columns only
   const leftColumns = Array.from({ length: leftCols }).map((_, i) => ({
     id: `left-${i}`,
     position: 'left' as const,
@@ -21,16 +20,7 @@ export default function MatrixRiverFX() {
     duration: dur(i),
   }));
 
-  // Right side columns (positioned from right edge)
-  const rightColumns = Array.from({ length: rightCols }).map((_, i) => ({
-    id: `right-${i}`,
-    position: 'right' as const,
-    offset: `${i * colWidth}rem`,
-    delay: (i + leftCols) * 0.5,
-    duration: dur(i + leftCols),
-  }));
-
-  const allColumns = [...leftColumns, ...rightColumns];
+  const allColumns = [...leftColumns];
 
   return (
     <div aria-hidden className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
