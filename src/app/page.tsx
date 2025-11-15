@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { toast } from 'sonner';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
@@ -128,23 +129,37 @@ export default function HomePage() {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section */}
-          <section className="text-center space-y-6 py-12">
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-              TCG Intelligence Center
-            </h1>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Professional-grade market intelligence and tools for serious TCG collectors
-            </p>
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center py-12 lg:py-24">
+            {/* Left side: Content */}
+            <div className="text-left space-y-6">
+              <div className="inline-block px-4 py-2 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-semibold uppercase tracking-wider">
+                TCG INTELLIGENCE NETWORK
+              </div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                  Underground
+                </span>{' '}
+                <span className="text-white">Intel</span>
+                <br />
+                <span className="text-white">For Serious Collectors</span>
+              </h1>
+              <p className="text-xl text-white/70 max-w-xl">
+                Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
+              </p>
+            </div>
 
-            {/* Demo Toast Button */}
-            <button
-              onClick={() => toast.success('Welcome to TCG Intelligence Center!', {
-                description: 'PS5-style notifications are now active',
-              })}
-              className="px-6 py-3 bg-cyan-400 text-ink rounded-lg font-medium hover:bg-cyan-300 hover:shadow-lg hover:shadow-cyan-400/50 transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              Test Notification
-            </button>
+            {/* Right side: Wolf Logo */}
+            <div className="flex items-center justify-center">
+              <div className="relative w-full max-w-md aspect-square">
+                <Image
+                  src="/wolf-logo.png"
+                  alt="Apex Intelligence Wolf"
+                  fill
+                  className="object-contain mix-blend-screen"
+                  priority
+                />
+              </div>
+            </div>
           </section>
 
           {/* Search Bar */}
