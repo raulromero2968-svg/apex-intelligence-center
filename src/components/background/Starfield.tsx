@@ -14,12 +14,14 @@ export const Starfield = () => {
     if (!ctx) return;
 
     const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    // Cyan and purple color palette
+    // Cyan and purple color palette - 60% cyan, 40% purple
     const colors = [
-      'rgba(0, 255, 255, ', // Cyan
-      'rgba(138, 43, 226, ', // Purple
-      'rgba(255, 0, 255, ', // Magenta
-      'rgba(0, 200, 255, ', // Light blue
+      'rgba(0, 255, 255, ',      // Cyan
+      'rgba(0, 255, 255, ',      // Cyan (duplicate for 60% chance)
+      'rgba(0, 200, 255, ',      // Light cyan
+      'rgba(0, 200, 255, ',      // Light cyan (duplicate)
+      'rgba(138, 43, 226, ',     // Purple
+      'rgba(255, 0, 255, ',      // Magenta
     ];
 
     let stars: Star[] = [];

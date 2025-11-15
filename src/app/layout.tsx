@@ -50,7 +50,7 @@ export default function RootLayout({
         <ThemeToggle />
 
         {/* Main Content */}
-        <main className="relative z-10 pt-20" id="main">
+        <main className="relative z-10 pt-16" id="main">
           {children}
         </main>
 
