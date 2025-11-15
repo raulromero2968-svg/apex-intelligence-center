@@ -71,7 +71,7 @@ function ArticleFilterContent({ articles }: ArticleFilterProps) {
       <div
         role="tablist"
         aria-label="Article categories"
-        className="flex flex-wrap gap-2 mb-8"
+        className="flex flex-wrap justify-center gap-4 mb-8"
       >
         {CATEGORIES.map((category) => {
           const isActive = activeCategory === category.id;

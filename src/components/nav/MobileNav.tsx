@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface NavLink {
@@ -55,10 +56,20 @@ export default function MobileNav({ links, logo }: MobileNavProps) {
       >
         <div className="flex items-center justify-between h-16 px-4">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center gap-3">
             {logo || (
-              <Link href="/" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors duration-300">
-                <span className="text-cyan-400">APEX</span> INTELLIGENCE
+              <Link href="/" className="flex items-center gap-3 text-xl font-bold text-white hover:text-cyan-400 transition-colors duration-300">
+                <Image
+                  src="/wolf-logo.png"
+                  alt="Wolf Logo"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
+                  priority
+                />
+                <span>
+                  <span className="text-cyan-400">APEX</span> INTELLIGENCE
+                </span>
               </Link>
             )}
           </div>
