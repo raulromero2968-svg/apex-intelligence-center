@@ -423,4 +423,335 @@
         }, 250);
     });
 
+    // ========================================
+    // 7. CONTENT FILTERING SYSTEM
+    // ========================================
+
+    const ContentFilter = {
+        init: function(options) {
+            const {
+                filterBarSelector = '.filter-bar',
+                gridSelector = '.filterable-grid',
+                itemSelector = '.filterable-item',
+                resultCountSelector = '.filter-results-count',
+                categoryAttr = 'data-category'
+            } = options || {};
+
+            const filterBar = document.querySelector(filterBarSelector);
+            const grid = document.querySelector(gridSelector);
+            const resultsCount = document.querySelector(resultCountSelector);
+
+            if (!filterBar || !grid) return;
+
+            let currentCategory = this.getCategoryFromURL() || 'all';
+
+            // Set initial active state
+            const initialTag = filterBar.querySelector(`[data-filter="${currentCategory}"]`);
+            if (initialTag) {
+                initialTag.classList.add('active');
+            }
+
+            // Filter on page load
+            this.filterItems(grid, itemSelector, currentCategory, categoryAttr, resultsCount);
+
+            // Handle filter clicks
+            filterBar.addEventListener('click', (e) => {
+                const filterTag = e.target.closest('.filter-tag');
+                if (!filterTag) return;
+
+                const category = filterTag.getAttribute('data-filter');
+
+                // Update active state
+                filterBar.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.classList.remove('active');
+                });
+                filterTag.classList.add('active');
+
+                // Update URL
+                this.updateURL(category);
+
+                // Filter items
+                this.filterItems(grid, itemSelector, category, categoryAttr, resultsCount);
+
+                // Announce to screen readers
+                if (resultsCount) {
+                    resultsCount.setAttribute('aria-live', 'polite');
+                }
+            });
+        },
+
+        filterItems: function(grid, itemSelector, category, categoryAttr, resultsCount) {
+            const items = grid.querySelectorAll(itemSelector);
+            let visibleCount = 0;
+
+            items.forEach((item, index) => {
+                const itemCategory = item.getAttribute(categoryAttr);
+                const shouldShow = category === 'all' || itemCategory === category;
+
+                if (shouldShow) {
+                    item.classList.remove('hidden');
+                    item.classList.add('entering');
+                    item.style.animationDelay = `${index * 30}ms`;
+                    visibleCount++;
+
+                    // Remove entering class after animation
+                    setTimeout(() => {
+                        item.classList.remove('entering');
+                    }, 240 + (index * 30));
+                } else {
+                    item.classList.add('hidden');
+                    item.classList.remove('entering');
+                }
+            });
+
+            // Update count
+            if (resultsCount) {
+                resultsCount.textContent = `${visibleCount} result${visibleCount !== 1 ? 's' : ''} shown`;
+            }
+        },
+
+        getCategoryFromURL: function() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('cat');
+        },
+
+        updateURL: function(category) {
+            const url = new URL(window.location.href);
+            if (category === 'all') {
+                url.searchParams.delete('cat');
+            } else {
+                url.searchParams.set('cat', category);
+            }
+            window.history.replaceState(null, '', url.toString());
+        }
+    };
+
+    // Make it globally available
+    window.ContentFilter = ContentFilter;
+
+    // ========================================
+    // 8. TOOLS CAROUSEL
+    // ========================================
+
+    const ToolsCarousel = {
+        init: function(carouselSelector) {
+            const carousel = document.querySelector(carouselSelector);
+            if (!carousel) return;
+
+            const track = carousel.querySelector('.carousel-track');
+            const prevBtn = carousel.querySelector('.carousel-btn-prev');
+            const nextBtn = carousel.querySelector('.carousel-btn-next');
+            const dotsContainer = carousel.querySelector('.carousel-dots');
+
+            if (!track) return;
+
+            const cards = Array.from(track.querySelectorAll('.carousel-card'));
+            let currentIndex = 0;
+
+            // Create dots
+            if (dotsContainer && cards.length > 0) {
+                cards.forEach((_, index) => {
+                    const dot = document.createElement('span');
+                    dot.className = 'carousel-dot';
+                    if (index === 0) dot.classList.add('active');
+                    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            // Intersection Observer to track which card is centered
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                        const index = cards.indexOf(entry.target);
+                        if (index !== -1) {
+                            this.updateDots(dotsContainer, index);
+                            currentIndex = index;
+                        }
+                    }
+                });
+            }, {
+                root: track,
+                threshold: [0.6]
+            });
+
+            cards.forEach(card => observer.observe(card));
+
+            // Navigation buttons
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    const newIndex = Math.max(0, currentIndex - 1);
+                    this.scrollToCard(track, cards[newIndex]);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    const newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                    this.scrollToCard(track, cards[newIndex]);
+                });
+            }
+
+            // Keyboard navigation
+            track.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    const newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                    this.scrollToCard(track, cards[newIndex]);
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    const newIndex = Math.max(0, currentIndex - 1);
+                    this.scrollToCard(track, cards[newIndex]);
+                }
+            });
+
+            // Touch/swipe support is handled by CSS scroll-snap
+        },
+
+        scrollToCard: function(track, card) {
+            if (!card) return;
+            card.scrollIntoView({
+                behavior: 'smooth',
+                inline: 'center',
+                block: 'nearest'
+            });
+        },
+
+        updateDots: function(dotsContainer, activeIndex) {
+            if (!dotsContainer) return;
+            const dots = dotsContainer.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+    };
+
+    // Make it globally available
+    window.ToolsCarousel = ToolsCarousel;
+
+    // ========================================
+    // 9. SEARCH KEYBOARD SHORTCUT
+    // ========================================
+
+    function initSearchShortcut() {
+        const searchInput = document.querySelector('#searchInput, .search-box');
+        if (!searchInput) return;
+
+        // Add keyboard shortcut indicator
+        const container = searchInput.closest('.search-container');
+        if (container && !container.querySelector('.search-shortcut-kbd')) {
+            const kbd = document.createElement('kbd');
+            kbd.className = 'search-shortcut-kbd';
+            kbd.textContent = navigator.platform.indexOf('Mac') > -1 ? '⌘K' : 'Ctrl+K';
+            container.appendChild(kbd);
+        }
+
+        // Listen for shortcut
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+        });
+    }
+
+    // ========================================
+    // 10. HOLOGRAPHIC ICON HELPER
+    // ========================================
+
+    const HoloIcon = {
+        create: function(content, title) {
+            const container = document.createElement('div');
+            container.className = 'holo-icon-container';
+            container.innerHTML = `
+                <span class="holo-icon-glow" aria-hidden="true"></span>
+                <span class="holo-icon-bg" aria-hidden="true"></span>
+                <div class="holo-icon-content">
+                    <span class="sr-only">${title}</span>
+                    ${content}
+                </div>
+            `;
+            return container;
+        },
+
+        wrapExisting: function(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                const title = el.getAttribute('title') || el.getAttribute('aria-label') || 'Icon';
+                const content = el.innerHTML;
+                el.innerHTML = '';
+                el.appendChild(this.create(content, title));
+            });
+        }
+    };
+
+    // Make it globally available
+    window.HoloIcon = HoloIcon;
+
+    // ========================================
+    // 11. BACKGROUND ELEMENTS INITIALIZER
+    // ========================================
+
+    function initBackgroundElements() {
+        // Check if background elements exist, if not create them
+        if (!document.querySelector('.stars')) {
+            const starsDiv = document.createElement('div');
+            starsDiv.className = 'stars';
+            starsDiv.id = 'stars';
+            document.body.insertBefore(starsDiv, document.body.firstChild);
+        }
+
+        if (!document.querySelector('.grid-background')) {
+            const gridDiv = document.createElement('div');
+            gridDiv.className = 'grid-background';
+            document.body.insertBefore(gridDiv, document.body.firstChild);
+        }
+
+        if (!document.querySelector('.matrix-river')) {
+            const matrixDiv = document.createElement('div');
+            matrixDiv.className = 'matrix-river';
+            matrixDiv.id = 'matrixRiver';
+            document.body.insertBefore(matrixDiv, document.body.firstChild);
+        }
+
+        if (!document.querySelector('.floating-diamonds')) {
+            const diamondsDiv = document.createElement('div');
+            diamondsDiv.className = 'floating-diamonds';
+            diamondsDiv.id = 'floatingDiamonds';
+            document.body.insertBefore(diamondsDiv, document.body.firstChild);
+        }
+    }
+
+    // ========================================
+    // 12. AUTO-INITIALIZE NEW FEATURES
+    // ========================================
+
+    function initNewFeatures() {
+        // Initialize search keyboard shortcut
+        initSearchShortcut();
+
+        // Initialize background elements if missing
+        initBackgroundElements();
+
+        // Auto-initialize carousel if it exists
+        ToolsCarousel.init('.tools-carousel');
+
+        // Auto-initialize content filter if it exists
+        ContentFilter.init({
+            filterBarSelector: '.filter-bar',
+            gridSelector: '.filterable-grid',
+            itemSelector: '.filterable-item',
+            resultCountSelector: '.filter-results-count',
+            categoryAttr: 'data-category'
+        });
+    }
+
+    // Initialize new features when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNewFeatures);
+    } else {
+        initNewFeatures();
+    }
+
 })();
