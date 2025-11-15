@@ -863,6 +863,200 @@
             font-size: 0.875rem;
         }
 
+        /* Tool Tier Badges */
+        .tool-tier {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .tool-tier.free {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .tool-tier.premium {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--apex-cyan);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .tool-tier.pro {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(0, 217, 255, 0.2));
+            color: white;
+            border: 1px solid var(--apex-purple);
+        }
+
+        /* Mobile Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 200;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--apex-cyan);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 150;
+            padding: 6rem 2rem 2rem;
+            transition: left 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            left: 0;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 140;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mobile-menu ul li {
+            margin-bottom: 2rem;
+        }
+
+        .mobile-menu ul li a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: block;
+        }
+
+        .mobile-menu ul li a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .mobile-menu .btn-subscribe {
+            display: block;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        /* Custom Cursor (Desktop Only) */
+        @media (min-width: 769px) {
+            body {
+                cursor: none;
+            }
+
+            a, button, input, .search-filter-tag, .tool-card, .intel-card {
+                cursor: none !important;
+            }
+
+            .custom-cursor {
+                width: 10px;
+                height: 10px;
+                background: var(--apex-cyan);
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 9999;
+                mix-blend-mode: difference;
+                transition: transform 0.1s ease;
+            }
+
+            .cursor-follower {
+                width: 40px;
+                height: 40px;
+                background: rgba(147, 51, 234, 0.3);
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 9998;
+                filter: blur(10px);
+                transition: all 0.15s ease-out;
+            }
+
+            .cursor-follower.hover {
+                width: 60px;
+                height: 60px;
+                background: rgba(0, 217, 255, 0.4);
+            }
+        }
+
+        /* View All Tools Button */
+        .view-all-tools {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn-view-all {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(0, 255, 240, 0.1);
+            border: 2px solid var(--apex-cyan);
+            border-radius: 8px;
+            color: var(--apex-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-all:hover {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 240, 0.3);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero-title {
@@ -870,8 +1064,11 @@
             }
 
             .nav-links {
-                flex-direction: column;
-                gap: 1rem;
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
             }
 
             .intel-grid,
@@ -882,6 +1079,10 @@
     </style>
 </head>
 <body>
+    <!-- Custom Cursor (Desktop Only) -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
     <!-- Animated Grid Background -->
     <div class="grid-background"></div>
 
@@ -898,12 +1099,19 @@
         <!-- Navigation -->
         <nav>
             <div class="nav-container">
-                <a href="/" class="logo">
-                    <div class="logo-icon">
-                        <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" />
-                    </div>
-                    <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
-                </a>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="hamburger" id="hamburger" aria-label="Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence Wolf" />
+                        </div>
+                        <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
+                    </a>
+                </div>
                 <ul class="nav-links">
                     <li><a href="intel.html">Intel</a></li>
                     <li><a href="insights.html">Insights</a></li>
@@ -915,6 +1123,23 @@
                 </ul>
             </div>
         </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="intel.html">Intel</a></li>
+                <li><a href="insights.html">Insights</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="https://apexomnis.io" target="_blank">Services</a></li>
+                <li><a href="#subscribe" class="btn-subscribe">Subscribe</a></li>
+            </ul>
+        </div>
 
         <!-- Hero Section -->
         <section class="hero">
@@ -976,6 +1201,163 @@
             </div>
             <div class="ai-related-heading">Related Intelligence From Our Database:</div>
         </div>
+
+        <!-- Collector Tools Section -->
+        <section class="tools-section" id="collector-tools">
+            <div class="section-header">
+                <h2 class="section-title">Intelligence Tools for Serious Collectors</h2>
+                <p class="section-subtitle">Make smarter decisions with data-driven analysis</p>
+            </div>
+
+            <div class="tools-grid">
+                <!-- FREE TOOLS -->
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="30" />
+                            <path d="M 35 50 L 50 35 L 65 50 L 50 65 Z" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Set Completion Calculator</h3>
+                    <span class="tool-tier free">FREE</span>
+                    <p class="tool-description">
+                        Calculate the cheapest path to complete your TCG sets. Compare buying singles vs opening packs.
+                    </p>
+                    <a href="tool-set-completion.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="65" r="25" />
+                            <path d="M 35 40 Q 50 25 65 40" />
+                            <text x="50" y="72" text-anchor="middle" fill="var(--apex-cyan)" font-size="20" font-weight="bold">$</text>
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Trade Fairness Evaluator</h3>
+                    <span class="tool-tier free">FREE</span>
+                    <p class="tool-description">
+                        Calculate fair trade values with real-time pricing data. Perfect for trades and negotiations.
+                    </p>
+                    <a href="tool-calculator.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <!-- PREMIUM TOOLS -->
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="30" y="40" width="40" height="30" rx="5" />
+                            <circle cx="45" cy="55" r="5" />
+                            <circle cx="55" cy="55" r="5" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Grading ROI Calculator</h3>
+                    <span class="tool-tier premium">PREMIUM</span>
+                    <p class="tool-description">
+                        Determine if grading your cards is profitable. Compare PSA vs BGS with detailed ROI analysis.
+                    </p>
+                    <a href="tool-grading.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="35" />
+                            <path d="M 30 50 L 50 30 M 50 50 L 70 50" stroke-width="3" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Cross-Market Arbitrage Finder</h3>
+                    <span class="tool-tier premium">PREMIUM</span>
+                    <p class="tool-description">
+                        Find profitable price differences across US, Japan, and Europe markets instantly.
+                    </p>
+                    <a href="tool-arbitrage.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="35" width="60" height="40" rx="5" />
+                            <line x1="35" y1="45" x2="65" y2="45" stroke-width="3" />
+                            <line x1="35" y1="55" x2="65" y2="55" stroke-width="3" />
+                            <line x1="35" y1="65" x2="50" y2="65" stroke-width="3" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Bulk Grading Optimizer</h3>
+                    <span class="tool-tier premium">PREMIUM</span>
+                    <p class="tool-description">
+                        Maximize ROI by optimizing which cards to grade first based on your budget.
+                    </p>
+                    <a href="tool-bulk-grading.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="25" y="30" width="50" height="40" rx="5" />
+                            <path d="M 40 45 L 60 45 M 40 55 L 60 55 M 40 65 L 55 65" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Bulk Deal Analyzer</h3>
+                    <span class="tool-tier premium">PREMIUM</span>
+                    <p class="tool-description">
+                        Evaluate bulk card lots from eBay and Facebook. Get instant value estimates and profit projections.
+                    </p>
+                    <a href="tool-bulk-deal.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <!-- PRO TOOLS -->
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="35" />
+                            <path d="M 50 20 L 50 50 L 70 70" stroke-width="3" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Reprint Risk Predictor</h3>
+                    <span class="tool-tier pro">PRO</span>
+                    <p class="tool-description">
+                        AI-powered reprint probability analysis to protect your investments from value-destroying reprints.
+                    </p>
+                    <a href="tool-reprint-risk.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 30 70 L 30 50 L 45 35 L 60 50 L 60 70" stroke-width="3" />
+                            <line x1="45" y1="35" x2="45" y2="70" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Tax Loss Harvesting Calculator</h3>
+                    <span class="tool-tier pro">PRO</span>
+                    <p class="tool-description">
+                        Identify cards with losses and calculate tax savings. The only TCG tax tool on the market.
+                    </p>
+                    <a href="tool-tax-harvesting.html" class="btn-tool">Launch Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="30" />
+                            <circle cx="50" cy="50" r="20" />
+                            <circle cx="50" cy="50" r="10" />
+                        </svg>
+                    </div>
+                    <h3 class="tool-title">Collection Diversification Analyzer</h3>
+                    <span class="tool-tier pro">PRO</span>
+                    <p class="tool-description">
+                        Apply Modern Portfolio Theory to your TCG collection with risk scores and rebalancing recommendations.
+                    </p>
+                    <a href="tool-diversification.html" class="btn-tool">Launch Tool</a>
+                </div>
+            </div>
+
+            <div class="view-all-tools">
+                <a href="tools.html" class="btn-view-all">View All Tools →</a>
+            </div>
+        </section>
 
         <!-- Latest Intel Section -->
         <section class="intel-section" id="intel">
@@ -1059,53 +1441,35 @@
             </div>
         </section>
 
-        <!-- Free Tools Section -->
-        <section class="tools-section" id="tools">
+        <!-- Collectr Integration Section -->
+        <section class="tools-section" id="collectr-integration">
             <div class="section-header">
-                <h2 class="section-title">Free Collector Tools</h2>
-                <p class="section-subtitle">Simple, powerful tools for serious collectors</p>
+                <h2 class="section-title">Portfolio Integration</h2>
+                <p class="section-subtitle">Connect your existing portfolio for personalized insights</p>
             </div>
 
-            <div class="tools-grid">
-                <!-- Tool 1: Trade Calculator -->
-                <div class="tool-card">
-                    <div class="tool-icon">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="tool-card" style="text-align: center; background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(147, 51, 234, 0.05)); border: 2px solid rgba(0, 217, 255, 0.3);">
+                    <div class="tool-icon" style="margin: 0 auto 1.5rem;">
                         <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Money Bag Icon -->
-                            <circle cx="50" cy="65" r="25" />
-                            <path d="M 35 40 Q 50 25 65 40" />
-                            <text x="50" y="72" text-anchor="middle" fill="var(--apex-cyan)" font-size="20" font-weight="bold">$</text>
+                            <!-- Link Icon -->
+                            <path d="M 40 30 L 60 30 A 15 15 0 0 1 60 60 L 40 60" stroke-width="4" />
+                            <path d="M 60 70 L 40 70 A 15 15 0 0 1 40 40 L 60 40" stroke-width="4" />
                         </svg>
                     </div>
-                    <h3 class="tool-title">Trade Value Calculator</h3>
-                    <p class="tool-description">
-                        Calculate fair trade values with real-time pricing data.
-                        Perfect for trades and negotiations.
+                    <h3 class="tool-title" style="font-size: 1.75rem;">Connect to Collectr</h3>
+                    <p class="tool-description" style="font-size: 1.125rem; margin-bottom: 2rem;">
+                        Already using Collectr for portfolio tracking? Import your portfolio to unlock personalized market insights and AI-powered recommendations based on your actual collection.
                     </p>
-                    <a href="tool-calculator.html" class="btn-tool">Launch Tool</a>
-                </div>
-
-                <!-- Tool 2: Portfolio Tracker -->
-                <div class="tool-card">
-                    <div class="tool-icon">
-                        <svg class="holographic-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Chart Icon -->
-                            <polyline points="10,80 30,60 50,70 70,40 90,50" />
-                            <circle cx="10" cy="80" r="4" fill="var(--apex-cyan)" />
-                            <circle cx="30" cy="60" r="4" fill="var(--apex-cyan)" />
-                            <circle cx="50" cy="70" r="4" fill="var(--apex-cyan)" />
-                            <circle cx="70" cy="40" r="4" fill="var(--apex-cyan)" />
-                            <circle cx="90" cy="50" r="4" fill="var(--apex-cyan)" />
-                            <line x1="10" y1="90" x2="90" y2="90" />
-                            <line x1="10" y1="20" x2="10" y2="90" />
-                        </svg>
+                    <div style="padding: 1.5rem; background: rgba(0, 217, 255, 0.05); border-radius: 8px; margin-bottom: 2rem;">
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem;">
+                            🔗 Integration Coming Soon
+                        </p>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                            We're partnering with Collectr to bring you seamless portfolio sync. Join our waitlist to be notified when this feature launches.
+                        </p>
                     </div>
-                    <h3 class="tool-title">Portfolio Tracker</h3>
-                    <p class="tool-description">
-                        Track your collection's value over time.
-                        Simple interface, powerful insights.
-                    </p>
-                    <a href="tool-tracker.html" class="btn-tool">Launch Tool</a>
+                    <a href="#subscribe" class="btn-tool" style="max-width: 300px; margin: 0 auto;">Join Waitlist</a>
                 </div>
             </div>
         </section>
@@ -1504,6 +1868,123 @@
             } else {
                 console.warn('⚠️ Articles database not found or intel-grid missing');
             }
+        });
+    </script>
+
+    <!-- Mobile Hamburger Menu JavaScript -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+        });
+
+        mobileMenuOverlay.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+        });
+
+        // Close menu when clicking on a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+            });
+        });
+    </script>
+
+    <!-- Custom Cursor JavaScript (Desktop Only) -->
+    <script>
+        if (window.innerWidth > 768) {
+            const cursor = document.getElementById('customCursor');
+            const follower = document.getElementById('cursorFollower');
+
+            let mouseX = 0;
+            let mouseY = 0;
+            let followerX = 0;
+            let followerY = 0;
+
+            // Track mouse position
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+                // Main cursor follows instantly
+                cursor.style.left = mouseX + 'px';
+                cursor.style.top = mouseY + 'px';
+            });
+
+            // Delayed follower cursor with smooth easing
+            function animateFollower() {
+                // Smooth easing animation
+                const speed = 0.15;
+                followerX += (mouseX - followerX) * speed;
+                followerY += (mouseY - followerY) * speed;
+
+                follower.style.left = followerX + 'px';
+                follower.style.top = followerY + 'px';
+
+                requestAnimationFrame(animateFollower);
+            }
+            animateFollower();
+
+            // Expand follower on hover over interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, .search-filter-tag, .tool-card, .intel-card, input');
+
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    follower.classList.add('hover');
+                });
+                element.addEventListener('mouseleave', function() {
+                    follower.classList.remove('hover');
+                });
+            });
+        }
+    </script>
+
+    <!-- Enhanced Filter Tabs with URL Parameters -->
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterParam = urlParams.get('filter');
+
+        // Set active filter from URL parameter
+        if (filterParam && filterParam !== 'all') {
+            const filterTags = document.querySelectorAll('.search-filter-tag');
+            filterTags.forEach(tag => {
+                tag.classList.remove('active');
+                if (tag.getAttribute('data-filter') === filterParam) {
+                    tag.classList.add('active');
+                    currentFilter = filterParam;
+                }
+            });
+            // Trigger filter
+            performSearchWithAI();
+        }
+
+        // Update URL when filter changes
+        const originalFilterTags = document.querySelectorAll('.search-filter-tag');
+        originalFilterTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                // Update URL with query parameter
+                if (filter === 'all') {
+                    // Remove filter parameter for 'all'
+                    const newUrl = window.location.pathname;
+                    window.history.pushState({}, '', newUrl);
+                } else {
+                    const newUrl = `${window.location.pathname}?filter=${filter}`;
+                    window.history.pushState({}, '', newUrl);
+                }
+            });
         });
     </script>
 </body>
