@@ -1,0 +1,13 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="holographic-portfolio" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF00FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9333EA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="24" y="32" width="80" height="64" rx="4" fill="none" stroke="url(#holographic-portfolio)" stroke-width="3"/>
+  <line x1="32" y1="48" x2="96" y2="48" stroke="url(#holographic-portfolio)" stroke-width="2"/>
+  <line x1="32" y1="64" x2="80" y2="64" stroke="url(#holographic-portfolio)" stroke-width="2"/>
+  <line x1="32" y1="80" x2="88" y2="80" stroke="url(#holographic-portfolio)" stroke-width="2"/>
+</svg>

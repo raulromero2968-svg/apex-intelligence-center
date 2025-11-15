@@ -186,7 +186,7 @@ export default function HomePage() {
                 Professional-grade tools for TCG market analysis and portfolio management
               </p>
             </div>
-            <ToolCarousel tools={tools} />
+            <ToolCarousel />
           </section>
 
           {/* Footer Spacing */}
