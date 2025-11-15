@@ -33,7 +33,6 @@ export default function RootLayout({
           position="bottom-right"
           duration={5000}
           closeButton
-          pauseWhenPageIsHidden
           toastOptions={{
             classNames: {
               toast: 'glass-dark border-cyan-400 shadow-lg shadow-cyan-400/20',

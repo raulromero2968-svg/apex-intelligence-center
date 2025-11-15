@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -27,7 +27,7 @@ interface ArticleFilterProps {
   articles: Article[];
 }
 
-export default function ArticleFilter({ articles }: ArticleFilterProps) {
+function ArticleFilterContent({ articles }: ArticleFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<Category>('all');
@@ -147,5 +147,13 @@ export default function ArticleFilter({ articles }: ArticleFilterProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ArticleFilter({ articles }: ArticleFilterProps) {
+  return (
+    <Suspense fallback={<div className="w-full">Loading filters...</div>}>
+      <ArticleFilterContent articles={articles} />
+    </Suspense>
   );
 }
