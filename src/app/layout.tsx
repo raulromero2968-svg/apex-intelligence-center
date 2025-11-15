@@ -6,6 +6,7 @@ import BackgroundStack from '@/components/fx/BackgroundStack';
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 import { TopBanner } from '@/components/nav/TopBanner';
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
@@ -45,8 +46,11 @@ export default function RootLayout({
         {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
         <BackgroundStack />
 
+        {/* Theme Toggle */}
+        <ThemeToggle />
+
         {/* Main Content */}
-        <main className="relative z-10 pt-16" id="main">
+        <main className="relative z-10 pt-20" id="main">
           {children}
         </main>
 

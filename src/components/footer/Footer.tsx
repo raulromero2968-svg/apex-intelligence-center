@@ -6,7 +6,10 @@ export const Footer = () => {
     <footer className="bg-black/40 border-t border-cyan-500/20 mt-24" role="contentinfo">
       {/* Connect to Collectr */}
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto text-center bg-gradient-to-br from-cyan-500/10 to-fuchsia-500/10 border border-cyan-500/30 rounded-2xl p-12">
+        <div className="relative z-10 max-w-3xl mx-auto text-center bg-gradient-to-br from-cyan-500/20 to-purple-500/20 backdrop-blur-xl border border-cyan-500/50 rounded-2xl p-12 shadow-2xl" style={{
+          background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.25) 0%, rgba(138, 43, 226, 0.25) 100%)',
+          backdropFilter: 'blur(20px)',
+        }}>
           <div className="w-16 h-16 mx-auto mb-6 border-2 border-cyan-400 rounded-full flex items-center justify-center" aria-hidden="true">
             <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
