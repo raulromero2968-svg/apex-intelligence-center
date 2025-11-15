@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
-import { AnimatedBackground } from '@/components/background/AnimatedBackground';
+import BackgroundFX from '@/components/fx/BackgroundFX';
+import CursorFX from '@/components/fx/CursorFX';
 import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
@@ -16,14 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="font-sans">
+    <html lang="en" className="h-full">
+      <body className="min-h-dvh font-sans antialiased [cursor:none] md:[cursor:none] [&_a]:cursor-none [&_button]:cursor-none [&_input]:cursor-text">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
           Skip to main content
         </a>
 
-        {/* Animated Background */}
-        <AnimatedBackground />
+        {/* New Background FX */}
+        <BackgroundFX />
+
+        {/* Custom Cursor */}
+        <CursorFX />
 
         {/* Main Content */}
         <div className="relative z-10" id="main">

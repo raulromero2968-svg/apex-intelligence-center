@@ -9,7 +9,7 @@ interface SearchBarProps {
 
 export default function SearchBar({
   onSearch,
-  placeholder = "Ask me anything or search our intelligence... (e.g., 'Should I invest in One Piece cards?')"
+  placeholder = ""
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -61,7 +61,11 @@ export default function SearchBar({
     <form
       onSubmit={handleSearch}
       className="relative w-full max-w-2xl mx-auto"
+      role="search"
     >
+      <label htmlFor="site-search" className="sr-only">
+        Search Apex Intelligence
+      </label>
       <div className="relative">
         {/* Search Icon */}
         <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -82,6 +86,7 @@ export default function SearchBar({
 
         {/* Input */}
         <input
+          id="site-search"
           ref={inputRef}
           type="text"
           value={query}
@@ -89,6 +94,7 @@ export default function SearchBar({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
+          aria-placeholder=""
           className={`
             w-full h-14 pl-12 pr-20 rounded-lg
             bg-white/5 backdrop-blur-sm
