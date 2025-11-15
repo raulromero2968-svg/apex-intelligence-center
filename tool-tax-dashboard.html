@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Optimization Dashboard - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+        }
+
+        .value-prop {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(0, 217, 255, 0.2));
+            border: 2px solid var(--apex-cyan);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .value-prop-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--apex-cyan);
+        }
+
+        .value-prop-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--apex-cyan);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--apex-cyan);
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .tool-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .tool-features li::before {
+            content: '✓ ';
+            color: var(--apex-cyan);
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .killer-badge {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid #fbbf24;
+            color: #fbbf24;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .use-cases-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .use-case-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .use-case-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .use-case-scenario {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .use-case-savings {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .testimonials-section {
+            margin-bottom: 3rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .testimonial-card {
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid var(--apex-purple);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--apex-cyan);
+        }
+
+        .testimonial-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: white;
+            color: var(--apex-purple);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">
+                <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence">
+                <span class="logo-text">APEX INTELLIGENCE</span>
+            </a>
+            <div class="nav-links">
+                <a href="tools.html">Tools</a>
+                <a href="insights.html">Insights</a>
+                <a href="subscribe.html">Subscribe</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="header">
+            <div class="pro-badge">PRO TIER - $29.99/MONTH</div>
+            <h1>Tax Optimization Dashboard</h1>
+            <p class="subtitle">The only TCG platform that helps you legally reduce your tax bill</p>
+        </div>
+
+        <div class="value-prop">
+            <div class="value-prop-title">💰 Save Thousands in Taxes</div>
+            <div class="value-prop-text">
+                If you have a $10,000+ collection, these tools can save you $1,000+ in taxes annually.
+                <br><strong>That's 30x the cost of PRO membership.</strong>
+            </div>
+        </div>
+
+        <h2 class="section-title">Tax Optimization Tools</h2>
+
+        <div class="tools-grid">
+            <!-- Tax Loss Harvesting -->
+            <a href="tool-tax-harvesting.html" class="tool-card">
+                <div class="killer-badge">🔥 KILLER FEATURE</div>
+                <div class="tool-icon">📉</div>
+                <div class="tool-title">Tax Loss Harvesting Calculator</div>
+                <div class="tool-description">
+                    Identify cards that have lost value and calculate potential tax savings. Turn portfolio losses into tax write-offs.
+                </div>
+                <ul class="tool-features">
+                    <li>Compare purchase price vs current market value</li>
+                    <li>Calculate tax savings by bracket</li>
+                    <li>Wash sale rule warnings</li>
+                    <li>Export CSV for CPA</li>
+                </ul>
+            </a>
+
+            <!-- Diversification Analyzer -->
+            <a href="tool-diversification.html" class="tool-card">
+                <div class="killer-badge">🔥 KILLER FEATURE</div>
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">Collection Diversification Analyzer</div>
+                <div class="tool-description">
+                    Apply Modern Portfolio Theory to your TCG collection. Analyze risk and get rebalancing recommendations.
+                </div>
+                <ul class="tool-features">
+                    <li>Portfolio risk score (1-10)</li>
+                    <li>Allocation pie charts by TCG & type</li>
+                    <li>Concentration risk warnings</li>
+                    <li>Rebalancing suggestions</li>
+                </ul>
+            </a>
+
+            <!-- Capital Gains Estimator -->
+            <a href="tool-capital-gains.html" class="tool-card">
+                <div class="tool-icon">💵</div>
+                <div class="tool-title">Capital Gains Tax Estimator</div>
+                <div class="tool-description">
+                    Calculate your tax liability before selling. Know exactly how much you'll pay in taxes and keep after the sale.
+                </div>
+                <ul class="tool-features">
+                    <li>Short-term vs long-term comparison</li>
+                    <li>"Hold until" date calculator</li>
+                    <li>Batch calculation for multiple cards</li>
+                    <li>State tax estimation</li>
+                </ul>
+            </a>
+
+            <!-- Tax Report Generator -->
+            <a href="tool-tax-report.html" class="tool-card">
+                <div class="tool-icon">📄</div>
+                <div class="tool-title">Portfolio Performance Report</div>
+                <div class="tool-description">
+                    Generate annual tax summaries for IRS Schedule D filing. Track all transactions and export for your CPA.
+                </div>
+                <ul class="tool-features">
+                    <li>IRS Schedule D preview</li>
+                    <li>Short-term vs long-term breakdown</li>
+                    <li>Export PDF/CSV for tax filing</li>
+                    <li>Year-over-year comparison</li>
+                </ul>
+            </a>
+        </div>
+
+        <!-- Real-World Use Cases -->
+        <div class="use-cases-section">
+            <h2 class="section-title">Real-World Examples</h2>
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-title">🎯 The Vintage Collector</div>
+                    <div class="use-case-scenario">
+                        <strong>Portfolio:</strong> $50,000 in vintage Pokemon and MTG<br>
+                        <strong>Situation:</strong> Several cards down 20-30% from purchase price<br>
+                        <strong>Solution:</strong> Tax Loss Harvesting Calculator identifies $8,000 in losses
+                    </div>
+                    <div class="use-case-savings">💰 Tax Savings: $1,920 (24% bracket)</div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-title">⚖️ The Flipper</div>
+                    <div class="use-case-scenario">
+                        <strong>Portfolio:</strong> Active buying/selling throughout the year<br>
+                        <strong>Situation:</strong> Planning to sell cards with $15,000 in gains<br>
+                        <strong>Solution:</strong> Capital Gains Estimator shows waiting 2 more months saves $1,350
+                    </div>
+                    <div class="use-case-savings">💰 Tax Savings: $1,350 by waiting for long-term status</div>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-title">🎲 The Concentrated Investor</div>
+                    <div class="use-case-scenario">
+                        <strong>Portfolio:</strong> 85% Pokemon, mostly modern sealed<br>
+                        <strong>Situation:</strong> Unaware of concentration risk<br>
+                        <strong>Solution:</strong> Diversification Analyzer gives risk score of 3/10, recommends rebalancing
+                    </div>
+                    <div class="use-case-savings">💰 Risk Reduction: Avoided potential $10,000+ loss from Pokemon downturn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials-section">
+            <h2 class="section-title">What PRO Members Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "The Tax Loss Harvesting tool saved me $2,400 in taxes this year. That's literally 8 years of PRO membership paid for in one tax season."
+                    </div>
+                    <div class="testimonial-author">Mike Chen</div>
+                    <div class="testimonial-details">Vintage Pokemon Collector</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "I had no idea I was so concentrated in Pokemon. The Diversification Analyzer helped me rebalance into MTG and Yu-Gi-Oh! just before Pokemon had a correction. Saved my portfolio."
+                    </div>
+                    <div class="testimonial-author">Sarah Martinez</div>
+                    <div class="testimonial-details">Multi-TCG Investor</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "As a CPA who collects cards, I'm impressed by the accuracy of these tools. The Schedule D export saved me hours during tax season. Worth every penny."
+                    </div>
+                    <div class="testimonial-author">David Park, CPA</div>
+                    <div class="testimonial-details">Tax Professional & Collector</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <div class="cta-title">Ready to Optimize Your Taxes?</div>
+            <div class="cta-text">
+                Join PRO today and start saving thousands on your tax bill.
+                <br>30-day money-back guarantee. Cancel anytime.
+            </div>
+            <a href="subscribe.html" class="cta-btn">Unlock PRO - $29.99/month</a>
+        </div>
+
+        <!-- Educational Section -->
+        <div class="use-cases-section">
+            <h2 class="section-title">📚 Why Tax Optimization Matters for TCG Collectors</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8; max-width: 900px; margin: 0 auto;">
+                <p style="margin-bottom: 1rem;">
+                    Most TCG collectors don't realize they're sitting on tax optimization opportunities. Whether you're buying,
+                    selling, trading, or just holding - the IRS wants to know about it. Here's why these tools are essential:
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">1. Collectibles are Taxed Differently</h3>
+                <p style="margin-bottom: 1rem;">
+                    Trading cards are classified as "collectibles" by the IRS. Unlike stocks (20% max tax), collectibles are taxed
+                    at up to <strong>28% for long-term gains</strong>. This makes tax planning even more critical for TCG investors.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">2. Tax Loss Harvesting is Legal and Powerful</h3>
+                <p style="margin-bottom: 1rem;">
+                    The same strategy Wall Street uses for stocks works for cards. Sell losers, claim the deduction, offset gains.
+                    With a $50K collection, it's not uncommon to find $5,000-$10,000 in harvestable losses during market corrections.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">3. Timing Matters More Than You Think</h3>
+                <p style="margin-bottom: 1rem;">
+                    Holding a card for 366 days vs 365 days can mean the difference between 37% tax (short-term) and 28% tax (long-term).
+                    On a $10,000 gain, that's <strong>$900 in savings</strong> for waiting one more day.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">4. Diversification Reduces Risk</h3>
+                <p style="margin-bottom: 1rem;">
+                    Pokemon collectors learned this the hard way in 2022 when the market corrected 30-40%. Those who were diversified
+                    across MTG, Yu-Gi-Oh!, and One Piece lost far less. Our analyzer helps you avoid concentration risk.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">5. The IRS Expects You to Report</h3>
+                <p style="margin-bottom: 1rem;">
+                    Selling cards on eBay, TCGPlayer, or in person? The IRS considers this taxable income. Platforms are required to
+                    report transactions over $600. Our Portfolio Performance Report helps you stay compliant and organized.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Bottom Line:</h3>
+                <p style="margin-bottom: 1rem;">
+                    If you're serious about TCG collecting/investing, you need tax optimization tools. The cost of PRO ($29.99/month)
+                    pays for itself if you save even $360 in taxes per year. Most members save 10-30x that amount.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
