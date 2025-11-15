@@ -8,12 +8,21 @@ import { AuroraBorealis } from './AuroraBorealis';
 
 export const AnimatedBackground = () => {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-      <GridPattern />
-      <Starfield />
+    <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Layer 1: Aurora (deepest) */}
       <AuroraBorealis />
-      <NeonSquares />
+      
+      {/* Layer 2: Grid */}
+      <GridPattern />
+      
+      {/* Layer 3: Starfield */}
+      <Starfield />
+      
+      {/* Layer 4: Matrix River */}
       <MatrixRiver />
+      
+      {/* Layer 5: Neon Squares (front) */}
+      <NeonSquares />
     </div>
   );
 };

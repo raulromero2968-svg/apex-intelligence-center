@@ -44,3 +44,13 @@
   .btn-cyan:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .btn-cyan { transition-duration: 0.01ms; } }
 }
+
+/* Hide default cursor globally */
+* {
+  cursor: none !important;
+}
+
+/* But show default cursor on inputs/buttons for usability */
+input, textarea, button, a {
+  cursor: none !important;
+}

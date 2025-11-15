@@ -3,8 +3,9 @@ import { Toaster } from 'sonner';
 import AuroraFX from '@/components/fx/AuroraFX';
 import BackgroundFX from '@/components/fx/BackgroundFX';
 import BackgroundStack from '@/components/fx/BackgroundStack';
-import CursorFX from '@/components/fx/CursorFX';
+import { CustomCursor } from '@/components/cursor/CustomCursor';
 import { TopBanner } from '@/components/nav/TopBanner';
+import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
@@ -21,13 +22,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-dvh font-sans antialiased [cursor:none] md:[cursor:none] [&_a]:cursor-none [&_button]:cursor-none [&_input]:cursor-text">
+      <body className="min-h-dvh font-sans antialiased cursor-none">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
           Skip to main content
         </a>
 
+        {/* Custom Cursor */}
+        <CustomCursor />
+
         {/* Top Banner */}
         <TopBanner />
+
+        {/* Animated Background */}
+        <AnimatedBackground />
 
         {/* Aurora Background */}
         <AuroraFX />
@@ -37,9 +44,6 @@ export default function RootLayout({
 
         {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
         <BackgroundStack />
-
-        {/* Custom Cursor */}
-        <CursorFX />
 
         {/* Main Content */}
         <main className="relative z-10 pt-16" id="main">
