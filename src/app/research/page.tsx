@@ -1,7 +1,17 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 
-const items = [
+type ArticleItem = {
+  href: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  read: string;
+  tags: string[];
+  badge?: "PRO" | "PREMIUM";
+};
+
+const items: ArticleItem[] = [
   {
     href: "/research/psa-vs-bgs-2025-roi",
     title: "Grading Strategy 2025: PSA vs BGS Comprehensive ROI Analysis",

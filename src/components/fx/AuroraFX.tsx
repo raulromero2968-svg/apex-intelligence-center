@@ -8,7 +8,7 @@ export default function AuroraFX() {
   const common = {
     transition: {
       duration: 70,         // super slow
-      ease: [0.42, 0, 0.58, 1],
+      ease: [0.42, 0, 0.58, 1] as const,
       repeat: Infinity,
       repeatType: "mirror" as const,
     },
