@@ -123,9 +123,6 @@ export default function HomePage() {
   return (
     <RouteTransition>
       <div className="min-h-screen">
-        {/* Navigation */}
-        <MobileNav links={navLinks} />
-
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section */}

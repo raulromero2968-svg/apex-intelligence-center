@@ -32,14 +32,14 @@ export const MatrixRiver = () => {
       // Random spacing between 15-40px (creates uneven columns)
       const spacing = Math.random() * 25 + 15;
       
-      // ONLY left side (remove right side condition)
-      if (xPos < canvas.width * 0.15) { // Changed from 0.2 to 0.15 for narrower column
+      // LEFT side (first 15%) AND RIGHT side (last 10%, pushed to edge)
+      if (xPos < canvas.width * 0.15 || xPos > canvas.width * 0.90) {
         columnSpacing.push(xPos);
         
-        // Random color: cyan or purple/magenta
-        const color = Math.random() > 0.5 
-          ? `rgba(0, 255, 255, ` // Cyan
-          : `rgba(138, 43, 226, `; // Purple
+        // Random color: 60% cyan, 40% purple
+        const color = Math.random() > 0.4 // Changed from 0.5 to 0.4 (60% cyan, 40% purple)
+          ? `rgba(0, 255, 255, ` // Cyan (60%)
+          : `rgba(138, 43, 226, `; // Purple (40%)
         
         drops.push({
           y: Math.random() * -canvas.height, // Start above screen

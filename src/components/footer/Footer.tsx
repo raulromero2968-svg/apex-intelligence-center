@@ -3,113 +3,113 @@ import Link from 'next/link';
 
 export const Footer = () => {
   return (
-    <footer className="bg-black/40 border-t border-cyan-500/20 mt-24" role="contentinfo">
+    <footer 
+      className="relative mt-20 border-t border-cyan-500/20"
+      style={{
+        background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 20%, rgba(0, 0, 0, 0.9) 100%)',
+      }}
+      role="contentinfo"
+    >
       {/* Connect to Collectr */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="relative z-10 max-w-3xl mx-auto text-center bg-gradient-to-br from-cyan-500/20 to-purple-500/20 backdrop-blur-xl border border-cyan-500/50 rounded-2xl p-12 shadow-2xl" style={{
-          background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.25) 0%, rgba(138, 43, 226, 0.25) 100%)',
-          backdropFilter: 'blur(20px)',
-        }}>
-          <div className="w-16 h-16 mx-auto mb-6 border-2 border-cyan-400 rounded-full flex items-center justify-center" aria-hidden="true">
-            <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+      <div className="container mx-auto px-6 py-16">
+        <div className="relative max-w-2xl mx-auto">
+          {/* Card with stronger background */}
+          <div 
+            className="relative z-10 rounded-2xl p-10 border border-cyan-500/30"
+            style={{
+              background: 'linear-gradient(135deg, rgba(6, 78, 99, 0.85) 0%, rgba(88, 28, 135, 0.85) 100%)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 20px 60px rgba(0, 255, 255, 0.15)',
+            }}
+          >
+            {/* Collectr content */}
+            <div className="flex flex-col items-center text-center">
+              {/* Icon */}
+              <div className="w-16 h-16 rounded-full bg-cyan-500/20 flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              
+              <h2 className="text-3xl font-bold text-white mb-4">Connect to Collectr</h2>
+              
+              <p className="text-gray-300 mb-6 max-w-lg">
+                Already using Collectr for portfolio tracking? Import your portfolio to unlock personalized market insights and AI-powered recommendations based on your actual collection.
+              </p>
+              
+              {/* Integration Coming Soon */}
+              <div className="flex items-center gap-2 text-cyan-400 mb-6">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+                <span className="text-sm">Integration Coming Soon</span>
+              </div>
+              
+              <p className="text-gray-400 text-sm mb-8 max-w-md">
+                We&apos;re partnering with Collectr to bring you seamless portfolio sync. Join our waitlist to be notified when this feature launches.
+              </p>
+              
+              <button className="bg-transparent hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500 font-semibold px-8 py-3 rounded-lg transition-all">
+                Join Waitlist
+              </button>
+            </div>
           </div>
-
-          <h2 className="text-3xl font-bold mb-4">Connect to Collectr</h2>
-          <p className="text-gray-400 mb-6">
-            Already using Collectr for portfolio tracking? Import your portfolio to unlock personalized market insights and AI-powered recommendations based on your actual collection.
-          </p>
-
-          <div className="mb-6">
-            <p className="text-sm text-gray-500 mb-2">🔗 Integration Coming Soon</p>
-            <p className="text-sm text-gray-400">
-              We&apos;re partnering with Collectr to bring you seamless portfolio sync. Join our waitlist to be notified when this feature launches.
-            </p>
-          </div>
-
-          <button className="bg-transparent border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-bold px-8 py-3 rounded-lg transition-all min-h-[44px]" aria-label="Join waitlist">
-            Join Waitlist
-          </button>
         </div>
       </div>
 
-      {/* Weekly Intel */}
-      <div className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-3xl font-bold mb-4">Get Weekly Intel</h2>
-        <p className="text-gray-400 mb-8">Free market analysis and insights delivered to your inbox every week</p>
-        <Link href="/subscribe" className="btn-cyan" aria-label="Subscribe for free">Subscribe for Free →</Link>
-      </div>
-
-      {/* Footer Links */}
-      <div className="container mx-auto px-4 py-12 border-t border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          {/* Apex Intelligence Column */}
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Apex Intelligence</h3>
-            <p className="text-gray-400 text-sm">Underground intelligence for serious TCG collectors and investors.</p>
+            <p className="text-gray-400 text-sm">
+              Underground intelligence for serious TCG collectors and investors.
+            </p>
           </div>
-
+          
+          {/* Quick Links Column */}
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link href="/intel" className="hover:text-cyan-400 transition-colors">Intel</Link></li>
-              <li><Link href="/about" className="hover:text-cyan-400 transition-colors">About</Link></li>
-              <li><Link href="/apex-omnis-studios" className="hover:text-cyan-400 transition-colors">Apex Omnis Studios</Link></li>
-              <li><Link href="/apex-commons" className="hover:text-cyan-400 transition-colors">Apex Commons</Link></li>
+            <ul className="space-y-2">
+              <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Intel</Link></li>
+              <li><Link href="/about" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">About</Link></li>
+              <li><Link href="/apex-omnis-studios" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Apex Omnis Studios</Link></li>
             </ul>
           </div>
-
+          
+          {/* Legal Column */}
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Legal</h3>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link href="/privacy" className="hover:text-cyan-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-cyan-400 transition-colors">Terms of Service</Link></li>
-              <li><Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">Disclaimer</Link></li>
-              <li><Link href="/company-info" className="hover:text-cyan-400 transition-colors">Company Info</Link></li>
+            <ul className="space-y-2">
+              <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Terms of Service</Link></li>
+              <li><Link href="/disclaimer" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Disclaimer</Link></li>
             </ul>
           </div>
-
+          
+          {/* Connect Column */}
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
             <div className="flex gap-4">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Join our Discord"
-                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
-              >
-                <MessageCircle className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
+              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+                <MessageCircle className="w-5 h-5 text-cyan-400" />
               </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on Twitter"
-                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
-              >
-                <Twitter className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
+              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+                <Twitter className="w-5 h-5 text-cyan-400" />
               </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on Instagram"
-                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
-              >
-                <Instagram className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
+              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+                <Instagram className="w-5 h-5 text-cyan-400" />
               </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Connect on LinkedIn"
-                className="group inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-cyan-400/30 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-cyan-400/60 hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
-              >
-                <Linkedin className="h-5 w-5 text-cyan-400 transition-opacity group-hover:opacity-90" aria-hidden="true" />
+              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+                <Linkedin className="w-5 h-5 text-cyan-400" />
               </a>
             </div>
           </div>
+        </div>
+        
+        {/* Bottom bar */}
+        <div className="pt-8 border-t border-cyan-500/20 text-center text-gray-500 text-sm">
+          © 2025 Apex Intelligence. All rights reserved.
         </div>
       </div>
     </footer>
