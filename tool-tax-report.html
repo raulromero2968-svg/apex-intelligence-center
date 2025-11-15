@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Performance Report - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --gain-green: #22c55e;
+            --loss-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .year-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .year-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .year-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        .year-btn.active {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            border-color: var(--apex-cyan);
+        }
+
+        .add-transaction-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: white;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--apex-cyan);
+            color: var(--apex-cyan);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--loss-red);
+            color: var(--loss-red);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+        }
+
+        .summary-value.positive {
+            color: var(--gain-green);
+        }
+
+        .summary-value.negative {
+            color: var(--loss-red);
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .transactions-table th {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            color: var(--apex-cyan);
+            font-weight: 600;
+            border-bottom: 2px solid var(--apex-cyan);
+        }
+
+        .transactions-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .gain {
+            color: var(--gain-green);
+            font-weight: 700;
+        }
+
+        .loss {
+            color: var(--loss-red);
+            font-weight: 700;
+        }
+
+        .breakdown-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .breakdown-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .breakdown-title {
+            color: var(--apex-cyan);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-d-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        .schedule-d-title {
+            color: var(--apex-cyan);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .schedule-d-line {
+            padding: 0.25rem 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .add-transaction-form {
+                grid-template-columns: 1fr;
+            }
+
+            .breakdown-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body::before {
+                display: none;
+            }
+            .nav {
+                display: none;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">
+                <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence">
+                <span class="logo-text">APEX INTELLIGENCE</span>
+            </a>
+            <div class="nav-links">
+                <a href="tools.html">Tools</a>
+                <a href="insights.html">Insights</a>
+                <a href="subscribe.html">Subscribe</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="header">
+            <div class="pro-badge">PRO TIER EXCLUSIVE</div>
+            <h1>Portfolio Performance Report</h1>
+            <p class="subtitle">Annual tax summary for IRS Schedule D filing</p>
+        </div>
+
+        <!-- Year Selector -->
+        <div class="section">
+            <h2 class="section-title">Select Tax Year</h2>
+            <div class="year-selector">
+                <button class="year-btn" onclick="selectYear(2022)">2022</button>
+                <button class="year-btn" onclick="selectYear(2023)">2023</button>
+                <button class="year-btn active" onclick="selectYear(2024)">2024</button>
+                <button class="year-btn" onclick="selectYear(2025)">2025</button>
+            </div>
+        </div>
+
+        <!-- Add Transactions -->
+        <div class="section">
+            <h2 class="section-title">Transaction History</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Add all card sales for the selected tax year. This will generate your Schedule D summary.
+            </p>
+
+            <div class="add-transaction-form">
+                <div class="input-group">
+                    <label for="cardName">Card Name</label>
+                    <input type="text" id="cardName" placeholder="Card name">
+                </div>
+                <div class="input-group">
+                    <label for="purchaseDate">Purchase Date</label>
+                    <input type="date" id="purchaseDate">
+                </div>
+                <div class="input-group">
+                    <label for="saleDate">Sale Date</label>
+                    <input type="date" id="saleDate">
+                </div>
+                <div class="input-group">
+                    <label for="purchasePrice">Purchase Price ($)</label>
+                    <input type="number" id="purchasePrice" placeholder="100" min="0" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="salePrice">Sale Price ($)</label>
+                    <input type="number" id="salePrice" placeholder="150" min="0" step="0.01">
+                </div>
+                <button class="btn btn-primary" onclick="addTransaction()">Add</button>
+            </div>
+
+            <div id="transactionsContainer">
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No transactions yet</h3>
+                    <p>Add your card sales to generate your annual tax report</p>
+                </div>
+
+                <table class="transactions-table" id="transactionsTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>Card Name</th>
+                            <th>Purchase Date</th>
+                            <th>Sale Date</th>
+                            <th>Purchase Price</th>
+                            <th>Sale Price</th>
+                            <th>Gain/Loss</th>
+                            <th>Type</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="section" id="summarySection" style="display:none;">
+            <h2 class="section-title">Annual Summary (<span id="summaryYear">2024</span>)</h2>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Total Transactions</div>
+                    <div class="summary-value" id="totalTransactions">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Revenue</div>
+                    <div class="summary-value" id="totalRevenue">$0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Cost Basis</div>
+                    <div class="summary-value" id="totalCost">$0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Net Gain/Loss</div>
+                    <div class="summary-value" id="netGainLoss">$0</div>
+                </div>
+            </div>
+
+            <!-- Breakdown -->
+            <div class="breakdown-section">
+                <div class="breakdown-card">
+                    <div class="breakdown-title">Short-term (≤ 1 year)</div>
+                    <div class="breakdown-item">
+                        <span>Transactions:</span>
+                        <strong id="shortTermCount">0</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Proceeds:</span>
+                        <strong id="shortTermProceeds">$0</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Cost Basis:</span>
+                        <strong id="shortTermCost">$0</strong>
+                    </div>
+                    <div class="breakdown-item" style="border-top: 2px solid var(--apex-cyan); margin-top: 0.5rem; padding-top: 0.75rem;">
+                        <span>Net Short-term Gain/Loss:</span>
+                        <strong id="shortTermNet" class="gain">$0</strong>
+                    </div>
+                </div>
+
+                <div class="breakdown-card">
+                    <div class="breakdown-title">Long-term (> 1 year)</div>
+                    <div class="breakdown-item">
+                        <span>Transactions:</span>
+                        <strong id="longTermCount">0</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Proceeds:</span>
+                        <strong id="longTermProceeds">$0</strong>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Cost Basis:</span>
+                        <strong id="longTermCost">$0</strong>
+                    </div>
+                    <div class="breakdown-item" style="border-top: 2px solid var(--apex-cyan); margin-top: 0.5rem; padding-top: 0.75rem;">
+                        <span>Net Long-term Gain/Loss:</span>
+                        <strong id="longTermNet" class="gain">$0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule D Preview -->
+            <div class="schedule-d-preview">
+                <div class="schedule-d-title">IRS Schedule D Preview</div>
+                <div style="color: var(--text-secondary); margin-bottom: 1rem; font-family: 'Inter', sans-serif; font-size: 0.85rem;">
+                    This is a simplified preview. Actual Schedule D filing requires IRS Form 8949 for each transaction.
+                </div>
+                <div class="schedule-d-line">
+                    <span>Part I - Short-Term Capital Gains and Losses</span>
+                </div>
+                <div class="schedule-d-line" style="margin-left: 1rem;">
+                    <span>1d. Short-term gain or (loss):</span>
+                    <strong id="scheduleDShortTerm">$0</strong>
+                </div>
+                <div class="schedule-d-line" style="margin-top: 1rem;">
+                    <span>Part II - Long-Term Capital Gains and Losses</span>
+                </div>
+                <div class="schedule-d-line" style="margin-left: 1rem;">
+                    <span>8d. Long-term gain or (loss):</span>
+                    <strong id="scheduleDLongTerm">$0</strong>
+                </div>
+                <div class="schedule-d-line" style="margin-top: 1rem; border-top: 2px solid var(--apex-cyan); padding-top: 0.5rem;">
+                    <span><strong>16. Total Net Capital Gain or (Loss):</strong></span>
+                    <strong id="scheduleDTotal" style="color: var(--apex-cyan);">$0</strong>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-export" onclick="exportPDF()">📄 Export PDF Report</button>
+                <button class="btn btn-export" onclick="exportCSV()">📊 Export CSV for CPA</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Report</button>
+            </div>
+        </div>
+
+        <!-- Educational Content -->
+        <div class="section">
+            <h2 class="section-title">📚 Understanding IRS Schedule D</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p style="margin-bottom: 1rem;">
+                    <strong>Schedule D</strong> is the IRS form used to report capital gains and losses from the sale of investment property,
+                    including trading cards and collectibles.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">What You Need to File:</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>Form 8949:</strong> Lists each individual transaction (card sale)</li>
+                    <li><strong>Schedule D:</strong> Summarizes totals from Form 8949</li>
+                    <li><strong>Form 1040:</strong> Your main tax return where Schedule D totals transfer</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Key Information for Each Transaction:</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>Description of property (card name and details)</li>
+                    <li>Date acquired (purchase date)</li>
+                    <li>Date sold (sale date)</li>
+                    <li>Sales proceeds (sale price)</li>
+                    <li>Cost basis (purchase price + fees)</li>
+                    <li>Gain or loss (proceeds - cost basis)</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Capital Loss Limitations:</h3>
+                <p style="margin-bottom: 1rem;">
+                    If you have a net capital loss:
+                </p>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>You can deduct up to <strong>$3,000</strong> ($1,500 if married filing separately) against ordinary income</li>
+                    <li>Losses exceeding $3,000 can be <strong>carried forward</strong> to future tax years indefinitely</li>
+                    <li>Capital losses first offset capital gains, then up to $3,000 of ordinary income</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Record Keeping:</h3>
+                <p style="margin-bottom: 1rem;">
+                    The IRS requires you to keep records for at least <strong>3 years</strong> after filing. For collectibles, keep:
+                </p>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>Purchase receipts (eBay invoices, card shop receipts)</li>
+                    <li>Sale receipts (PayPal statements, platform transaction history)</li>
+                    <li>Photos of cards sold (especially high-value items)</li>
+                    <li>Grading invoices (PSA, BGS fees add to cost basis)</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Pro Tips:</h3>
+                <ul style="margin-left: 1.5rem;">
+                    <li>Export this report and give it to your CPA - it has everything they need</li>
+                    <li>File even if you have losses - they reduce your tax bill</li>
+                    <li>Collectibles are taxed at a maximum 28% rate (vs 20% for stocks) if held long-term</li>
+                    <li>Consider using tax software like TurboTax or H&R Block that integrates with Schedule D</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedYear = 2024;
+        let transactions = [];
+
+        // Load saved data
+        function loadTransactions() {
+            const saved = localStorage.getItem('taxReportTransactions');
+            if (saved) {
+                transactions = JSON.parse(saved);
+                updateDisplay();
+            }
+        }
+
+        // Save data
+        function saveTransactions() {
+            localStorage.setItem('taxReportTransactions', JSON.stringify(transactions));
+        }
+
+        // Select year
+        function selectYear(year) {
+            selectedYear = year;
+            document.querySelectorAll('.year-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent == year) {
+                    btn.classList.add('active');
+                }
+            });
+            updateDisplay();
+        }
+
+        // Add transaction
+        function addTransaction() {
+            const cardName = document.getElementById('cardName').value.trim();
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const saleDate = document.getElementById('saleDate').value;
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const salePrice = parseFloat(document.getElementById('salePrice').value);
+
+            if (!cardName || !purchaseDate || !saleDate || isNaN(purchasePrice) || isNaN(salePrice)) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const saleYear = new Date(saleDate).getFullYear();
+
+            transactions.push({
+                id: Date.now(),
+                cardName,
+                purchaseDate,
+                saleDate,
+                saleYear,
+                purchasePrice,
+                salePrice
+            });
+
+            saveTransactions();
+            updateDisplay();
+
+            // Clear form
+            document.getElementById('cardName').value = '';
+            document.getElementById('purchaseDate').value = '';
+            document.getElementById('saleDate').value = '';
+            document.getElementById('purchasePrice').value = '';
+            document.getElementById('salePrice').value = '';
+        }
+
+        // Remove transaction
+        function removeTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveTransactions();
+            updateDisplay();
+        }
+
+        // Calculate days between dates
+        function daysBetween(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+        }
+
+        // Update display
+        function updateDisplay() {
+            const yearTransactions = transactions.filter(t => t.saleYear === selectedYear);
+
+            const tbody = document.getElementById('transactionsBody');
+            const table = document.getElementById('transactionsTable');
+            const emptyState = document.getElementById('emptyState');
+
+            if (yearTransactions.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('summarySection').style.display = 'none';
+                return;
+            }
+
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+            document.getElementById('summarySection').style.display = 'block';
+            document.getElementById('summaryYear').textContent = selectedYear;
+
+            tbody.innerHTML = '';
+
+            yearTransactions.forEach(t => {
+                const gainLoss = t.salePrice - t.purchasePrice;
+                const days = daysBetween(t.purchaseDate, t.saleDate);
+                const isLongTerm = days > 365;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${t.cardName}</td>
+                    <td>${new Date(t.purchaseDate).toLocaleDateString()}</td>
+                    <td>${new Date(t.saleDate).toLocaleDateString()}</td>
+                    <td>$${t.purchasePrice.toFixed(2)}</td>
+                    <td>$${t.salePrice.toFixed(2)}</td>
+                    <td class="${gainLoss >= 0 ? 'gain' : 'loss'}">
+                        ${gainLoss >= 0 ? '+' : ''}$${gainLoss.toFixed(2)}
+                    </td>
+                    <td>${isLongTerm ? 'Long-term' : 'Short-term'}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeTransaction(${t.id})">Remove</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateSummary(yearTransactions);
+        }
+
+        // Update summary
+        function updateSummary(yearTransactions) {
+            let shortTermCount = 0, shortTermProceeds = 0, shortTermCost = 0, shortTermNet = 0;
+            let longTermCount = 0, longTermProceeds = 0, longTermCost = 0, longTermNet = 0;
+
+            yearTransactions.forEach(t => {
+                const days = daysBetween(t.purchaseDate, t.saleDate);
+                const isLongTerm = days > 365;
+                const gain = t.salePrice - t.purchasePrice;
+
+                if (isLongTerm) {
+                    longTermCount++;
+                    longTermProceeds += t.salePrice;
+                    longTermCost += t.purchasePrice;
+                    longTermNet += gain;
+                } else {
+                    shortTermCount++;
+                    shortTermProceeds += t.salePrice;
+                    shortTermCost += t.purchasePrice;
+                    shortTermNet += gain;
+                }
+            });
+
+            const totalRevenue = shortTermProceeds + longTermProceeds;
+            const totalCost = shortTermCost + longTermCost;
+            const netGainLoss = shortTermNet + longTermNet;
+
+            // Total summary
+            document.getElementById('totalTransactions').textContent = yearTransactions.length;
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+
+            const netElement = document.getElementById('netGainLoss');
+            netElement.textContent = (netGainLoss >= 0 ? '+' : '') + '$' + netGainLoss.toFixed(2);
+            netElement.className = 'summary-value ' + (netGainLoss >= 0 ? 'positive' : 'negative');
+
+            // Short-term breakdown
+            document.getElementById('shortTermCount').textContent = shortTermCount;
+            document.getElementById('shortTermProceeds').textContent = '$' + shortTermProceeds.toFixed(2);
+            document.getElementById('shortTermCost').textContent = '$' + shortTermCost.toFixed(2);
+
+            const shortTermNetElement = document.getElementById('shortTermNet');
+            shortTermNetElement.textContent = (shortTermNet >= 0 ? '+' : '') + '$' + shortTermNet.toFixed(2);
+            shortTermNetElement.className = shortTermNet >= 0 ? 'gain' : 'loss';
+
+            // Long-term breakdown
+            document.getElementById('longTermCount').textContent = longTermCount;
+            document.getElementById('longTermProceeds').textContent = '$' + longTermProceeds.toFixed(2);
+            document.getElementById('longTermCost').textContent = '$' + longTermCost.toFixed(2);
+
+            const longTermNetElement = document.getElementById('longTermNet');
+            longTermNetElement.textContent = (longTermNet >= 0 ? '+' : '') + '$' + longTermNet.toFixed(2);
+            longTermNetElement.className = longTermNet >= 0 ? 'gain' : 'loss';
+
+            // Schedule D
+            document.getElementById('scheduleDShortTerm').textContent = (shortTermNet >= 0 ? '+' : '') + '$' + shortTermNet.toFixed(2);
+            document.getElementById('scheduleDLongTerm').textContent = (longTermNet >= 0 ? '+' : '') + '$' + longTermNet.toFixed(2);
+            document.getElementById('scheduleDTotal').textContent = (netGainLoss >= 0 ? '+' : '') + '$' + netGainLoss.toFixed(2);
+        }
+
+        // Export CSV
+        function exportCSV() {
+            const yearTransactions = transactions.filter(t => t.saleYear === selectedYear);
+
+            if (yearTransactions.length === 0) {
+                alert('No transactions to export');
+                return;
+            }
+
+            let csv = 'Description,Date Acquired,Date Sold,Proceeds,Cost Basis,Gain/Loss,Type\n';
+
+            yearTransactions.forEach(t => {
+                const gainLoss = t.salePrice - t.purchasePrice;
+                const days = daysBetween(t.purchaseDate, t.saleDate);
+                const type = days > 365 ? 'Long-term' : 'Short-term';
+
+                csv += `"${t.cardName}",${t.purchaseDate},${t.saleDate},${t.salePrice.toFixed(2)},${t.purchasePrice.toFixed(2)},${gainLoss.toFixed(2)},${type}\n`;
+            });
+
+            csv += '\nGenerated by Apex Intelligence Portfolio Performance Report\n';
+            csv += `Tax Year: ${selectedYear}\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tax-report-${selectedYear}.csv`;
+            a.click();
+        }
+
+        // Export PDF (simplified - opens print dialog)
+        function exportPDF() {
+            window.print();
+        }
+
+        // Initialize
+        loadTransactions();
+    </script>
+</body>
+</html>
