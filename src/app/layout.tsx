@@ -4,6 +4,7 @@ import AuroraFX from '@/components/fx/AuroraFX';
 import BackgroundFX from '@/components/fx/BackgroundFX';
 import BackgroundStack from '@/components/fx/BackgroundStack';
 import CursorFX from '@/components/fx/CursorFX';
+import { TopBanner } from '@/components/nav/TopBanner';
 import { Footer } from '@/components/footer/Footer';
 import '@/styles/animations.css';
 import './globals.css';
@@ -25,6 +26,9 @@ export default function RootLayout({
           Skip to main content
         </a>
 
+        {/* Top Banner */}
+        <TopBanner />
+
         {/* Aurora Background */}
         <AuroraFX />
 
@@ -38,9 +42,9 @@ export default function RootLayout({
         <CursorFX />
 
         {/* Main Content */}
-        <div className="relative z-10" id="main">
+        <main className="relative z-10 pt-16" id="main">
           {children}
-        </div>
+        </main>
 
         {/* Footer */}
         <Footer />
