@@ -1,7 +1,17 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 
-const items = [
+type ArticleItem = {
+  href: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  read: string;
+  tags: string[];
+  badge?: "PRO" | "PREMIUM";
+};
+
+const items: ArticleItem[] = [
   {
     href: "/insights/psa-10-premium-decay",
     title: "PSA 10 Premium Decay: When Perfect Grades Lose Value",

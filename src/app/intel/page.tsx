@@ -1,7 +1,17 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 
-const items = [
+type ArticleItem = {
+  href: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  read: string;
+  tags: string[];
+  badge?: "PRO" | "PREMIUM";
+};
+
+const items: ArticleItem[] = [
   {
     href: "/intel/q4-2025-market-snapshot",
     title: "Q4 2025 TCG Market Snapshot: Trends, Alerts, and Opportunities",
