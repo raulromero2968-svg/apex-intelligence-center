@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
+import AuroraFX from '@/components/fx/AuroraFX';
 import BackgroundFX from '@/components/fx/BackgroundFX';
 import CursorFX from '@/components/fx/CursorFX';
 import { Footer } from '@/components/footer/Footer';
@@ -23,7 +24,10 @@ export default function RootLayout({
           Skip to main content
         </a>
 
-        {/* New Background FX */}
+        {/* Aurora Background */}
+        <AuroraFX />
+
+        {/* Animated Background FX */}
         <BackgroundFX />
 
         {/* Custom Cursor */}
