@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "setup-stripe": "node setup-stripe-products.js",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:smoke": "playwright test tests/smoke.spec.ts"
   },
   "keywords": [
     "tcg",
@@ -38,6 +41,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.0",
     "vercel": "^33.0.0"
   }
 }
