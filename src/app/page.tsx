@@ -8,6 +8,7 @@ import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
 import ArticleFilter from '@/components/filters/ArticleFilter';
 import RouteTransition from '@/layout/RouteTransition';
+import { blogPosts, researchReports, intelNotes } from '@/content/seed';
 
 // Sample data
 const navLinks = [
@@ -70,43 +71,31 @@ const tools = [
   },
 ];
 
+// Latest Intelligence on the homepage is sourced from the same seeded content
+// used on the Blog / Research / Intel pages so everything stays in sync.
 const sampleArticles = [
-  {
-    id: '1',
-    title: 'Market Analysis: Q1 2025 Trends',
-    category: 'market',
-    excerpt: 'Comprehensive analysis of TCG market trends in Q1 2025',
-    date: '2025-01-15',
-  },
-  {
-    id: '2',
-    title: 'Advanced Grading Strategies',
-    category: 'guides',
-    excerpt: 'Expert guide to maximizing ROI through strategic grading',
-    date: '2025-01-12',
-  },
-  {
-    id: '3',
-    title: 'Research: Sealed Product Performance',
+  ...blogPosts.map((a) => ({
+    id: a.href,
+    title: a.title,
+    category: 'blog',
+    excerpt: a.excerpt,
+    date: a.date,
+  })),
+  ...researchReports.map((a) => ({
+    id: a.href,
+    title: a.title,
     category: 'research',
-    excerpt: 'In-depth research on sealed product investment returns',
-    date: '2025-01-10',
-  },
-  {
-    id: '4',
-    title: 'Price Alert: Modern Horizons 3',
-    category: 'alerts',
-    excerpt: 'Significant price movements detected in MH3 singles',
-    date: '2025-01-08',
-  },
-  {
-    id: '5',
-    title: 'Tool Spotlight: Portfolio Tracker',
-    category: 'tools',
-    excerpt: 'How to use the Portfolio Tracker for maximum efficiency',
-    date: '2025-01-05',
-  },
-];
+    excerpt: a.excerpt,
+    date: a.date,
+  })),
+  ...intelNotes.map((a) => ({
+    id: a.href,
+    title: a.title,
+    category: 'intel',
+    excerpt: a.excerpt,
+    date: a.date,
+  })),
+].slice(0, 9);
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
