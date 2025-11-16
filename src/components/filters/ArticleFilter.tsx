@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -125,14 +126,18 @@ function ArticleFilterContent({ articles }: ArticleFilterProps) {
                 delay: index * 0.05,
                 ease: [0.4, 0, 0.2, 1],
               }}
-              className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-400/20 transition-all duration-300 cursor-pointer"
+              className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-cyan-400/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-400/20 transition-all duration-300 cursor-pointer"
             >
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {article.title}
-              </h3>
-              <p className="text-sm text-purple-500 mb-3">{article.category}</p>
-              <p className="text-white/70 mb-4">{article.excerpt}</p>
-              <time className="text-sm text-white/50">{article.date}</time>
+              <Link href={article.id} className="block h-full p-6">
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  {article.title}
+                </h3>
+                <p className="text-sm text-purple-500 mb-3 capitalize">
+                  {article.category}
+                </p>
+                <p className="text-white/70 mb-4">{article.excerpt}</p>
+                <time className="text-sm text-white/50">{article.date}</time>
+              </Link>
             </motion.article>
           ))}
         </AnimatePresence>
