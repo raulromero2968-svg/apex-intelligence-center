@@ -6,5 +6,37 @@
     "api/**/*.js": {
       "maxDuration": 10
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/insights/psa-10-premium-decay",
+      "destination": "/intel/psa-10-premium-decay",
+      "permanent": true
+    },
+    {
+      "source": "/insights/reprint-risk-indicators",
+      "destination": "/research/reprint-risk-indicators",
+      "permanent": true
+    },
+    {
+      "source": "/insights/sealed-booster-box-roi",
+      "destination": "/research/sealed-booster-box-roi",
+      "permanent": true
+    },
+    {
+      "source": "/insights/collector-vs-investor-behavior",
+      "destination": "/intel/collector-vs-investor-behavior",
+      "permanent": true
+    },
+    {
+      "source": "/insights/authentication-fraud-trends",
+      "destination": "/research/authentication-fraud-trends",
+      "permanent": true
+    },
+    {
+      "source": "/insights/international-arbitrage",
+      "destination": "/intel/international-arbitrage",
+      "permanent": true
+    }
+  ]
 }
