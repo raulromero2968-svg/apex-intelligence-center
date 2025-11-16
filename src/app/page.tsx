@@ -6,9 +6,11 @@ import { toast } from 'sonner';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
-import ArticleFilter from '@/components/filters/ArticleFilter';
+import ContentCard from '@/components/ContentCard';
+import HorizontalCarousel from '@/components/HorizontalCarousel';
 import RouteTransition from '@/layout/RouteTransition';
 import { blogPosts, researchReports, intelNotes } from '@/content/seed';
+import { ContentKind } from '@/lib/routeMap';
 
 // Sample data
 const navLinks = [
@@ -73,32 +75,42 @@ const tools = [
 
 // Latest Intelligence on the homepage is sourced from the same seeded content
 // used on the Blog / Research / Intel pages so everything stays in sync.
-const sampleArticles = [
-  ...blogPosts.map((a) => ({
-    id: a.href,
-    title: a.title,
-    category: 'blog',
-    excerpt: a.excerpt,
-    date: a.date,
-  })),
-  ...researchReports.map((a) => ({
-    id: a.href,
-    title: a.title,
-    category: 'research',
-    excerpt: a.excerpt,
-    date: a.date,
-  })),
-  ...intelNotes.map((a) => ({
-    id: a.href,
-    title: a.title,
-    category: 'intel',
-    excerpt: a.excerpt,
-    date: a.date,
-  })),
-].slice(0, 9);
+// Convert to ContentItem format with kind and slug
+function getHomeFeed() {
+  const allContent = [
+    ...blogPosts.map((a) => ({
+      kind: 'blog' as ContentKind,
+      slug: a.href.replace('/blog/', ''),
+      title: a.title,
+      excerpt: a.excerpt,
+      dateISO: a.date,
+      badge: 'Blog',
+    })),
+    ...researchReports.map((a) => ({
+      kind: 'research' as ContentKind,
+      slug: a.href.replace('/research/', ''),
+      title: a.title,
+      excerpt: a.excerpt,
+      dateISO: a.date,
+      badge: 'Research',
+    })),
+    ...intelNotes.map((a) => ({
+      kind: 'intel' as ContentKind,
+      slug: a.href.replace('/intel/', ''),
+      title: a.title,
+      excerpt: a.excerpt,
+      dateISO: a.date,
+      badge: 'Intel',
+    })),
+  ];
+
+  // Return exactly 6 items for the carousel
+  return allContent.slice(0, 6);
+}
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const feedItems = getHomeFeed();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -153,7 +165,7 @@ export default function HomePage() {
             <SearchBar onSearch={handleSearch} />
           </section>
 
-          {/* Articles Section - Moved above Tools */}
+          {/* Latest Intelligence Section with Horizontal Carousel */}
           <section className="space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-bold text-white">Latest Intelligence</h2>
@@ -161,7 +173,11 @@ export default function HomePage() {
                 Market insights, research, and analysis from industry experts
               </p>
             </div>
-            <ArticleFilter articles={sampleArticles} />
+            <HorizontalCarousel>
+              {feedItems.map((item) => (
+                <ContentCard key={`${item.kind}-${item.slug}`} {...item} />
+              ))}
+            </HorizontalCarousel>
           </section>
 
           {/* Tools Carousel */}
