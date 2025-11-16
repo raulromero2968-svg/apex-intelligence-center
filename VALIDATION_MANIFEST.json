@@ -1,0 +1,215 @@
+{
+  "generatedAt": "2025-01-16T14:45:00Z",
+  "articles": [
+    {
+      "path": "src/content/articles/market-analysis/q1-2025-trends.mdx",
+      "title": "Q1 2025 TCG Market Trends",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-16T10:00:00Z",
+      "sourceCount": 48
+    },
+    {
+      "path": "src/content/articles/market-analysis/pokemon-vs-one-piece.mdx",
+      "title": "Pokemon vs One Piece: Market Dynamics Compared",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-14T08:30:00Z",
+      "sourceCount": 42
+    },
+    {
+      "path": "src/content/articles/market-analysis/sealed-roi-2024-2025.mdx",
+      "title": "Sealed Product ROI Analysis 2024-2025",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-12T15:00:00Z",
+      "sourceCount": 54
+    },
+    {
+      "path": "src/content/articles/market-analysis/grading-impact-values.mdx",
+      "title": "Grading Impact on Card Values",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-10T11:45:00Z",
+      "sourceCount": 38
+    },
+    {
+      "path": "src/content/articles/market-analysis/reprint-risk-assessment.mdx",
+      "title": "Reprint Risk Assessment Framework",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-08T09:20:00Z",
+      "sourceCount": 32
+    },
+    {
+      "path": "src/content/articles/market-analysis/modern-vs-vintage.mdx",
+      "title": "Modern vs Vintage TCG Investment Returns",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-06T13:10:00Z",
+      "sourceCount": 45
+    },
+    {
+      "path": "src/content/articles/market-analysis/jp-vs-en-dynamics.mdx",
+      "title": "Japanese vs English Market Dynamics",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-04T16:40:00Z",
+      "sourceCount": 36
+    },
+    {
+      "path": "src/content/articles/market-analysis/tax-implications.mdx",
+      "title": "Tax Implications for TCG Investors",
+      "category": "Market Analysis",
+      "publishedAt": "2025-01-02T10:15:00Z",
+      "sourceCount": 28
+    },
+    {
+      "path": "src/content/articles/research/sealed-product-study.mdx",
+      "title": "Sealed Product Performance Study",
+      "category": "Research",
+      "publishedAt": "2024-12-30T14:00:00Z",
+      "sourceCount": 52
+    },
+    {
+      "path": "src/content/articles/research/grading-company-comparison.mdx",
+      "title": "Grading Company Comparison Analysis",
+      "category": "Research",
+      "publishedAt": "2024-12-28T11:30:00Z",
+      "sourceCount": 44
+    },
+    {
+      "path": "src/content/articles/research/bulk-submission-strategies.mdx",
+      "title": "Bulk Submission Strategies for Optimal Returns",
+      "category": "Research",
+      "publishedAt": "2024-12-26T09:45:00Z",
+      "sourceCount": 34
+    },
+    {
+      "path": "src/content/articles/research/portfolio-diversification.mdx",
+      "title": "Portfolio Diversification in TCG Markets",
+      "category": "Research",
+      "publishedAt": "2024-12-24T15:20:00Z",
+      "sourceCount": 40
+    },
+    {
+      "path": "src/content/articles/research/market-manipulation-detection.mdx",
+      "title": "Market Manipulation Detection Methods",
+      "category": "Research",
+      "publishedAt": "2024-12-22T12:00:00Z",
+      "sourceCount": 30
+    },
+    {
+      "path": "src/content/articles/research/counterfeit-identification.mdx",
+      "title": "Counterfeit Identification Techniques",
+      "category": "Research",
+      "publishedAt": "2024-12-20T10:30:00Z",
+      "sourceCount": 30
+    },
+    {
+      "path": "src/content/articles/research/long-term-retention.mdx",
+      "title": "Long-Term Retention Analysis",
+      "category": "Research",
+      "publishedAt": "2024-12-18T14:15:00Z",
+      "sourceCount": 30
+    },
+    {
+      "path": "src/content/articles/research/competitive-play-impact.mdx",
+      "title": "Competitive Play Impact on Card Values",
+      "category": "Research",
+      "publishedAt": "2024-12-16T08:50:00Z",
+      "sourceCount": 30
+    },
+    {
+      "path": "src/content/articles/guides/beginners-guide.mdx",
+      "title": "Beginner's Guide to TCG Investing",
+      "category": "Guide",
+      "publishedAt": "2024-12-14T13:25:00Z",
+      "sourceCount": 42
+    },
+    {
+      "path": "src/content/articles/guides/grading-optimization.mdx",
+      "title": "Grading Optimization Strategies",
+      "category": "Guide",
+      "publishedAt": "2024-12-12T11:00:00Z",
+      "sourceCount": 36
+    },
+    {
+      "path": "src/content/articles/guides/building-10k-portfolio.mdx",
+      "title": "Building a $10K TCG Portfolio",
+      "category": "Guide",
+      "publishedAt": "2024-12-10T16:30:00Z",
+      "sourceCount": 24
+    },
+    {
+      "path": "src/content/articles/guides/tax-strategy-collectors.mdx",
+      "title": "Tax Strategy for TCG Collectors",
+      "category": "Guide",
+      "publishedAt": "2024-12-08T09:15:00Z",
+      "sourceCount": 24
+    },
+    {
+      "path": "src/content/articles/guides/selling-strategies.mdx",
+      "title": "Selling Strategies for Maximum Return",
+      "category": "Guide",
+      "publishedAt": "2024-12-06T14:45:00Z",
+      "sourceCount": 24
+    },
+    {
+      "path": "src/content/articles/guides/storage-preservation.mdx",
+      "title": "Storage and Preservation Best Practices",
+      "category": "Guide",
+      "publishedAt": "2024-12-04T10:20:00Z",
+      "sourceCount": 24
+    },
+    {
+      "path": "src/content/articles/guides/insurance-high-value.mdx",
+      "title": "Insurance for High-Value Collections",
+      "category": "Guide",
+      "publishedAt": "2024-12-02T15:55:00Z",
+      "sourceCount": 24
+    },
+    {
+      "path": "src/content/articles/tools/portfolio-tracker-guide.mdx",
+      "title": "Portfolio Tracker Setup Guide",
+      "category": "Tool",
+      "publishedAt": "2024-11-30T12:30:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/trade-calculator-tutorial.mdx",
+      "title": "Trade Calculator Tutorial",
+      "category": "Tool",
+      "publishedAt": "2024-11-28T08:40:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/grading-optimizer-walkthrough.mdx",
+      "title": "Grading Optimizer Walkthrough",
+      "category": "Tool",
+      "publishedAt": "2024-11-26T13:50:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/bulk-analyzer-howto.mdx",
+      "title": "Bulk Analyzer How-To",
+      "category": "Tool",
+      "publishedAt": "2024-11-24T11:10:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/reprint-predictor-explained.mdx",
+      "title": "Reprint Predictor Explained",
+      "category": "Tool",
+      "publishedAt": "2024-11-22T16:25:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/sealed-analyzer-deep-dive.mdx",
+      "title": "Sealed Analyzer Deep Dive",
+      "category": "Tool",
+      "publishedAt": "2024-11-20T09:35:00Z",
+      "sourceCount": 20
+    },
+    {
+      "path": "src/content/articles/tools/tax-dashboard-setup.mdx",
+      "title": "Tax Dashboard Setup",
+      "category": "Tool",
+      "publishedAt": "2024-11-18T14:05:00Z",
+      "sourceCount": 20
+    }
+  ]
+}
