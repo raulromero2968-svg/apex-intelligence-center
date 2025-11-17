@@ -28,6 +28,8 @@ import { yugiohFrontierV19 } from '@/portfolio/yugioh.v19.exhaustive-comments';
 import { lorcanaFrontierV18 } from '@/portfolio/lorcana.v18.exhaustive-comments';
 import { mtg1993FrontierV1 } from '@/portfolio/mtg.v1993.exhaustive-comments';
 import { baseSetFrontierV15 } from '@/portfolio/pokemon-base.v15.exhaustive-comments';
+import { exodiaFrontierV1 } from '@/portfolio/exodia.v1.exhaustive-comments';
+import { power9FrontierV15 } from '@/portfolio/power9.v15.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -138,12 +140,20 @@ export async function POST(request: NextRequest) {
             result = await baseSetFrontierV15(cardIds, budget);
             break;
 
+          case 'exodia-v1':
+            result = await exodiaFrontierV1(cardIds, budget);
+            break;
+
+          case 'power9-v15':
+            result = await power9FrontierV15(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18', 'digimon-v19', 'yugioh-v19', 'lorcana-v18', 'mtg-1993-v1', 'pokemon-base-v15'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18', 'digimon-v19', 'yugioh-v19', 'lorcana-v18', 'mtg-1993-v1', 'pokemon-base-v15', 'exodia-v1', 'power9-v15'],
               },
               { status: 400 }
             );
@@ -487,6 +497,42 @@ export async function GET(request: NextRequest) {
           maxPositions: 60,
           frontierPoints: 42,
           holoPremiumMinimum: 0.62,
+        },
+      },
+      {
+        id: 'exodia-v1',
+        name: 'Yu-Gi-Oh! Exodia LOB 5-Piece Set v1',
+        description: 'LOB 1st Edition Exodia set (Head + 4 limbs) with 80% set completion minimum',
+        defaultBudget: 35000000,
+        expectedResults: {
+          cagr: 1.12,
+          sharpe: 8.9,
+          maxDrawdown: -0.05,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.25,
+          maxPositions: 12,
+          frontierPoints: 30,
+          exodiaSetMinimum: 0.80,
+        },
+      },
+      {
+        id: 'power9-v15',
+        name: 'MTG Power Nine Alpha/Beta v15',
+        description: 'Black Lotus + Moxes + Ancestral/Time Walk/Timetwister with ultra-premium bonuses',
+        defaultBudget: 100000000,
+        expectedResults: {
+          cagr: 1.48,
+          sharpe: 9.5,
+          maxDrawdown: -0.04,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.20,
+          maxPositions: 65,
+          frontierPoints: 45,
+          powerNineConvexity: 10.0,
         },
       },
     ],

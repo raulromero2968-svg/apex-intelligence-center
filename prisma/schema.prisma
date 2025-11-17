@@ -204,3 +204,139 @@ model ArbitrageOpportunity {
   @@index([spreadPct, expiresAt])
   @@index([cardId])
 }
+
+// Yu-Gi-Oh! Exodia set tracking (LOB 1st Edition 5-piece set)
+model ExodiaSet {
+  id          String        @id @default(cuid())
+  setCode     String        @unique // "LOB-1st-Ed"
+  setName     String        // "Legend of Blue Eyes White Dragon 1st Edition"
+  pieces      ExodiaPiece[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// Individual Exodia pieces with grading premiums
+model ExodiaPiece {
+  id              String    @id @default(cuid())
+  name            String    // "Exodia the Forbidden One" (Head), "Left Arm of the Forbidden One", etc.
+  cardNumber      String    // "LOB-124", "LOB-122", etc.
+  exodiaSetId     String
+  exodiaSet       ExodiaSet @relation(fields: [exodiaSetId], references: [id], onDelete: Cascade)
+
+  // PSA populations and prices
+  psa10Pop        Int       // Live PSA 10 population
+  psa10Price      Float     // Live PSA 10 market price
+  psa9Pop         Int       // PSA 9 population
+  psa9Price       Float     // PSA 9 market price
+
+  // BGS populations (Pristine 10 Black Label)
+  bgsPristinePop  Int       @default(0)
+  bgsPristinePrice Float    @default(0)
+
+  // CGC populations (Perfect 10)
+  cgcPerfectPop   Int       @default(0)
+  cgcPerfectPrice Float     @default(0)
+
+  // Convexity scoring
+  convexityScore  Float     // (upside/downside) × scarcity × gameplay relevance
+
+  // Backtesting data
+  backtestReturns Json?     // Array of historical returns for pop momentum strategy
+
+  // Temporal tracking
+  lastUpdated     DateTime  @default(now())
+  popDelta90d     Float?    // 90-day population growth percentage
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([cardNumber, exodiaSetId])
+  @@index([psa10Pop])
+  @@index([convexityScore])
+  @@index([exodiaSetId])
+}
+
+// MTG Power Nine tracking (Alpha/Beta/Unlimited)
+model PowerNineCard {
+  id              String   @id @default(cuid())
+  name            String   // "Black Lotus", "Mox Jet", "Ancestral Recall", etc.
+  print           String   // "Alpha" | "Beta" | "Unlimited"
+
+  // PSA 10 Gem Mint populations and prices
+  psa10Pop        Int      // Live PSA 10 population
+  psa10Price      Float    // Live PSA 10 market price
+
+  // BGS Pristine 10 (Black Label)
+  bgsPristinePop  Int      @default(0)
+  bgsPristinePrice Float   @default(0)
+
+  // CGC Perfect 10
+  cgcPerfectPop   Int      @default(0)
+  cgcPerfectPrice Float    @default(0)
+
+  // Convexity and investment metrics
+  convexityScore  Float    // Ultimate convexity for Power 9 (9.7-10.0)
+  liquidityScore  Float?   // 30-day sales volume score
+
+  // Historical tracking
+  backtestReturns Json?    // Historical returns array for backtesting
+  popDelta90d     Float?   // 90-day population growth (near 0 for Power 9)
+
+  // Temporal
+  lastUpdated     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([name, print])
+  @@index([print, psa10Pop])
+  @@index([convexityScore])
+  @@index([name])
+}
+
+// Lorcana Enchanted cards (serial-numbered 1/12 chase cards)
+model LorcanaEnchantedCard {
+  id              String   @id @default(cuid())
+  name            String   // "Tinker Bell", "Maleficent", "Elsa", etc.
+  chapter         String   // "Ch1 First Chapter", "Ch2 Rise of the Floodborn", etc.
+  serialNumber    String   // "1/12", "2/12", ..., "12/12"
+
+  // PSA 10 populations and prices
+  psa10Pop        Int      // Live PSA 10 population
+  psa10Price      Float    // Live PSA 10 market price
+
+  // Raw/NM price for comparison
+  nmPrice         Float    // Near Mint ungraded price
+
+  // Premium tracking
+  gradePremiumPct Float    // (PSA 10 - NM) / NM percentage
+
+  // Disney IP categorization
+  ipCategory      String?  // "Princess" | "Villain" | "Classic" | "Modern"
+  isPrincess      Boolean  @default(false) // For nostalgia premium tracking
+
+  // Convexity
+  convexityScore  Float    // Serial #1-3 = 9.8-10.0, #12 = 9.4-9.6
+
+  // Temporal
+  lastUpdated     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([name, chapter, serialNumber])
+  @@index([chapter, psa10Pop])
+  @@index([convexityScore])
+  @@index([isPrincess])
+}
+
+// Historical Exodia snapshots for backtesting
+model HistoricalExodiaSnapshot {
+  id              String   @id @default(cuid())
+  date            DateTime
+  exodiaPieceId   String
+  psa10Pop        Int
+  psa10Price      Float
+  popGrowth90d    Float    // 90-day pop growth at this snapshot
+
+  @@index([date, exodiaPieceId])
+  @@index([exodiaPieceId, date])
+}
