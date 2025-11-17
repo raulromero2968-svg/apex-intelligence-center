@@ -2,15 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // Experimental features for React 19
+  // Experimental features
   experimental: {
-    // Enable if you need React 19 specific features
-    // ppr: false, // Partial Prerendering (opt-in for React 19)
+    typedRoutes: false, // Set to true if you want typed routes
   },
+
+  // Ensure SSR on Vercel (no static export)
+  output: undefined,
 
   // Image optimization
   images: {
-    domains: [],
+    remotePatterns: [],
     // Add any external image domains here if needed
   },
 
@@ -19,13 +21,15 @@ const nextConfig = {
 
   // TypeScript and ESLint config
   typescript: {
-    // Only use in development - don't ignore errors in production
     ignoreBuildErrors: false,
   },
 
   eslint: {
     ignoreDuringBuilds: false,
   },
+
+  // No trailing slashes
+  trailingSlash: false,
 };
 
 module.exports = nextConfig;
