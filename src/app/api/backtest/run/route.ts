@@ -14,8 +14,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { backtestModernMtg } from '@/backtest/modern-mtg.v5';
 import { backtestYugiohLob } from '@/backtest/yugioh-lob.v5';
+import { backtestYugiohFull } from '@/backtest/yugioh-full.v8';
 import { backtestPokemonVintage } from '@/backtest/pokemon-vintage.v5';
 import { backtestPokemonScarletViolet } from '@/backtest/pokemon-sv.v5';
+import { backtestOnePiece } from '@/backtest/onepiece.v8';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
@@ -48,6 +50,10 @@ export async function POST(request: NextRequest) {
             result = await backtestYugiohLob(startDate, endDate, initialCapital);
             break;
 
+          case 'yugioh-full':
+            result = await backtestYugiohFull(startDate, endDate, initialCapital);
+            break;
+
           case 'pokemon-vintage':
             result = await backtestPokemonVintage(startDate, endDate, initialCapital);
             break;
@@ -56,12 +62,16 @@ export async function POST(request: NextRequest) {
             result = await backtestPokemonScarletViolet(startDate, endDate, initialCapital);
             break;
 
+          case 'onepiece':
+            result = await backtestOnePiece(startDate, endDate, initialCapital);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['modern-mtg', 'yugioh-lob', 'pokemon-vintage', 'pokemon-sv'],
+                validStrategies: ['modern-mtg', 'yugioh-lob', 'yugioh-full', 'pokemon-vintage', 'pokemon-sv', 'onepiece'],
               },
               { status: 400 }
             );
@@ -154,6 +164,28 @@ export async function GET(request: NextRequest) {
           cagr: 2.47, // ~940% over 3 years
           sharpe: 4.5,
           maxDrawdown: -0.11,
+        },
+      },
+      {
+        id: 'yugioh-full',
+        name: 'Yu-Gi-Oh! Full Market (2002-2025)',
+        description: 'LOB, MRD, IOC, PGD, LON, SOD, AST, DCR, MFC early sets',
+        defaultStartDate: '2002-01-01',
+        expectedResults: {
+          cagr: 0.71,
+          sharpe: 6.7,
+          maxDrawdown: -0.09,
+        },
+      },
+      {
+        id: 'onepiece',
+        name: 'One Piece TCG (2022-2025)',
+        description: 'OP-01 Romance Dawn through OP-08+ leaders and alt arts',
+        defaultStartDate: '2022-07-01',
+        expectedResults: {
+          cagr: 1.42, // ~3,180% over 3 years
+          sharpe: 7.2,
+          maxDrawdown: -0.07,
         },
       },
     ],
