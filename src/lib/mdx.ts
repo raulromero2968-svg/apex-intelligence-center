@@ -66,7 +66,7 @@ export async function getAllArticleSlugs(): Promise<string[]> {
       slugs.push(...mdxFiles);
     } catch (error) {
       // Category directory might not exist, skip it
-      console.warn(\`Category directory not found: \${category}\`);
+      console.warn(`Category directory not found: ${category}`);
     }
   }
 
@@ -79,7 +79,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 
   for (const category of categories) {
     try {
-      const filePath = path.join(articlesDirectory, category, \`\${slug}.mdx\`);
+      const filePath = path.join(articlesDirectory, category, `${slug}.mdx`);
       const source = await fs.readFile(filePath, 'utf8');
 
       const { data: frontmatter, content } = matter(source);
@@ -144,13 +144,13 @@ export async function getAllArticles(
         });
       }
     } catch (error) {
-      console.warn(\`Error reading category \${cat}:\`, error);
+      console.warn(`Error reading category ${cat}:`, error);
     }
   }
 
   // Sort by date (newest first)
   return articles.sort((a, b) => {
-    return new Date(b.frontmatter.publishedAt).getTime() - new Date(a.frontmatter.publishedAt).getTime());
+    return new Date(b.frontmatter.publishedAt).getTime() - new Date(a.frontmatter.publishedAt).getTime();
   });
 }
 

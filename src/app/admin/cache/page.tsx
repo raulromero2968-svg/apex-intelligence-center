@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import { readKeySeries } from '@/lib/cache';
+import SparklineDual from '@/components/SparklineDual';
 
 export const revalidate = 0; // always fresh
 
@@ -12,13 +14,55 @@ async function isAdmin() {
   return c === '1';
 }
 
+// Common cache keys to monitor
+const MONITORED_KEYS = [
+  'col:list:eyJwdWJsaWMiOnRydWV9', // collections:public:list
+  'search:eyJxIjoicGlrYWNodSJ9', // search?q=pikachu
+  'search:eyJzb3VyY2VzIjpbInRjZ3BsYXllciJdfQ', // search?sources=tcgplayer
+];
+
 export default async function Page() {
   const ok = await isAdmin();
   if (!ok) redirect('/');
 
+  // Read cache metrics for monitored keys
+  const metricsMap = new Map<string, { hits: number[]; misses: number[] }>();
+  await Promise.all(
+    MONITORED_KEYS.map(async (k) => metricsMap.set(k, await readKeySeries(k, 30)))
+  );
+
   return (
     <main className="p-6 space-y-8 max-w-7xl mx-auto">
       <h1 className="text-2xl font-semibold text-white">Cache Dashboard</h1>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium text-white/90">Cache Metrics</h2>
+          <span className="text-[10px] text-white/40 whitespace-nowrap">last 30 minutes (UTC)</span>
+        </div>
+        <div className="rounded-2xl border border-cyan-500/20 bg-black/40 p-6 space-y-4">
+          {MONITORED_KEYS.map((k) => {
+            const series = metricsMap.get(k) ?? {
+              hits: Array(30).fill(0),
+              misses: Array(30).fill(0),
+            };
+            const displayKey = k.split(':')[0] + ':' + (k.length > 40 ? '...' : k.split(':')[1]);
+            return (
+              <div key={k} className="flex items-center justify-between gap-4">
+                <span className="truncate text-xs font-mono text-white/70 flex-1">
+                  {displayKey}
+                </span>
+                <SparklineDual hits={series.hits} misses={series.misses} />
+              </div>
+            );
+          })}
+          {MONITORED_KEYS.length === 0 && (
+            <div className="text-sm text-white/60 text-center py-4">
+              No cache activity yet. Start using the API to see metrics.
+            </div>
+          )}
+        </div>
+      </section>
 
       <section className="space-y-4">
         <h2 className="text-lg font-medium text-white/90">Overview</h2>

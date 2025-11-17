@@ -4,7 +4,6 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: 0.1,
   profilesSampleRate: 0.1,
-  instrumenter: 'sentry',
   // Keep noise low; adjust later
   integrations: [
     Sentry.captureConsoleIntegration({ levels: ['error'] }),

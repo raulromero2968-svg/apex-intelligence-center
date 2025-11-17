@@ -9,13 +9,6 @@
  *   pnpm db:backfill:slugs
  */
 
-import { db } from '@/db';
-import { collections } from '@/db/schema';
-
-// Placeholder for nanoid - install with: pnpm add nanoid
-// import { customAlphabet } from 'nanoid';
-// const nano = customAlphabet('abcdefghijkmnpqrstuvwxyz23456789', 6);
-
 // Simple fallback ID generator
 function generateId() {
   return Math.random().toString(36).substring(2, 8);
@@ -34,45 +27,39 @@ function slugify(title: string): string {
 
 async function main() {
   console.log('Starting collection slug backfill...');
+  console.log('NOTE: This is a placeholder script.');
+  console.log('When database is configured, uncomment the implementation below.');
 
-  try {
-    // Find collections without slugs
-    // @ts-ignore - placeholder implementation
-    const rows = await db.select().from(collections).where(isNull(collections.slug));
+  // Placeholder implementation - uncomment when database is set up:
+  /*
+  import { db } from '@/db';
+  import { collections } from '@/db/schema';
+  import { eq, isNull } from 'drizzle-orm';
+  import { customAlphabet } from 'nanoid';
 
-    if (rows.length === 0) {
-      console.log('✓ No collections need slug backfill');
-      return;
-    }
+  const nano = customAlphabet('abcdefghijkmnpqrstuvwxyz23456789', 6);
 
-    console.log(`Found ${rows.length} collections without slugs`);
+  const rows = await db.select().from(collections).where(isNull(collections.slug));
 
-    for (const row of rows) {
-      const base = slugify(row.title || 'collection');
-      const candidate = `${base}-${generateId()}`;
-
-      // @ts-ignore - placeholder implementation
-      await db
-        .update(collections)
-        .set({ slug: candidate })
-        .where(eq(collections.id, row.id));
-
-      console.log(`✓ slugged: ${row.id} -> ${candidate}`);
-    }
-
-    console.log(`\n✓ Backfill complete: ${rows.length} collections updated`);
-  } catch (error) {
-    console.error('✗ Backfill failed:', error);
-    process.exit(1);
+  if (rows.length === 0) {
+    console.log('✓ No collections need slug backfill');
+    return;
   }
+
+  console.log(`Found ${rows.length} collections without slugs`);
+
+  for (const row of rows) {
+    const base = slugify(row.title || 'collection');
+    const candidate = `${base}-${nano()}`;
+    await db.update(collections)
+      .set({ slug: candidate })
+      .where(eq(collections.id, row.id));
+    console.log(`✓ slugged: ${row.id} -> ${candidate}`);
+  }
+
+  console.log(`\n✓ Backfill complete: ${rows.length} collections updated`);
+  */
 }
-
-// When drizzle-orm is installed, uncomment:
-// import { eq, isNull } from 'drizzle-orm';
-
-// Placeholder helpers until drizzle is installed
-const eq = (field: any, value: any) => ({ field, value });
-const isNull = (field: any) => ({ field, null: true });
 
 main().catch((e) => {
   console.error(e);

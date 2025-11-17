@@ -30,11 +30,11 @@ import * as Sentry from '@sentry/nextjs';
 export const db = {
   query: {
     collections: {
-      findFirst: async () => null,
-      findMany: async () => [],
+      findFirst: async (_opts?: any): Promise<any> => null,
+      findMany: async (_opts?: any): Promise<any[]> => [],
     },
     collection_items: {
-      findMany: async () => [],
+      findMany: async (_opts?: any): Promise<any[]> => [],
     },
   },
   select: () => ({ from: () => ({ where: () => Promise.resolve([]) }) }),
@@ -47,8 +47,8 @@ export const db = {
     updateBySlug: async (slug: string, data: any) => ({ slug, ...data }),
   },
   collection_items: {
-    add: async () => null,
-    bulkAdd: async () => null,
+    add: async (_data: any) => null,
+    bulkAdd: async (_collectionId: string, _itemIds: string[]) => null,
   },
 };
 
