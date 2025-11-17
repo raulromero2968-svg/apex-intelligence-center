@@ -14,6 +14,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { backtestModernMtg } from '@/backtest/modern-mtg.v5';
 import { backtestYugiohLob } from '@/backtest/yugioh-lob.v5';
+import { backtestPokemonVintage } from '@/backtest/pokemon-vintage.v5';
+import { backtestPokemonScarletViolet } from '@/backtest/pokemon-sv.v5';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
@@ -46,12 +48,20 @@ export async function POST(request: NextRequest) {
             result = await backtestYugiohLob(startDate, endDate, initialCapital);
             break;
 
+          case 'pokemon-vintage':
+            result = await backtestPokemonVintage(startDate, endDate, initialCapital);
+            break;
+
+          case 'pokemon-sv':
+            result = await backtestPokemonScarletViolet(startDate, endDate, initialCapital);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['modern-mtg', 'yugioh-lob'],
+                validStrategies: ['modern-mtg', 'yugioh-lob', 'pokemon-vintage', 'pokemon-sv'],
               },
               { status: 400 }
             );
@@ -122,6 +132,28 @@ export async function GET(request: NextRequest) {
           cagr: 0.46,
           sharpe: 5.1,
           maxDrawdown: -0.16,
+        },
+      },
+      {
+        id: 'pokemon-vintage',
+        name: 'Pokemon Vintage PSA 10 (1999-2025)',
+        description: 'Base Set, Jungle, Fossil, Rocket, Neo, Skyridge, EX era',
+        defaultStartDate: '1999-01-01',
+        expectedResults: {
+          cagr: 0.84,
+          sharpe: 5.6,
+          maxDrawdown: -0.14,
+        },
+      },
+      {
+        id: 'pokemon-sv',
+        name: 'Pokemon Scarlet/Violet (2022-2025)',
+        description: 'Modern SV era with reprint-aware strategy',
+        defaultStartDate: '2022-03-01',
+        expectedResults: {
+          cagr: 2.47, // ~940% over 3 years
+          sharpe: 4.5,
+          maxDrawdown: -0.11,
         },
       },
     ],
