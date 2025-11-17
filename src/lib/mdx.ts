@@ -7,6 +7,11 @@ import AreaChartViz from '@/components/mdx/AreaChartViz';
 import BarChartViz from '@/components/mdx/BarChartViz';
 import HeroImage from '@/components/mdx/HeroImage';
 import AskFollowUp from '@/components/mdx/AskFollowUp';
+import InteractiveLineChart from '@/components/mdx/InteractiveLineChart';
+import ScatterPlot from '@/components/mdx/ScatterPlot';
+import PublishedTime from '@/components/mdx/PublishedTime';
+import SourceBadge from '@/components/mdx/SourceBadge';
+import SourceCards from '@/components/mdx/SourceCards';
 
 const articlesDirectory = path.join(process.cwd(), 'src/content/articles');
 
@@ -83,14 +88,20 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       const source = await fs.readFile(filePath, 'utf8');
 
       const { data: frontmatter, content } = matter(source);
+      const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${content}`;
 
       const { content: mdxContent } = await compileMDX<ArticleFrontmatter>({
-        source: content,
+        source: enrichedSource,
         components: {
           AreaChartViz,
           BarChartViz,
           HeroImage,
           AskFollowUp,
+          InteractiveLineChart,
+          ScatterPlot,
+          PublishedTime,
+          SourceBadge,
+          SourceCards,
         },
         options: {
           parseFrontmatter: false, // We already parsed with gray-matter

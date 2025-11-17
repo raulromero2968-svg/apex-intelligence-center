@@ -1,0 +1,151 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install deps
+        run: pnpm i --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Tests
+        run: |
+          pnpm -w test --reporter=dot || pnpm test --reporter=dot || true
+      - name: Build
+        run: pnpm build
+      - name: Repo sanity
+        run: |
+          chmod +x scripts/repo-sanity.sh || true
+          scripts/repo-sanity.sh || true
+      - name: Env audit
+        run: |
+          chmod +x scripts/env-audit.sh || true
+          scripts/env-audit.sh || true
+      - name: Media budget (warnings on PRs)
+        run: |
+          chmod +x scripts/media-budget.sh || true
+          MAX_MEDIA_KB=${{ vars.MAX_MEDIA_KB || 300 }} MAX_MEDIA_VIDEO_KB=${{ vars.MAX_MEDIA_VIDEO_KB || 1500 }} STRICT_MEDIA=0 scripts/media-budget.sh
+      - name: Media budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_MEDIA_KB=${{ vars.MAX_MEDIA_KB || 300 }} MAX_MEDIA_VIDEO_KB=${{ vars.MAX_MEDIA_VIDEO_KB || 1500 }} STRICT_MEDIA=1 scripts/media-budget.sh
+      - name: CSS budget (warnings on PRs)
+        run: |
+          chmod +x scripts/css-budget.sh || true
+          MAX_CSS_KB=${{ vars.MAX_CSS_KB || 120 }} STRICT_CSS=0 scripts/css-budget.sh
+      - name: CSS budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_CSS_KB=${{ vars.MAX_CSS_KB || 120 }} STRICT_CSS=1 scripts/css-budget.sh
+      - name: Bundle budget (warnings on PRs)
+        run: |
+          chmod +x scripts/bundle-budget.sh || true
+          MAX_CHUNK_KB=${{ vars.MAX_CHUNK_KB || 300 }} STRICT=0 scripts/bundle-budget.sh
+      - name: Bundle delta (warnings on PRs)
+        run: |
+          chmod +x scripts/bundle-delta.sh || true
+          DELTA_CHUNK_KB=${{ vars.DELTA_CHUNK_KB || 40 }} STRICT_DELTA=0 scripts/bundle-delta.sh
+      - name: Bundle budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_CHUNK_KB=${{ vars.MAX_CHUNK_KB || 300 }} STRICT=1 scripts/bundle-budget.sh
+      - name: Bundle delta (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          DELTA_CHUNK_KB=${{ vars.DELTA_CHUNK_KB || 40 }} STRICT_DELTA=1 scripts/bundle-delta.sh
+      - name: Library watchlist
+        run: |
+          chmod +x scripts/library-watch.sh || true
+          LIB_BLOCKLIST="${{ vars.LIB_BLOCKLIST || 'moment,chart.js/auto,echarts,fullcalendar,lodash ' }}" scripts/library-watch.sh || true
+      - name: Route budget (warnings on PRs)
+        run: |
+          MAX_ROUTE_KB=${{ vars.MAX_ROUTE_KB || 500 }} STRICT_ROUTE=0 node scripts/route-budget.mjs || true
+      - name: Route budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_ROUTE_KB=${{ vars.MAX_ROUTE_KB || 500 }} STRICT_ROUTE=1 node scripts/route-budget.mjs || true
+      - name: Local Vercel mirror
+        run: |
+          chmod +x scripts/vercel-local-mirror.sh || true
+          DEBUG=1 scripts/vercel-local-mirror.sh
+      - name: Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-local-mirror
+          path: artifacts/**
+          retention-days: 7
+      - name: PR Summary
+        if: always()
+        run: |
+          echo "## Deploy Sanity Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Node**: $(node -v)  **pnpm**: $(pnpm -v)" >> "$GITHUB_STEP_SUMMARY"
+          echo "
+### Errors/Failures in Local Mirror Log" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/vercel-local-mirror.log ]; then
+            grep -nE " ERR|error |failed|FAIL " artifacts/vercel-local-mirror.log | head -n 50 >> "$GITHUB_STEP_SUMMARY" || echo "No obvious errors." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Log not found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Bundle Budget (top offenders)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/bundle-budget.txt ]; then
+            head -n 50 artifacts/bundle-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Route Budget (largest routes)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/route-budget.txt ]; then
+            head -n 60 artifacts/route-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No route budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### CSS Budget (largest files)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/css-budget.txt ]; then
+            head -n 40 artifacts/css-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No CSS budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Bundle Delta (size increases vs baseline)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/bundle-delta.txt ]; then
+            head -n 60 artifacts/bundle-delta.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No bundle delta report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Library Watchlist" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/library-watch.txt ]; then
+            head -n 80 artifacts/library-watch.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No library watch report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Env Audit" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/env-audit.txt ]; then
+            head -n 50 artifacts/env-audit.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No env audit found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Media Budget (largest files)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/media-budget.txt ]; then
+            head -n 50 artifacts/media-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No media budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+

@@ -1,4 +1,5 @@
 # Apex Intelligence - TCG Market Intelligence Platform
+![PR CI](https://github.com/<owner>/<repo>/actions/workflows/pr-ci.yml/badge.svg)
 
 Premium trading card game market intelligence, research, and collector tools.
 

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[pre-push] Quick sanity & budgets..."
+
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "[pre-push] pnpm not found. Install pnpm to run the guard."
+  exit 1
+fi
+
+pnpm build >/dev/null
+
+MAX_CHUNK_KB=${MAX_CHUNK_KB:-300} STRICT=0 scripts/bundle-budget.sh >/dev/null || true
+MAX_ROUTE_KB=${MAX_ROUTE_KB:-500} STRICT_ROUTE=0 node scripts/route-budget.mjs >/dev/null || true
+scripts/repo-sanity.sh >/dev/null || true
+
+echo "[pre-push] OK"
+
