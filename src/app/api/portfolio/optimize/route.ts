@@ -18,6 +18,7 @@ import { digimonIntegerFrontier } from '@/portfolio/digimon.v10.ultra-tight-comm
 import { digimonSecFrontier } from '@/portfolio/digimon.v11.exhaustive-comments';
 import { fabLegendaryFrontier } from '@/portfolio/fab.v11.exhaustive-comments';
 import { onePieceFrontier } from '@/portfolio/onepiece.v13.exhaustive-comments';
+import { mtgReservedListFrontierV14 } from '@/portfolio/mtg.v14.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -88,12 +89,16 @@ export async function POST(request: NextRequest) {
             result = await onePieceFrontier(cardIds, budget);
             break;
 
+          case 'mtg-rl-v14':
+            result = await mtgReservedListFrontierV14(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14'],
               },
               { status: 400 }
             );
@@ -259,7 +264,25 @@ export async function GET(request: NextRequest) {
           mangaLeaderMinimum: 0.45,
         },
       },
-    },
+      {
+        id: 'mtg-rl-v14',
+        name: 'MTG Reserved List Exhaustive v14',
+        description: '52% Power/Dual/Workshop minimum with exhaustive line-by-line comments',
+        defaultBudget: 25000000,
+        expectedResults: {
+          cagr: 0.44,
+          sharpe: 8.4,
+          maxDrawdown: -0.05,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.12,
+          maxPositions: 40,
+          frontierPoints: 35,
+          rlPremiumMinimum: 0.52,
+        },
+      },
+    ],
     riskManagement: {
       singleCard: 0.08,
       gameLimits: {
