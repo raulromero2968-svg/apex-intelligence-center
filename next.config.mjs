@@ -1,5 +1,6 @@
 import createMDX from '@next/mdx';
 import remarkGfm from 'remark-gfm';
+import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,6 +13,7 @@ const nextConfig = {
   experimental: {
     typedRoutes: false,
     optimizeCss: true, // CSS optimization for better performance
+    staleTimes: { dynamic: 0 }, // Keep default; tag invalidation is our lever
     // PPR: Enable when upgrading to Next.js 15+
     // ppr: 'incremental',
   },
@@ -77,4 +79,9 @@ const withMDX = createMDX({
   },
 });
 
-export default withMDX(nextConfig);
+// Wrap with Sentry for error tracking and performance monitoring
+export default withSentryConfig(withMDX(nextConfig), {
+  silent: true,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+});

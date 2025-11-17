@@ -12,7 +12,13 @@
     "deploy": "vercel --prod",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:smoke": "playwright test tests/smoke.spec.ts"
+    "test:smoke": "playwright test tests/smoke.spec.ts",
+    "sentry:wizard": "pnpm dlx @sentry/wizard -i nextjs",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed:ci": "tsx scripts/seed-ci.ts",
+    "build:search": "tsx scripts/build-search-index.ts",
+    "db:backfill:slugs": "tsx scripts/backfill-collection-slugs.ts",
+    "ci": "pnpm build:search && pnpm db:migrate && pnpm db:backfill:slugs && pnpm db:seed:ci && playwright test"
   },
   "keywords": [
     "tcg",
@@ -26,10 +32,12 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.0.3",
+    "@sentry/nextjs": "^10.25.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
+    "@upstash/redis": "^1.35.6",
     "autoprefixer": "^10.4.22",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
