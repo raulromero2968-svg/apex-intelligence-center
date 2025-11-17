@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "buildCommand": "pnpm build",
+  "framework": "nextjs",
   "functions": {
     "app/api/backtest/**/*": {
       "maxDuration": 60,
@@ -28,9 +31,7 @@
     }
   },
   "regions": ["iad1"],
-  "framework": "nextjs",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "rewrites": [
     {

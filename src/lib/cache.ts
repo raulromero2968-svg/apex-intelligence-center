@@ -38,10 +38,14 @@ async function bump(kind: 'hits' | 'misses', k: string, by = 1) {
     } else if (typeof r.incr === 'function') {
       for (let i = 0; i < by; i++) await r.incr(rk);
     } else {
-      const v = await redis.get<number>(rk);
-      await redis.set(rk, (Number(v) || 0) + by);
+      if (typeof r.get === 'function' && typeof r.set === 'function') {
+        const v = await r.get(rk);
+        await r.set(rk, (Number(v) || 0) + by);
+      }
     }
-    await redis.expire(rk, TTL_SECONDS);
+    if (typeof r.expire === 'function') {
+      await r.expire(rk, TTL_SECONDS);
+    }
   } catch {
     // ignore metrics failures
   }
@@ -78,7 +82,11 @@ async function mgetSafe(keys: string[]): Promise<(string | null)[]> {
   }
   const out: (string | null)[] = [];
   for (const k of keys) {
-    out.push(await redis.get(k));
+    if (typeof client.get === 'function') {
+      out.push(await client.get(k));
+    } else {
+      out.push(null);
+    }
   }
   return out;
 }
@@ -126,7 +134,8 @@ type Fn<T> = () => Promise<T>;
 export function getCached<T>(key: string, tags: string[], fn: Fn<T>, ttlSeconds = 60) {
   return nextCache(async () => {
     if (redis) {
-      const hit = await redis.get<string>(key);
+      const client: any = redis as any;
+      const hit = typeof client.get === 'function' ? await client.get(key) : null;
       if (hit) {
         recordKeyHit(key).catch(() => {});
         return JSON.parse(hit) as T;
@@ -134,7 +143,12 @@ export function getCached<T>(key: string, tags: string[], fn: Fn<T>, ttlSeconds 
     }
     recordKeyMiss(key).catch(() => {});
     const val = await fn();
-    if (redis) await redis.set(key, JSON.stringify(val), { ex: ttlSeconds });
+    if (redis) {
+      const client: any = redis as any;
+      if (typeof client.set === 'function') {
+        await client.set(key, JSON.stringify(val), { ex: ttlSeconds });
+      }
+    }
     return val;
   }, [key], { tags })();
 }
@@ -156,7 +170,8 @@ export async function getCachedWithMeta<T>(
   const value = await nextCache(
     async () => {
       if (redis) {
-        const hit = await redis.get<string>(key);
+        const client: any = redis as any;
+        const hit = typeof client.get === 'function' ? await client.get(key) : null;
         if (hit) {
           meta.redis = 'HIT';
           recordKeyHit(key).catch(() => {});
@@ -165,7 +180,12 @@ export async function getCachedWithMeta<T>(
       }
       recordKeyMiss(key).catch(() => {});
       const val = await fn();
-      if (redis) await redis.set(key, JSON.stringify(val), { ex: ttlSeconds });
+      if (redis) {
+        const client: any = redis as any;
+        if (typeof client.set === 'function') {
+          await client.set(key, JSON.stringify(val), { ex: ttlSeconds });
+        }
+      }
       return val;
     },
     [key],

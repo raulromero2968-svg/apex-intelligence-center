@@ -2,6 +2,10 @@ import { db } from '@/db';
 import { getCached, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
 
+type SpanLike = {
+  setAttribute?: (key: string, value: unknown) => void;
+};
+
 /**
  * Get collection by slug with caching
  * Cached with tag: collection:<slug>
@@ -17,7 +21,7 @@ export async function getCollectionBySlug(slug: string) {
     async () => {
       return Sentry.startSpan(
         { name: 'collections.getBySlug', op: 'db' },
-        async (span) => {
+        async (span: SpanLike) => {
           const col = await db.query.collections.findFirst({
             where: (c: any, { eq }: any) => eq(c.slug, slug),
           });
