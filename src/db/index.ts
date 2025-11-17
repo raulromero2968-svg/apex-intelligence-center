@@ -1,60 +1,68 @@
 /**
  * Database connection with Sentry integration
  *
- * This file will be configured with Drizzle ORM when database is set up.
- * Currently provides placeholder for future implementation.
+ * Drizzle ORM configured for PostgreSQL with pgvector support
  */
 
 import * as Sentry from '@sentry/nextjs';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import * as schema from './schema';
 
-// Placeholder for database connection
-// When implementing with Vercel Postgres + Drizzle:
-// import { drizzle } from 'drizzle-orm/vercel-postgres';
-// import { sql } from '@vercel/postgres';
-// import * as schema from './schema';
+// Create PostgreSQL connection pool
+// In production, set POSTGRES_URL environment variable
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
+  // Connection pool settings for serverless environments
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
-// export const db = drizzle(sql, {
-//   schema,
-//   logger: {
-//     logQuery(query, params) {
-//       Sentry.addBreadcrumb({
-//         category: 'db.query',
-//         level: 'debug',
-//         data: { qlen: query.length, params: params?.length ?? 0 }
-//       });
-//     },
-//   },
-// });
-
-// Placeholder type for now
-export const db = {
-  query: {
-    collections: {
-      findFirst: async (_opts?: any): Promise<any> => null,
-      findMany: async (_opts?: any): Promise<any[]> => [],
+// Initialize Drizzle with schema and Sentry logging
+export const db = drizzle(pool, {
+  schema,
+  logger: {
+    logQuery(query, params) {
+      // Only log in development or if explicitly enabled
+      if (process.env.NODE_ENV === 'development' || process.env.LOG_DB_QUERIES === 'true') {
+        Sentry.addBreadcrumb({
+          category: 'db.query',
+          level: 'debug',
+          data: {
+            queryLength: query.length,
+            paramsCount: params?.length ?? 0,
+            // Don't log full query in production to avoid exposing sensitive data
+            query: process.env.NODE_ENV === 'development' ? query.slice(0, 200) : '[redacted]'
+          }
+        });
+      }
     },
-    collection_items: {
-      findMany: async (_opts?: any): Promise<any[]> => [],
-    },
   },
-  select: () => ({ from: () => ({ where: () => Promise.resolve([]) }) }),
-  update: () => ({ set: () => ({ where: () => Promise.resolve(null) }) }),
-  insert: () => ({ values: () => ({ onConflictDoUpdate: () => Promise.resolve(null) }) }),
-  transaction: async (fn: any) => fn(db),
-  collections: {
-    create: async (data: any) => ({ id: '1', slug: 'placeholder', ...data }),
-    get: async (id: string) => ({ id, slug: 'placeholder', is_public: true }),
-    updateBySlug: async (slug: string, data: any) => ({ slug, ...data }),
-  },
-  collection_items: {
-    add: async (_data: any) => null,
-    bulkAdd: async (_collectionId: string, _itemIds: string[]) => null,
-  },
-};
+});
+
+// Export pool for raw queries if needed (e.g., for pgvector operations)
+export { pool };
 
 // Log database initialization
 Sentry.addBreadcrumb({
   category: 'db',
   level: 'info',
-  message: 'Database module loaded (placeholder mode)',
+  message: 'Database connection initialized with Drizzle ORM',
+  data: {
+    hasConnection: !!pool,
+    environment: process.env.NODE_ENV,
+  }
 });
+
+// Graceful shutdown
+if (typeof process !== 'undefined') {
+  process.on('SIGTERM', async () => {
+    await pool.end();
+    Sentry.addBreadcrumb({
+      category: 'db',
+      level: 'info',
+      message: 'Database pool closed on SIGTERM',
+    });
+  });
+}
