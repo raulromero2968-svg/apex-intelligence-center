@@ -31,7 +31,6 @@
     }
   },
   "regions": ["iad1"],
-  "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
   "rewrites": [
     {
