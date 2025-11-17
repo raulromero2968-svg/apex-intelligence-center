@@ -2,10 +2,12 @@
  * Database schema definitions for Apex Intelligence
  *
  * This schema includes the TCG RAG system for provenance-tracked market intelligence
+ * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -81,7 +83,238 @@ export const tcg_documents = pgTable('tcg_documents', {
     .on(sql`(metadata->>'unique_id')`),
 }));
 
+// ============================================================================
+// PRODUCTION TCG MARKET DATA MODELS
+// ============================================================================
+
+/**
+ * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
+ */
+export const cards = pgTable('cards', {
+  id: text('id').primaryKey(), // cuid format
+  name: text('name').notNull(),
+  setName: text('set_name').notNull(),
+  cardNumber: text('card_number').notNull(),
+  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
+  artist: text('artist'),
+  rarity: text('rarity'),
+  tcgplayerId: integer('tcgplayer_id'),
+  scryfallId: text('scryfall_id'),
+  justTcgId: text('just_tcg_id'),
+  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
+  nameIdx: index('idx_cards_name').on(table.name),
+  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
+}));
+
+/**
+ * Prices table - Market prices from JustTCG, TCGPlayer, Cardmarket, etc.
+ */
+export const prices = pgTable('prices', {
+  id: text('id').primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  date: timestamp('date').notNull(),
+  source: text('source').notNull(), // "justtcg" | "tcgplayer" | "cardmarket" | "gemrate"
+  market: real('market').notNull(),
+  low: real('low'),
+  high: real('high'),
+  psa10: real('psa10'),
+  psa9: real('psa9'),
+  cgcBlackLabel: real('cgc_black_label'),
+  bgs95: real('bgs95'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  cardDateIdx: index('idx_prices_card_date').on(table.cardId, table.date),
+  sourceDateIdx: index('idx_prices_source_date').on(table.source, table.date),
+}));
+
+/**
+ * Sales table - Actual sale transactions with full provenance
+ */
+export const sales = pgTable('sales', {
+  id: text('id').primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  salePrice: real('sale_price').notNull(),
+  currency: text('currency').notNull().default('USD'),
+  saleDate: timestamp('sale_date').notNull(),
+  grade: text('grade'),
+  gradingCompany: text('grading_company'),
+  certNumber: text('cert_number'),
+  source: text('source').notNull(), // "ebay" | "pwcc" | "goldin" | "cardladder"
+  ebayItemId: text('ebay_item_id'),
+  imageUrls: jsonb('image_urls'),
+  sellerUsername: text('seller_username'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  cardSaleDateIdx: index('idx_sales_card_date').on(table.cardId, table.saleDate),
+  sourceDateIdx: index('idx_sales_source_date').on(table.source, table.saleDate),
+  certNumberIdx: index('idx_sales_cert').on(table.certNumber),
+  uniqueCert: uniqueIndex('idx_sales_cert_unique').on(table.certNumber),
+  uniqueEbay: uniqueIndex('idx_sales_ebay_unique').on(table.ebayItemId),
+}));
+
+/**
+ * Population Reports - PSA/BGS/CGC/SGC population data (GOLD for pop delta alerts)
+ */
+export const populationReports = pgTable('population_reports', {
+  id: text('id').primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  gradingCompany: text('grading_company').notNull(), // "PSA" | "BGS" | "CGC" | "SGC"
+  totalPop: integer('total_pop').notNull(),
+  grade10Count: integer('grade10_count').notNull(),
+  popHigher: integer('pop_higher'),
+  lastUpdated: timestamp('last_updated').notNull(),
+  delta30d: integer('delta30d'), // computed nightly
+  growthRate90d: real('growth_rate_90d'), // computed
+  sourceUrl: text('source_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  cardCompanyIdx: index('idx_pop_card_company').on(table.cardId, table.gradingCompany),
+  deltaIdx: index('idx_pop_delta').on(table.delta30d),
+  uniquePop: uniqueIndex('idx_pop_unique').on(table.cardId, table.gradingCompany, table.lastUpdated),
+}));
+
+/**
+ * Users table - Basic user management
+ */
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+/**
+ * Portfolios table - User portfolio containers
+ */
+export const portfolios = pgTable('portfolios', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: text('name').notNull().default('Main'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_portfolios_user').on(table.userId),
+}));
+
+/**
+ * Holdings table - Individual card holdings in portfolios
+ */
+export const holdings = pgTable('holdings', {
+  id: text('id').primaryKey(),
+  portfolioId: text('portfolio_id').notNull().references(() => portfolios.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  quantity: integer('quantity').notNull().default(1),
+  costBasisUsd: real('cost_basis_usd').notNull(),
+  acquiredDate: timestamp('acquired_date').notNull(),
+  grade: text('grade'),
+  gradingCompany: text('grading_company'),
+  certNumber: text('cert_number'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  portfolioIdx: index('idx_holdings_portfolio').on(table.portfolioId),
+  uniqueCert: uniqueIndex('idx_holdings_cert_unique').on(table.certNumber),
+}));
+
+/**
+ * Alert Subscriptions - User alert preferences
+ */
+export const alertSubscriptions = pgTable('alert_subscriptions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }),
+  alertType: text('alert_type').notNull(), // "pop_delta" | "arbitrage" | "price_spike"
+  threshold: real('threshold').notNull(),
+  channels: jsonb('channels').notNull(), // ["discord", "telegram", "email", "push"]
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userActiveIdx: index('idx_alerts_user_active').on(table.userId, table.isActive),
+  cardTypeIdx: index('idx_alerts_card_type').on(table.cardId, table.alertType),
+}));
+
+/**
+ * Push Subscriptions - Web Push API subscriptions
+ */
+export const pushSubscriptions = pgTable('push_subscriptions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }),
+  endpoint: text('endpoint').notNull().unique(),
+  keys: jsonb('keys').notNull(), // { p256dh, auth }
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_push_user').on(table.userId),
+}));
+
+/**
+ * Arbitrage Opportunities - Cached arbitrage opportunities (15min TTL)
+ */
+export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
+  id: text('id').primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  buySource: text('buy_source').notNull(), // "JP" | "EU" | "US"
+  buyPrice: real('buy_price').notNull(),
+  sellSource: text('sell_source').notNull(),
+  sellPrice: real('sell_price').notNull(),
+  spreadPct: real('spread_pct').notNull(),
+  riskAdjustedSpreadPct: real('risk_adjusted_spread_pct').notNull(),
+  liquidity: integer('liquidity').notNull(),
+  shippingCost: real('shipping_cost'),
+  detectedAt: timestamp('detected_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+}, (table) => ({
+  spreadExpiresIdx: index('idx_arb_spread_expires').on(table.spreadPct, table.expiresAt),
+  cardIdx: index('idx_arb_card').on(table.cardId),
+}));
+
+/**
+ * Human Conception Statements - EU AI Act compliance
+ */
+export const humanConceptionStatements = pgTable('human_conception_statements', {
+  id: text('id').primaryKey(),
+  insightId: text('insight_id').notNull().unique(),
+  researcherId: text('researcher_id').notNull(),
+  statement: text('statement').notNull(),
+  promptChain: jsonb('prompt_chain').notNull(),
+  signature: text('signature').notNull(),
+  ipfsCid: text('ipfs_cid').notNull().unique(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  researcherIdx: index('idx_conception_researcher').on(table.researcherId),
+  createdIdx: index('idx_conception_created').on(table.createdAt),
+}));
+
+/**
+ * Compliance Log - RAG query/response logging for EU AI Act
+ */
+export const complianceLogs = pgTable('compliance_logs', {
+  id: text('id').primaryKey(),
+  traceHash: text('trace_hash').notNull().unique(),
+  ipfsCid: text('ipfs_cid').notNull().unique(),
+  userId: text('user_id'),
+  query: text('query').notNull(),
+  response: text('response').notNull(),
+  citationCount: integer('citation_count').notNull(),
+  synthesisCount: integer('synthesis_count').notNull(),
+  noveltyScore: real('novelty_score').notNull(), // 0-1, >0.7 triggers human review
+  isValid: boolean('is_valid').notNull(),
+  validationErrors: jsonb('validation_errors'),
+  systemVersion: text('system_version').notNull(), // Git SHA
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userCreatedIdx: index('idx_compliance_user_created').on(table.userId, table.createdAt),
+  noveltyIdx: index('idx_compliance_novelty').on(table.noveltyScore),
+  createdIdx: index('idx_compliance_created').on(table.createdAt),
+}));
+
+// ============================================================================
 // TypeScript types for better DX
+// ============================================================================
+
 export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;
 export type CollectionItem = typeof collection_items.$inferSelect;
@@ -90,6 +323,31 @@ export type IntelItem = typeof intel_items.$inferSelect;
 export type NewIntelItem = typeof intel_items.$inferInsert;
 export type TcgDocument = typeof tcg_documents.$inferSelect;
 export type NewTcgDocument = typeof tcg_documents.$inferInsert;
+
+export type Card = typeof cards.$inferSelect;
+export type NewCard = typeof cards.$inferInsert;
+export type Price = typeof prices.$inferSelect;
+export type NewPrice = typeof prices.$inferInsert;
+export type Sale = typeof sales.$inferSelect;
+export type NewSale = typeof sales.$inferInsert;
+export type PopulationReport = typeof populationReports.$inferSelect;
+export type NewPopulationReport = typeof populationReports.$inferInsert;
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type Portfolio = typeof portfolios.$inferSelect;
+export type NewPortfolio = typeof portfolios.$inferInsert;
+export type Holding = typeof holdings.$inferSelect;
+export type NewHolding = typeof holdings.$inferInsert;
+export type AlertSubscription = typeof alertSubscriptions.$inferSelect;
+export type NewAlertSubscription = typeof alertSubscriptions.$inferInsert;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
+export type NewArbitrageOpportunity = typeof arbitrageOpportunities.$inferInsert;
+export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSelect;
+export type NewHumanConceptionStatement = typeof humanConceptionStatements.$inferInsert;
+export type ComplianceLog = typeof complianceLogs.$inferSelect;
+export type NewComplianceLog = typeof complianceLogs.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:

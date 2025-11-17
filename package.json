@@ -38,6 +38,7 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.0.3",
+    "@prisma/client": "^6.19.0",
     "@sentry/nextjs": "^10.25.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/mdx": "^2.0.13",

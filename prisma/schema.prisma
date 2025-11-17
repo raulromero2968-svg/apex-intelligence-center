@@ -1,0 +1,206 @@
+// Prisma Schema for Apex Intelligence TCG RAG Engine
+// This schema defines the core TCG market data models
+// Production-ready with idempotency, provenance tracking, and pgvector support
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+// Core card entity - single source of truth for all TCG cards
+model Card {
+  id              String    @id @default(cuid())
+  name            String
+  setName         String
+  cardNumber      String
+  game            String    // "pokemon" | "mtg" | "yugioh" | "lorcana"
+  artist          String?
+  rarity          String?
+  tcgplayerId     Int?
+  scryfallId      String?   @unique
+  justTcgId       String?   @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  prices          Price[]
+  sales           Sale[]
+  populations     PopulationReport[]
+
+  // Cached composite score (computed nightly)
+  apexScore       Float?    // 0-100 composite score (price velocity + pop delta + liquidity)
+
+  @@unique([name, setName, cardNumber, game])
+  @@index([game, apexScore])
+  @@index([name])
+}
+
+// Price data from various marketplaces
+model Price {
+  id              String   @id @default(cuid())
+  cardId          String
+  date            DateTime
+  source          String   // "justtcg" | "tcgplayer" | "cardmarket" | "gemrate"
+
+  // Raw market prices
+  market          Float
+  low             Float?
+  high            Float?
+
+  // Graded prices (PSA/BGS/CGC premium tracking)
+  psa10           Float?
+  psa9            Float?
+  cgcBlackLabel   Float?   // CGC Perfect 10 (Black Label)
+  bgs95           Float?   // Beckett 9.5 Gem Mint
+
+  card            Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([cardId, date])
+  @@index([source, date])
+}
+
+// Sales data with full provenance (eBay, PWCC, Goldin, etc.)
+model Sale {
+  id              String   @id @default(cuid())
+  cardId          String
+  salePrice       Float
+  currency        String   @default("USD")
+  saleDate        DateTime
+
+  // Grading details
+  grade           String?  // "PSA 10", "BGS 9.5", "CGC 9.5", etc.
+  gradingCompany  String?  // "PSA" | "BGS" | "CGC" | "SGC"
+  certNumber      String?  @unique  // PSA cert #, BGS cert #, etc. (unique for provenance)
+
+  // Source tracking (critical for attribution)
+  source          String   // "ebay" | "pwcc" | "goldin" | "cardladder"
+  ebayItemId      String?  @unique
+  imageUrls       Json?    // Array of image URLs for verification
+  sellerUsername  String?
+
+  card            Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([cardId, saleDate])
+  @@index([source, saleDate])
+  @@index([certNumber])
+}
+
+// Population reports (PSA, BGS, CGC, SGC)
+// This is the GOLD for pop delta alerts
+model PopulationReport {
+  id              String   @id @default(cuid())
+  cardId          String
+  gradingCompany  String   // "PSA" | "BGS" | "CGC" | "SGC"
+
+  // Population data
+  totalPop        Int      // Total graded for this card
+  grade10Count    Int      // PSA 10, CGC Perfect 10, BGS 10, etc.
+  popHigher       Int?     // Population graded higher (for context)
+
+  // Temporal tracking
+  lastUpdated     DateTime
+  delta30d        Int?     // Computed nightly: pop change in last 30 days
+  growthRate90d   Float?   // Computed: (current - 90d ago) / 90d ago
+
+  sourceUrl       String?  // Link to official pop report
+
+  card            Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, gradingCompany, lastUpdated])
+  @@index([cardId, gradingCompany])
+  @@index([delta30d]) // For pop delta alerts
+}
+
+// Human Conception Statements (for EU AI Act + patent compliance)
+model HumanConceptionStatement {
+  id          String   @id @default(cuid())
+  insightId   String   @unique // Links to specific RAG query/response
+  researcherId String  // User ID of human analyst
+
+  // The human-authored conception statement
+  statement   String   @db.Text
+
+  // Full prompt chain for reproducibility
+  promptChain Json
+
+  // Cryptographic proof
+  signature   String   // HMAC-SHA256 signature
+  ipfsCid     String   @unique // Immutable IPFS storage
+
+  createdAt   DateTime @default(now())
+
+  @@index([researcherId])
+  @@index([createdAt])
+}
+
+// RAG compliance log (every query response)
+model ComplianceLog {
+  id              String   @id @default(cuid())
+  traceHash       String   @unique
+  ipfsCid         String   @unique
+  userId          String?
+  query           String   @db.Text
+  response        String   @db.Text
+  citationCount   Int
+  synthesisCount  Int
+  noveltyScore    Float    // 0-1, >0.7 triggers human review
+  isValid         Boolean
+  validationErrors Json?
+  systemVersion   String   // Git SHA
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([noveltyScore])
+  @@index([createdAt])
+}
+
+// User alert subscriptions (for pop delta + arbitrage)
+model AlertSubscription {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String?  // null = subscribe to all
+  alertType   String   // "pop_delta" | "arbitrage" | "price_spike"
+  threshold   Float    // e.g., 8.0 for 8% pop delta
+  channels    Json     // ["discord", "telegram", "email", "push"]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, isActive])
+  @@index([cardId, alertType])
+}
+
+// Push notification subscriptions (Web Push API)
+model PushSubscription {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String?
+  endpoint    String   @unique
+  keys        Json     // { p256dh, auth }
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Arbitrage opportunities cache (refreshed every 15min)
+model ArbitrageOpportunity {
+  id          String   @id @default(cuid())
+  cardId      String
+  buySource   String   // "JP" | "EU" | "US"
+  buyPrice    Float
+  sellSource  String
+  sellPrice   Float
+  spreadPct   Float
+  liquidity   Int      // 30d sales volume
+  shippingCost Float?
+  detectedAt  DateTime @default(now())
+  expiresAt   DateTime // 15min TTL
+
+  @@index([spreadPct, expiresAt])
+  @@index([cardId])
+}
