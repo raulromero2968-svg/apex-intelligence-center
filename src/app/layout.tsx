@@ -8,6 +8,8 @@ import { TopBanner } from '@/components/nav/TopBanner';
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Footer } from '@/components/footer/Footer';
+import GuidedTour from '@/components/GuidedTour';
+import HelpFAB from '@/components/HelpFAB';
 import '@/styles/animations.css';
 import './globals.css';
 
@@ -56,6 +58,12 @@ export default function RootLayout({
 
         {/* Footer */}
         <Footer />
+
+        {/* Guided Tour */}
+        <GuidedTour />
+
+        {/* Help FAB */}
+        <HelpFAB />
 
         {/* Toast Notifications */}
         <Toaster
