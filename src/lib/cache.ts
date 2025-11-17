@@ -38,3 +38,34 @@ export function getCached<T>(key: string, tags: string[], fn: Fn<T>, ttlSeconds 
     return val;
   }, { tags })(key);
 }
+
+export type CacheMeta = { redis: 'HIT' | 'MISS' | 'DISABLED' };
+
+/**
+ * getCachedWithMeta: Same as getCached but returns cache metadata
+ * Useful for exposing cache headers in API responses
+ */
+export async function getCachedWithMeta<T>(
+  key: string,
+  tags: string[],
+  fn: Fn<T>,
+  ttlSeconds = 60
+): Promise<{ value: T; meta: CacheMeta }> {
+  let meta: CacheMeta = { redis: redis ? 'MISS' : 'DISABLED' };
+  const value = await nextCache(
+    async () => {
+      if (redis) {
+        const hit = await redis.get<string>(key);
+        if (hit) {
+          meta.redis = 'HIT';
+          return JSON.parse(hit) as T;
+        }
+      }
+      const val = await fn();
+      if (redis) await redis.set(key, JSON.stringify(val), { ex: ttlSeconds });
+      return val;
+    },
+    { tags }
+  )(key);
+  return { value, meta };
+}
