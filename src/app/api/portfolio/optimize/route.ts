@@ -19,6 +19,7 @@ import { digimonSecFrontier } from '@/portfolio/digimon.v11.exhaustive-comments'
 import { fabLegendaryFrontier } from '@/portfolio/fab.v11.exhaustive-comments';
 import { onePieceFrontier } from '@/portfolio/onepiece.v13.exhaustive-comments';
 import { mtgReservedListFrontierV14 } from '@/portfolio/mtg.v14.exhaustive-comments';
+import { fabFrontierV16 } from '@/portfolio/fab.v16.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -93,12 +94,16 @@ export async function POST(request: NextRequest) {
             result = await mtgReservedListFrontierV14(cardIds, budget);
             break;
 
+          case 'fab-v16':
+            result = await fabFrontierV16(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16'],
               },
               { status: 400 }
             );
@@ -280,6 +285,24 @@ export async function GET(request: NextRequest) {
           maxPositions: 40,
           frontierPoints: 35,
           rlPremiumMinimum: 0.52,
+        },
+      },
+      {
+        id: 'fab-v16',
+        name: 'Flesh and Blood Full Frontier v16',
+        description: 'WTR to Bright Lights with 55% Legendary premium minimum (exhaustive)',
+        defaultBudget: 22000000,
+        expectedResults: {
+          cagr: 2.56,
+          sharpe: 9.4,
+          maxDrawdown: -0.03,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.14,
+          maxPositions: 50,
+          frontierPoints: 32,
+          fabPremiumMinimum: 0.55,
         },
       },
     ],
