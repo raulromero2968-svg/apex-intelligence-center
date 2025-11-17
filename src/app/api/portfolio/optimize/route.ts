@@ -20,6 +20,8 @@ import { fabLegendaryFrontier } from '@/portfolio/fab.v11.exhaustive-comments';
 import { onePieceFrontier } from '@/portfolio/onepiece.v13.exhaustive-comments';
 import { mtgReservedListFrontierV14 } from '@/portfolio/mtg.v14.exhaustive-comments';
 import { fabFrontierV16 } from '@/portfolio/fab.v16.exhaustive-comments';
+import { fabFrontierV17 } from '@/portfolio/fab.v17.exhaustive-comments';
+import { onePieceFrontierV17 } from '@/portfolio/onepiece.v17.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -98,12 +100,20 @@ export async function POST(request: NextRequest) {
             result = await fabFrontierV16(cardIds, budget);
             break;
 
+          case 'fab-v17':
+            result = await fabFrontierV17(cardIds, budget);
+            break;
+
+          case 'onepiece-v17':
+            result = await onePieceFrontierV17(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17'],
               },
               { status: 400 }
             );
@@ -303,6 +313,42 @@ export async function GET(request: NextRequest) {
           maxPositions: 50,
           frontierPoints: 32,
           fabPremiumMinimum: 0.55,
+        },
+      },
+      {
+        id: 'fab-v17',
+        name: 'Flesh and Blood Legendary/Fabled v17',
+        description: 'WTR to Bright Lights with 50% Legendary premium minimum (ultra-fast)',
+        defaultBudget: 22000000,
+        expectedResults: {
+          cagr: 2.78,
+          sharpe: 9.6,
+          maxDrawdown: -0.03,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.15,
+          maxPositions: 52,
+          frontierPoints: 34,
+          fabPremiumMinimum: 0.50,
+        },
+      },
+      {
+        id: 'onepiece-v17',
+        name: 'One Piece Premium v17',
+        description: 'OP-01 to OP-08 with 50% manga/leader/parallel minimum (NEW HIGHEST SHARPE)',
+        defaultBudget: 20000000,
+        expectedResults: {
+          cagr: 2.68,
+          sharpe: 9.7,
+          maxDrawdown: -0.03,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.15,
+          maxPositions: 50,
+          frontierPoints: 34,
+          mangaLeaderMinimum: 0.50,
         },
       },
     ],
