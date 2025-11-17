@@ -1,42 +1,41 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "framework": "nextjs",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/**/*.js": {
-      "maxDuration": 10
+    "app/api/backtest/**/*": {
+      "maxDuration": 60,
+      "memory": 3008,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/portfolio/**/*": {
+      "maxDuration": 30,
+      "memory": 1536,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/rag/**/*": {
+      "maxDuration": 60,
+      "memory": 3008,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/jobs/**/*": {
+      "maxDuration": 60,
+      "memory": 1536,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/arbitrage/**/*": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "runtime": "nodejs20.x"
     }
   },
-  "redirects": [
+  "regions": ["iad1"],
+  "framework": "nextjs",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
+  "rewrites": [
     {
-      "source": "/insights/psa-10-premium-decay",
-      "destination": "/intel/psa-10-premium-decay",
-      "permanent": true
-    },
-    {
-      "source": "/insights/reprint-risk-indicators",
-      "destination": "/research/reprint-risk-indicators",
-      "permanent": true
-    },
-    {
-      "source": "/insights/sealed-booster-box-roi",
-      "destination": "/research/sealed-booster-box-roi",
-      "permanent": true
-    },
-    {
-      "source": "/insights/collector-vs-investor-behavior",
-      "destination": "/intel/collector-vs-investor-behavior",
-      "permanent": true
-    },
-    {
-      "source": "/insights/authentication-fraud-trends",
-      "destination": "/research/authentication-fraud-trends",
-      "permanent": true
-    },
-    {
-      "source": "/insights/international-arbitrage",
-      "destination": "/intel/international-arbitrage",
-      "permanent": true
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ]
 }
