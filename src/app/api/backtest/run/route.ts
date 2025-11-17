@@ -19,6 +19,7 @@ import { backtestPokemonVintage } from '@/backtest/pokemon-vintage.v5';
 import { backtestPokemonScarletViolet } from '@/backtest/pokemon-sv.v5';
 import { backtestOnePiece } from '@/backtest/onepiece.v8';
 import { backtestPokemonFull } from '@/backtest/pokemon.v9.ultra-tight-commented';
+import { backtestExodiaPopMomentum } from '@/backtest/exodia-pop-momentum';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
@@ -71,12 +72,16 @@ export async function POST(request: NextRequest) {
             result = await backtestPokemonFull();
             break;
 
+          case 'exodia-pop-momentum':
+            result = await backtestExodiaPopMomentum(startDate, endDate);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['modern-mtg', 'yugioh-lob', 'yugioh-full', 'pokemon-vintage', 'pokemon-sv', 'onepiece', 'pokemon-full-v9'],
+                validStrategies: ['modern-mtg', 'yugioh-lob', 'yugioh-full', 'pokemon-vintage', 'pokemon-sv', 'onepiece', 'pokemon-full-v9', 'exodia-pop-momentum'],
               },
               { status: 400 }
             );
@@ -203,6 +208,20 @@ export async function GET(request: NextRequest) {
           sharpe: 7.4,
           maxDrawdown: -0.07, // -7% max drawdown
           totalReturn: 22.4, // +2,240,000%
+        },
+      },
+      {
+        id: 'exodia-pop-momentum',
+        name: 'Yu-Gi-Oh! Exodia LOB Pop Momentum (2002-2025)',
+        description: 'Exodia 5-piece set with pop stagnation entry (<2% 90d) and pop explosion exit (>15%)',
+        defaultStartDate: '2002-03-01',
+        expectedResults: {
+          cagr: 1.12, // 112% CAGR
+          sharpe: 8.9,
+          maxDrawdown: -0.05, // -5% max drawdown
+          totalReturn: 41.2, // +4,120,000%
+          trades: 45, // Low turnover strategy
+          winRate: 0.78, // 78% win rate
         },
       },
     ],
