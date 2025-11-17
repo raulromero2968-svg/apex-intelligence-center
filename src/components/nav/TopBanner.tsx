@@ -11,11 +11,11 @@ export const TopBanner = () => {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/insights', label: 'Insights' },
+    { href: '/intelligence', label: 'Intelligence', dataTour: 'nav-intelligence' },
     { href: '/blog', label: 'Blog' },
     { href: '/research', label: 'Research' },
+    { href: '/tools', label: 'Tools', dataTour: 'nav-tools' },
     { href: '/about', label: 'About' },
-    { href: '/services', label: 'Services' },
   ];
 
   const isActive = (href: string) => {
@@ -54,6 +54,7 @@ export const TopBanner = () => {
             <Link
               key={link.href}
               href={link.href}
+              data-tour={link.dataTour}
               className={`transition-colors text-sm ${
                 isActive(link.href)
                   ? 'text-cyan-400 font-semibold'
