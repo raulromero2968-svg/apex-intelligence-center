@@ -18,6 +18,15 @@ jobs:
           cache: pnpm
       - name: Install deps
         run: pnpm i --frozen-lockfile
+      - name: Verify Vercel Pro Limits
+        run: |
+          if grep -q '"memory":\s*4096' vercel.json; then
+            echo "✅ Vercel Pro memory limits (4096 MB) active"
+          else
+            echo "❌ Missing or incorrect Vercel Pro memory configuration"
+            echo "Expected: \"memory\": 4096 in vercel.json"
+            exit 1
+          fi
       - name: Typecheck
         run: pnpm typecheck
       - name: Tests

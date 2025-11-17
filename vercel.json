@@ -12,7 +12,7 @@
     },
     "app/api/portfolio/**/*": {
       "maxDuration": 60,
-      "memory": 3008,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     },
     "app/api/rag/**/*": {
@@ -22,12 +22,12 @@
     },
     "app/api/jobs/**/*": {
       "maxDuration": 60,
-      "memory": 3008,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     },
     "app/api/arbitrage/**/*": {
       "maxDuration": 60,
-      "memory": 3008,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     },
     "app/api/ingest/**/*": {
@@ -36,10 +36,18 @@
       "runtime": "nodejs20.x"
     },
     "app/api/**/*.ts": {
-      "maxDuration": 60,
-      "memory": 3008,
+      "maxDuration": 300,
+      "memory": 4096,
+      "runtime": "nodejs20.x"
+    },
+    "pages/api/**/*.ts": {
+      "maxDuration": 300,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     }
+  },
+  "crons": {
+    "schedule": "0 0 * * *"
   },
   "regions": ["iad1"],
   "outputDirectory": ".next",
