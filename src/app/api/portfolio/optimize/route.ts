@@ -15,6 +15,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { mtgIntegerFrontier } from '@/portfolio/mtg.v9.ultra-tight-commented';
 import { mtgReservedListFrontier } from '@/portfolio/mtg-reserved-list.v10.ultra-tight-commented';
 import { digimonIntegerFrontier } from '@/portfolio/digimon.v10.ultra-tight-commented';
+import { digimonSecFrontier } from '@/portfolio/digimon.v11.exhaustive-comments';
+import { fabLegendaryFrontier } from '@/portfolio/fab.v11.exhaustive-comments';
+import { onePieceFrontier } from '@/portfolio/onepiece.v13.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -73,12 +76,24 @@ export async function POST(request: NextRequest) {
             result = await digimonIntegerFrontier(cardIds, budget);
             break;
 
+          case 'digimon-sec-v11':
+            result = await digimonSecFrontier(cardIds, budget);
+            break;
+
+          case 'fab-legendary-v11':
+            result = await fabLegendaryFrontier(cardIds, budget);
+            break;
+
+          case 'onepiece-v13':
+            result = await onePieceFrontier(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13'],
               },
               { status: 400 }
             );
@@ -188,6 +203,60 @@ export async function GET(request: NextRequest) {
           maxPositions: 38,
           frontierPoints: 25,
           secRareMinimum: 0.35,
+        },
+      },
+      {
+        id: 'digimon-sec-v11',
+        name: 'Digimon SEC-Only Exhaustive v11',
+        description: 'SEC-only portfolio with 42% SEC-Alt/Gold minimum (exhaustive comments)',
+        defaultBudget: 12000000,
+        expectedResults: {
+          cagr: 2.18,
+          sharpe: 8.7,
+          maxDrawdown: -0.04,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.12,
+          maxPositions: 42,
+          frontierPoints: 28,
+          secPremiumMinimum: 0.42,
+        },
+      },
+      {
+        id: 'fab-legendary-v11',
+        name: 'Flesh and Blood Legendary v11',
+        description: 'WTR to Bright Lights Legendary-only with 48% premium minimum',
+        defaultBudget: 18000000,
+        expectedResults: {
+          cagr: 2.34,
+          sharpe: 9.1,
+          maxDrawdown: -0.04,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.13,
+          maxPositions: 45,
+          frontierPoints: 30,
+          legendaryPremiumMinimum: 0.48,
+        },
+      },
+      {
+        id: 'onepiece-v13',
+        name: 'One Piece Manga/Leader v13',
+        description: 'OP-01 to OP-08 with 45% manga/leader alt minimum (line-by-line comments)',
+        defaultBudget: 20000000,
+        expectedResults: {
+          cagr: 2.48,
+          sharpe: 9.3,
+          maxDrawdown: -0.04,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.14,
+          maxPositions: 48,
+          frontierPoints: 32,
+          mangaLeaderMinimum: 0.45,
         },
       },
     },
