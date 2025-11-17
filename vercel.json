@@ -2,32 +2,42 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "installCommand": "pnpm install --no-frozen-lockfile --shamefully-hoist=true",
-  "buildCommand": "pnpm prisma generate && pnpm dlx drizzle-kit generate && pnpm build",
+  "buildCommand": "pnpm dlx drizzle-kit generate && pnpm build",
   "framework": "nextjs",
   "functions": {
     "app/api/backtest/**/*": {
-      "maxDuration": 60,
-      "memory": 3008,
+      "maxDuration": 300,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     },
     "app/api/portfolio/**/*": {
-      "maxDuration": 30,
-      "memory": 1536,
+      "maxDuration": 60,
+      "memory": 3008,
       "runtime": "nodejs20.x"
     },
     "app/api/rag/**/*": {
-      "maxDuration": 60,
-      "memory": 3008,
+      "maxDuration": 300,
+      "memory": 4096,
       "runtime": "nodejs20.x"
     },
     "app/api/jobs/**/*": {
       "maxDuration": 60,
-      "memory": 1536,
+      "memory": 3008,
       "runtime": "nodejs20.x"
     },
     "app/api/arbitrage/**/*": {
-      "maxDuration": 30,
-      "memory": 1024,
+      "maxDuration": 60,
+      "memory": 3008,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/ingest/**/*": {
+      "maxDuration": 300,
+      "memory": 4096,
+      "runtime": "nodejs20.x"
+    },
+    "app/api/**/*.ts": {
+      "maxDuration": 60,
+      "memory": 3008,
       "runtime": "nodejs20.x"
     }
   },
