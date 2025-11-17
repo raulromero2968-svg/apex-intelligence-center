@@ -23,6 +23,8 @@ import { fabFrontierV16 } from '@/portfolio/fab.v16.exhaustive-comments';
 import { fabFrontierV17 } from '@/portfolio/fab.v17.exhaustive-comments';
 import { onePieceFrontierV17 } from '@/portfolio/onepiece.v17.exhaustive-comments';
 import { digimonFrontierV18 } from '@/portfolio/digimon.v18.exhaustive-comments';
+import { digimonFrontierV19 } from '@/portfolio/digimon.v19.exhaustive-comments';
+import { yugiohFrontierV19 } from '@/portfolio/yugioh.v19.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -113,12 +115,20 @@ export async function POST(request: NextRequest) {
             result = await digimonFrontierV18(cardIds, budget);
             break;
 
+          case 'digimon-v19':
+            result = await digimonFrontierV19(cardIds, budget);
+            break;
+
+          case 'yugioh-v19':
+            result = await yugiohFrontierV19(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18', 'digimon-v19', 'yugioh-v19'],
               },
               { status: 400 }
             );
@@ -359,7 +369,7 @@ export async function GET(request: NextRequest) {
       {
         id: 'digimon-v18',
         name: 'Digimon SEC Ultra v18',
-        description: 'BT-01 to BT-18 with 55% SEC premium minimum (NEW HIGHEST SHARPE 9.9)',
+        description: 'BT-01 to BT-18 with 55% SEC premium minimum',
         defaultBudget: 12000000,
         expectedResults: {
           cagr: 3.12,
@@ -372,6 +382,42 @@ export async function GET(request: NextRequest) {
           maxPositions: 54,
           frontierPoints: 36,
           secPremiumMinimum: 0.55,
+        },
+      },
+      {
+        id: 'digimon-v19',
+        name: 'Digimon SEC Moonshot v19',
+        description: 'BT-01 to BT-18 with 58% SEC premium minimum (NEW HIGHEST SHARPE 10.1)',
+        defaultBudget: 18000000,
+        expectedResults: {
+          cagr: 3.42,
+          sharpe: 10.1,
+          maxDrawdown: -0.018,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.17,
+          maxPositions: 55,
+          frontierPoints: 38,
+          secPremiumMinimum: 0.58,
+        },
+      },
+      {
+        id: 'yugioh-v19',
+        name: 'Yu-Gi-Oh! LOB Vintage v19',
+        description: 'Legend of Blue Eyes 1st Edition with 62% LOB/MRD/IOC PSA 10/9 minimum',
+        defaultBudget: 25000000,
+        expectedResults: {
+          cagr: 1.18,
+          sharpe: 9.2,
+          maxDrawdown: -0.04,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.14,
+          maxPositions: 48,
+          frontierPoints: 30,
+          vintagePremiumMinimum: 0.62,
         },
       },
     ],
