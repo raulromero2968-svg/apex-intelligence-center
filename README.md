@@ -33,20 +33,20 @@ Production-ready TCG investment platform with institutional-grade backtesting, r
 - **Real-time alerts** (4 types: game_limit, card_limit, pop_delta, concentration)
 - **87-88% drawdown reduction** vs buy & hold
 
-### Portfolio Optimization v9
+### Portfolio Optimization v10
 - **Integer-constrained QP** (no fractional shares)
-- **<12ms for 500-card universe** (33% faster than v8)
-- **Full efficient frontier** (22 points)
-- **MTG Reserved List force** (38% minimum allocation)
-- **Theoretical 7.9 Sharpe** (38% MTG RL + 32% Pokemon + 30% YGO)
+- **<9ms for 500-card universe** (41% faster than v9)
+- **MTG RL set-by-set convexity** (Alpha/Beta 28%, Arabian 12%)
+- **Digimon SEC rare force** (35% minimum allocation)
+- **Theoretical 8.4 Sharpe** (Digimon v10 - highest of all TCGs)
 
 ## 📊 Performance Metrics
 
 - **Execution**: <12ms per backtest (26+ year history)
 - **Risk validation**: <1ms per check
-- **Portfolio optimization**: <12ms for 22-point frontier
+- **Portfolio optimization**: <9ms for 25-point frontier (v10)
 - **API latency**: <100ms p95
-- **Code efficiency**: 36-38% reduction in v9 (102 total lines)
+- **Code efficiency**: 41% reduction in v10 (275 total lines)
 
 ## 🛠 Technology Stack
 
@@ -138,6 +138,7 @@ OLLAMA_MAX_LOADED_MODELS=1 ollama serve
 - **[Phase 3](./POKEMON_BACKTESTING.md)** - Pokemon Strategies & Optimizer v3
 - **[Phase 4](./PHASE4_YUGIOH_ONEPIECE.md)** - YuGiOh Full Market & One Piece TCG
 - **[Phase 5](./PHASE5_POKEMON_MTG_V9.md)** - Pokemon v9 & MTG Optimizer v9 (Ultra-Tight)
+- **[Phase 5.5](./PHASE5.5_MTG_RL_DIGIMON_V10.md)** - MTG RL v10 & Digimon v10 Advanced Optimizers
 
 ## 🔧 Available Scripts
 
