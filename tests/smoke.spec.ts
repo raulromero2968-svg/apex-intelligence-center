@@ -108,7 +108,7 @@ test.describe('Top-level route smoke tests', () => {
   });
 
   test('No 404 errors on any top-level route', async ({ page }) => {
-    const routes = ['/', '/insights', '/research', '/about'];
+    const routes = ['/', '/insights', '/research', '/about', '/intelligence', '/tools', '/tutorial'];
 
     for (const route of routes) {
       const response = await page.goto(route);
@@ -118,5 +118,42 @@ test.describe('Top-level route smoke tests', () => {
       const bodyText = await page.textContent('body');
       expect(bodyText?.toLowerCase()).not.toContain('not found');
     }
+  });
+
+  test('Intelligence page loads with tab filtering', async ({ page }) => {
+    await page.goto('/intelligence');
+
+    // Check for intelligence page header
+    await expect(page.locator('text=Latest Intelligence')).toBeVisible();
+
+    // Check that tab filters exist
+    const allTab = page.locator('button:has-text("All")');
+    await expect(allTab).toBeVisible();
+
+    const response = await page.goto('/intelligence');
+    expect(response?.status()).toBe(200);
+  });
+
+  test('Tutorial page loads with content sections', async ({ page }) => {
+    await page.goto('/tutorial');
+
+    // Check for tutorial header
+    await expect(page.locator('text=Tutorial')).toBeVisible();
+
+    // Check for numbered sections
+    await expect(page.locator('text=Reading a Price Index')).toBeVisible();
+
+    const response = await page.goto('/tutorial');
+    expect(response?.status()).toBe(200);
+  });
+
+  test('Tools page loads correctly', async ({ page }) => {
+    await page.goto('/tools');
+
+    // Check for tools page header
+    await expect(page.locator('text=Intelligence Tools')).toBeVisible();
+
+    const response = await page.goto('/tools');
+    expect(response?.status()).toBe(200);
   });
 });
