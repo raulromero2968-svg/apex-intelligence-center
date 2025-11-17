@@ -46,9 +46,6 @@
       "runtime": "nodejs20.x"
     }
   },
-  "crons": {
-    "schedule": "0 0 * * *"
-  },
   "regions": ["iad1"],
   "outputDirectory": ".next",
   "rewrites": [
