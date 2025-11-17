@@ -22,6 +22,7 @@ import { mtgReservedListFrontierV14 } from '@/portfolio/mtg.v14.exhaustive-comme
 import { fabFrontierV16 } from '@/portfolio/fab.v16.exhaustive-comments';
 import { fabFrontierV17 } from '@/portfolio/fab.v17.exhaustive-comments';
 import { onePieceFrontierV17 } from '@/portfolio/onepiece.v17.exhaustive-comments';
+import { digimonFrontierV18 } from '@/portfolio/digimon.v18.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -108,12 +109,16 @@ export async function POST(request: NextRequest) {
             result = await onePieceFrontierV17(cardIds, budget);
             break;
 
+          case 'digimon-v18':
+            result = await digimonFrontierV18(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18'],
               },
               { status: 400 }
             );
@@ -336,7 +341,7 @@ export async function GET(request: NextRequest) {
       {
         id: 'onepiece-v17',
         name: 'One Piece Premium v17',
-        description: 'OP-01 to OP-08 with 50% manga/leader/parallel minimum (NEW HIGHEST SHARPE)',
+        description: 'OP-01 to OP-08 with 50% manga/leader/parallel minimum',
         defaultBudget: 20000000,
         expectedResults: {
           cagr: 2.68,
@@ -349,6 +354,24 @@ export async function GET(request: NextRequest) {
           maxPositions: 50,
           frontierPoints: 34,
           mangaLeaderMinimum: 0.50,
+        },
+      },
+      {
+        id: 'digimon-v18',
+        name: 'Digimon SEC Ultra v18',
+        description: 'BT-01 to BT-18 with 55% SEC premium minimum (NEW HIGHEST SHARPE 9.9)',
+        defaultBudget: 12000000,
+        expectedResults: {
+          cagr: 3.12,
+          sharpe: 9.9,
+          maxDrawdown: -0.02,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.16,
+          maxPositions: 54,
+          frontierPoints: 36,
+          secPremiumMinimum: 0.55,
         },
       },
     ],
