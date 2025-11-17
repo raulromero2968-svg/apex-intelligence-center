@@ -25,6 +25,9 @@ import { onePieceFrontierV17 } from '@/portfolio/onepiece.v17.exhaustive-comment
 import { digimonFrontierV18 } from '@/portfolio/digimon.v18.exhaustive-comments';
 import { digimonFrontierV19 } from '@/portfolio/digimon.v19.exhaustive-comments';
 import { yugiohFrontierV19 } from '@/portfolio/yugioh.v19.exhaustive-comments';
+import { lorcanaFrontierV18 } from '@/portfolio/lorcana.v18.exhaustive-comments';
+import { mtg1993FrontierV1 } from '@/portfolio/mtg.v1993.exhaustive-comments';
+import { baseSetFrontierV15 } from '@/portfolio/pokemon-base.v15.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
 
 export const runtime = 'nodejs'; // Required for heavy computations
@@ -123,12 +126,24 @@ export async function POST(request: NextRequest) {
             result = await yugiohFrontierV19(cardIds, budget);
             break;
 
+          case 'lorcana-v18':
+            result = await lorcanaFrontierV18(cardIds, budget);
+            break;
+
+          case 'mtg-1993-v1':
+            result = await mtg1993FrontierV1(cardIds, budget);
+            break;
+
+          case 'pokemon-base-v15':
+            result = await baseSetFrontierV15(cardIds, budget);
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18', 'digimon-v19', 'yugioh-v19'],
+                validStrategies: ['mtg-v9', 'mtg-reserved-list-v10', 'digimon-v10', 'digimon-sec-v11', 'fab-legendary-v11', 'onepiece-v13', 'mtg-rl-v14', 'fab-v16', 'fab-v17', 'onepiece-v17', 'digimon-v18', 'digimon-v19', 'yugioh-v19', 'lorcana-v18', 'mtg-1993-v1', 'pokemon-base-v15'],
               },
               { status: 400 }
             );
@@ -418,6 +433,60 @@ export async function GET(request: NextRequest) {
           maxPositions: 48,
           frontierPoints: 30,
           vintagePremiumMinimum: 0.62,
+        },
+      },
+      {
+        id: 'lorcana-v18',
+        name: 'Disney Lorcana Enchanted v18',
+        description: 'First Chapter to Ursula\'s Return with 65% Enchanted minimum',
+        defaultBudget: 16000000,
+        expectedResults: {
+          cagr: 3.12,
+          sharpe: 9.9,
+          maxDrawdown: -0.02,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.18,
+          maxPositions: 58,
+          frontierPoints: 40,
+          enchantedPremiumMinimum: 0.65,
+        },
+      },
+      {
+        id: 'mtg-1993-v1',
+        name: 'MTG 1993 Power 9 Alpha/Beta',
+        description: 'Alpha/Beta/Unlimited with 68% Power 9 + Alpha dual lands minimum',
+        defaultBudget: 35000000,
+        expectedResults: {
+          cagr: 1.18,
+          sharpe: 9.2,
+          maxDrawdown: -0.03,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.12,
+          maxPositions: 42,
+          frontierPoints: 28,
+          vintagePremiumMinimum: 0.68,
+        },
+      },
+      {
+        id: 'pokemon-base-v15',
+        name: 'Pokémon Base Set Vintage v15',
+        description: '1999 Base Set 1st Ed/Unlimited with 62% holo minimum (Charizard focus)',
+        defaultBudget: 50000000,
+        expectedResults: {
+          cagr: 2.68,
+          sharpe: 9.5,
+          maxDrawdown: -0.025,
+        },
+        parameters: {
+          minAllocation: 0,
+          maxAllocation: 0.18,
+          maxPositions: 60,
+          frontierPoints: 42,
+          holoPremiumMinimum: 0.62,
         },
       },
     ],
