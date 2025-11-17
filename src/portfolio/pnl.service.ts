@@ -11,6 +11,7 @@
 import { db } from '@/db';
 import { holdings, cards, prices, populationReports } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { checkRisk, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 
 export interface HoldingPnL {
@@ -50,6 +51,12 @@ export interface PortfolioPnL {
     yugioh: number;
     other: number;
   };
+  riskAlerts?: {
+    type: 'game_limit' | 'card_limit' | 'pop_delta' | 'concentration';
+    severity: 'warning' | 'critical';
+    message: string;
+    cardId?: string;
+  }[];
 }
 
 /**
@@ -168,6 +175,9 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
       span?.setAttribute('totalPnl', totalPnl);
       span?.setAttribute('holdingsCount', holdingsPnL.length);
 
+      // Risk Rules v3 validation
+      const riskAlerts = validatePortfolioRisk(holdingsPnL, totalValue, exposure);
+
       return {
         totalValue,
         totalCost,
@@ -180,9 +190,91 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
           worstPerformer,
         },
         exposure,
+        riskAlerts,
       };
     }
   );
+}
+
+/**
+ * Validate portfolio against Risk Rules v3
+ *
+ * @param holdings - Portfolio holdings
+ * @param totalValue - Total portfolio value
+ * @param exposure - Game exposure breakdown
+ * @returns Array of risk alerts
+ */
+function validatePortfolioRisk(
+  holdings: HoldingPnL[],
+  totalValue: number,
+  exposure: { pokemon: number; mtg: number; yugioh: number; other: number }
+): PortfolioPnL['riskAlerts'] {
+  const alerts: NonNullable<PortfolioPnL['riskAlerts']> = [];
+
+  // Check game exposure limits
+  if (exposure.pokemon > RISK.game.pokemon * 100) {
+    alerts.push({
+      type: 'game_limit',
+      severity: 'critical',
+      message: `Pokemon exposure (${exposure.pokemon.toFixed(1)}%) exceeds limit (${(RISK.game.pokemon * 100).toFixed(0)}%)`,
+    });
+  }
+
+  if (exposure.mtg > RISK.game.mtg * 100) {
+    alerts.push({
+      type: 'game_limit',
+      severity: 'critical',
+      message: `MTG exposure (${exposure.mtg.toFixed(1)}%) exceeds limit (${(RISK.game.mtg * 100).toFixed(0)}%)`,
+    });
+  }
+
+  if (exposure.yugioh > RISK.game.yugioh * 100) {
+    alerts.push({
+      type: 'game_limit',
+      severity: 'critical',
+      message: `Yu-Gi-Oh! exposure (${exposure.yugioh.toFixed(1)}%) exceeds limit (${(RISK.game.yugioh * 100).toFixed(0)}%)`,
+    });
+  }
+
+  // Check single card concentration
+  for (const holding of holdings) {
+    const cardPct = holding.currentValue / totalValue;
+    if (cardPct > RISK.single) {
+      alerts.push({
+        type: 'card_limit',
+        severity: 'critical',
+        message: `${holding.cardName} position (${(cardPct * 100).toFixed(1)}%) exceeds single card limit (${(RISK.single * 100).toFixed(0)}%)`,
+        cardId: holding.cardId,
+      });
+    }
+  }
+
+  // Check pop delta warnings
+  for (const holding of holdings) {
+    if (holding.popDelta30d && holding.popDelta30d > RISK.popSell) {
+      alerts.push({
+        type: 'pop_delta',
+        severity: 'warning',
+        message: `${holding.cardName} pop growth (${(holding.popDelta30d * 100).toFixed(1)}%) exceeds sell threshold (${(RISK.popSell * 100).toFixed(0)}%) - consider exit`,
+        cardId: holding.cardId,
+      });
+    }
+  }
+
+  // Check total concentration (top 3 holdings)
+  const sortedByValue = [...holdings].sort((a, b) => b.currentValue - a.currentValue);
+  const top3Value = sortedByValue.slice(0, 3).reduce((sum, h) => sum + h.currentValue, 0);
+  const top3Pct = totalValue > 0 ? (top3Value / totalValue) * 100 : 0;
+
+  if (top3Pct > 50) {
+    alerts.push({
+      type: 'concentration',
+      severity: 'warning',
+      message: `Top 3 holdings represent ${top3Pct.toFixed(1)}% of portfolio - consider diversification`,
+    });
+  }
+
+  return alerts;
 }
 
 /**

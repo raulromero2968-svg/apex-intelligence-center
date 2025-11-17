@@ -23,6 +23,7 @@ import { db } from '@/db';
 import { cards, prices, arbitrageOpportunities } from '@/db/schema';
 import { and, gte, lte } from 'drizzle-orm';
 import { sendArbitrageNotification } from '@/notifications';
+import { pass, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 
 export interface MarketPrice {
@@ -176,6 +177,35 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
 
           // Only alert if risk-adjusted spread >= 18%
           if (spreadPct >= 18) {
+            // Additional check: Risk Rules v3 validation
+            const signal: TradeSignal = {
+              cardId: card.id,
+              game: card.game,
+              price: buyMarket.priceUsd,
+              size: buyMarket.priceUsd, // Full card purchase
+              vol: {
+                riskScore: 3, // Moderate risk for arbitrage
+                forecast30d: 30, // Stable forecast
+              },
+              pop90d: 0.05, // Assume stable pop for high-apex cards
+              liquidity30d: buyMarket.liquidity30d,
+            };
+
+            // Simplified portfolio (in prod, get actual user portfolio)
+            const portfolio: Portfolio = {
+              value: 100000, // Assume $100k portfolio
+              gamePct: {
+                [card.game]: 0.20, // Assume 20% exposure to this game
+              },
+              cardPct: {},
+            };
+
+            // Skip if doesn't pass risk rules v3
+            if (!pass(signal, portfolio)) {
+              console.log(`[Arbitrage] Skipping ${card.name} - failed risk rules v3`);
+              continue;
+            }
+
             const opportunity: ArbitrageOpportunity = {
               cardId: card.id,
               cardName: card.name,
