@@ -18,6 +18,9 @@ type ContentItem = {
   dateISO: string;
   badge: string;
   tcg?: TCG;
+  imageUrl?: string;
+  sources?: number;
+  readTime?: number;
 };
 
 // Aggregate all content from seed data
@@ -31,6 +34,9 @@ function getAllContent(): ContentItem[] {
       dateISO: a.date,
       badge: 'Blog',
       tcg: detectTCG(a.title + ' ' + a.excerpt),
+      imageUrl: a.imageUrl,
+      sources: a.sources,
+      readTime: a.readTime,
     })),
     ...researchReports.map((a) => ({
       kind: 'research' as ContentKind,
@@ -40,6 +46,9 @@ function getAllContent(): ContentItem[] {
       dateISO: a.date,
       badge: 'Research',
       tcg: detectTCG(a.title + ' ' + a.excerpt),
+      imageUrl: a.imageUrl,
+      sources: a.sources,
+      readTime: a.readTime,
     })),
     ...intelNotes.map((a) => ({
       kind: 'intel' as ContentKind,
@@ -49,6 +58,9 @@ function getAllContent(): ContentItem[] {
       dateISO: a.date,
       badge: 'Intel',
       tcg: detectTCG(a.title + ' ' + a.excerpt),
+      imageUrl: a.imageUrl,
+      sources: a.sources,
+      readTime: a.readTime,
     })),
   ];
 

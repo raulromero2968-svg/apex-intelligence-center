@@ -1,8 +1,6 @@
 'use client';
 
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback, useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { HolographicIcon } from '@/components/icons/HolographicIcon';
 import { TOOL_ICONS } from '@/utils/iconMap';
 
@@ -17,34 +15,11 @@ const tools = [
 ];
 
 export const ToolCarousel = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
+  const [emblaRef] = useEmblaCarousel({
     align: 'start',
     dragFree: true,
     containScroll: 'trimSnaps',
   });
-
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const scrollPrev = useCallback(() => { if (emblaApi) emblaApi.scrollPrev(); }, [emblaApi]);
-  const scrollNext = useCallback(() => { if (emblaApi) emblaApi.scrollNext(); }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-    return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('reInit', onSelect);
-    };
-  }, [emblaApi, onSelect]);
 
   return (
     <div className="relative">
@@ -70,23 +45,7 @@ export const ToolCarousel = () => {
         </div>
       </div>
 
-      <button
-        onClick={scrollPrev}
-        disabled={!canScrollPrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white/20 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
-        aria-label="Previous tool"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
-      </button>
-
-      <button
-        onClick={scrollNext}
-        disabled={!canScrollNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:bg-white/20 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
-        aria-label="Next tool"
-      >
-        <ChevronRight className="w-6 h-6 text-white" />
-      </button>
+      {/* Arrow buttons removed - grab-scroll only */}
     </div>
   );
 };
