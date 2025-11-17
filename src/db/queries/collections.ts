@@ -28,7 +28,7 @@ export async function getCollectionBySlug(slug: string) {
             with: { item: true },
           });
 
-          span?.setData?.('rowCounts', { items: items.length });
+          span?.setAttribute?.('rowCounts', items.length);
           return { ...col, items: items.map((i: any) => i.item) };
         }
       );

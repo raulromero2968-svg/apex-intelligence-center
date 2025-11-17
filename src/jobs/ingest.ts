@@ -10,7 +10,7 @@ export type Provider = 'tcgplayer' | 'ebay' | 'cardmarket' | 'whatnot';
  */
 export async function ingestBatch(provider: Provider, items: any[]) {
   // 1) Upsert rows to database
-  await db.transaction(async (tx) => {
+  await db.transaction(async (tx: any) => {
     for (const it of items) {
       // Example: upsert to intel_items table
       // When database is set up, uncomment:

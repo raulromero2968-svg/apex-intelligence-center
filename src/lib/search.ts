@@ -49,7 +49,7 @@ export async function cachedSearch(
 ) {
   const params = normalize(raw);
   const key = stableKey('search', params);
-  const tags = ['search', ...params.sources.map((s) => `source:${s}`)];
+  const tags = ['search', ...(params.sources || []).map((s) => `source:${s}`)];
 
   return getCached(
     key,
@@ -59,7 +59,7 @@ export async function cachedSearch(
         { name: 'search.query', op: 'compute' },
         async (span) => {
           const res = await searchIndex(params);
-          span?.setData?.('resultCount', Array.isArray(res) ? res.length : undefined);
+          span?.setAttribute?.('resultCount', Array.isArray(res) ? res.length : 0);
           return res;
         }
       );
@@ -77,7 +77,7 @@ export async function cachedSearchWithMeta(
 ) {
   const params = normalize(raw);
   const key = stableKey('search', params);
-  const tags = ['search', ...params.sources.map((s) => `source:${s}`)];
+  const tags = ['search', ...(params.sources || []).map((s) => `source:${s}`)];
 
   return getCachedWithMeta(
     key,
@@ -87,7 +87,7 @@ export async function cachedSearchWithMeta(
         { name: 'search.query', op: 'compute' },
         async (span) => {
           const res = await searchIndex(params);
-          span?.setData?.('resultCount', Array.isArray(res) ? res.length : undefined);
+          span?.setAttribute?.('resultCount', Array.isArray(res) ? res.length : 0);
           return res;
         }
       );
