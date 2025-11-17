@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Footer } from '@/components/footer/Footer';
 import GuidedTour from '@/components/GuidedTour';
 import HelpFAB from '@/components/HelpFAB';
+import ToastHost from '@/components/ToastHost';
 import '@/styles/animations.css';
 import './globals.css';
 
@@ -81,6 +82,9 @@ export default function RootLayout({
             },
           }}
         />
+
+        {/* Custom Toast Bus */}
+        <ToastHost />
       </body>
     </html>
   );
