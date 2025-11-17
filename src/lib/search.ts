@@ -1,6 +1,10 @@
 import { getCached, stableKey, getCachedWithMeta } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
 
+type SpanLike = {
+  setAttribute?: (key: string, value: unknown) => void;
+};
+
 export type SearchParams = {
   q?: string;
   tags?: string[];
@@ -57,7 +61,7 @@ export async function cachedSearch(
     async () => {
       return Sentry.startSpan(
         { name: 'search.query', op: 'compute' },
-        async (span) => {
+        async (span: SpanLike) => {
           const res = await searchIndex(params);
           span?.setAttribute?.('resultCount', Array.isArray(res) ? res.length : 0);
           return res;
@@ -85,7 +89,7 @@ export async function cachedSearchWithMeta(
     async () => {
       return Sentry.startSpan(
         { name: 'search.query', op: 'compute' },
-        async (span) => {
+        async (span: SpanLike) => {
           const res = await searchIndex(params);
           span?.setAttribute?.('resultCount', Array.isArray(res) ? res.length : 0);
           return res;

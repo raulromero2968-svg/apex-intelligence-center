@@ -1,0 +1,34 @@
+   100 KB  .next/static/chunks/878-375d52a92bec46b5.js
+    53 KB  .next/static/chunks/e6fd6439-5a314daea7b491f7.js
+    44 KB  .next/static/chunks/framework-6e06c675866dc992.js
+    39 KB  .next/static/chunks/polyfills-42372ed130431b0a.js
+    37 KB  .next/static/chunks/605-dc24be5c6f50205f.js
+    34 KB  .next/static/chunks/main-edac4b89beb96afa.js
+    31 KB  .next/static/chunks/793-3f1e0ea47a7d6e92.js
+    14 KB  .next/static/chunks/424-8671a982c2775c3a.js
+     9 KB  .next/static/chunks/20-fafe22a7d2fc2af0.js
+     8 KB  .next/static/chunks/app/page-6c77ba5415e840f2.js
+     8 KB  .next/static/chunks/985-d7c09bb66fdeaf2a.js
+     6 KB  .next/static/chunks/app/layout-b2de9a6e51e84f8f.js
+     4 KB  .next/static/chunks/app/research/[slug]/page-199d35755a206231.js
+     4 KB  .next/static/chunks/app/intel/[slug]/page-f9202d8ae2c85128.js
+     4 KB  .next/static/chunks/261-bac579b8d8b8a333.js
+     3 KB  .next/static/chunks/app/blog/[slug]/page-23276b9abe6bb79c.js
+     2 KB  .next/static/chunks/webpack-543ab25f6e56a508.js
+     2 KB  .next/static/chunks/app/tools/page-5c5d72dfd0541739.js
+     2 KB  .next/static/chunks/app/research/page-3e977b8b090399aa.js
+     2 KB  .next/static/chunks/app/intel/page-fd4fab03192ad214.js
+     2 KB  .next/static/chunks/app/blog/page-37bfdac03b35b645.js
+     1 KB  .next/static/chunks/pages/_error-1573b7448d33b98a.js
+     1 KB  .next/static/chunks/pages/_app-e93841466285f1d7.js
+     1 KB  .next/static/chunks/main-app-99bb06a228476a94.js
+     1 KB  .next/static/chunks/app/subscribe/page-75590ff576e4a046.js
+     1 KB  .next/static/chunks/app/services/page-f2751babedb51770.js
+     1 KB  .next/static/chunks/app/market/page-6120a57d90a9022c.js
+     1 KB  .next/static/chunks/app/insights/page-bfd0de85e8c3bd3c.js
+     1 KB  .next/static/chunks/app/guides/page-7c51b6678e32403c.js
+     1 KB  .next/static/chunks/app/about/page-de585dd941d7c920.js
+     1 KB  .next/static/chunks/app/_not-found/page-530fff483e78536f.js
+
+
+✅ All client chunks ≤ 300 KB (gz)

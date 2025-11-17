@@ -7,6 +7,7 @@ const redis =
         token: process.env.UPSTASH_REDIS_REST_TOKEN,
       })
     : null;
+const redisClient: any = redis as any;
 
 /**
  * Record ingest batch metrics
@@ -16,7 +17,7 @@ export async function recordIngestBatch(
   provider: string,
   items: { observed_at?: string | number | Date }[]
 ) {
-  if (!redis) return;
+  if (!redisClient) return;
 
   const now = Date.now();
   let maxObserved = 0;
@@ -28,13 +29,23 @@ export async function recordIngestBatch(
 
   // 1) Update lag metric
   const lagMs = Math.max(0, now - maxObserved);
-  await redis.set(`metrics:provider:${provider}:lag_ms`, lagMs, { ex: 600 });
+  if (typeof redisClient.set === 'function') {
+    await redisClient.set(`metrics:provider:${provider}:lag_ms`, lagMs, { ex: 600 });
+  }
 
   // 2) Rolling rate: add count to per-minute bucket for last 5m
   const minute = Math.floor(now / 60000);
   const key = `metrics:provider:${provider}:rate:${minute}`;
-  await redis.incrby(key, items.length || 0);
-  await redis.expire(key, 600); // keep ~10 mins
+  if (typeof redisClient.incrby === 'function') {
+    await redisClient.incrby(key, items.length || 0);
+  } else if (typeof redisClient.incr === 'function') {
+    for (let i = 0; i < (items.length || 0); i++) {
+      await redisClient.incr(key);
+    }
+  }
+  if (typeof redisClient.expire === 'function') {
+    await redisClient.expire(key, 600); // keep ~10 mins
+  }
 }
 
 /**
@@ -42,7 +53,7 @@ export async function recordIngestBatch(
  * Returns lag_ms and rolling rate_per_min
  */
 export async function readProviderMetrics(provider: string) {
-  if (!redis)
+  if (!redisClient)
     return { lag_ms: null, rate_per_min: null };
 
   const now = Date.now();
@@ -51,11 +62,20 @@ export async function readProviderMetrics(provider: string) {
     (off) => `metrics:provider:${provider}:rate:${minute - off}`
   );
 
-  const counts = await redis.mget<number[]>(...keys);
-  const total = counts.reduce((a, c) => a + (Number(c) || 0), 0);
+  const counts =
+    typeof redisClient.mget === 'function'
+      ? await redisClient.mget(...keys)
+      : Array(keys.length).fill(0);
+  const total = counts.reduce(
+    (a: number, c: unknown) => a + (Number(c) || 0),
+    0
+  );
   const rate = total / 5; // average items/min over last 5 mins
 
-  const lag = await redis.get<number>(`metrics:provider:${provider}:lag_ms`);
+  const lag =
+    typeof redisClient.get === 'function'
+      ? await redisClient.get(`metrics:provider:${provider}:lag_ms`)
+      : null;
 
   return {
     lag_ms: typeof lag === 'number' ? lag : null,

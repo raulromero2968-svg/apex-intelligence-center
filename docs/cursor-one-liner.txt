@@ -1,0 +1,2 @@
+Fix with PATCH only. Use unified diffs. No new dependencies. Prioritize path-case, alias, Edge require, and optional env guards. Keep App Router rules intact. Output patches + verify block only.
+
