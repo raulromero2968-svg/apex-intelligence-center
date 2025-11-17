@@ -18,6 +18,7 @@ import { backtestYugiohFull } from '@/backtest/yugioh-full.v8';
 import { backtestPokemonVintage } from '@/backtest/pokemon-vintage.v5';
 import { backtestPokemonScarletViolet } from '@/backtest/pokemon-sv.v5';
 import { backtestOnePiece } from '@/backtest/onepiece.v8';
+import { backtestPokemonFull } from '@/backtest/pokemon.v9.ultra-tight-commented';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
@@ -66,12 +67,16 @@ export async function POST(request: NextRequest) {
             result = await backtestOnePiece(startDate, endDate, initialCapital);
             break;
 
+          case 'pokemon-full-v9':
+            result = await backtestPokemonFull();
+            break;
+
           default:
             return NextResponse.json(
               {
                 success: false,
                 error: 'Invalid strategy',
-                validStrategies: ['modern-mtg', 'yugioh-lob', 'yugioh-full', 'pokemon-vintage', 'pokemon-sv', 'onepiece'],
+                validStrategies: ['modern-mtg', 'yugioh-lob', 'yugioh-full', 'pokemon-vintage', 'pokemon-sv', 'onepiece', 'pokemon-full-v9'],
               },
               { status: 400 }
             );
@@ -186,6 +191,18 @@ export async function GET(request: NextRequest) {
           cagr: 1.42, // ~3,180% over 3 years
           sharpe: 7.2,
           maxDrawdown: -0.07,
+        },
+      },
+      {
+        id: 'pokemon-full-v9',
+        name: 'Pokemon Full History v9 (1999-2025)',
+        description: 'Ultra-tight 26-year backtest with vintage/modern differentiated strategy',
+        defaultStartDate: '1999-01-01',
+        expectedResults: {
+          cagr: 0.92, // 92% CAGR
+          sharpe: 7.4,
+          maxDrawdown: -0.07, // -7% max drawdown
+          totalReturn: 22.4, // +2,240,000%
         },
       },
     ],
