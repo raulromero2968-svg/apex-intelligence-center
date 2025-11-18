@@ -3,6 +3,8 @@ import ArticleCard from "@/components/content/ArticleCard";
 import LiveScatter from "@/components/charts/LiveScatter";
 import { researchReports } from "@/content/seed";
 
+export const revalidate = 300;
+
 export default function ResearchPage() {
   return (
     <SectionShell title="Research" kicker="In-Depth Analysis">
