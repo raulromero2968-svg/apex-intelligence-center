@@ -54,6 +54,10 @@ export async function addItemsToCollection(data: {
       await db.collection_items.bulkAdd(collectionId, itemIds);
       const col = await db.collections.get(collectionId);
 
+      if (!col) {
+        return { error: 'Collection not found' };
+      }
+
       // Precise tag invalidation
       revalidateTag(`collection:${col.slug}`);
       if (col.is_public) revalidateTag('collections:public:list');
