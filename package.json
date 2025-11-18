@@ -43,10 +43,6 @@
   ],
   "author": "Apex Intelligence",
   "license": "MIT",
-  "engines": {
-    "node": "20.x",
-    "pnpm": "9"
-  },
   "dependencies": {
     "@langchain/cohere": "^1.0.0",
     "@langchain/community": "^1.0.3",

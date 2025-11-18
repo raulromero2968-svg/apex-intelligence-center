@@ -1,57 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
+  "gitRepository": {
+    "type": "github",
+    "repo": "raulromero2968-svg/apex-intelligence-center"
+  },
   "installCommand": "pnpm install --no-frozen-lockfile --shamefully-hoist=true",
   "buildCommand": "pnpm dlx drizzle-kit generate && pnpm build",
-  "framework": "nextjs",
-  "functions": {
-    "app/api/backtest/**/*": {
-      "maxDuration": 300,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/portfolio/**/*": {
-      "maxDuration": 60,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/rag/**/*": {
-      "maxDuration": 300,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/jobs/**/*": {
-      "maxDuration": 60,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/arbitrage/**/*": {
-      "maxDuration": 60,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/ingest/**/*": {
-      "maxDuration": 300,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "app/api/**/*.ts": {
-      "maxDuration": 300,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    },
-    "pages/api/**/*.ts": {
-      "maxDuration": 300,
-      "memory": 4096,
-      "runtime": "nodejs20.x"
-    }
-  },
-  "regions": ["iad1"],
   "outputDirectory": ".next",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "memory": 4096,
+      "maxDuration": 300
     }
-  ]
+  }
 }
