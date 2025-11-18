@@ -21,11 +21,12 @@ import { backtestOnePiece } from '@/backtest/onepiece.v8';
 import { backtestPokemonFull } from '@/backtest/pokemon.v9.ultra-tight-commented';
 import { backtestExodiaPopMomentum } from '@/backtest/exodia-pop-momentum';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.backtest.run', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         const body = await request.json();
         const {

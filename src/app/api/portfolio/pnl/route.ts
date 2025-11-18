@@ -13,11 +13,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePortfolioPnL } from '@/portfolio/pnl.service';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export async function GET(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.portfolio.pnl', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // TODO: Get authenticated user ID from session
         // const session = await getServerSession();

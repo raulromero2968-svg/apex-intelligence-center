@@ -15,11 +15,12 @@ import { db } from '@/db';
 import { arbitrageOpportunities } from '@/db/schema';
 import { gte } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export async function GET(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.arbitrage.live', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // Fetch non-expired opportunities, sorted by risk-adjusted spread
         const opportunities = await db.query.arbitrageOpportunities.findMany({

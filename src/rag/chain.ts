@@ -22,6 +22,7 @@ import { rerankResults } from './reranker';
 import { createComplianceLogger } from '@/lib/compliance/eu-ai-act';
 import { cosineSimilarity } from '@/lib/embeddings/voyage';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 // Initialize LLM - Claude 3.5 Sonnet (Nov 2025 SOTA for research)
 const llm = new ChatAnthropic({
@@ -284,7 +285,7 @@ export async function executeRagQuery(
 ): Promise<RagResponse> {
   return Sentry.startSpan(
     { name: 'rag.execute', op: 'rag_query' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('question', question.slice(0, 100));
       span?.setAttribute('useRagFusion', useRagFusion);
 

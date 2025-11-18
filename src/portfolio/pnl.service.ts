@@ -13,6 +13,7 @@ import { holdings, cards, prices, populationReports } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { checkRisk, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface HoldingPnL {
   holdingId: string;
@@ -68,7 +69,7 @@ export interface PortfolioPnL {
 export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPnL> {
   return Sentry.startSpan(
     { name: 'portfolio.pnl', op: 'calculation' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('userId', userId);
 
       // Fetch all holdings for user with card and latest price data

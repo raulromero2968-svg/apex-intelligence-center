@@ -17,6 +17,7 @@
 import { db, pool } from '@/db';
 import { pass, RISK, shouldStopLoss, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface BacktestResult {
   totalReturn: number;
@@ -46,7 +47,7 @@ export async function backtestModernMtg(
 ): Promise<BacktestResult> {
   return Sentry.startSpan(
     { name: 'backtest.modern_mtg', op: 'backtest' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('startDate', startDate);
       span?.setAttribute('endDate', endDate);
 
