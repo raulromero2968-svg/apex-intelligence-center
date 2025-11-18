@@ -10,7 +10,7 @@
 
 import { db } from '@/db';
 import { holdings, cards, prices, populationReports } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { checkRisk, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -74,16 +74,16 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
 
       // Fetch all holdings for user with card and latest price data
       const userHoldings = await db.query.holdings.findMany({
-        where: (h: typeof holdings.$inferSelect, { eq }) => eq(h.portfolioId, userId), // Simplified - in prod, join through portfolios table
+        where: (h: typeof holdings) => eq(h.portfolioId, userId), // Simplified - in prod, join through portfolios table
         with: {
           card: {
             with: {
               prices: {
-                orderBy: (p: typeof prices.$inferSelect, { desc }) => [desc(p.date)],
+                orderBy: (p: typeof prices) => [desc(p.date)],
                 limit: 1,
               },
               populations: {
-                orderBy: (pop: typeof populationReports.$inferSelect, { desc }) => [desc(pop.lastUpdated)],
+                orderBy: (pop: typeof populationReports) => [desc(pop.lastUpdated)],
                 limit: 1,
               },
             },
