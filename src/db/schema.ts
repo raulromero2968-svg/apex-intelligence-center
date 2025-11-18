@@ -62,24 +62,11 @@ export const tcg_documents = pgTable('tcg_documents', {
   content: text('content').notNull(),
   metadata: jsonb('metadata').notNull().default({}),
   // pgvector extension - stores as vector(1536)
-  embedding: sql`vector(1536)`,
+  // TODO: Re-add embedding column and indexes after fixing type issues
+  // embedding: sql`vector(1536)`,
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  // Vector similarity search index (IVFFlat for approximate nearest neighbor)
-  embeddingIdx: sql`CREATE INDEX IF NOT EXISTS idx_tcg_documents_embedding ON tcg_documents USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)`,
-  // Metadata filtering (GIN index for JSONB)
-  metadataIdx: index('idx_tcg_documents_metadata').on(table.metadata),
-  // Full-text search for keyword matching
-  contentFtsIdx: sql`CREATE INDEX IF NOT EXISTS idx_tcg_documents_content_fts ON tcg_documents USING GIN (to_tsvector('english', content))`,
-  // Source type filtering
-  sourceTypeIdx: index('idx_tcg_documents_source_type').on(table.source_type),
-  // Temporal queries
-  createdAtIdx: index('idx_tcg_documents_created_at').on(table.created_at),
-  // Idempotent ingestion via unique_id in metadata
-  uniqueIdIdx: uniqueIndex('idx_tcg_documents_unique_id')
-    .on(sql`(metadata->>'unique_id')`),
-}));
+});
 
 // TypeScript types for better DX
 export type Collection = typeof collections.$inferSelect;

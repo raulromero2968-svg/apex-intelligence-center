@@ -168,7 +168,7 @@ export function validateCitations(
 export async function executeRagQuery(question: string): Promise<RagResponse> {
   return Sentry.startSpan(
     { name: 'rag.execute', op: 'rag_query' },
-    async (span) => {
+    async (span: any) => {
       span?.setAttribute('question', question.slice(0, 100));
 
       // 1. Get context with provenance

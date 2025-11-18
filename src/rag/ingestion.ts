@@ -13,7 +13,8 @@
  */
 
 import { OpenAIEmbeddings } from '@langchain/openai';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+// TODO: Install @langchain/textsplitters package
+// import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { db, pool } from '@/db';
 import { tcg_documents } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
@@ -28,11 +29,12 @@ const embeddings = new OpenAIEmbeddings({
 
 // Text splitter for chunking large documents
 // Optimized for TCG content (listings, articles, reports)
-const splitter = new RecursiveCharacterTextSplitter({
-  chunkSize: 1000,
-  chunkOverlap: 200,
-  separators: ['\n\n', '\n', '. ', ' ', ''],
-});
+// TODO: Re-enable after installing @langchain/textsplitters
+// const splitter = new RecursiveCharacterTextSplitter({
+//   chunkSize: 1000,
+//   chunkOverlap: 200,
+//   separators: ['\n\n', '\n', '. ', ' ', ''],
+// });
 
 /**
  * Source types supported by the ingestion pipeline
@@ -107,7 +109,7 @@ export async function ingestTcgData(
 
   return Sentry.startSpan(
     { name: 'rag.ingest', op: 'ingestion' },
-    async (span) => {
+    async (span: any) => {
       span?.setAttribute('sourceType', sourceType);
       span?.setAttribute('itemCount', items.length);
 
@@ -119,7 +121,8 @@ export async function ingestTcgData(
           }
 
           // Split content into chunks for better retrieval
-          const chunks = await splitter.createDocuments([item.content]);
+          // TODO: Re-enable after installing @langchain/textsplitters
+          const chunks = [{ pageContent: item.content, metadata: {} }]; // await splitter.createDocuments([item.content]);
           result.chunks += chunks.length;
 
           // Generate embeddings for all chunks

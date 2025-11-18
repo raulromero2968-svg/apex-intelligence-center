@@ -63,7 +63,7 @@ export async function rerankResults(
 
   return Sentry.startSpan(
     { name: 'rag.rerank', op: 'reranking' },
-    async (span) => {
+    async (span: any) => {
       span?.setAttribute('query', query.slice(0, 100));
       span?.setAttribute('documentCount', documents.length);
       span?.setAttribute('topN', topN);
@@ -142,7 +142,7 @@ export async function getTcgContext(
 
   return Sentry.startSpan(
     { name: 'rag.get_context', op: 'retrieval' },
-    async (span) => {
+    async (span: any) => {
       // 1. Hybrid search to get candidate documents
       const searchResults = await hybridSearch({
         query,
