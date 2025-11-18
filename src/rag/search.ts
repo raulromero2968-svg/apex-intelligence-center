@@ -12,6 +12,7 @@
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { pool } from '@/db';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 // Initialize OpenAI embeddings (same model as ingestion)
 const embeddings = new OpenAIEmbeddings({
@@ -94,7 +95,7 @@ export async function hybridSearch(
 
   return Sentry.startSpan(
     { name: 'rag.search', op: 'search' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('query', query.slice(0, 100));
       span?.setAttribute('limit', limit);
 

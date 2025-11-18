@@ -1,10 +1,9 @@
 import { db } from '@/db';
+import { collections, collection_items } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
 import { getCached, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
-
-type SpanLike = {
-  setAttribute?: (key: string, value: unknown) => void;
-};
+import type { Span } from '@sentry/types';
 
 /**
  * Get collection by slug with caching
@@ -21,14 +20,14 @@ export async function getCollectionBySlug(slug: string) {
     async () => {
       return Sentry.startSpan(
         { name: 'collections.getBySlug', op: 'db' },
-        async (span: SpanLike) => {
+        async (span: Span) => {
           const col = await db.query.collections.findFirst({
-            where: (c: any, { eq }: any) => eq(c.slug, slug),
+            where: eq(collections.slug, slug),
           });
           if (!col) return null;
 
           const items = await db.query.collection_items.findMany({
-            where: (ci: any, { eq }: any) => eq(ci.collectionId, col.id),
+            where: eq(collection_items.collectionId, col.id),
             with: { item: true },
           });
 
@@ -56,11 +55,11 @@ export async function listPublicCollections() {
     async () => {
       return Sentry.startSpan(
         { name: 'collections.listPublic', op: 'db' },
-        async () => {
+        async (span: Span) => {
           return db.query.collections.findMany({
-            where: (c: any, { eq }: any) => eq(c.is_public, true),
+            where: eq(collections.is_public, true),
             columns: { id: true, title: true, slug: true, updatedAt: true },
-            orderBy: (c: any, { desc }: any) => [desc(c.updatedAt)],
+            orderBy: desc(collections.updatedAt),
             limit: 24,
           });
         }
