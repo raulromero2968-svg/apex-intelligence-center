@@ -68,15 +68,6 @@ const nextConfig = {
   // Ensure proper compilation
   swcMinify: true,
 
-  // TypeScript and ESLint config
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
-
   // No trailing slashes
   trailingSlash: false,
 
