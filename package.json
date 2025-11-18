@@ -75,6 +75,7 @@
     "next": "^14.2.33",
     "next-mdx-remote": "^5.0.0",
     "node-telegram-bot-api": "^0.66.0",
+    "numeric": "^1.2.6",
     "openai": "^6.9.0",
     "pg": "^8.16.3",
     "pgvector": "^0.2.1",
