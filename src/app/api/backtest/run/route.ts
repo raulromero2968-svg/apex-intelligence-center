@@ -88,12 +88,18 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Use type guards for union type property access
+        const tradesCount = 'trades' in result ? result.trades ?? 0 : 0;
+        const sharpeRatio = 'sharpe' in result ? result.sharpe ?? 0 : 0;
+        const maxDrawdown = 'maxDrawdown' in result ? result.maxDrawdown ?? 0 : 0;
+        const winRate = 'winRate' in result ? result.winRate ?? 0 : 0;
+
         span?.setAttribute('totalReturn', result.totalReturn);
         span?.setAttribute('cagr', result.cagr);
-        span?.setAttribute('trades', result.trades);
+        span?.setAttribute('trades', tradesCount);
 
         console.log(
-          `[Backtest API] Complete: ${(result.totalReturn * 100).toFixed(1)}% return, ${result.trades} trades`
+          `[Backtest API] Complete: ${(result.totalReturn * 100).toFixed(1)}% return, ${tradesCount} trades`
         );
 
         return NextResponse.json({
@@ -103,10 +109,10 @@ export async function POST(request: NextRequest) {
           performanceSummary: {
             returnPct: parseFloat((result.totalReturn * 100).toFixed(2)),
             cagrPct: parseFloat((result.cagr * 100).toFixed(2)),
-            sharpeRatio: result.sharpe,
-            maxDrawdownPct: parseFloat((result.maxDrawdown * 100).toFixed(2)),
-            winRatePct: parseFloat((result.winRate * 100).toFixed(1)),
-            totalTrades: result.trades,
+            sharpeRatio: sharpeRatio,
+            maxDrawdownPct: parseFloat((maxDrawdown * 100).toFixed(2)),
+            winRatePct: parseFloat((winRate * 100).toFixed(1)),
+            totalTrades: tradesCount,
           },
         });
       } catch (error) {
