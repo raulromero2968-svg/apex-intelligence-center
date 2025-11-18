@@ -312,6 +312,125 @@ export const complianceLogs = pgTable('compliance_logs', {
 }));
 
 // ============================================================================
+// DRIZZLE ORM RELATIONS (Critical for type-safe relational queries)
+// ============================================================================
+
+/**
+ * Cards relations - Defines many-to-many and one-to-many relationships
+ */
+export const cardsRelations = relations(cards, ({ many }) => ({
+  prices: many(prices),
+  sales: many(sales),
+  populationReports: many(populationReports),
+  holdings: many(holdings),
+  alertSubscriptions: many(alertSubscriptions),
+  pushSubscriptions: many(pushSubscriptions),
+  arbitrageOpportunities: many(arbitrageOpportunities),
+}));
+
+/**
+ * Prices relations - Bidirectional relation to cards
+ */
+export const pricesRelations = relations(prices, ({ one }) => ({
+  card: one(cards, {
+    fields: [prices.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Sales relations - Bidirectional relation to cards
+ */
+export const salesRelations = relations(sales, ({ one }) => ({
+  card: one(cards, {
+    fields: [sales.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Population Reports relations - Bidirectional relation to cards
+ */
+export const populationReportsRelations = relations(populationReports, ({ one }) => ({
+  card: one(cards, {
+    fields: [populationReports.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Portfolios relations
+ */
+export const portfoliosRelations = relations(portfolios, ({ one, many }) => ({
+  user: one(users, {
+    fields: [portfolios.userId],
+    references: [users.id],
+  }),
+  holdings: many(holdings),
+}));
+
+/**
+ * Holdings relations
+ */
+export const holdingsRelations = relations(holdings, ({ one }) => ({
+  portfolio: one(portfolios, {
+    fields: [holdings.portfolioId],
+    references: [portfolios.id],
+  }),
+  card: one(cards, {
+    fields: [holdings.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Users relations
+ */
+export const usersRelations = relations(users, ({ many }) => ({
+  portfolios: many(portfolios),
+  alertSubscriptions: many(alertSubscriptions),
+  pushSubscriptions: many(pushSubscriptions),
+}));
+
+/**
+ * Alert Subscriptions relations
+ */
+export const alertSubscriptionsRelations = relations(alertSubscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [alertSubscriptions.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [alertSubscriptions.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Push Subscriptions relations
+ */
+export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [pushSubscriptions.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [pushSubscriptions.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Arbitrage Opportunities relations
+ */
+export const arbitrageOpportunitiesRelations = relations(arbitrageOpportunities, ({ one }) => ({
+  card: one(cards, {
+    fields: [arbitrageOpportunities.cardId],
+    references: [cards.id],
+  }),
+}));
+
+// ============================================================================
 // TypeScript types for better DX
 // ============================================================================
 
