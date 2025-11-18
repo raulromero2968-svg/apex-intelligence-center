@@ -13,7 +13,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { executeRagQuery, formatRagResponse } from '@/rag/chain';
 import { getCachedWithMeta, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
-import type { Span } from '@sentry/types';
 
 type SpanLike = {
   setAttribute: (key: string, value: unknown) => void;
@@ -76,11 +75,7 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.rag', op: 'http.server' },
-<<<<<<< HEAD
-    async (span: Span) => {
-=======
     async (span: SpanLike) => {
->>>>>>> pr-55
       try {
         // 1. Extract user identifier (IP or authenticated user ID)
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
@@ -140,30 +135,17 @@ export async function POST(request: NextRequest) {
         const cacheKey = stableKey('rag', { query });
         const cacheTags = ['rag'];
 
-<<<<<<< HEAD
-        // Normalize union type to consistent shape for type safety
-        type RagCacheResult = {
-          data: Awaited<ReturnType<typeof executeRagQuery>> | null;
-          cached: boolean;
-        };
-
-        const cacheResult: RagCacheResult = bypass_cache
-          ? { data: null, cached: false }
-=======
         const { value: ragResponse, meta } = bypass_cache
-          ? { value: null as any, meta: { redis: 'BYPASS' as const } }
->>>>>>> pr-55
+          ? {
+              value: null as Awaited<ReturnType<typeof executeRagQuery>> | null,
+              meta: { redis: 'BYPASS' as const },
+            }
           : await getCachedWithMeta(
               cacheKey,
               cacheTags,
               async () => executeRagQuery(query),
               300 // Cache for 5 minutes
-            ).then(result => ({
-              data: result.value,
-              cached: result.meta.redis === 'HIT'
-            }));
-
-        const { data: ragResponse, cached } = cacheResult;
+            );
 
         const cached = meta.redis === 'HIT';
 
@@ -228,11 +210,7 @@ export async function GET(request: NextRequest) {
 
   return Sentry.startSpan(
     { name: 'api.rag.get', op: 'http.server' },
-<<<<<<< HEAD
-    async (span: Span) => {
-=======
     async (span: SpanLike) => {
->>>>>>> pr-55
       try {
         // Rate limiting
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
@@ -247,23 +225,12 @@ export async function GET(request: NextRequest) {
 
         // Execute query (with caching)
         const cacheKey = stableKey('rag', { query });
-<<<<<<< HEAD
-
-        // Normalize union type to consistent shape for type safety
-        const cacheResult = await getCachedWithMeta(
-=======
         const { value: response, meta } = await getCachedWithMeta(
->>>>>>> pr-55
           cacheKey,
           ['rag'],
           async () => executeRagQuery(query),
           300
-        ).then(result => ({
-          data: result.value,
-          cached: result.meta.redis === 'HIT'
-        }));
-
-        const { data: response, cached } = cacheResult;
+        );
 
         const cached = meta.redis === 'HIT';
 
