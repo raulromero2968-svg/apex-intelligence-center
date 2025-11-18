@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('[RESEARCH_API_ERROR]', error);
     return NextResponse.json<Fail>(
-        { ok: false, error: 'Internal server error', requestId: rid },
-        { status: 500 }
+      { ok: false, error: 'Internal server error', requestId: rid },
+      { status: 500 }
     );
   }
 }
