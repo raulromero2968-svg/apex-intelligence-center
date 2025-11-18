@@ -11,6 +11,7 @@ import { Footer } from '@/components/footer/Footer';
 import GuidedTour from '@/components/GuidedTour';
 import HelpFAB from '@/components/HelpFAB';
 import ToastHost from '@/components/ToastHost';
+import ResearchPanel from '@/components/research/ResearchPanel';
 import '@/styles/animations.css';
 import './globals.css';
 
@@ -85,6 +86,9 @@ export default function RootLayout({
 
         {/* Custom Toast Bus */}
         <ToastHost />
+
+        {/* Research Panel - PS5-style RAG interface (Ctrl+K) */}
+        <ResearchPanel />
       </body>
     </html>
   );
