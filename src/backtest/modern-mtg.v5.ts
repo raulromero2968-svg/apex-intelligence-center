@@ -215,17 +215,16 @@ export async function backtestModernMtg(
  */
 export async function getModernStaples(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c: typeof cards) =>
-      and(
-        eq(c.game, 'mtg'),
-        inArray(c.setName, [
-          'Modern Horizons',
-          'Modern Horizons 2',
-          'Modern Horizons 3',
-          'Zendikar Rising',
-          'Kaldheim',
-        ])
-      ),
+    where: and(
+      eq(cards.game, 'mtg'),
+      inArray(cards.setName, [
+        'Modern Horizons',
+        'Modern Horizons 2',
+        'Modern Horizons 3',
+        'Zendikar Rising',
+        'Kaldheim',
+      ])
+    ),
     columns: {
       id: true,
     },
