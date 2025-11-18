@@ -16,6 +16,8 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
+import { and, eq, inArray } from 'drizzle-orm';
 import { pass, RISK, shouldStopLoss, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -211,17 +213,16 @@ export async function backtestPokemonVintage(
  */
 export async function getVintagePokemonCards(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, inArray }) =>
-      and(
-        eq(c.game, 'pokemon'),
-        inArray(c.setName, [
-          'Base Set',
-          'Jungle',
-          'Fossil',
-          'Team Rocket',
-          'Neo Genesis',
-        ])
-      ),
+    where: and(
+      eq(cards.game, 'pokemon'),
+      inArray(cards.setName, [
+        'Base Set',
+        'Jungle',
+        'Fossil',
+        'Team Rocket',
+        'Neo Genesis',
+      ])
+    ),
     columns: {
       id: true,
     },

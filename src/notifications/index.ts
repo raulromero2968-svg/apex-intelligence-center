@@ -15,7 +15,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import webpush from 'web-push';
 import { db } from '@/db';
 import { alertSubscriptions, pushSubscriptions } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, or } from 'drizzle-orm';
 import { PopDeltaAlert, formatPopDeltaMessage } from '@/jobs/pop-delta/detector.job';
 import * as Sentry from '@sentry/nextjs';
 
@@ -58,15 +58,14 @@ export async function sendPopDeltaNotifications(alert: PopDeltaAlert): Promise<v
   try {
     // Get all users subscribed to this card or all pop delta alerts
     const subscriptions = await db.query.alertSubscriptions.findMany({
-      where: (subs, { eq, or, and }) =>
-        and(
-          eq(subs.alertType, 'pop_delta'),
-          eq(subs.isActive, true),
-          or(
-            eq(subs.cardId, alert.cardId),
-            eq(subs.cardId, null) // Subscribed to all cards
-          )
-        ),
+      where: and(
+        eq(alertSubscriptions.alertType, 'pop_delta'),
+        eq(alertSubscriptions.isActive, true),
+        or(
+          eq(alertSubscriptions.cardId, alert.cardId),
+          eq(alertSubscriptions.cardId, null) // Subscribed to all cards
+        )
+      ),
     });
 
     console.log(
@@ -189,11 +188,10 @@ export async function sendPushNotification(
   try {
     // Get user's push subscriptions
     const subs = await db.query.pushSubscriptions.findMany({
-      where: (pushSubs, { eq, and, or }) =>
-        and(
-          eq(pushSubs.userId, userId),
-          or(eq(pushSubs.cardId, cardId), eq(pushSubs.cardId, null))
-        ),
+      where: and(
+        eq(pushSubscriptions.userId, userId),
+        or(eq(pushSubscriptions.cardId, cardId), eq(pushSubscriptions.cardId, null))
+      ),
     });
 
     for (const sub of subs) {
