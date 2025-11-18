@@ -312,6 +312,60 @@ export const complianceLogs = pgTable('compliance_logs', {
 }));
 
 // ============================================================================
+// MAKER FRAMEWORK TABLES
+// ============================================================================
+
+/**
+ * MAKER Tasks - Multi-Agent Knowledge Ensemble Refinement task tracking
+ *
+ * Tracks high-level tasks that use the MAKER voting framework for reliability.
+ * Each task runs multiple micro-agents with voting to achieve 99.9%+ success rates.
+ */
+export const makerTasks = pgTable('maker_tasks', {
+  id: text('id').primaryKey(),
+  taskType: text('task_type').notNull(), // 'arbitrage_scan' | 'price_verification' | etc.
+  status: text('status').notNull(), // 'running' | 'completed' | 'failed'
+  totalSteps: integer('total_steps'),
+  successfulSteps: integer('successful_steps').default(0),
+  totalVotesCast: integer('total_votes_cast').default(0),
+  redFlaggedVotes: integer('red_flagged_votes').default(0),
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+  metadata: jsonb('metadata').$type<Record<string, any>>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  statusIdx: index('idx_maker_tasks_status').on(table.status),
+  taskTypeIdx: index('idx_maker_tasks_type').on(table.taskType),
+  startedAtIdx: index('idx_maker_tasks_started').on(table.startedAt),
+}));
+
+/**
+ * MAKER Votes - Individual voting attempts for each step
+ *
+ * Records each execution attempt (vote) for micro-agent steps.
+ * The MAKER framework uses "first to ahead by k" voting to determine consensus.
+ * Red-flagged votes are excluded from consensus calculation.
+ */
+export const makerVotes = pgTable('maker_votes', {
+  id: text('id').primaryKey(),
+  taskId: text('task_id').notNull().references(() => makerTasks.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }), // nullable for non-card steps
+  stepName: text('step_name').notNull(),
+  voteIndex: integer('vote_index').notNull(),
+  resultHash: text('result_hash'), // SHA-256 hash of deterministic JSON
+  resultJson: jsonb('result_json'),
+  isRedFlagged: boolean('is_red_flagged').default(false).notNull(),
+  redFlagReason: text('red_flag_reason'),
+  latencyMs: integer('latency_ms'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  taskIdIdx: index('idx_maker_votes_task').on(table.taskId),
+  stepNameIdx: index('idx_maker_votes_step').on(table.stepName),
+  resultHashIdx: index('idx_maker_votes_hash').on(table.resultHash),
+  redFlaggedIdx: index('idx_maker_votes_flagged').on(table.isRedFlagged),
+}));
+
+// ============================================================================
 // DRIZZLE ORM RELATIONS (Critical for type-safe relational queries)
 // ============================================================================
 
@@ -326,6 +380,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   arbitrageOpportunities: many(arbitrageOpportunities),
+  makerVotes: many(makerVotes),
 }));
 
 /**
@@ -430,6 +485,27 @@ export const arbitrageOpportunitiesRelations = relations(arbitrageOpportunities,
   }),
 }));
 
+/**
+ * MAKER Tasks relations
+ */
+export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
+  votes: many(makerVotes),
+}));
+
+/**
+ * MAKER Votes relations
+ */
+export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
+  task: one(makerTasks, {
+    fields: [makerVotes.taskId],
+    references: [makerTasks.id],
+  }),
+  card: one(cards, {
+    fields: [makerVotes.cardId],
+    references: [cards.id],
+  }),
+}));
+
 // ============================================================================
 // TypeScript types for better DX
 // ============================================================================
@@ -467,6 +543,10 @@ export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSe
 export type NewHumanConceptionStatement = typeof humanConceptionStatements.$inferInsert;
 export type ComplianceLog = typeof complianceLogs.$inferSelect;
 export type NewComplianceLog = typeof complianceLogs.$inferInsert;
+export type MakerTask = typeof makerTasks.$inferSelect;
+export type NewMakerTask = typeof makerTasks.$inferInsert;
+export type MakerVote = typeof makerVotes.$inferSelect;
+export type NewMakerVote = typeof makerVotes.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
