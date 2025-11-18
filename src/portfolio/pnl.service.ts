@@ -79,11 +79,11 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
           card: {
             with: {
               prices: {
-                orderBy: (prices, { desc }) => [desc(prices.date)],
+                orderBy: desc(prices.date),
                 limit: 1,
               },
               populations: {
-                orderBy: (populations, { desc }) => [desc(populations.lastUpdated)],
+                orderBy: desc(populationReports.lastUpdated),
                 limit: 1,
               },
             },
