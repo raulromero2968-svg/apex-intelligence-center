@@ -43,6 +43,10 @@
   ],
   "author": "Apex Intelligence",
   "license": "MIT",
+  "engines": {
+    "node": "20.x"
+  },
+  "packageManager": "pnpm@10.19.0",
   "dependencies": {
     "@langchain/anthropic": "^1.0.1",
     "@langchain/cohere": "^1.0.0",
