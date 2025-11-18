@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
       try {
         // Fetch non-expired opportunities, sorted by risk-adjusted spread
         const opportunities = await db.query.arbitrageOpportunities.findMany({
-          where: (opps, { gte }) => gte(opps.expiresAt, new Date()),
-          orderBy: (opps, { desc }) => [desc(opps.riskAdjustedSpreadPct)],
+          where: (opps: typeof arbitrageOpportunities.$inferSelect, { gte }) => gte(opps.expiresAt, new Date()),
+          orderBy: (opps: typeof arbitrageOpportunities.$inferSelect, { desc }) => [desc(opps.riskAdjustedSpreadPct)],
           limit: 50, // Top 50 opportunities
           with: {
             card: true,

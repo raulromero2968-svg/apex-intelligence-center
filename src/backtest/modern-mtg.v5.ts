@@ -15,6 +15,7 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
 import { pass, RISK, shouldStopLoss, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -153,7 +154,7 @@ export async function backtestModernMtg(
 
           // Calculate current equity (positions + cash)
           const positionValue = Object.entries(positions).reduce((sum, [cardId, pos]) => {
-            const lastPrice = dayData.find((d) => d.card_id === cardId)?.market || pos.entry;
+            const lastPrice = dayData.find((d: { card_id: string; market: number }) => d.card_id === cardId)?.market || pos.entry;
             return sum + pos.qty * lastPrice;
           }, 0);
 
@@ -163,7 +164,7 @@ export async function backtestModernMtg(
 
         // Close remaining positions at final prices
         for (const [cardId, pos] of Object.entries(positions)) {
-          const finalPrice = data.filter((d) => d.card_id === cardId).pop()?.market || pos.entry;
+          const finalPrice = data.filter((d: { card_id: string; market: number }) => d.card_id === cardId).pop()?.market || pos.entry;
           equity += pos.qty * finalPrice;
 
           const pnl = (finalPrice - pos.entry) / pos.entry;
@@ -213,7 +214,7 @@ export async function backtestModernMtg(
  */
 export async function getModernStaples(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, inArray }) =>
+    where: (c: typeof cards.$inferSelect, { and, eq, inArray }) =>
       and(
         eq(c.game, 'mtg'),
         inArray(c.setName, [
@@ -229,5 +230,5 @@ export async function getModernStaples(): Promise<string[]> {
     },
   });
 
-  return result.map((c) => c.id);
+  return result.map((c: { id: string }) => c.id);
 }
