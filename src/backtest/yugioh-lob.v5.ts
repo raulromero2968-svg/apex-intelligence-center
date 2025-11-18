@@ -15,6 +15,8 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
+import { and, eq, inArray, like } from 'drizzle-orm';
 import { pass, RISK, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -203,16 +205,15 @@ export async function backtestYugiohLob(
  */
 export async function getYugiohVintage(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, inArray, like }) =>
-      and(
-        eq(c.game, 'yugioh'),
-        inArray(c.setName, [
-          'Legend of Blue Eyes White Dragon',
-          'Metal Raiders',
-          'Invasion of Chaos',
-        ]),
-        like(c.cardNumber, '%-1st%') // 1st Edition only
-      ),
+    where: and(
+      eq(cards.game, 'yugioh'),
+      inArray(cards.setName, [
+        'Legend of Blue Eyes White Dragon',
+        'Metal Raiders',
+        'Invasion of Chaos',
+      ]),
+      like(cards.cardNumber, '%-1st%') // 1st Edition only
+    ),
     columns: {
       id: true,
     },

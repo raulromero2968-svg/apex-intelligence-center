@@ -21,7 +21,7 @@
 import { Job } from 'bullmq';
 import { db } from '@/db';
 import { cards, prices, arbitrageOpportunities } from '@/db/schema';
-import { lte } from 'drizzle-orm';
+import { lte, gte } from 'drizzle-orm';
 import { sendArbitrageNotification } from '@/notifications';
 import { pass, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
@@ -119,10 +119,10 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
       try {
         // Fetch high-value cards (apex_score > 85)
         const highValueCards = await db.query.cards.findMany({
-          where: (c, { gte }) => gte(c.apexScore, 85),
+          where: gte(cards.apexScore, 85),
           with: {
             prices: {
-              orderBy: (p, { desc }) => [desc(p.date)],
+              orderBy: (prices, { desc }) => [desc(prices.date)],
               limit: 10, // Last 10 price points for liquidity estimation
             },
           },

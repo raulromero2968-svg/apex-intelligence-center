@@ -120,7 +120,7 @@ export async function optimizePortfolio(
 
       // Fetch card details
       const cardDetails = await db.query.cards.findMany({
-        where: (c: typeof cards) => inArray(c.id, cardIds),
+        where: inArray(cards.id, cardIds),
       });
 
       // Get expected returns and volatilities
@@ -199,8 +199,8 @@ async function getExpectedReturns(cardIds: string[]): Promise<number[]> {
   for (const cardId of cardIds) {
     // Fetch last 180 days of prices
     const priceData = await db.query.prices.findMany({
-      where: (p: typeof prices) => eq(p.cardId, cardId),
-      orderBy: (p: typeof prices) => [desc(p.date)],
+      where: eq(prices.cardId, cardId),
+      orderBy: desc(prices.date),
       limit: 180,
     });
 
@@ -235,8 +235,8 @@ async function getVolatilities(cardIds: string[]): Promise<number[]> {
   for (const cardId of cardIds) {
     // Fetch last 180 days of prices
     const priceData = await db.query.prices.findMany({
-      where: (p: typeof prices) => eq(p.cardId, cardId),
-      orderBy: (p: typeof prices) => [desc(p.date)],
+      where: eq(prices.cardId, cardId),
+      orderBy: desc(prices.date),
       limit: 180,
     });
 
@@ -280,7 +280,7 @@ async function getGameWeights(weights: Record<string, number>): Promise<Record<s
 
   const cardIds = Object.keys(weights);
   const cardDetails = await db.query.cards.findMany({
-    where: (c: typeof cards) => inArray(c.id, cardIds),
+    where: inArray(cards.id, cardIds),
     columns: { id: true, game: true },
   });
 

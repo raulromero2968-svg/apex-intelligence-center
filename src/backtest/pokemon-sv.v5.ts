@@ -17,6 +17,8 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
+import { and, eq, like, or } from 'drizzle-orm';
 import { pass, RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -210,14 +212,13 @@ export async function backtestPokemonScarletViolet(
  */
 export async function getScarletVioletCards(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, like, or }) =>
-      and(
-        eq(c.game, 'pokemon'),
-        or(
-          like(c.setName, 'Scarlet & Violet%'),
-          like(c.setName, 'SV%')
-        )
-      ),
+    where: and(
+      eq(cards.game, 'pokemon'),
+      or(
+        like(cards.setName, 'Scarlet & Violet%'),
+        like(cards.setName, 'SV%')
+      )
+    ),
     columns: {
       id: true,
     },
