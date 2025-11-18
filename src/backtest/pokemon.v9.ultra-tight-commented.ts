@@ -5,7 +5,7 @@
 
 import { prisma } from '@/lib/db';
 import { tcgVolatilityV3 } from '@/lib/volatility';
-import { pass } from '@/risk/rules.v3';
+import { pass, Portfolio, TradeSignal } from '@/risk/rules.v3';
 
 // Helper: Check if card is from vintage era (1999-2010)
 const isVintageSet = (cardId: string): boolean => {
@@ -41,9 +41,31 @@ export async function backtestPokemonFull(): Promise<BacktestResult> {
   let eq = 100000, peak = eq, trades = 0, wins = 0; // Equity tracking
   const pos: Record<string, {e: number; q: number}> = {}; // Positions: {entry, quantity}
 
+  const getPortfolioSnapshot = (): Portfolio => {
+    const invested = Object.values(pos).reduce((sum, p) => sum + p.q * p.e, 0);
+    const totalValue = eq + invested;
+    if (totalValue === 0) {
+      return {
+        value: 0,
+        gamePct: { pokemon: 0 },
+        cardPct: {},
+      };
+    }
+
+    const cardPct = Object.entries(pos).reduce<Record<string, number>>((acc, [cardId, position]) => {
+      acc[cardId] = (position.q * position.e) / totalValue;
+      return acc;
+    }, {});
+
+    return {
+      value: totalValue,
+      gamePct: { pokemon: invested / totalValue },
+      cardPct,
+    };
+  };
+
   for (const d of data) {
     const v = await tcgVolatilityV3(d.card_id); // Vol, pop, riskScore from v3 model
-    if (!pass({vol: v, ...d}, {value: eq})) continue; // RISK v3 one-liner filter
 
     // Pokemon ultra-strategy logic:
     // 1. Buy vintage on JP print silence + low vol (<30%)
@@ -53,9 +75,24 @@ export async function backtestPokemonFull(): Promise<BacktestResult> {
     const entryVol = isVintage ? 30 : 45; // Tighter vol for vintage
     const maxPos = isVintage ? 0.11 : 0.06; // Larger vintage positions (11% vs 6%)
 
+    const signal: TradeSignal = {
+      cardId: d.card_id,
+      game: 'pokemon',
+      price: d.market,
+      size: eq * maxPos * RATE_MODE,
+      vol: {
+        riskScore: v.riskScore,
+        forecast30d: v.forecast30d,
+      },
+      pop90d: v.pop90d,
+      liquidity30d: v.liquidity30d,
+    };
+
+    if (!pass(signal, getPortfolioSnapshot())) continue; // RISK v3 one-liner filter
+
     // Entry logic: Low volatility + pop stagnation + no existing position
     if (v.forecast30d < entryVol && v.pop90d < 0.09 && !pos[d.card_id]) {
-      const sz = eq * maxPos * RATE_MODE; // Rate-adjusted position size
+      const sz = signal.size; // Rate-adjusted position size
       pos[d.card_id] = {e: d.market, q: Math.floor(sz / d.market)}; // Integer shares only
       eq -= pos[d.card_id].q * d.market;
       trades++;
