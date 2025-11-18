@@ -1,9 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "gitRepository": {
-    "type": "github",
-    "repo": "raulromero2968-svg/apex-intelligence-center"
-  },
   "installCommand": "pnpm install --no-frozen-lockfile --shamefully-hoist=true",
   "buildCommand": "pnpm dlx drizzle-kit generate && pnpm build",
   "outputDirectory": ".next",
