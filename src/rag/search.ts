@@ -94,7 +94,7 @@ export async function hybridSearch(
 
   return Sentry.startSpan(
     { name: 'rag.search', op: 'search' },
-    async (span) => {
+    async (span: any) => {
       span?.setAttribute('query', query.slice(0, 100));
       span?.setAttribute('limit', limit);
 

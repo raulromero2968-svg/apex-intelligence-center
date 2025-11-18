@@ -59,8 +59,8 @@ export async function listPublicCollections() {
         async () => {
           return db.query.collections.findMany({
             where: (c: any, { eq }: any) => eq(c.is_public, true),
-            columns: { id: true, title: true, slug: true, updatedAt: true },
-            orderBy: (c: any, { desc }: any) => [desc(c.updatedAt)],
+            columns: { id: true, title: true, slug: true, updated_at: true },
+            orderBy: (c: any, { desc }: any) => [desc(c.updated_at)],
             limit: 24,
           });
         }

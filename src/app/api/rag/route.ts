@@ -14,6 +14,10 @@ import { executeRagQuery, formatRagResponse } from '@/rag/chain';
 import { getCachedWithMeta, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
 
+type SpanLike = {
+  setAttribute: (key: string, value: unknown) => void;
+} | undefined;
+
 /**
  * Rate limiter using IP-based tracking
  * Stores request counts in memory (for serverless, use Upstash Redis in production)
@@ -71,7 +75,7 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.rag', op: 'http.server' },
-    async (span) => {
+    async (span: SpanLike) => {
       try {
         // 1. Extract user identifier (IP or authenticated user ID)
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
@@ -131,14 +135,16 @@ export async function POST(request: NextRequest) {
         const cacheKey = stableKey('rag', { query });
         const cacheTags = ['rag'];
 
-        const { data: ragResponse, cached } = bypass_cache
-          ? { data: null, cached: false }
+        const { value: ragResponse, meta } = bypass_cache
+          ? { value: null as any, meta: { redis: 'BYPASS' as const } }
           : await getCachedWithMeta(
               cacheKey,
               cacheTags,
               async () => executeRagQuery(query),
               300 // Cache for 5 minutes
             );
+
+        const cached = meta.redis === 'HIT';
 
         // 6. Execute query if not cached
         const response = ragResponse || await executeRagQuery(query);
@@ -201,7 +207,7 @@ export async function GET(request: NextRequest) {
 
   return Sentry.startSpan(
     { name: 'api.rag.get', op: 'http.server' },
-    async (span) => {
+    async (span: SpanLike) => {
       try {
         // Rate limiting
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
@@ -216,12 +222,14 @@ export async function GET(request: NextRequest) {
 
         // Execute query (with caching)
         const cacheKey = stableKey('rag', { query });
-        const { data: response, cached } = await getCachedWithMeta(
+        const { value: response, meta } = await getCachedWithMeta(
           cacheKey,
           ['rag'],
           async () => executeRagQuery(query),
           300
         );
+
+        const cached = meta.redis === 'HIT';
 
         span?.setAttribute('cached', cached);
         span?.setAttribute('format', format || 'json');
