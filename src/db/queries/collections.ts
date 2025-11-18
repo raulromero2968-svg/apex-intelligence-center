@@ -1,4 +1,6 @@
 import { db } from '@/db';
+import { collections, collection_items } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
 import { getCached, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -20,12 +22,12 @@ export async function getCollectionBySlug(slug: string) {
         { name: 'collections.getBySlug', op: 'db' },
         async (span: Span) => {
           const col = await db.query.collections.findFirst({
-            where: (c, { eq }) => eq(c.slug, slug),
+            where: eq(collections.slug, slug),
           });
           if (!col) return null;
 
           const items = await db.query.collection_items.findMany({
-            where: (ci, { eq }) => eq(ci.collectionId, col.id),
+            where: eq(collection_items.collectionId, col.id),
             with: { item: true },
           });
 
@@ -55,9 +57,9 @@ export async function listPublicCollections() {
         { name: 'collections.listPublic', op: 'db' },
         async (span: Span) => {
           return db.query.collections.findMany({
-            where: (c, { eq }) => eq(c.is_public, true),
+            where: eq(collections.is_public, true),
             columns: { id: true, title: true, slug: true, updatedAt: true },
-            orderBy: (c, { desc }) => [desc(c.updatedAt)],
+            orderBy: desc(collections.updatedAt),
             limit: 24,
           });
         }

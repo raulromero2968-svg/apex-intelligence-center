@@ -18,6 +18,8 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
+import { and, eq, like, or } from 'drizzle-orm';
 import { pass, RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -216,14 +218,13 @@ export async function backtestOnePiece(
  */
 export async function getOnePieceCards(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, like, or }) =>
-      and(
-        eq(c.game, 'onepiece'),
-        or(
-          like(c.setName, 'OP-%'),
-          like(c.setName, '%Romance Dawn%')
-        )
-      ),
+    where: and(
+      eq(cards.game, 'onepiece'),
+      or(
+        like(cards.setName, 'OP-%'),
+        like(cards.setName, '%Romance Dawn%')
+      )
+    ),
     columns: {
       id: true,
     },

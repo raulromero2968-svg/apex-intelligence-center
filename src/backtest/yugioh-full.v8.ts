@@ -17,6 +17,8 @@
  */
 
 import { db, pool } from '@/db';
+import { cards } from '@/db/schema';
+import { and, eq, inArray } from 'drizzle-orm';
 import { pass, RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -212,16 +214,15 @@ export async function backtestYugiohFull(
  */
 export async function getYugiohEarlySetCards(): Promise<string[]> {
   const result = await db.query.cards.findMany({
-    where: (c, { and, eq, inArray }) =>
-      and(
-        eq(c.game, 'yugioh'),
-        inArray(c.setName, [
-          'Legend of Blue Eyes White Dragon',
-          'Metal Raiders',
-          'Invasion of Chaos',
-          'Pharaonic Guardian',
-        ])
-      ),
+    where: and(
+      eq(cards.game, 'yugioh'),
+      inArray(cards.setName, [
+        'Legend of Blue Eyes White Dragon',
+        'Metal Raiders',
+        'Invasion of Chaos',
+        'Pharaonic Guardian',
+      ])
+    ),
     columns: {
       id: true,
     },
