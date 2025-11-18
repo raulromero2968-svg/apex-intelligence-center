@@ -96,7 +96,7 @@ export async function getCardsWithLatestPricesBySource(
       const cardsWithPrices = await getHighValueCardsWithPrices(minApexScore, limit);
 
       // Group prices by source and keep only the latest per source
-      const result = cardsWithPrices.map((card) => {
+      const result = cardsWithPrices.map((card: any) => {
         const pricesBySource = new Map<string, typeof card.prices[0]>();
 
         // Sort prices by date and keep the latest per source
