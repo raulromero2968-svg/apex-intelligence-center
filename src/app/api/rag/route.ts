@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { executeRagQuery, formatRagResponse } from '@/rag/chain';
 import { getCachedWithMeta, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 /**
  * Rate limiter using IP-based tracking
@@ -71,7 +72,7 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.rag', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // 1. Extract user identifier (IP or authenticated user ID)
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
@@ -201,7 +202,7 @@ export async function GET(request: NextRequest) {
 
   return Sentry.startSpan(
     { name: 'api.rag.get', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // Rate limiting
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';

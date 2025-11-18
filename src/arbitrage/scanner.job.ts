@@ -25,6 +25,7 @@ import { and, gte, lte } from 'drizzle-orm';
 import { sendArbitrageNotification } from '@/notifications';
 import { pass, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface MarketPrice {
   source: 'US' | 'EU' | 'JP';
@@ -112,7 +113,7 @@ export function calculateRiskAdjustedSpread(
 export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
   return Sentry.startSpan(
     { name: 'job.arbitrage.scan', op: 'job' },
-    async (span) => {
+    async (span: Span) => {
       console.log('[Arbitrage] Starting scan...');
 
       try {

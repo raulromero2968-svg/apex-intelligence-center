@@ -23,6 +23,7 @@ import { db } from '@/db';
 import { cards, prices } from '@/db/schema';
 import { RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface OptimalAllocation {
   cardId: string;
@@ -58,7 +59,7 @@ export async function computeOptimalWeights(
 ): Promise<Record<string, number>> {
   return Sentry.startSpan(
     { name: 'portfolio.optimizer.weights', op: 'optimization' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('cardCount', cardIds.length);
 
       // Fetch historical returns and compute covariance matrix
@@ -110,7 +111,7 @@ export async function optimizePortfolio(
 ): Promise<PortfolioOptimizationResult> {
   return Sentry.startSpan(
     { name: 'portfolio.optimizer.optimize', op: 'optimization' },
-    async (span) => {
+    async (span: Span) => {
       console.log(`[Optimizer v3] Optimizing ${cardIds.length} cards...`);
 
       // Compute optimal weights

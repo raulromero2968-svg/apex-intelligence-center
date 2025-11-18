@@ -31,13 +31,14 @@ import { baseSetFrontierV15 } from '@/portfolio/pokemon-base.v15.exhaustive-comm
 import { exodiaFrontierV1 } from '@/portfolio/exodia.v1.exhaustive-comments';
 import { power9FrontierV15 } from '@/portfolio/power9.v15.exhaustive-comments';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export const runtime = 'nodejs'; // Required for heavy computations
 
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.portfolio.optimize', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         const body = await request.json();
         const {

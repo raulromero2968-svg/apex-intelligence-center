@@ -23,6 +23,7 @@ import { IpfsProvenanceLogger, RagTrace } from '../provenance/ipfs';
 import { db } from '@/db';
 import { complianceLogs } from '@/db/schema';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 import { RagResponse } from '@/rag/chain';
 
 export interface ComplianceReport {
@@ -64,7 +65,7 @@ export class EuAiActCompliance {
   ): Promise<ComplianceReport> {
     return Sentry.startSpan(
       { name: 'compliance.log', op: 'compliance' },
-      async (span) => {
+      async (span: Span) => {
         // 1. Calculate novelty score (0-1)
         const noveltyScore = this.calculateNoveltyScore(response);
         span?.setAttribute('noveltyScore', noveltyScore);

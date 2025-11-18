@@ -36,3 +36,4 @@ build/
 # Deploy Sanity artifacts
 artifacts/
 patch.diff
+tsconfig.tsbuildinfo

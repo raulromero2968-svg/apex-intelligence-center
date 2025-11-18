@@ -16,6 +16,7 @@ import { populationReports, cards, alertSubscriptions } from '@/db/schema';
 import { sql, eq, and, gte } from 'drizzle-orm';
 import { sendPopDeltaNotifications } from '@/notifications';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface PopDeltaAlert {
   cardId: string;
@@ -37,7 +38,7 @@ export interface PopDeltaAlert {
 export async function detectPopDeltas(job: Job): Promise<PopDeltaAlert[]> {
   return Sentry.startSpan(
     { name: 'job.pop_delta.detect', op: 'job' },
-    async (span) => {
+    async (span: Span) => {
       console.log('[Pop Delta] Starting detection...');
 
       try {
