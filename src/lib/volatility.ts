@@ -4,6 +4,8 @@
 export interface VolatilityResult {
   pop90d: number;        // 90-day population growth % (PSA grading velocity)
   forecast30d: number;   // 30-day volatility forecast (annualized %)
+  riskScore: number;     // Composite risk score used by RISK v3 filters
+  liquidity30d: number;  // 30-day liquidity proxy (sales volume)
 }
 
 /**
@@ -24,7 +26,9 @@ export async function tcgVolatilityV3(cardId: string): Promise<VolatilityResult>
 
   // Default safe values for build compatibility
   return {
-    pop90d: 0,      // 0% pop growth (conservative default)
-    forecast30d: 35 // 35% annualized volatility (TCG market average)
+    pop90d: 0,         // 0% pop growth (conservative default)
+    forecast30d: 35,   // 35% annualized volatility (TCG market average)
+    riskScore: 20,     // Safe default risk score (lower is better)
+    liquidity30d: 1_000, // Assume healthy liquidity baseline
   };
 }
