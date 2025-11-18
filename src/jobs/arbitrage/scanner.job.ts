@@ -232,16 +232,18 @@ export async function scanArbitrageWithMAKER(
         }
 
         const durationMs = Date.now() - startTime;
-        const successRate = task.totalVotesCast
-          ? 1 - task.redFlaggedVotes / task.totalVotesCast
+        const totalVotesCast = task.totalVotesCast ?? 0;
+        const redFlaggedVotes = task.redFlaggedVotes ?? 0;
+        const successRate = totalVotesCast
+          ? 1 - redFlaggedVotes / totalVotesCast
           : 1;
 
         const result: ScanResult = {
           taskId,
           cardsScanned: successfulCards,
           opportunitiesFound: opportunities.length,
-          totalVotesCast: task.totalVotesCast,
-          redFlaggedVotes: task.redFlaggedVotes,
+          totalVotesCast,
+          redFlaggedVotes,
           successRate,
           durationMs,
           opportunities,
@@ -351,3 +353,4 @@ export function updateScannerConfig(
 ): void {
   Object.assign(SCANNER_CONFIG, config);
 }
+
