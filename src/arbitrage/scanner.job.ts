@@ -119,10 +119,10 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
       try {
         // Fetch high-value cards (apex_score > 85)
         const highValueCards = await db.query.cards.findMany({
-          where: (c, { gte }) => gte(c.apexScore, 85),
+          where: (c: typeof cards.$inferSelect, { gte }) => gte(c.apexScore, 85),
           with: {
             prices: {
-              orderBy: (p, { desc }) => [desc(p.date)],
+              orderBy: (p: typeof prices.$inferSelect, { desc }) => [desc(p.date)],
               limit: 10, // Last 10 price points for liquidity estimation
             },
           },

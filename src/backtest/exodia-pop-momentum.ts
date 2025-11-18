@@ -98,7 +98,7 @@ async function fetchDailyExodiaData(startDate: string, endDate: string): Promise
       name: `Exodia Piece ${snapshot.exodiaPieceId}`,
       psa10Price: snapshot.psa10Price,
       psa10Pop: snapshot.psa10Pop,
-      popHistory: popHistory.map(p => p.psa10Pop),
+      popHistory: popHistory.map((p: { psa10Pop: number }) => p.psa10Pop),
     });
   }
 
