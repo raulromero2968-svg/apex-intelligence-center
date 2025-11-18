@@ -5,8 +5,8 @@
  * First step in the arbitrage scanning pipeline.
  */
 
-import { db } from '@/src/db';
-import { cards } from '@/src/db/schema';
+import { db } from '@/db';
+import { cards } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import type { CardWithPrices } from '../../types';
 

@@ -11,10 +11,10 @@
 
 import { voteOnStep } from './voting';
 import { hashResult } from './utils';
-import { db } from '@/src/db';
+import { db } from '@/db';
 
 // Mock database for tests
-jest.mock('@/src/db', () => ({
+jest.mock('@/db', () => ({
   db: {
     insert: jest.fn().mockReturnValue({
       values: jest.fn().mockResolvedValue(undefined),

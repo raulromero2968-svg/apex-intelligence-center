@@ -14,8 +14,8 @@
  */
 
 import { Job } from 'bullmq';
-import { db } from '@/src/db';
-import { makerTasks, cards, arbitrageOpportunities } from '@/src/db/schema';
+import { db } from '@/db';
+import { makerTasks, cards, arbitrageOpportunities } from '@/db/schema';
 import { eq, sql, and, gte } from 'drizzle-orm';
 import { voteOnStep } from '@/lib/maker/voting';
 import {
