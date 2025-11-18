@@ -20,12 +20,12 @@ export async function getCollectionBySlug(slug: string) {
         { name: 'collections.getBySlug', op: 'db' },
         async (span: Span) => {
           const col = await db.query.collections.findFirst({
-            where: (c: any, { eq }: any) => eq(c.slug, slug),
+            where: (c, { eq }) => eq(c.slug, slug),
           });
           if (!col) return null;
 
           const items = await db.query.collection_items.findMany({
-            where: (ci: any, { eq }: any) => eq(ci.collectionId, col.id),
+            where: (ci, { eq }) => eq(ci.collectionId, col.id),
             with: { item: true },
           });
 
@@ -55,9 +55,9 @@ export async function listPublicCollections() {
         { name: 'collections.listPublic', op: 'db' },
         async (span: Span) => {
           return db.query.collections.findMany({
-            where: (c: any, { eq }: any) => eq(c.is_public, true),
+            where: (c, { eq }) => eq(c.is_public, true),
             columns: { id: true, title: true, slug: true, updatedAt: true },
-            orderBy: (c: any, { desc }: any) => [desc(c.updatedAt)],
+            orderBy: (c, { desc }) => [desc(c.updatedAt)],
             limit: 24,
           });
         }
