@@ -74,16 +74,16 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
 
       // Fetch all holdings for user with card and latest price data
       const userHoldings = await db.query.holdings.findMany({
-        where: (h: typeof holdings) => eq(h.portfolioId, userId), // Simplified - in prod, join through portfolios table
+        where: eq(holdings.portfolioId, userId), // Simplified - in prod, join through portfolios table
         with: {
           card: {
             with: {
               prices: {
-                orderBy: (p: typeof prices) => [desc(p.date)],
+                orderBy: (prices, { desc }) => [desc(prices.date)],
                 limit: 1,
               },
               populations: {
-                orderBy: (pop: typeof populationReports) => [desc(pop.lastUpdated)],
+                orderBy: (populations, { desc }) => [desc(populations.lastUpdated)],
                 limit: 1,
               },
             },

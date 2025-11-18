@@ -13,6 +13,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { arbitrageOpportunities } from '@/db/schema';
+import { gte, desc } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 
@@ -23,8 +24,8 @@ export async function GET(request: NextRequest) {
       try {
         // Fetch non-expired opportunities, sorted by risk-adjusted spread
         const opportunities = await db.query.arbitrageOpportunities.findMany({
-          where: (opps, { gte }) => gte(opps.expiresAt, new Date()),
-          orderBy: (opps, { desc }) => [desc(opps.riskAdjustedSpreadPct)],
+          where: gte(arbitrageOpportunities.expiresAt, new Date()),
+          orderBy: desc(arbitrageOpportunities.riskAdjustedSpreadPct),
           limit: 50, // Top 50 opportunities
           with: {
             card: true,
