@@ -5,16 +5,16 @@ import { useMemo } from "react";
 type Sq = { id: number; s: number; x: number; y: number; d: number; delay: number; rot: number };
 
 function useSquares(n = 8) {
-  let seed = 29;
-  const rnd = (m: number) => {
-    seed ^= seed << 13;
-    seed ^= seed >> 17;
-    seed ^= seed << 5;
-    return Math.abs(seed) % m;
-  };
   return useMemo<Sq[]>(
-    () =>
-      Array.from({ length: n }).map((_, i) => ({
+    () => {
+      let seed = 29;
+      const rnd = (m: number) => {
+        seed ^= seed << 13;
+        seed ^= seed >> 17;
+        seed ^= seed << 5;
+        return Math.abs(seed) % m;
+      };
+      return Array.from({ length: n }).map((_, i) => ({
         id: i,
         s: 24 + rnd(32),
         x: rnd(100) / 100,
@@ -22,8 +22,9 @@ function useSquares(n = 8) {
         d: 40 + rnd(30),
         delay: (i * 5) % 25,
         rot: rnd(360)
-      })),
-    []
+      }));
+    },
+    [n]
   );
 }
 
