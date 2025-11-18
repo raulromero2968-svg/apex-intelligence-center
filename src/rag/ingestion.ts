@@ -18,6 +18,7 @@ import { db, pool } from '@/db';
 import { tcg_documents } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 // Initialize OpenAI embeddings
 // Uses text-embedding-3-large (1536 dimensions) for high-quality semantic search
@@ -107,7 +108,7 @@ export async function ingestTcgData(
 
   return Sentry.startSpan(
     { name: 'rag.ingest', op: 'ingestion' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('sourceType', sourceType);
       span?.setAttribute('itemCount', items.length);
 

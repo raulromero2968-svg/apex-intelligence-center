@@ -18,6 +18,7 @@
 import { db, pool } from '@/db';
 import { pass, RISK, shouldStopLoss, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 import type { BacktestResult } from './modern-mtg.v5';
 
 /**
@@ -35,7 +36,7 @@ export async function backtestPokemonVintage(
 ): Promise<BacktestResult> {
   return Sentry.startSpan(
     { name: 'backtest.pokemon_vintage', op: 'backtest' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('startDate', startDate);
       span?.setAttribute('endDate', endDate);
 

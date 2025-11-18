@@ -19,6 +19,7 @@ import { db } from '@/db';
 import { cards, prices } from '@/db/schema';
 import { RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 export interface FrontierPoint {
   ret: number; // Expected return (annualized)
@@ -49,7 +50,7 @@ export async function computeTcgEfficientFrontier(
 ): Promise<EfficientFrontier> {
   return Sentry.startSpan(
     { name: 'portfolio.optimizer.frontier', op: 'optimization' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('cardCount', cardIds.length);
       span?.setAttribute('budget', budget);
       span?.setAttribute('numPoints', numPoints);

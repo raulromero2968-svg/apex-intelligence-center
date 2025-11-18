@@ -15,6 +15,7 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { hybridSearch, SearchResult } from './search';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 /**
  * RAG-Fusion configuration
@@ -127,7 +128,7 @@ Generate exactly ${this.config.numQueries} diverse search queries, each explorin
   async search(query: string): Promise<SearchResult[]> {
     return Sentry.startSpan(
       { name: 'rag.fusion.search', op: 'fusion' },
-      async (span) => {
+      async (span: Span) => {
         span?.setAttribute('query', query.slice(0, 100));
 
         // Step 1: Generate diverse queries

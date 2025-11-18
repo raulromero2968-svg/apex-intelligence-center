@@ -159,6 +159,9 @@ importers:
       '@playwright/test':
         specifier: ^1.48.0
         version: 1.56.1
+      '@sentry/types':
+        specifier: ^10.25.0
+        version: 10.25.0
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -1894,6 +1897,10 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       react: ^16.14.0 || 17.x || 18.x || 19.x
+
+  '@sentry/types@10.25.0':
+    resolution: {integrity: sha512-RZ0hwDtIAN3ySGqoN8CeeuZi9EBfUHRSxHKc1r4YgHm5dzsU2v2YTjIuWO0wgju5jSqY0CK6pZRNb0dlKHGbMw==}
+    engines: {node: '>=18'}
 
   '@sentry/vercel-edge@10.25.0':
     resolution: {integrity: sha512-TncKAvGo6YpFDKnf2k4l9Bdq8ZVdW+AlUClAloXs06sMLDZk9NDAmphT7lHdspx9kTsW/hTs29qEjk5H1AIZ8g==}
@@ -8115,6 +8122,10 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 18.3.1
 
+  '@sentry/types@10.25.0':
+    dependencies:
+      '@sentry/core': 10.25.0
+
   '@sentry/vercel-edge@10.25.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -10723,7 +10734,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.2)
+      retry-axios: 2.6.0(axios@1.13.2(debug@4.4.3))
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -12491,7 +12502,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry-axios@2.6.0(axios@1.13.2):
+  retry-axios@2.6.0(axios@1.13.2(debug@4.4.3)):
     dependencies:
       axios: 1.13.2(debug@4.4.3)
 
