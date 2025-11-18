@@ -20,8 +20,9 @@
 
 import { Job } from 'bullmq';
 import { db } from '@/db';
-import { cards, prices, arbitrageOpportunities } from '@/db/schema';
-import { lte, gte, desc } from 'drizzle-orm';
+import { arbitrageOpportunities } from '@/db/schema';
+import { getCardsWithLatestPricesBySource } from '@/db/queries/cards';
+import { lte } from 'drizzle-orm';
 import { sendArbitrageNotification } from '@/notifications';
 import { pass, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
@@ -117,17 +118,9 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
       console.log('[Arbitrage] Starting scan...');
 
       try {
-        // Fetch high-value cards (apex_score > 85)
-        const highValueCards = await db.query.cards.findMany({
-          where: gte(cards.apexScore, 85),
-          with: {
-            prices: {
-              orderBy: desc(prices.date),
-              limit: 10, // Last 10 price points for liquidity estimation
-            },
-          },
-          limit: 500, // Process top 500 cards per scan
-        });
+        // Fetch high-value cards with latest prices per source (apex_score >= 85)
+        // Uses type-safe relational query - card.prices is now correctly typed as Price[]
+        const highValueCards = await getCardsWithLatestPricesBySource(85, 500);
 
         const opportunities: ArbitrageOpportunity[] = [];
 
@@ -135,6 +128,8 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
           const marketPrices: MarketPrice[] = [];
 
           // Extract prices by source
+          // TypeScript now correctly infers card.prices as Price[] (not never[])
+          // thanks to the cardsRelations definition in schema.ts
           for (const price of card.prices) {
             if (price.source === 'justtcg') {
               marketPrices.push({
