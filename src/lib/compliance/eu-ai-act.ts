@@ -22,6 +22,7 @@
 import { IpfsProvenanceLogger, RagTrace } from '../provenance/ipfs';
 import { db } from '@/db';
 import { complianceLogs } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 import { RagResponse } from '@/rag/chain';
@@ -261,7 +262,7 @@ export class EuAiActCompliance {
   async generateTransparencyReport(traceHash: string): Promise<string> {
     // Fetch from database
     const log = await db.query.complianceLogs.findFirst({
-      where: (logs, { eq }) => eq(logs.traceHash, traceHash),
+      where: eq(complianceLogs.traceHash, traceHash),
     });
 
     if (!log) {
