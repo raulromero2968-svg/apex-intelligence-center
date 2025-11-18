@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/nextjs';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
+import { withRepositories } from './repositories';
 
 // Create PostgreSQL connection pool
 // In production, set POSTGRES_URL environment variable
@@ -20,7 +21,7 @@ const pool = new Pool({
 });
 
 // Initialize Drizzle with schema and Sentry logging
-export const db = drizzle(pool, {
+const baseDb = drizzle(pool, {
   schema,
   logger: {
     logQuery(query, params) {
@@ -40,6 +41,9 @@ export const db = drizzle(pool, {
     },
   },
 });
+
+// Extend db with repository methods
+export const db = withRepositories(baseDb);
 
 // Export pool for raw queries if needed (e.g., for pgvector operations)
 export { pool };
