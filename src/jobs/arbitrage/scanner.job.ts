@@ -17,15 +17,15 @@ import { Job } from 'bullmq';
 import { db } from '@/db';
 import { makerTasks, cards, arbitrageOpportunities } from '@/db/schema';
 import { eq, sql, and, gte } from 'drizzle-orm';
-import { voteOnStep } from '@/lib/maker/voting';
+import { voteOnStep } from '../../../lib/maker/voting';
 import {
   fetchCardAgent,
   extractPricesAgent,
   calculateArbitrageAgent,
-} from '@/lib/maker/agents/arbitrage';
-import { generateId } from '@/lib/maker/utils';
-import { estimateMAKERCost } from '@/lib/maker/cost';
-import type { ArbitrageOpportunity } from '@/lib/maker/types';
+} from '../../../lib/maker/agents/arbitrage';
+import { generateId } from '../../../lib/maker/utils';
+import { estimateMAKERCost } from '../../../lib/maker/cost';
+import type { ArbitrageOpportunity } from '../../../lib/maker/types';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 
