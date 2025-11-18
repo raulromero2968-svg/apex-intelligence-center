@@ -25,6 +25,11 @@ export async function createCollectionAndAddItem(formData: FormData) {
         await db.collection_items.add({ collectionId: col.id, itemId });
       }
 
+      // Null check for TypeScript strict mode
+      if (!col?.slug) {
+        throw new Error('Collection slug is required');
+      }
+
       // Precise tag invalidation
       revalidateTag(`collection:${col.slug}`);
       if (col.is_public) revalidateTag('collections:public:list');
@@ -55,7 +60,7 @@ export async function addItemsToCollection(data: {
       await db.collection_items.bulkAdd(collectionId, itemIds);
       const col = await db.collections.get(collectionId);
 
-      if (!col) {
+      if (!col?.slug) {
         return { error: 'Collection not found' };
       }
 
