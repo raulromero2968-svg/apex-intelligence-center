@@ -10,15 +10,6 @@ import { desc, gte, and } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 
-type CardWithPricesLite = {
-  [key: string]: unknown;
-  prices: Array<{
-    source: string;
-    date: string | Date;
-    [key: string]: unknown;
-  }>;
-};
-
 /**
  * Get high-value cards with current prices from all sources
  *
@@ -102,11 +93,11 @@ export async function getCardsWithLatestPricesBySource(
     { name: 'cards.getWithLatestPrices', op: 'db' },
     async (span: Span) => {
       // First, get cards with all prices
-      const cardsWithPrices = await getHighValueCardsWithPrices(minApexScore, limit) as CardWithPricesLite[];
+      const cardsWithPrices = await getHighValueCardsWithPrices(minApexScore, limit);
 
       // Group prices by source and keep only the latest per source
-      const result = cardsWithPrices.map((card) => {
-        const pricesBySource = new Map<string, CardWithPricesLite['prices'][number]>();
+      const result = cardsWithPrices.map((card: any) => {
+        const pricesBySource = new Map<string, typeof card.prices[0]>();
 
         // Sort prices by date and keep the latest per source
         for (const price of card.prices) {
