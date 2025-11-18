@@ -3,6 +3,7 @@
 import { revalidateTag } from '@/lib/cache';
 import { db } from '@/db';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 /**
  * Create a new collection and add an item
@@ -11,7 +12,7 @@ import * as Sentry from '@sentry/nextjs';
 export async function createCollectionAndAddItem(formData: FormData) {
   return Sentry.startSpan(
     { name: 'action.createCollectionAndAddItem', op: 'action' },
-    async () => {
+    async (span: Span) => {
       const title = String(formData.get('title') || '').trim();
       const itemId = String(formData.get('itemId') || '');
 
@@ -44,7 +45,7 @@ export async function addItemsToCollection(data: {
 }) {
   return Sentry.startSpan(
     { name: 'action.addItemsToCollection', op: 'action' },
-    async () => {
+    async (span: Span) => {
       const { collectionId, itemIds } = data;
 
       if (!itemIds || itemIds.length === 0) {
@@ -81,7 +82,7 @@ export async function setVisibility(data: {
 }) {
   return Sentry.startSpan(
     { name: 'action.setVisibility', op: 'action' },
-    async () => {
+    async (span: Span) => {
       const { slug, isPublic, isUnlisted } = data;
 
       const col = await db.collections.updateBySlug(slug, {

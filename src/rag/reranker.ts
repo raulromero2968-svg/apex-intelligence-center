@@ -14,6 +14,7 @@
 import { CohereClient } from 'cohere-ai';
 import { SearchResult } from './search';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 // Initialize Cohere client
 const cohere = new CohereClient({
@@ -63,7 +64,7 @@ export async function rerankResults(
 
   return Sentry.startSpan(
     { name: 'rag.rerank', op: 'reranking' },
-    async (span) => {
+    async (span: Span) => {
       span?.setAttribute('query', query.slice(0, 100));
       span?.setAttribute('documentCount', documents.length);
       span?.setAttribute('topN', topN);
@@ -142,7 +143,7 @@ export async function getTcgContext(
 
   return Sentry.startSpan(
     { name: 'rag.get_context', op: 'retrieval' },
-    async (span) => {
+    async (span: Span) => {
       // 1. Hybrid search to get candidate documents
       const searchResults = await hybridSearch({
         query,

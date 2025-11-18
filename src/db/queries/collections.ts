@@ -1,10 +1,7 @@
 import { db } from '@/db';
 import { getCached, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
-
-type SpanLike = {
-  setAttribute?: (key: string, value: unknown) => void;
-};
+import type { Span } from '@sentry/types';
 
 /**
  * Get collection by slug with caching
@@ -21,7 +18,7 @@ export async function getCollectionBySlug(slug: string) {
     async () => {
       return Sentry.startSpan(
         { name: 'collections.getBySlug', op: 'db' },
-        async (span: SpanLike) => {
+        async (span: Span) => {
           const col = await db.query.collections.findFirst({
             where: (c: any, { eq }: any) => eq(c.slug, slug),
           });
@@ -56,7 +53,7 @@ export async function listPublicCollections() {
     async () => {
       return Sentry.startSpan(
         { name: 'collections.listPublic', op: 'db' },
-        async () => {
+        async (span: Span) => {
           return db.query.collections.findMany({
             where: (c: any, { eq }: any) => eq(c.is_public, true),
             columns: { id: true, title: true, slug: true, updatedAt: true },
