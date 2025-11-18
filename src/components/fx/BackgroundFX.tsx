@@ -6,18 +6,20 @@ import clsx from "clsx";
 type ShootingSquare = { id:number; size:number; x:number; y:number; dur:number; delay:number; rot:number; };
 
 function useSquares(count = 6) {    // fewer stars
-  let seed = 11;
-  const rand = (n:number) => { seed ^= seed<<13; seed ^= seed>>17; seed ^= seed<<5; return Math.abs(seed)%n; };
   return useMemo<ShootingSquare[]>(
-    () => Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      size: 12 + rand(28),             // 12–40px
-      x: rand(100) / 100,
-      y: rand(100) / 100,
-      dur: 28 + rand(24),              // 28–52s (slow)
-      delay: (i * 7.5) % 30,           // long stagger
-      rot: rand(360),
-    })), []
+    () => {
+      let seed = 11;
+      const rand = (n:number) => { seed ^= seed<<13; seed ^= seed>>17; seed ^= seed<<5; return Math.abs(seed)%n; };
+      return Array.from({ length: count }).map((_, i) => ({
+        id: i,
+        size: 12 + rand(28),             // 12–40px
+        x: rand(100) / 100,
+        y: rand(100) / 100,
+        dur: 28 + rand(24),              // 28–52s (slow)
+        delay: (i * 7.5) % 30,           // long stagger
+        rot: rand(360),
+      }));
+    }, [count]
   );
 }
 
