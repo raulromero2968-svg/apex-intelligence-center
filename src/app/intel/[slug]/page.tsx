@@ -38,7 +38,7 @@ export default function IntelArticlePage({ params }: IntelPageProps) {
         <p className="text-lg text-white/80">{article.excerpt}</p>
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {article.tags.map((tag) => (
+            {article.tags.map((tag: string) => (
               <span
                 key={tag}
                 className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-200"
