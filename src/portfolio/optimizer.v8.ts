@@ -17,6 +17,7 @@
 
 import { db } from '@/db';
 import { cards, prices } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
 import { RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
@@ -246,8 +247,8 @@ async function getExpectedReturns(cardIds: string[]): Promise<number[]> {
 
   for (const cardId of cardIds) {
     const priceData = await db.query.prices.findMany({
-      where: (p: typeof prices.$inferSelect, { eq }) => eq(p.cardId, cardId),
-      orderBy: (p: typeof prices.$inferSelect, { desc }) => [desc(p.date)],
+      where: (p: typeof prices) => eq(p.cardId, cardId),
+      orderBy: (p: typeof prices) => [desc(p.date)],
       limit: 180,
     });
 
@@ -278,8 +279,8 @@ async function getVolatilities(cardIds: string[]): Promise<number[]> {
 
   for (const cardId of cardIds) {
     const priceData = await db.query.prices.findMany({
-      where: (p: typeof prices.$inferSelect, { eq }) => eq(p.cardId, cardId),
-      orderBy: (p: typeof prices.$inferSelect, { desc }) => [desc(p.date)],
+      where: (p: typeof prices) => eq(p.cardId, cardId),
+      orderBy: (p: typeof prices) => [desc(p.date)],
       limit: 180,
     });
 
@@ -328,8 +329,8 @@ async function getCurrentPrices(cardIds: string[]): Promise<Record<string, numbe
 
   for (const cardId of cardIds) {
     const latestPrice = await db.query.prices.findFirst({
-      where: (p: typeof prices.$inferSelect, { eq }) => eq(p.cardId, cardId),
-      orderBy: (p: typeof prices.$inferSelect, { desc }) => [desc(p.date)],
+      where: (p: typeof prices) => eq(p.cardId, cardId),
+      orderBy: (p: typeof prices) => [desc(p.date)],
     });
 
     priceMap[cardId] = latestPrice?.market || 100;
