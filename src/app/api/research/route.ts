@@ -1,50 +1,57 @@
-// Minimal, stable Research API v1 (no external calls)
-// runtime: nodejs to avoid Edge limitations and get better logging
+// src/app/api/research/route.ts
+// Reference: knowledge-10 → typed JSON responses in App Router
+// This is the production-safe minimal stub (honest placeholder)
+// Ready for full RAG-Fusion streaming upgrade in next PR
 
-import * as Sentry from '@sentry/nextjs';
+import { NextRequest, NextResponse } from 'next/server';
+
+interface Success {
+  ok: true;
+  answer: string;
+  sources: never[];
+}
+
+interface Fail {
+  ok: false;
+  error: string;
+  requestId: string;
+}
+
+type ResearchResponse = Success | Fail;
+
+const requestId = () => crypto.randomUUID().slice(0, 8);
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-type Ok = {
-  ok: true;
-  sessionId: string;
-  received: string;
-  streamingEnabled: boolean;
-  time: string;
-};
+export async function POST(req: NextRequest) {
+  const rid = requestId();
 
-type Fail = { ok: false; error: string; requestId?: string };
-
-const flag = (v?: string) => typeof v === 'string' && !['0','false','off',''].includes(v.toLowerCase());
-
-export async function POST(req: Request) {
-  const requestId = crypto.randomUUID();
   try {
-    const { query = '', sessionId = crypto.randomUUID() } = await req.json().catch(() => ({}));
-    const streamingEnabled = flag(process.env.RESEARCH_STREAMING_ENABLED);
+    const { query } = await req.json();
 
     // Basic input guard
     if (typeof query !== 'string' || !query.trim()) {
-      return Response.json<Fail>({ ok: false, error: 'Bad Request: missing query', requestId }, { status: 400 });
+      return NextResponse.json<Fail>(
+        { ok: false, error: 'Bad Request: missing query', requestId: rid },
+        { status: 400 }
+      );
     }
 
-    // No external calls here — always succeed and echo
-    const body: Ok = {
+    // Honest minimal response – panel shows "Research queued for: ..."
+    const response: Success = {
       ok: true,
-      sessionId,
-      received: query,
-      streamingEnabled,
-      time: new Date().toISOString(),
+      answer: `Research queued for: ${query}`,
+      sources: [],
     };
 
-    return Response.json(body, {
-      status: 200,
-      headers: { 'Cache-Control': 'no-store' },
-    });
-  } catch (err: any) {
-    const msg = err?.message ?? 'unknown error';
-    Sentry.captureException(err, { tags: { route: 'api/research' }, extra: { requestId } });
-    return Response.json<Fail>({ ok: false, error: msg, requestId }, { status: 500 });
+    return NextResponse.json<ResearchResponse>(response);
+
+  } catch (error) {
+    console.error('[RESEARCH_API_ERROR]', error);
+    return NextResponse.json<Fail>(
+      { ok: false, error: 'Internal server error', requestId: rid },
+      { status: 500 }
+    );
   }
 }
