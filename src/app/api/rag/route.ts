@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { executeRagQuery, formatRagResponse } from '@/rag/chain';
 import { getCachedWithMeta, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';
+import type { Span } from '@sentry/types';
 
 /**
  * Rate limiter using IP-based tracking
@@ -71,7 +72,7 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
 export async function POST(request: NextRequest) {
   return Sentry.startSpan(
     { name: 'api.rag', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // 1. Extract user identifier (IP or authenticated user ID)
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
@@ -131,14 +132,25 @@ export async function POST(request: NextRequest) {
         const cacheKey = stableKey('rag', { query });
         const cacheTags = ['rag'];
 
-        const { data: ragResponse, cached } = bypass_cache
+        // Normalize union type to consistent shape for type safety
+        type RagCacheResult = {
+          data: Awaited<ReturnType<typeof executeRagQuery>> | null;
+          cached: boolean;
+        };
+
+        const cacheResult: RagCacheResult = bypass_cache
           ? { data: null, cached: false }
           : await getCachedWithMeta(
               cacheKey,
               cacheTags,
               async () => executeRagQuery(query),
               300 // Cache for 5 minutes
-            );
+            ).then(result => ({
+              data: result.value,
+              cached: result.meta.redis === 'HIT'
+            }));
+
+        const { data: ragResponse, cached } = cacheResult;
 
         // 6. Execute query if not cached
         const response = ragResponse || await executeRagQuery(query);
@@ -201,7 +213,7 @@ export async function GET(request: NextRequest) {
 
   return Sentry.startSpan(
     { name: 'api.rag.get', op: 'http.server' },
-    async (span) => {
+    async (span: Span) => {
       try {
         // Rate limiting
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
@@ -216,12 +228,19 @@ export async function GET(request: NextRequest) {
 
         // Execute query (with caching)
         const cacheKey = stableKey('rag', { query });
-        const { data: response, cached } = await getCachedWithMeta(
+
+        // Normalize union type to consistent shape for type safety
+        const cacheResult = await getCachedWithMeta(
           cacheKey,
           ['rag'],
           async () => executeRagQuery(query),
           300
-        );
+        ).then(result => ({
+          data: result.value,
+          cached: result.meta.redis === 'HIT'
+        }));
+
+        const { data: response, cached } = cacheResult;
 
         span?.setAttribute('cached', cached);
         span?.setAttribute('format', format || 'json');

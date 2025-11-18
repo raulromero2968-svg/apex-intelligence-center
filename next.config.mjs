@@ -14,6 +14,17 @@ const nextConfig = {
     typedRoutes: false,
     optimizeCss: true, // CSS optimization for better performance
     staleTimes: { dynamic: 0 }, // Keep default; tag invalidation is our lever
+    // Optimize package imports for large libraries (2025 serverless best practice)
+    optimizePackageImports: [
+      'langchain',
+      '@langchain/core',
+      '@langchain/community',
+      '@langchain/openai',
+      '@langchain/cohere',
+      'lucide-react',
+      'recharts',
+      'framer-motion',
+    ],
     // PPR: Enable when upgrading to Next.js 15+
     // ppr: 'incremental',
   },
@@ -68,6 +79,46 @@ const nextConfig = {
 
   // No trailing slashes
   trailingSlash: false,
+
+  // Webpack optimizations for serverless bundle size reduction (2025 best practices)
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Reduce serverless function bundle size
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        // Split large chunks for better serverless cold start
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            langchain: {
+              test: /[\\/]node_modules[\\/](@langchain|langchain)[\\/]/,
+              name: 'langchain',
+              priority: 10,
+            },
+            openai: {
+              test: /[\\/]node_modules[\\/](openai|cohere-ai)[\\/]/,
+              name: 'ai-vendors',
+              priority: 9,
+            },
+            default: {
+              minChunks: 2,
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+
+      // Exclude heavy dependencies from client bundle when possible
+      config.externals = [...(config.externals || []), 'canvas', 'bufferutil', 'utf-8-validate'];
+    }
+
+    // Enable tree-shaking for all modules
+    config.optimization.usedExports = true;
+
+    return config;
+  },
 };
 
 // MDX configuration with remark plugins
