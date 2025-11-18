@@ -81,60 +81,28 @@ export default function ResearchPanel() {
         }),
       });
 
-      if (!res.body) throw new Error('No response body');
+      const data = await res.json();
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantMessage = '';
-      let sources: any[] = [];
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-
-        // Check if chunk contains sources
-        if (chunk.includes('__SOURCES__')) {
-          const parts = chunk.split('__SOURCES__');
-          assistantMessage += parts[0];
-
-          try {
-            const sourcesJson = parts[1].trim();
-            sources = JSON.parse(sourcesJson);
-          } catch (e) {
-            console.error('Failed to parse sources:', e);
-          }
-        } else {
-          assistantMessage += chunk;
-        }
-
-        // Update messages in real-time
-        setMessages((m) => {
-          const updated = [...m];
-          if (updated[updated.length - 1]?.role === 'assistant') {
-            updated[updated.length - 1] = {
-              role: 'assistant',
-              content: assistantMessage,
-              sources: sources.length > 0 ? sources : undefined,
-            };
-          } else {
-            updated.push({
-              role: 'assistant',
-              content: assistantMessage,
-              sources: sources.length > 0 ? sources : undefined,
-            });
-          }
-          return updated;
-        });
+      if (!data.ok) {
+        throw new Error(data.error || 'Unknown error');
       }
-    } catch (err) {
+
+      // Add assistant response
+      setMessages((m) => [
+        ...m,
+        {
+          role: 'assistant',
+          content: data.answer || 'No response',
+          sources: data.sources && data.sources.length > 0 ? data.sources : undefined,
+        },
+      ]);
+    } catch (err: any) {
       console.error('Research query error:', err);
       setMessages((m) => [
         ...m,
         {
           role: 'assistant',
-          content: 'Error: Failed to reach research engine. Please try again.',
+          content: `Error: ${err.message || 'Failed to reach research engine. Please try again.'}`,
         },
       ]);
     } finally {
