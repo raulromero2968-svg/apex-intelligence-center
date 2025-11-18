@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "pnpm install --no-frozen-lockfile --shamefully-hoist=true",
-  "buildCommand": "pnpm dlx drizzle-kit generate && pnpm build",
+  "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["iad1"],
