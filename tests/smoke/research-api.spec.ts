@@ -1,9 +1,9 @@
-import { test, expect, describe } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/research`;
 
-describe('Research API Smoke Tests', () => {
+test.describe('Research API Smoke Tests', () => {
   test('case 1: POST valid → 200 + schema {ok:true, answer:string, sources:[], requestId:string}', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',

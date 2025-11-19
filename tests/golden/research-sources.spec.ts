@@ -1,4 +1,4 @@
-import { test, expect, describe } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 /**
  * Golden tests for Research API source array structure
@@ -10,7 +10,7 @@ import { test, expect, describe } from '@playwright/test';
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/research`;
 
-describe('Research API Source Array Golden Tests', () => {
+test.describe('Research API Source Array Golden Tests', () => {
   test('should return sources with correct schema (index, title, url, score)', async () => {
     // Note: This test only runs if FEATURE_RESEARCH_STREAMING=1
     // Otherwise it will get a JSON stub

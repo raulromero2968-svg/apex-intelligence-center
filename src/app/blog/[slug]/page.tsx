@@ -1,186 +1,170 @@
-import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import SectionShell from '../../(sections)/SectionShell';
-import { getArticleBySlug, getAllArticleSlugs } from '@/lib/mdx';
-import { BookOpen, Clock, Calendar } from 'lucide-react';
+import type { Metadata } from "next";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { allPosts, type Post } from "contentlayer/generated";
+import { useMDXComponent } from "next-contentlayer/hooks";
+import { BookOpen, Calendar, User } from "lucide-react";
+import SectionShell from "@/app/(sections)/SectionShell";
+import TableOfContents from "@/components/blog/TableOfContents";
+import ShareButtons from "@/components/blog/ShareButtons";
+import DiscoverMore, { type RelatedPost } from "@/components/blog/DiscoverMore";
+import { useMDXComponents } from "@/mdx-components";
 
 interface BlogPostPageProps {
   params: { slug: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }
 
-// Enable ISR with tag-based revalidation
-export const revalidate = false; // On-demand via tags
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://apexintelligence.io";
 
-// Generate static params for all articles
-export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs();
-  return slugs.map((slug) => ({ slug }));
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return allPosts.map((post) => ({ slug: post.slug }));
 }
 
-// Generate metadata for SEO
-export async function generateMetadata({ params }: BlogPostPageProps) {
-  const article = await getArticleBySlug(params.slug);
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const post = allPosts.find((entry) => entry.slug === params.slug);
 
-  if (!article) {
-    return {
-      title: 'Article Not Found',
-    };
+  if (!post) {
+    return { title: "Post not found" };
   }
 
-  // Generate OG image URL if og: true in frontmatter
-  const ogImageUrl = article.frontmatter.og
-    ? `/api/og?title=${encodeURIComponent(article.frontmatter.title)}&category=${encodeURIComponent(article.frontmatter.category)}`
-    : article.frontmatter.heroImage;
-
   return {
-    title: article.frontmatter.title,
-    description: article.frontmatter.tags?.join(', ') || '',
+    title: post.title,
+    description: post.description,
     openGraph: {
-      title: article.frontmatter.title,
-      description: article.frontmatter.tags?.join(', ') || '',
-      images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
-      type: 'article',
-      publishedTime: article.frontmatter.publishedAt,
+      title: post.title,
+      description: post.description,
+      url: `https://apexintelligence.io/blog/${post.slug}`,
+      images: post.hero
+        ? [{ url: post.hero }]
+        : [{ url: `/api/og?title=${encodeURIComponent(post.title)}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: post.hero
+        ? [post.hero]
+        : [`/api/og?title=${encodeURIComponent(post.title)}`],
     },
   };
 }
 
-// Article header component
-function ArticleHeader({ article }: { article: any }) {
-  const publishDate = new Date(article.frontmatter.publishedAt).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
+function getRelatedPosts(current: Post): RelatedPost[] {
+  return allPosts
+    .filter((post) => post.slug !== current.slug && !post.draft && !post.unlisted)
+    .map((post) => {
+      const sharedTags = post.tags?.filter((tag) => current.tags?.includes(tag)) ?? [];
+      const score = sharedTags.length * 10 + new Date(post.date).getTime();
+      return { post, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ post }) => ({
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.description,
+    }));
+}
+
+function BlogHeader({ post }: { post: Post }) {
+  const publishDate = new Date(post.date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 
   return (
-    <header className="mb-8 space-y-6">
-      {/* Hero Image */}
-      {article.frontmatter.heroImage && (
-        <div className="relative w-full h-[400px] rounded-xl overflow-hidden border border-cyan-500/20">
-          <Image
-            src={article.frontmatter.heroImage}
-            alt={article.frontmatter.title}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 1024px"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        </div>
-      )}
+    <header className="mb-10 space-y-6">
+      <div>
+        <p className="text-sm uppercase tracking-[0.3em] text-cyan-300/70">Apex Intelligence Blog</p>
+        <h1 className="mt-3 text-4xl font-bold leading-tight text-white md:text-5xl">{post.title}</h1>
 
-      {/* Meta Information */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-white/60">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4" />
-          <time dateTime={article.frontmatter.publishedAt}>{publishDate}</time>
-        </div>
-
-        {article.frontmatter.sourceCount && (
-          <>
-            <span className="text-white/30">•</span>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              <span>{article.frontmatter.sourceCount} sources</span>
-            </div>
-          </>
-        )}
-
-        <span className="text-white/30">•</span>
-        <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-          {article.frontmatter.category}
+        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/70">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4 text-cyan-400" />
+            <span>{post.author}</span>
+          </div>
+          <span className="text-white/30">•</span>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-cyan-400" />
+            <time dateTime={post.date}>{publishDate}</time>
+          </div>
+          {post.tags && post.tags.length > 0 && (
+            <>
+              <span className="text-white/30">•</span>
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-200"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Tags */}
-      {article.frontmatter.tags && article.frontmatter.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {article.frontmatter.tags.map((tag: string) => (
-            <span
-              key={tag}
-              className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-200"
-            >
-              {tag}
-            </span>
-          ))}
+      {post.hero && (
+        <div className="relative h-[420px] w-full overflow-hidden rounded-3xl border border-cyan-500/20">
+          <Image src={post.hero} alt={post.title} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 1024px" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         </div>
       )}
     </header>
   );
 }
 
-// Main article page component
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const article = await getArticleBySlug(params.slug);
-
-  if (!article) {
-    return notFound();
+export default function BlogPostPage({ params, searchParams }: BlogPostPageProps) {
+  const post = allPosts.find((entry) => entry.slug === params.slug);
+  if (!post) {
+    notFound();
   }
 
-  return (
-    <SectionShell title={article.frontmatter.title} kicker={article.frontmatter.category}>
-      <article className="max-w-4xl mx-auto">
-        {/* Static shell - renders immediately */}
-        <ArticleHeader article={article} />
+  const previewParam = searchParams?.preview;
+  const previewFlag = Array.isArray(previewParam) ? previewParam[0] : previewParam;
+  const preview = previewFlag === "1";
+  const hidden = (post.draft || post.unlisted) && !preview && process.env.NODE_ENV === "production";
+  if (hidden) {
+    notFound();
+  }
 
-        {/* MDX Content - streamed with Suspense */}
-        <Suspense fallback={
-          <div className="prose prose-invert max-w-none">
-            <div className="animate-pulse space-y-4">
-              <div className="h-4 bg-white/10 rounded w-3/4"></div>
-              <div className="h-4 bg-white/10 rounded w-full"></div>
-              <div className="h-4 bg-white/10 rounded w-5/6"></div>
+  const relatedPosts = getRelatedPosts(post);
+  const MDXContent = useMDXComponent(post.body.code);
+  const mdxComponents = useMDXComponents({});
+  const postUrl = `${siteUrl}/blog/${post.slug}`;
+
+  return (
+    <SectionShell title="" kicker="Blog">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,2fr),320px]">
+        <article className="min-w-0">
+          <BlogHeader post={post} />
+          <ShareButtons title={post.title} url={postUrl} />
+          <div className="prose prose-invert mt-8 max-w-none">
+            <MDXContent components={mdxComponents} />
+          </div>
+          <DiscoverMore relatedPosts={relatedPosts} />
+        </article>
+        <aside className="hidden lg:block">
+          <div className="sticky top-24">
+            <TableOfContents />
+            <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-black/30 p-4 text-sm text-white/80">
+              <div className="flex items-center gap-2 text-white">
+                <BookOpen className="h-4 w-4 text-cyan-400" />
+                <span>About Apex Intel</span>
+              </div>
+              <p className="mt-3">
+                Deep-dive analysis on TCG macro trends, investing frameworks, and playbooks for serious collectors.
+              </p>
             </div>
           </div>
-        }>
-          <div className="prose prose-invert max-w-none">
-            {article.content}
-          </div>
-        </Suspense>
-
-        {/* Sources Section - streamed separately */}
-        <Suspense fallback={null}>
-          {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
-            <section className="mt-12 pt-8 border-t border-cyan-500/20">
-              <h2 className="text-2xl font-bold text-white mb-6">Key Sources</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {article.frontmatter.sources.map((source: any, idx: number) => (
-                  <a
-                    key={idx}
-                    href={source.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex gap-4 p-4 rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 bg-black/40 backdrop-blur-sm transition-all"
-                  >
-                    {source.thumbnail && (
-                      <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden">
-                        <Image
-                          src={source.thumbnail}
-                          alt={source.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
-                        {source.name}
-                      </h3>
-                      <p className="text-sm text-white/60 line-clamp-2 mt-1">
-                        {source.description}
-                      </p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </section>
-          )}
-        </Suspense>
-      </article>
+        </aside>
+      </div>
     </SectionShell>
   );
 }
-
-
