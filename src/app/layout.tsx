@@ -11,29 +11,34 @@ import { Footer } from '@/components/footer/Footer';
 import GuidedTour from '@/components/GuidedTour';
 import HelpFAB from '@/components/HelpFAB';
 import ToastHost from '@/components/ToastHost';
+import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 import '@/styles/animations.css';
 import './globals.css';
 
+// Load facts from central registry
+const facts = getFacts();
+
 export const metadata: Metadata = {
-  title: 'TCG Intelligence Center - Market Intelligence Platform',
-  description: 'PS5-style TCG market intelligence platform with advanced tools and analytics',
+  title: facts.product.fullName,
+  description: facts.product.description,
   openGraph: {
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    title: facts.product.fullName,
+    description: facts.product.description,
     images: [
       {
         url: '/api/og',
         width: 1200,
         height: 630,
-        alt: 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+        alt: facts.organization.tagline,
       },
     ],
     type: 'website',
+    siteName: facts.product.name,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    title: facts.product.fullName,
+    description: facts.product.description,
     images: ['/api/og'],
   },
 };
@@ -43,8 +48,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Generate JSON-LD schemas from facts registry
+  const schemas = generateAllSchemas();
+
   return (
     <html lang="en" className="h-full">
+      <head>
+        {/* JSON-LD Structured Data - Generated from /data/facts.json */}
+        {schemas.map((schema, index) => (
+          <script
+            key={`jsonld-${index}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: toScriptTag(schema) }}
+          />
+        ))}
+      </head>
       <body className="min-h-dvh font-sans antialiased cursor-none">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
           Skip to main content
