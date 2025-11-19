@@ -5,6 +5,7 @@
  * with sample data for a game page.
  */
 
+import React from 'react';
 import { GameSidebar, GameData } from './GameSidebar';
 
 // Example 1: Complete game data with all fields

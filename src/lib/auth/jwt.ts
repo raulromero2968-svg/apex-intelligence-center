@@ -32,6 +32,7 @@ interface JWTPayload {
   sessionId: string;
   iat?: number;
   exp?: number;
+  [key: string]: unknown;
 }
 
 // Environment validation
@@ -120,7 +121,7 @@ export async function verifyAccessToken(token: string): Promise<JWTPayload | nul
 
     // Check if session is revoked
     if (redis && payload.sessionId) {
-      const isRevoked = await redis.get(`session:revoked:${payload.sessionId}`);
+      const isRevoked = await (redis as any).get(`session:revoked:${payload.sessionId}`);
       if (isRevoked) {
         return null;
       }
@@ -146,7 +147,7 @@ export async function verifyRefreshToken(token: string): Promise<JWTPayload | nu
 
     // Check if session is revoked
     if (redis && payload.sessionId) {
-      const isRevoked = await redis.get(`session:revoked:${payload.sessionId}`);
+      const isRevoked = await (redis as any).get(`session:revoked:${payload.sessionId}`);
       if (isRevoked) {
         return null;
       }
@@ -168,7 +169,7 @@ export async function revokeSession(sessionId: string): Promise<void> {
   }
 
   // Store revocation for 7 days (max refresh token lifetime)
-  await redis.set(`session:revoked:${sessionId}`, '1', { ex: 7 * 24 * 60 * 60 });
+  await (redis as any).set(`session:revoked:${sessionId}`, '1', { ex: 7 * 24 * 60 * 60 });
 }
 
 /**
