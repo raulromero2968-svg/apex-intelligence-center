@@ -3,9 +3,11 @@
  *
  * - If FEATURE_RESEARCH_STREAMING != "1" → returns JSON stub
  * - Else (and keys present): SSE stream via ReadableStream
- *   - RAG-Fusion (5 queries), hybrid search
+ *   - RAG-Fusion (5-6 queries), hybrid search
  *   - Cohere rerank topN=8, returnDocuments:false
- *   - Stream LLM tokens; append final line with "__SOURCES__" + JSON
+ *   - Deduplicate sources by URL + title+domain; cap to 6 unique citations
+ *   - Map sentences to sources during streaming (greedy matching with [n] citations)
+ *   - Stream LLM tokens; append final line with "__SOURCES__" + JSON (index, title, url, score 0..1)
  * - Upstash Ratelimit sliding window 20/min/IP
  * - Lazy AI client initialization (no module scope)
  * - Works with zero secrets in CI
@@ -17,6 +19,8 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ragFusionSearch } from '@/rag/fusion';
 import { rerankResults } from '@/rag/reranker';
+import { deduplicateSources, formatSourcesForOutput } from '@/rag/dedupe';
+import { CitationMapper } from '@/rag/citation-mapper';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
@@ -293,9 +297,9 @@ export async function POST(req: NextRequest) {
               span?.setAttribute('ipHash', ipHash);
 
               try {
-                // Step 1: RAG-Fusion (5 queries), hybrid search
+                // Step 1: RAG-Fusion (5-6 queries), hybrid search
                 const fusionResults = await ragFusionSearch(query, {
-                  numQueries: 5,
+                  numQueries: 6, // 5-6 queries as specified
                   preRerankLimit: 20,
                   finalLimit: 30,
                 });
@@ -307,8 +311,13 @@ export async function POST(req: NextRequest) {
 
                 span?.setAttribute('rerankResultCount', reranked.length);
 
-                // Step 3: Format context with source markers
-                const context = reranked
+                // Step 3: Deduplicate sources (URL + title+domain) and cap to 6
+                const dedupedSources = deduplicateSources(reranked, 6);
+
+                span?.setAttribute('dedupedSourceCount', dedupedSources.length);
+
+                // Step 4: Format context with source markers
+                const context = dedupedSources
                   .map(
                     (doc, i) =>
                       `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
@@ -317,7 +326,10 @@ export async function POST(req: NextRequest) {
 
                 span?.setAttribute('contextLength', context.length);
 
-                // Step 4: Stream LLM tokens
+                // Step 5: Initialize citation mapper for sentence-level attribution
+                const citationMapper = new CitationMapper(dedupedSources);
+
+                // Step 6: Stream LLM tokens with citation mapping
                 const llm = getLLM();
                 if (!llm) {
                   throw new Error('Anthropic API key not configured');
@@ -331,21 +343,26 @@ export async function POST(req: NextRequest) {
                   question: query,
                 });
 
-                // Stream tokens to client
+                // Stream tokens to client with citation mapping
                 for await (const chunk of streamIterator) {
                   fullAnswer += chunk;
-                  controller.enqueue(encoder.encode(chunk));
+
+                  // Process chunk through citation mapper
+                  const processedChunk = citationMapper.processChunk(chunk);
+                  if (processedChunk) {
+                    controller.enqueue(encoder.encode(processedChunk));
+                  }
                 }
 
-                // Step 5: Append final line with "__SOURCES__" + JSON
-                sources = reranked.map((doc, i) => ({
-                  index: i + 1,
-                  title: doc.metadata.title || doc.metadata.card_name || 'Market Data',
-                  url: doc.metadata.source_url || '#',
-                  relevance: Math.round((doc.rerankScore || 0) * 100),
-                  sourceType: doc.source_type,
-                  metadata: doc.metadata,
-                }));
+                // Flush any remaining buffered content
+                const finalChunk = citationMapper.flush();
+                if (finalChunk) {
+                  fullAnswer += finalChunk;
+                  controller.enqueue(encoder.encode(finalChunk));
+                }
+
+                // Step 7: Append final line with "__SOURCES__" + JSON
+                sources = formatSourcesForOutput(dedupedSources);
 
                 controller.enqueue(
                   encoder.encode(`\n\n__SOURCES__\n${JSON.stringify(sources)}`)
