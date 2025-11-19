@@ -165,14 +165,41 @@ export const populationReports = pgTable('population_reports', {
 }));
 
 /**
- * Users table - Basic user management
+ * Users table - Basic user management with Stripe subscription support
  */
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   name: text('name'),
+  stripeCustomerId: text('stripe_customer_id'),
+  subscriptionTier: text('subscription_tier', {
+    enum: ['free', 'pro', 'enterprise']
+  }).default('free').notNull(),
+  subscriptionStatus: text('subscription_status', {
+    enum: ['active', 'canceled', 'past_due', 'trialing']
+  }),
+  subscriptionEndsAt: timestamp('subscription_ends_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+/**
+ * Watchlist Items - User price alerts with tiered limits
+ */
+export const watchlistItems = pgTable('watchlist_items', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  targetPrice: real('target_price').notNull(),
+  direction: text('direction', { enum: ['above', 'below'] }).notNull(),
+  isTriggered: boolean('is_triggered').notNull().default(false),
+  triggeredAt: timestamp('triggered_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_watchlist_user').on(table.userId),
+  cardIdx: index('idx_watchlist_card').on(table.cardId),
+  triggeredIdx: index('idx_watchlist_triggered').on(table.isTriggered),
+  uniqueUserCard: uniqueIndex('idx_watchlist_user_card_unique').on(table.userId, table.cardId),
+}));
 
 /**
  * Portfolios table - User portfolio containers
@@ -431,6 +458,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
+  watchlistItems: many(watchlistItems),
 }));
 
 /**
@@ -496,6 +524,20 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
+}));
+
+/**
+ * Watchlist Items relations
+ */
+export const watchlistItemsRelations = relations(watchlistItems, ({ one }) => ({
+  user: one(users, {
+    fields: [watchlistItems.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [watchlistItems.cardId],
+    references: [cards.id],
+  }),
 }));
 
 /**
@@ -594,6 +636,8 @@ export type PopulationReport = typeof populationReports.$inferSelect;
 export type NewPopulationReport = typeof populationReports.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type WatchlistItem = typeof watchlistItems.$inferSelect;
+export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type Portfolio = typeof portfolios.$inferSelect;
 export type NewPortfolio = typeof portfolios.$inferInsert;
 export type Holding = typeof holdings.$inferSelect;
