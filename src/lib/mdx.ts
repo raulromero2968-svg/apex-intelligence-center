@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 import AreaChartViz from '@/components/mdx/AreaChartViz';
 import BarChartViz from '@/components/mdx/BarChartViz';
 import HeroImage from '@/components/mdx/HeroImage';
@@ -12,6 +13,8 @@ import ScatterPlot from '@/components/mdx/ScatterPlot';
 import PublishedTime from '@/components/mdx/PublishedTime';
 import SourceBadge from '@/components/mdx/SourceBadge';
 import SourceCards from '@/components/mdx/SourceCards';
+import ImageWithCaption from '@/components/mdx/ImageWithCaption';
+import InfoBox from '@/components/mdx/InfoBox';
 
 const articlesDirectory = path.join(process.cwd(), 'src/content/articles');
 
@@ -79,6 +82,25 @@ export async function getAllArticleSlugs(): Promise<string[]> {
   return slugs;
 }
 
+// Get raw markdown content by slug (for TableOfContents)
+export async function getArticleRawContent(slug: string): Promise<string | null> {
+  const categories = ['research', 'tools', 'market-analysis', 'guides'];
+
+  for (const category of categories) {
+    try {
+      const filePath = path.join(articlesDirectory, category, `${slug}.mdx`);
+      const source = await fs.readFile(filePath, 'utf8');
+      const { content } = matter(source);
+      return content;
+    } catch (error) {
+      // File not in this category, try next one
+      continue;
+    }
+  }
+
+  return null;
+}
+
 // Get article by slug (searches all categories)
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const categories = ['research', 'tools', 'market-analysis', 'guides'];
@@ -103,12 +125,14 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
           PublishedTime,
           SourceBadge,
           SourceCards,
+          ImageWithCaption,
+          InfoBox,
         },
         options: {
           parseFrontmatter: false, // We already parsed with gray-matter
           mdxOptions: {
             remarkPlugins: [remarkGfm],
-            rehypePlugins: [],
+            rehypePlugins: [rehypeSlug],
           },
         },
       });
@@ -171,4 +195,73 @@ export function calculateReadTime(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;
   return Math.ceil(words / wordsPerMinute);
+}
+
+// Get related posts based on category and tags
+export async function getRelatedPosts(
+  currentSlug: string,
+  currentCategory: string,
+  currentTags: string[] = [],
+  limit: number = 3
+): Promise<Article[]> {
+  const allArticles = await getAllArticles();
+  
+  // Filter out current article
+  const filteredArticles = allArticles.filter(
+    (article) => article.slug !== currentSlug
+  );
+
+  // Score articles based on relevance
+  const scoredArticles = filteredArticles.map((article) => {
+    let score = 0;
+
+    // Higher score for same category
+    if (article.frontmatter.category.toLowerCase() === currentCategory.toLowerCase()) {
+      score += 10;
+    }
+
+    // Score based on shared tags
+    if (article.frontmatter.tags && currentTags.length > 0) {
+      const sharedTags = article.frontmatter.tags.filter((tag) =>
+        currentTags.some((currentTag) =>
+          currentTag.toLowerCase() === tag.toLowerCase()
+        )
+      );
+      score += sharedTags.length * 5;
+    }
+
+    return { article, score };
+  });
+
+  // Sort by score (highest first), then by date (newest first)
+  const sortedArticles = scoredArticles
+    .sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      return (
+        new Date(b.article.frontmatter.publishedAt).getTime() -
+        new Date(a.article.frontmatter.publishedAt).getTime()
+      );
+    })
+    .map(({ article }) => article)
+    .slice(0, limit);
+
+  // If we don't have enough related posts, fill with recent posts
+  if (sortedArticles.length < limit) {
+    const recentArticles = filteredArticles
+      .filter(
+        (article) => !sortedArticles.some((sorted) => sorted.slug === article.slug)
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.frontmatter.publishedAt).getTime() -
+          new Date(a.frontmatter.publishedAt).getTime()
+      )
+      .slice(0, limit - sortedArticles.length);
+
+    sortedArticles.push(...recentArticles);
+  }
+
+  return sortedArticles;
 }

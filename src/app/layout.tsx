@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     description: facts.product.description,
     images: [
       {
-        url: '/api/og', // Dynamic OG image endpoint
+        url: '/press/og-default.png',
         width: 1200,
         height: 630,
         alt: facts.organization.tagline,
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: facts.product.fullName,
     description: facts.product.description,
-    images: ['/api/og'],
+    images: ['/press/og-default.png'],
     creator: '@tcgintel', // Update with actual Twitter handle if available
   },
 
@@ -104,6 +104,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
+        <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
         {/* JSON-LD Structured Data - Generated from /data/facts.json */}
         {schemas.map((schema, index) => (
           <script
