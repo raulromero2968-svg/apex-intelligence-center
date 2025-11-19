@@ -26,8 +26,12 @@
       "package": "com.apex.intelligence",
       "permissions": [
         "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
-      ]
+        "USE_FINGERPRINT",
+        "POST_NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,6 +42,15 @@
         "expo-local-authentication",
         {
           "faceIDPermission": "Allow Apex Intelligence to use Face ID"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#06b6d4",
+          "sounds": ["./assets/notification-sound.wav"],
+          "mode": "production"
         }
       ],
       "@sentry/react-native/expo"

@@ -260,6 +260,66 @@ npx @next/bundle-analyzer && remove unused deps
 
 ---
 
+## Push Notification Issues
+
+### 20. Push Notifications Not Sending
+```
+Expo push notifications not arriving on device
+```
+**Fix:**
+```bash
+# Check EAS credentials and rebuild
+cd apps/mobile && eas credentials && eas build --profile preview
+```
+**Time:** 2s
+
+---
+
+### 21. Push Token Registration Failed
+```
+Error: Invalid Expo push token
+```
+**Fix:**
+```ts
+// Verify token format starts with ExponentPushToken[...]
+// Re-register on physical device (not simulator)
+await registerForPushNotificationsAsync();
+```
+**Time:** 2s
+
+---
+
+### 22. Push Permissions Not Granted
+```
+User denied push notification permissions
+```
+**Fix:**
+```bash
+# iOS: Settings → Apex Intelligence → Notifications → Allow
+# Android: Settings → Apps → Apex → Notifications → Allow
+# Then restart app
+```
+**Time:** 3s
+
+---
+
+### 23. Background Notifications Not Working
+```
+Notifications only work when app is open
+```
+**Fix:**
+```json
+// Ensure app.json has background mode enabled
+{
+  "android": {
+    "permissions": ["RECEIVE_BOOT_COMPLETED"]
+  }
+}
+```
+**Time:** 2s
+
+---
+
 ## Quick Diagnostics
 
 ### Check Build Locally (Exactly Like Vercel)
@@ -310,6 +370,8 @@ Or in Vercel dashboard:
 ---
 
 **Last Updated:** November 19, 2025
-**Session:** CLAUDE_SESSION_13
+**Session:** CLAUDE_SESSION_15
+
+Total Fixes: 23 (Deployment: 5, Database: 2, Mobile: 13, API: 3, Performance: 2, Push: 4)
 
 We fix issues faster than they occur. 🚀
