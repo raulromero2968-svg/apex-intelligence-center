@@ -22,6 +22,7 @@ export interface ArticleFrontmatter {
   sourceCount: number;
   tags: string[];
   heroImage?: string;
+  og?: boolean; // Enable dynamic OG image generation
   sources?: Array<{
     name: string;
     url: string;
