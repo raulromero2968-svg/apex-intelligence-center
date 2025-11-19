@@ -1,8 +1,8 @@
-import { test, expect, describe } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { deduplicateSources, formatSourcesForOutput } from '@/rag/dedupe';
 import type { RerankedResult } from '@/rag/reranker';
 
-describe('Source Deduplication', () => {
+test.describe('Source Deduplication', () => {
   test('should remove exact URL duplicates', () => {
     const sources: RerankedResult[] = [
       {
@@ -187,7 +187,7 @@ describe('Source Deduplication', () => {
   });
 });
 
-describe('Source Output Formatting', () => {
+test.describe('Source Output Formatting', () => {
   test('should format sources with correct schema', () => {
     const sources: RerankedResult[] = [
       {

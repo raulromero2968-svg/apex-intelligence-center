@@ -1,6 +1,5 @@
-import createMDX from '@next/mdx';
-import remarkGfm from 'remark-gfm';
 import { withSentryConfig } from '@sentry/nextjs';
+import { withContentlayer } from 'next-contentlayer';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -113,17 +112,8 @@ const nextConfig = {
   },
 };
 
-// MDX configuration with remark plugins
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [],
-  },
-});
-
 // Wrap with Sentry for error tracking and performance monitoring
-export default withSentryConfig(withMDX(nextConfig), {
+export default withSentryConfig(withContentlayer(nextConfig), {
   silent: true,
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
