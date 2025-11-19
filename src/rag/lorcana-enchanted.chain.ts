@@ -89,7 +89,7 @@ async function fetchDocs(ids: string[]): Promise<EnchantedChunk[]> {
     where: { id: { in: ids } },
   });
 
-  return cards.map(card => ({
+  return cards.map((card: (typeof cards)[number]) => ({
     id: card.id,
     content: `${card.name} (Chapter: ${card.chapter}, Serial: ${card.serialNumber}) - PSA 10 Pop: ${card.psa10Pop}, PSA 10 Price: $${card.psa10Price}, Convexity: ${card.convexityScore}`,
     metadata: {
