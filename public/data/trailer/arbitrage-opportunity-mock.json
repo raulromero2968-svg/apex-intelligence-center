@@ -1,0 +1,67 @@
+{
+  "detectedAt": "2025-11-18T14:23:47Z",
+  "opportunityId": "ARB-20251118-0847",
+  "card": {
+    "name": "Charizard Base Set 1st Edition",
+    "set": "Base Set",
+    "number": "4/102",
+    "variant": "Shadowless",
+    "grading": "PSA 10",
+    "image": "https://cdn.psacard.com/autoimages/5223123.jpg"
+  },
+  "platforms": {
+    "seller": {
+      "platform": "eBay US",
+      "url": "https://ebay.com/itm/...",
+      "price": 89000,
+      "currency": "USD",
+      "listingDate": "2025-11-15",
+      "sellerRating": 99.8,
+      "condition": "Mint",
+      "shipping": 25,
+      "tax": 0
+    },
+    "buyer": {
+      "platform": "Mercari JP",
+      "url": "https://mercari.jp/...",
+      "price": 41770,
+      "currency": "USD",
+      "equivalentJPY": 6280000,
+      "exchangeRate": 150.3,
+      "buyerDemand": "Very High",
+      "recentSales": 3,
+      "avgSellTime": "4.2 hours"
+    }
+  },
+  "arbitrage": {
+    "grossSpread": 47230,
+    "spreadPercent": 53.1,
+    "netProfit": 44890,
+    "fees": {
+      "ebayFee": 8900,
+      "mercariCommission": 0,
+      "paypalFee": 2170,
+      "shipping": 125,
+      "insurance": 450,
+      "total": 11645
+    },
+    "roi": 107.4,
+    "riskScore": 6.2,
+    "confidenceLevel": "HIGH"
+  },
+  "riskFactors": {
+    "liquidityRisk": 2.5,
+    "priceVolatilityRisk": 3.2,
+    "authenticationRisk": 0.5,
+    "currencyRisk": 1.8,
+    "platformRisk": 1.2,
+    "totalRisk": 6.2
+  },
+  "recommendation": {
+    "action": "EXECUTE",
+    "urgency": "HIGH",
+    "reasoning": "Spread >50%, low risk score, high buyer demand, verified seller",
+    "estimatedExecutionTime": "6-8 hours",
+    "competitorActivity": "Low (2 other watchers)"
+  }
+}
