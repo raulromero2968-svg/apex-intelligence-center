@@ -15,7 +15,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import webpush from 'web-push';
 import { db } from '@/db';
 import { alertSubscriptions, pushSubscriptions } from '@/db/schema';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and, or, isNull } from 'drizzle-orm';
 import { PopDeltaAlert, formatPopDeltaMessage } from '@/jobs/pop-delta/detector.job';
 import * as Sentry from '@sentry/nextjs';
 
@@ -63,7 +63,7 @@ export async function sendPopDeltaNotifications(alert: PopDeltaAlert): Promise<v
         eq(alertSubscriptions.isActive, true),
         or(
           eq(alertSubscriptions.cardId, alert.cardId),
-          eq(alertSubscriptions.cardId, null) // Subscribed to all cards
+          isNull(alertSubscriptions.cardId) // Subscribed to all cards
         )
       ),
     });
@@ -190,7 +190,7 @@ export async function sendPushNotification(
     const subs = await db.query.pushSubscriptions.findMany({
       where: and(
         eq(pushSubscriptions.userId, userId),
-        or(eq(pushSubscriptions.cardId, cardId), eq(pushSubscriptions.cardId, null))
+        or(eq(pushSubscriptions.cardId, cardId), isNull(pushSubscriptions.cardId))
       ),
     });
 
