@@ -21,8 +21,18 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const [sources, setSources] = useState<Source[]>([]);
+
+  // error banners + retry UX
+  const [errorType, setErrorType] =
+    useState<'rate-limit' | 'stream-interrupted' | 'general' | null>(null);
+
+  // live-prices websocket session support
+  const [sessionId, setSessionId] = useState<string>('');
+
+  // textarea focus & keyboard handling
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const [sources, setSources] = useState<Source[]>([]);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const streamStartTimeRef = useRef<number | null>(null);
@@ -48,6 +58,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
       setResult(null);
       setSources([]);
       setIsLoading(false);
+      setErrorType(null);
       streamStartTimeRef.current = null;
     }
   }, [isOpen]);
@@ -113,7 +124,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
   }, [isOpen, onClose]);
 
   /**
-   * Robust SSE parser that handles split markers and keeps __SOURCES__ until end
+   * Robust SSE parser that handles split markers and keeps __SOURCES__ and __ERROR__ until end
    */
   const parseSSEStream = async (reader: ReadableStreamDefaultReader<Uint8Array>) => {
     const decoder = new TextDecoder();
@@ -121,24 +132,68 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     let answer = '';
     let sourcesJsonBuffer = '';
     let hasSourcesMarker = false;
-    const marker = '__SOURCES__';
+    let hasErrorMarker = false;
+    const sourcesMarker = '__SOURCES__';
+    const errorMarker = '__ERROR__';
 
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          // Stream ended - check if it was interrupted unexpectedly
+          if (!hasSourcesMarker && !hasErrorMarker && answer.trim()) {
+            setErrorType('stream-interrupted');
+          }
+          break;
+        }
 
         // Decode chunk and add to buffer
         buffer += decoder.decode(value, { stream: true });
 
+        // Check for error marker first
+        if (!hasErrorMarker && !hasSourcesMarker) {
+          const errorMarkerIndex = buffer.indexOf(errorMarker);
+          if (errorMarkerIndex !== -1) {
+            // Extract answer up to error marker
+            answer += buffer.slice(0, errorMarkerIndex);
+            buffer = buffer.slice(errorMarkerIndex + errorMarker.length);
+            hasErrorMarker = true;
+            setResult(answer.trim());
+            setErrorType('general');
+            // Process error message after marker
+            if (buffer.trim()) {
+              const errorMessage = buffer.trim();
+              setResult((prev) => (prev || '') + '\n\n' + errorMessage);
+              buffer = '';
+            }
+            continue;
+          }
+
+          // Check if error marker might be split
+          let processedError = false;
+          for (let i = 1; i < errorMarker.length && buffer.length >= i; i++) {
+            const suffix = buffer.slice(-i);
+            const prefix = errorMarker.slice(0, i);
+            if (suffix === prefix) {
+              const toProcess = buffer.slice(0, -i);
+              answer += toProcess;
+              buffer = suffix;
+              setResult(answer.trim());
+              processedError = true;
+              break;
+            }
+          }
+          if (processedError) continue;
+        }
+
         // Check if we've hit the sources marker (may be split across chunks)
-        if (!hasSourcesMarker) {
-          const sourcesMarkerIndex = buffer.indexOf(marker);
+        if (!hasSourcesMarker && !hasErrorMarker) {
+          const sourcesMarkerIndex = buffer.indexOf(sourcesMarker);
           if (sourcesMarkerIndex !== -1) {
             // Extract answer up to marker
             answer += buffer.slice(0, sourcesMarkerIndex);
             // Remove marker and everything before it
-            buffer = buffer.slice(sourcesMarkerIndex + marker.length);
+            buffer = buffer.slice(sourcesMarkerIndex + sourcesMarker.length);
             hasSourcesMarker = true;
             setResult(answer.trim());
             // Continue processing remaining buffer as JSON
@@ -150,9 +205,9 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
             // Before marker, accumulate answer
             // Check if marker might be split (end of buffer matches start of marker)
             let processed = false;
-            for (let i = 1; i < marker.length && buffer.length >= i; i++) {
+            for (let i = 1; i < sourcesMarker.length && buffer.length >= i; i++) {
               const suffix = buffer.slice(-i);
-              const prefix = marker.slice(0, i);
+              const prefix = sourcesMarker.slice(0, i);
               if (suffix === prefix) {
                 // Potential split - keep suffix in buffer, process rest
                 const toProcess = buffer.slice(0, -i);
@@ -174,7 +229,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
               }
             }
           }
-        } else {
+        } else if (hasSourcesMarker && !hasErrorMarker) {
           // After marker, accumulate JSON (may be split across chunks)
           sourcesJsonBuffer += buffer;
           buffer = '';
@@ -194,7 +249,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
 
       // Process any remaining buffer
       if (buffer.trim()) {
-        if (hasSourcesMarker) {
+        if (hasSourcesMarker && !hasErrorMarker) {
           sourcesJsonBuffer += buffer;
           try {
             const trimmed = sourcesJsonBuffer.trim();
@@ -205,13 +260,14 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
           } catch (error) {
             console.error('Failed to parse sources JSON:', error);
           }
-        } else {
+        } else if (!hasErrorMarker) {
           answer += buffer;
           setResult(answer.trim());
         }
       }
     } catch (error) {
       console.error('SSE parsing error:', error);
+      setErrorType('stream-interrupted');
       setResult((prev) => (prev || '') + '\n\nError: Stream parsing failed');
     }
   };
