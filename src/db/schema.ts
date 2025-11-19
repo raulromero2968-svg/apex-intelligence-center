@@ -238,6 +238,25 @@ export const pushSubscriptions = pgTable('push_subscriptions', {
 }));
 
 /**
+ * Watchlist Items - User price watchlist with target alerts
+ */
+export const watchlistItems = pgTable('watchlist_items', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  targetPrice: real('target_price'),
+  direction: text('direction'), // 'above' | 'below'
+  notified: boolean('notified').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_watchlist_user').on(table.userId),
+  cardIdx: index('idx_watchlist_card').on(table.cardId),
+  userCardIdx: uniqueIndex('idx_watchlist_user_card').on(table.userId, table.cardId),
+  notifiedIdx: index('idx_watchlist_notified').on(table.notified),
+}));
+
+/**
  * Arbitrage Opportunities - Cached arbitrage opportunities (15min TTL)
  */
 export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
@@ -366,6 +385,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   holdings: many(holdings),
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
+  watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
 }));
@@ -432,6 +452,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   portfolios: many(portfolios),
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
+  watchlistItems: many(watchlistItems),
 }));
 
 /**
@@ -458,6 +479,20 @@ export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one })
   }),
   card: one(cards, {
     fields: [pushSubscriptions.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Watchlist Items relations
+ */
+export const watchlistItemsRelations = relations(watchlistItems, ({ one }) => ({
+  user: one(users, {
+    fields: [watchlistItems.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [watchlistItems.cardId],
     references: [cards.id],
   }),
 }));
@@ -524,6 +559,8 @@ export type AlertSubscription = typeof alertSubscriptions.$inferSelect;
 export type NewAlertSubscription = typeof alertSubscriptions.$inferInsert;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+export type WatchlistItem = typeof watchlistItems.$inferSelect;
+export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
 export type NewArbitrageOpportunity = typeof arbitrageOpportunities.$inferInsert;
 export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSelect;

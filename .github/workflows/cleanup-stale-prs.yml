@@ -1,0 +1,46 @@
+name: Cleanup Stale PRs
+on:
+  schedule:
+    # Run every Monday at 8 AM UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale PRs
+        uses: actions/stale@v9
+        with:
+          # Messages
+          stale-pr-message: |
+            This PR has been inactive for 7 days and will be closed in 3 days.
+            If you're still working on this, please comment to keep it open.
+
+            Note: The main branch deployment is live. If this PR is superseded by direct commits,
+            it will be automatically closed.
+          close-pr-message: |
+            Closed due to inactivity. The blog is now live on main.
+            Feel free to reopen if you need to resume work on this PR.
+
+          # Timing
+          days-before-stale: 7
+          days-before-close: 3
+
+          # Labels
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'keep-open,in-progress,blocked'
+
+          # Only process PRs, not issues
+          only-pr-labels: ''
+          operations-per-run: 100
+
+          # Remove stale label when PR is updated
+          remove-stale-when-updated: true
+
+          # Debugging
+          debug-only: false

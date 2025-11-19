@@ -39,7 +39,9 @@
     "snapshot": "bash scripts/offender-snapshot.sh",
     "patch:check": "git apply --check patch.diff",
     "patch:apply": "git apply --index patch.diff || git apply patch.diff && git add -A && pnpm golden",
-    "golden": "pnpm build && pnpm -s budget:js && pnpm -s guard:delta && pnpm -s budget:route && pnpm -s budget:css && pnpm -s budget:media && pnpm -s audit:env && pnpm -s guard:libs && pnpm -s mirror && pnpm -s sanity"
+    "golden": "pnpm build && pnpm -s budget:js && pnpm -s guard:delta && pnpm -s budget:route && pnpm -s budget:css && pnpm -s budget:media && pnpm -s audit:env && pnpm -s guard:libs && pnpm -s mirror && pnpm -s sanity",
+    "rollback": "tsx scripts/rollback.ts",
+    "rollback:list": "tsx scripts/rollback.ts --list"
   },
   "keywords": [
     "tcg",
