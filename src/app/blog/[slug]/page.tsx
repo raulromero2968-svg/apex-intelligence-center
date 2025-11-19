@@ -28,20 +28,28 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     };
   }
 
-  // Generate OG image URL if og: true in frontmatter
-  const ogImageUrl = article.frontmatter.og
-    ? `/api/og?title=${encodeURIComponent(article.frontmatter.title)}&category=${encodeURIComponent(article.frontmatter.category)}`
-    : article.frontmatter.heroImage;
+  // Use hero image if available, otherwise fallback to dynamic OG image
+  const ogImage = article.frontmatter.heroImage
+    ? [{ url: article.frontmatter.heroImage, width: 1200, height: 630 }]
+    : [{ url: `/api/og?title=${encodeURIComponent(article.frontmatter.title)}`, width: 1200, height: 630 }];
+
+  const description = article.frontmatter.tags?.join(', ') || '';
 
   return {
     title: article.frontmatter.title,
-    description: article.frontmatter.tags?.join(', ') || '',
+    description,
     openGraph: {
       title: article.frontmatter.title,
-      description: article.frontmatter.tags?.join(', ') || '',
-      images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
+      description,
+      images: ogImage,
       type: 'article',
       publishedTime: article.frontmatter.publishedAt,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.frontmatter.title,
+      description,
+      images: ogImage.map(i => i.url),
     },
   };
 }
