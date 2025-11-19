@@ -9,11 +9,23 @@ interface ResearchDialogProps {
   onClose: () => void;
 }
 
+interface Source {
+  index: number;
+  title: string;
+  url: string;
+  relevance: number;
+  sourceType?: string;
+}
+
 export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps) {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [sources, setSources] = useState<Source[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const streamStartTimeRef = useRef<number | null>(null);
 
   // Track panel open event
   useEffect(() => {
@@ -34,7 +46,9 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
       // Reset state when closed
       setQuery('');
       setResult(null);
+      setSources([]);
       setIsLoading(false);
+      streamStartTimeRef.current = null;
     }
   }, [isOpen]);
 
@@ -51,6 +65,41 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     };
   }, [isOpen]);
 
+  // Focus trap: Keep focus within dialog
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const focusableElements = dialog.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        // Tab
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    dialog.addEventListener('keydown', handleTabKey);
+    return () => dialog.removeEventListener('keydown', handleTabKey);
+  }, [isOpen]);
+
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -63,12 +112,118 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  /**
+   * Robust SSE parser that handles split markers and keeps __SOURCES__ until end
+   */
+  const parseSSEStream = async (reader: ReadableStreamDefaultReader<Uint8Array>) => {
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let answer = '';
+    let sourcesJsonBuffer = '';
+    let hasSourcesMarker = false;
+    const marker = '__SOURCES__';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        // Decode chunk and add to buffer
+        buffer += decoder.decode(value, { stream: true });
+
+        // Check if we've hit the sources marker (may be split across chunks)
+        if (!hasSourcesMarker) {
+          const sourcesMarkerIndex = buffer.indexOf(marker);
+          if (sourcesMarkerIndex !== -1) {
+            // Extract answer up to marker
+            answer += buffer.slice(0, sourcesMarkerIndex);
+            // Remove marker and everything before it
+            buffer = buffer.slice(sourcesMarkerIndex + marker.length);
+            hasSourcesMarker = true;
+            setResult(answer.trim());
+            // Continue processing remaining buffer as JSON
+            if (buffer.trim()) {
+              sourcesJsonBuffer += buffer;
+              buffer = '';
+            }
+          } else {
+            // Before marker, accumulate answer
+            // Check if marker might be split (end of buffer matches start of marker)
+            let processed = false;
+            for (let i = 1; i < marker.length && buffer.length >= i; i++) {
+              const suffix = buffer.slice(-i);
+              const prefix = marker.slice(0, i);
+              if (suffix === prefix) {
+                // Potential split - keep suffix in buffer, process rest
+                const toProcess = buffer.slice(0, -i);
+                answer += toProcess;
+                buffer = suffix;
+                setResult(answer.trim());
+                processed = true;
+                break;
+              }
+            }
+            if (!processed) {
+              // No split detected, process complete lines
+              let newlineIndex;
+              while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+                const line = buffer.slice(0, newlineIndex + 1);
+                buffer = buffer.slice(newlineIndex + 1);
+                answer += line;
+                setResult(answer.trim());
+              }
+            }
+          }
+        } else {
+          // After marker, accumulate JSON (may be split across chunks)
+          sourcesJsonBuffer += buffer;
+          buffer = '';
+          
+          // Try to parse JSON (may be incomplete)
+          try {
+            const trimmed = sourcesJsonBuffer.trim();
+            if (trimmed && (trimmed.startsWith('[') || trimmed.startsWith('{'))) {
+              const sourcesData = JSON.parse(trimmed);
+              setSources(sourcesData);
+            }
+          } catch {
+            // JSON incomplete, keep accumulating
+          }
+        }
+      }
+
+      // Process any remaining buffer
+      if (buffer.trim()) {
+        if (hasSourcesMarker) {
+          sourcesJsonBuffer += buffer;
+          try {
+            const trimmed = sourcesJsonBuffer.trim();
+            if (trimmed) {
+              const sourcesData = JSON.parse(trimmed);
+              setSources(sourcesData);
+            }
+          } catch (error) {
+            console.error('Failed to parse sources JSON:', error);
+          }
+        } else {
+          answer += buffer;
+          setResult(answer.trim());
+        }
+      }
+    } catch (error) {
+      console.error('SSE parsing error:', error);
+      setResult((prev) => (prev || '') + '\n\nError: Stream parsing failed');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isLoading) return;
 
     setIsLoading(true);
     setResult(null);
+    setSources([]);
+    streamStartTimeRef.current = Date.now();
 
     try {
       // Track research_query_submitted event
@@ -88,17 +243,46 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
         body: JSON.stringify({ query }),
       });
 
-      const data = await response.json();
+      // Check if response is streaming (SSE)
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('text/event-stream') || contentType?.includes('text/plain')) {
+        // Handle SSE stream
+        const reader = response.body?.getReader();
+        if (reader) {
+          await parseSSEStream(reader);
 
-      if (data.ok) {
-        setResult(data.answer);
+          // Track stream duration
+          if (streamStartTimeRef.current) {
+            const duration = Date.now() - streamStartTimeRef.current;
+            if (typeof window !== 'undefined' && (window as any).gtag) {
+              (window as any).gtag('event', 'research_stream_duration_ms', {
+                event_category: 'performance',
+                event_label: 'research_stream',
+                value: duration,
+              });
+            }
+            streamStartTimeRef.current = null;
+          }
+        }
       } else {
-        setResult(`Error: ${data.error || 'Failed to process research query'}`);
+        // Handle JSON response (fallback)
+        const data = await response.json();
+
+        if (data.ok) {
+          setResult(data.answer);
+          if (data.sources) {
+            setSources(data.sources);
+          }
+        } else {
+          setResult(`Error: ${data.error || 'Failed to process research query'}`);
+        }
       }
     } catch (error) {
       setResult('Error: Failed to submit research query. Please try again.');
+      console.error('Research query error:', error);
     } finally {
       setIsLoading(false);
+      streamStartTimeRef.current = null;
     }
   };
 
@@ -125,13 +309,18 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
+              ref={dialogRef}
               className="w-full max-w-2xl bg-ink/95 backdrop-blur-xl border border-cyan-500/20 rounded-xl shadow-2xl shadow-cyan-400/10 pointer-events-auto max-h-[90vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="research-dialog-title"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
-                <h2 className="text-2xl font-bold text-white">Ask Research</h2>
+                <h2 id="research-dialog-title" className="text-2xl font-bold text-white">Ask Research</h2>
                 <button
+                  ref={closeButtonRef}
                   onClick={onClose}
                   className="p-2 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
                   aria-label="Close dialog"
@@ -189,10 +378,36 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-lg bg-white/5 border border-cyan-500/20"
+                    className="p-4 rounded-lg bg-white/5 border border-cyan-500/20 space-y-4"
                   >
                     <h3 className="text-sm font-semibold text-cyan-400 mb-2">Research Result</h3>
                     <p className="text-white/80 whitespace-pre-wrap text-sm">{result}</p>
+                    
+                    {/* Sources */}
+                    {sources.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-white/10">
+                        <h4 className="text-xs font-semibold text-cyan-400 mb-2">Sources</h4>
+                        <ul className="space-y-2">
+                          {sources.map((source) => (
+                            <li key={source.index} className="text-xs">
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-cyan-400 hover:text-cyan-300 underline"
+                              >
+                                [{source.index}] {source.title}
+                              </a>
+                              {source.relevance && (
+                                <span className="text-white/50 ml-2">
+                                  ({source.relevance}% relevant)
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </div>
