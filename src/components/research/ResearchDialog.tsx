@@ -13,7 +13,8 @@ interface Source {
   index: number;
   title: string;
   url: string;
-  relevance: number;
+  relevance?: number; // Percentage (0-100) - computed from score if needed
+  score?: number; // API returns score (0-1)
   sourceType?: string;
 }
 
@@ -36,6 +37,14 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const streamStartTimeRef = useRef<number | null>(null);
+
+  // Normalize sources: convert score (0-1) to relevance (0-100) if needed
+  const normalizeSources = (sourcesData: any[]): Source[] => {
+    return sourcesData.map((source) => ({
+      ...source,
+      relevance: source.relevance ?? (source.score ? Math.round(source.score * 100) : undefined),
+    }));
+  };
 
   // Track panel open event
   useEffect(() => {
@@ -239,7 +248,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
             const trimmed = sourcesJsonBuffer.trim();
             if (trimmed && (trimmed.startsWith('[') || trimmed.startsWith('{'))) {
               const sourcesData = JSON.parse(trimmed);
-              setSources(sourcesData);
+              setSources(normalizeSources(Array.isArray(sourcesData) ? sourcesData : []));
             }
           } catch {
             // JSON incomplete, keep accumulating
@@ -255,7 +264,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
             const trimmed = sourcesJsonBuffer.trim();
             if (trimmed) {
               const sourcesData = JSON.parse(trimmed);
-              setSources(sourcesData);
+              setSources(normalizeSources(Array.isArray(sourcesData) ? sourcesData : []));
             }
           } catch (error) {
             console.error('Failed to parse sources JSON:', error);
@@ -279,6 +288,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     setIsLoading(true);
     setResult(null);
     setSources([]);
+    setErrorType(null);
     streamStartTimeRef.current = Date.now();
 
     try {
@@ -296,8 +306,18 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, sessionId: sessionId || undefined }),
       });
+
+      // Check for rate limit (429)
+      if (response.status === 429) {
+        const data = await response.json().catch(() => ({}));
+        setErrorType('rate-limit');
+        setResult(`Rate limited: ${data.error || 'Too many requests. Please try again in 60 seconds.'}`);
+        setIsLoading(false);
+        streamStartTimeRef.current = null;
+        return;
+      }
 
       // Check if response is streaming (SSE)
       const contentType = response.headers.get('content-type');
@@ -327,13 +347,15 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
         if (data.ok) {
           setResult(data.answer);
           if (data.sources) {
-            setSources(data.sources);
+            setSources(normalizeSources(Array.isArray(data.sources) ? data.sources : []));
           }
         } else {
+          setErrorType('general');
           setResult(`Error: ${data.error || 'Failed to process research query'}`);
         }
       }
     } catch (error) {
+      setErrorType('general');
       setResult('Error: Failed to submit research query. Please try again.');
       console.error('Research query error:', error);
     } finally {
@@ -387,6 +409,79 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
 
               {/* Content */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Error Banners */}
+                {errorType === 'rate-limit' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <strong>Rate Limited</strong>
+                        <p className="text-red-300/80 mt-1">
+                          Too many requests. Please wait 60 seconds before trying again.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setErrorType(null)}
+                        className="ml-4 text-red-300/70 hover:text-red-300 transition-colors"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {errorType === 'stream-interrupted' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <strong>Stream Interrupted</strong>
+                        <p className="text-yellow-300/80 mt-1">
+                          The connection was interrupted. You can retry your query.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setErrorType(null)}
+                        className="ml-4 text-yellow-300/70 hover:text-yellow-300 transition-colors"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {errorType === 'general' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <strong>Error</strong>
+                        <p className="text-red-300/80 mt-1">
+                          An error occurred. Please try again.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setErrorType(null)}
+                        className="ml-4 text-red-300/70 hover:text-red-300 transition-colors"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label
