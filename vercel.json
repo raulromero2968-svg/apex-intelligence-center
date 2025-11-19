@@ -10,5 +10,11 @@
       "memory": 4096,
       "maxDuration": 300
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/update-prices",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }
