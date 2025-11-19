@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -81,7 +81,7 @@ export async function getAllArticleSlugs(): Promise<string[]> {
   for (const category of categories) {
     try {
       const categoryPath = path.join(articlesDirectory, category);
-      const files = await fs.readdir(categoryPath);
+      const files = await readdir(categoryPath);
 
       const mdxFiles = files
         .filter((file) => file.endsWith('.mdx'))
@@ -109,7 +109,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   for (const category of categories) {
     try {
       const filePath = path.join(articlesDirectory, category, `${slug}.mdx`);
-      const source = await fs.readFile(filePath, 'utf8');
+      const source = await readFile(filePath, 'utf8');
 
       const { data: frontmatter, content: rawContent } = matter(source);
 
@@ -192,14 +192,14 @@ export async function getAllArticles(
   for (const cat of categories) {
     try {
       const categoryPath = path.join(articlesDirectory, cat);
-      const files = await fs.readdir(categoryPath);
+      const files = await readdir(categoryPath);
 
       for (const file of files) {
         if (!file.endsWith('.mdx')) continue;
 
         const slug = file.replace(/\.mdx$/, '');
         const filePath = path.join(categoryPath, file);
-        const source = await fs.readFile(filePath, 'utf8');
+        const source = await readFile(filePath, 'utf8');
 
         const { data: frontmatter } = matter(source);
 
@@ -250,7 +250,7 @@ export interface BlogPost {
 // Get all blog post slugs
 export async function getAllBlogPostSlugs(): Promise<string[]> {
   try {
-    const files = await fs.readdir(blogDirectory);
+    const files = await readdir(blogDirectory);
     return files
       .filter((file) => file.endsWith('.mdx'))
       .map((file) => file.replace(/\.mdx$/, ''));
@@ -264,7 +264,7 @@ export async function getAllBlogPostSlugs(): Promise<string[]> {
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const filePath = path.join(blogDirectory, `${slug}.mdx`);
-    const source = await fs.readFile(filePath, 'utf8');
+    const source = await readFile(filePath, 'utf8');
 
     const { data: frontmatter, content } = matter(source);
     const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${content}`;
@@ -310,7 +310,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 // Get all blog posts
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
   try {
-    const files = await fs.readdir(blogDirectory);
+    const files = await readdir(blogDirectory);
     const posts: BlogPost[] = [];
 
     for (const file of files) {
@@ -318,7 +318,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
 
       const slug = file.replace(/\.mdx$/, '');
       const filePath = path.join(blogDirectory, file);
-      const source = await fs.readFile(filePath, 'utf8');
+      const source = await readFile(filePath, 'utf8');
 
       const { data: frontmatter } = matter(source);
 
