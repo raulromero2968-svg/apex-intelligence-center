@@ -30,8 +30,12 @@
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
-      ]
+        "USE_FINGERPRINT",
+        "POST_NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -84,7 +88,11 @@
       "apiUrl": "http://localhost:3000",
       "eas": {
         "projectId": "apex-intelligence-mobile"
-      }
+      },
+      "apiUrl": "${EXPO_PUBLIC_API_URL}",
+      "sentryDsn": "${EXPO_PUBLIC_SENTRY_DSN}",
+      "vapidPublicKey": "${EXPO_PUBLIC_VAPID_PUBLIC_KEY}",
+      "appEnv": "${APP_ENV}"
     },
     "runtimeVersion": {
       "policy": "appVersion"

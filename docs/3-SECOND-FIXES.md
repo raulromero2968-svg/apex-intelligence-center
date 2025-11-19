@@ -136,9 +136,60 @@ Face ID not available in simulator
 
 ---
 
+### 11. EAS Build Credentials Error
+```
+Error: No credentials configured for this project
+```
+**Fix:**
+```bash
+cd apps/mobile && eas credentials
+```
+**Time:** 2s
+
+---
+
+### 12. EAS Build Failed - Cache Issues
+```
+Build failed: Unable to resolve dependencies
+```
+**Fix:**
+```bash
+eas build --profile preview --clear-cache
+```
+**Time:** 2s
+
+---
+
+### 13. Biometric Enrollment Not Showing
+```
+First-launch enrollment prompt doesn't appear
+```
+**Fix:**
+```bash
+# Delete app, clear secure storage, reinstall
+# iOS: Long press app → Delete → Reinstall
+# Android: Settings → Apps → Apex → Storage → Clear Data
+```
+**Time:** 3s
+
+---
+
+### 14. Environment Variables Not Loading
+```
+process.env.EXPO_PUBLIC_API_URL is undefined
+```
+**Fix:**
+```bash
+# Check eas.json env section, rebuild with correct profile
+eas build --profile production
+```
+**Time:** 2s
+
+---
+
 ## API Issues
 
-### 11. Stripe Webhook 403
+### 15. Stripe Webhook 403
 ```
 Stripe webhook verification failed
 ```
@@ -152,7 +203,7 @@ vercel env add STRIPE_WEBHOOK_SECRET
 
 ---
 
-### 12. Rate Limit Not Working
+### 16. Rate Limit Not Working
 ```
 Redis rate limiting always returns success
 ```
@@ -165,7 +216,7 @@ vercel env pull && grep UPSTASH .env.local
 
 ---
 
-### 13. CORS Error on API Route
+### 17. CORS Error on API Route
 ```
 Access-Control-Allow-Origin missing
 ```
@@ -184,7 +235,7 @@ export async function OPTIONS() {
 
 ## Performance Issues
 
-### 14. Sentry 100% Trace Sample Rate in Prod
+### 18. Sentry 100% Trace Sample Rate in Prod
 ```
 Sentry bill = $$$, performance degraded
 ```
@@ -197,7 +248,7 @@ tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0
 
 ---
 
-### 15. Bundle Size Explosion
+### 19. Bundle Size Explosion
 ```
 Initial JS size > 500KB
 ```
@@ -206,6 +257,66 @@ Initial JS size > 500KB
 npx @next/bundle-analyzer && remove unused deps
 ```
 **Time:** 3s
+
+---
+
+## Push Notification Issues
+
+### 20. Push Notifications Not Sending
+```
+Expo push notifications not arriving on device
+```
+**Fix:**
+```bash
+# Check EAS credentials and rebuild
+cd apps/mobile && eas credentials && eas build --profile preview
+```
+**Time:** 2s
+
+---
+
+### 21. Push Token Registration Failed
+```
+Error: Invalid Expo push token
+```
+**Fix:**
+```ts
+// Verify token format starts with ExponentPushToken[...]
+// Re-register on physical device (not simulator)
+await registerForPushNotificationsAsync();
+```
+**Time:** 2s
+
+---
+
+### 22. Push Permissions Not Granted
+```
+User denied push notification permissions
+```
+**Fix:**
+```bash
+# iOS: Settings → Apex Intelligence → Notifications → Allow
+# Android: Settings → Apps → Apex → Notifications → Allow
+# Then restart app
+```
+**Time:** 3s
+
+---
+
+### 23. Background Notifications Not Working
+```
+Notifications only work when app is open
+```
+**Fix:**
+```json
+// Ensure app.json has background mode enabled
+{
+  "android": {
+    "permissions": ["RECEIVE_BOOT_COMPLETED"]
+  }
+}
+```
+**Time:** 2s
 
 ---
 
@@ -259,6 +370,8 @@ Or in Vercel dashboard:
 ---
 
 **Last Updated:** November 19, 2025
-**Session:** CLAUDE_SESSION_13
+**Session:** CLAUDE_SESSION_15
+
+Total Fixes: 23 (Deployment: 5, Database: 2, Mobile: 13, API: 3, Performance: 2, Push: 4)
 
 We fix issues faster than they occur. 🚀
