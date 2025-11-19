@@ -12,10 +12,9 @@
  * 4. Full provenance chain from answer → source → original data
  */
 
-import { ChatAnthropic } from '@langchain/anthropic';
-import { ChatOpenAI } from '@langchain/openai';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { getTcgContext, RerankedResult } from './reranker';
 import { ragFusionSearch } from './fusion';
 import { rerankResults } from './reranker';
@@ -23,22 +22,7 @@ import { createComplianceLogger } from '@/lib/compliance/eu-ai-act';
 import { cosineSimilarity } from '@/lib/embeddings/voyage';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
-
-// Initialize LLM - Claude 3.5 Sonnet (Nov 2025 SOTA for research)
-const llm = new ChatAnthropic({
-  modelName: 'claude-3-5-sonnet-20241022',
-  temperature: 0.0, // No creativity - we want factual, grounded responses
-  anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-  maxTokens: 4096,
-});
-
-// Fallback LLM for citation validation (GPT-4o is good for binary judgments)
-const judgeLlm = new ChatOpenAI({
-  modelName: 'gpt-4o-2024-11-20',
-  temperature: 0.0,
-  openAIApiKey: process.env.OPENAI_API_KEY,
-  maxTokens: 50,
-});
+import type { CohereClient } from 'cohere-ai';
 
 // Initialize compliance logger
 const complianceLogger = createComplianceLogger(0.7);
@@ -75,15 +59,13 @@ ANALYSIS STYLE:
 BASE YOUR ENTIRE RESPONSE ON THE FOLLOWING SOURCES:
 {context}`;
 
-// Create prompt template
+// Create prompt template (chain will be created at runtime with provided LLM)
 const tcgRagPrompt = ChatPromptTemplate.fromMessages([
   ['system', TCG_RAG_SYSTEM_PROMPT],
   ['human', '{question}'],
 ]);
 
-// Create chain
 const outputParser = new StringOutputParser();
-const ragChain = tcgRagPrompt.pipe(llm).pipe(outputParser);
 
 /**
  * RAG response with full provenance + EU AI Act compliance
@@ -182,12 +164,14 @@ export function validateCitations(
  * @param response - LLM response text
  * @param sources - Source documents
  * @param question - Original query
+ * @param judgeLlm - LLM instance for judging citation validity
  * @returns Enhanced validation result
  */
 async function validateCitationsEnhanced(
   response: string,
   sources: RerankedResult[],
-  question: string
+  question: string,
+  judgeLlm: BaseChatModel
 ): Promise<{ isValid: boolean; errors: string[]; citationCount: number; synthesisCount: number }> {
   // Step 1: Run basic validation
   const basicValidation = validateCitations(response, sources.length);
@@ -256,36 +240,45 @@ Answer:`;
   };
 }
 
+export interface ExecuteRagQueryParams {
+  question: string;
+  userId?: string;
+  llm: BaseChatModel;
+  judgeLlm: BaseChatModel;
+  cohereReranker: CohereClient | null;
+  useRagFusion?: boolean;
+}
+
 /**
  * Execute RAG query with citation enforcement (Enhanced with RAG-Fusion + EU AI Act Compliance)
  *
  * This is the main entry point for the TCG RAG system. It:
  * 1. Uses RAG-Fusion to generate 6 diverse queries and fuse results (23% better recall)
  * 2. Reranks with Cohere for optimal relevance
- * 3. Generates response using Claude 3.5 Sonnet with strict citation requirements
+ * 3. Generates response using provided LLM (Claude 3.5 Sonnet or GPT-4o) with strict citation requirements
  * 4. Validates citations using LLM judge + cosine similarity
  * 5. Logs to IPFS + database for EU AI Act compliance
  * 6. Adds to human review queue if novelty score > 0.7
  *
- * @param question - User's question
- * @param userId - Optional user ID for compliance logging
- * @param useRagFusion - Whether to use RAG-Fusion (default true)
+ * @param params - Query parameters including question, LLM instances, and options
  * @returns RAG response with citations, sources, and compliance report
  *
  * @example
  * ```typescript
- * const response = await executeRagQuery(
- *   "What is the ROI on PSA 10 vs BGS 9.5 for 1st Edition Charizard?"
- * );
+ * const response = await executeRagQuery({
+ *   question: "What is the ROI on PSA 10 vs BGS 9.5 for 1st Edition Charizard?",
+ *   llm: anthropicLlm,
+ *   judgeLlm: openaiJudge,
+ *   cohereReranker: cohereClient,
+ * });
  * console.log(response.answer);
  * console.log(`IPFS: ${response.complianceReport?.provenanceUrl}`);
  * ```
  */
 export async function executeRagQuery(
-  question: string,
-  userId?: string,
-  useRagFusion: boolean = true
+  params: ExecuteRagQueryParams
 ): Promise<RagResponse> {
+  const { question, userId, llm, judgeLlm, cohereReranker, useRagFusion = true } = params;
   return Sentry.startSpan(
     { name: 'rag.execute', op: 'rag_query' },
     async (span: Span) => {
@@ -304,9 +297,9 @@ export async function executeRagQuery(
           finalLimit: 30,
         });
 
-        // Rerank fusion results
-        sources = await rerankResults(question, fusionResults, 10);
-        
+        // Rerank fusion results (pass cohereReranker if available)
+        sources = await rerankResults(question, fusionResults, 10, cohereReranker);
+
         // Format context with provenance
         context = sources
           .map(
@@ -316,7 +309,7 @@ export async function executeRagQuery(
           .join('\n\n');
       } else {
         // Standard hybrid search + rerank
-        const { context: ctx, sources: srcs } = await getTcgContext(question);
+        const { context: ctx, sources: srcs } = await getTcgContext(question, cohereReranker);
         context = ctx;
         sources = srcs;
       }
@@ -324,7 +317,8 @@ export async function executeRagQuery(
       span?.setAttribute('sourceCount', sources.length);
       span?.setAttribute('contextLength', context.length);
 
-      // 2. Generate response with Claude 3.5 Sonnet
+      // 2. Generate response with provided LLM (lazy instantiation pattern)
+      const ragChain = tcgRagPrompt.pipe(llm).pipe(outputParser);
       const answer = await ragChain.invoke({
         context,
         question,
@@ -336,7 +330,8 @@ export async function executeRagQuery(
       const validation = await validateCitationsEnhanced(
         answer,
         sources,
-        question
+        question,
+        judgeLlm
       );
 
       span?.setAttribute('citationCount', validation.citationCount);
