@@ -11,9 +11,9 @@ import { tcgVolatilityV3 } from '@/lib/volatility';
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (90d momentum)
@@ -123,7 +123,7 @@ export async function mtgIntegerFrontier(cardIds: string[], budget = 15000000): 
       [[1], [1]] // Equality constraints
     );
 
-    let best = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
+    let best: { sharpe: number; alloc: Record<string, number>; ret: number; vol: number } = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
 
     // 280 iterations of randomized rounding for integer allocation
     for (let i = 0; i < 280; i++) {
@@ -171,8 +171,8 @@ export async function mtgIntegerFrontier(cardIds: string[], budget = 15000000): 
     if (rlPct < 0.38) {
       best.alloc = forceReservedList(best.alloc, cardIds, prices, budget, 0.38);
       // Recalculate metrics after force allocation
-      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * prices[id], 0);
-      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * mu[cardIds.indexOf(id)], 0) / totalValue;
+      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * prices[id], 0);
+      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * mu[cardIds.indexOf(id)], 0) / totalValue;
       const allocVec = vec(best.alloc, cardIds);
       best.vol = Math.sqrt(numeric.dotVV(allocVec, numeric.dotMV(cov, allocVec)));
       best.sharpe = best.ret / best.vol;

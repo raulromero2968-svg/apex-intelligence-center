@@ -12,9 +12,9 @@ import { tcgVolatilityV3 } from '@/lib/volatility';
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (velocity + Legendary/Fabled premium)
@@ -139,8 +139,8 @@ export async function fabFrontierV17(cardIds: string[], budget = 22000000): Prom
     const fabPremiumPct = calcFabPremiumPct(best.alloc, prices);
     if (fabPremiumPct < 0.50) {
       best.alloc = forceFabPremium(best.alloc, cardIds, prices, budget, 0.50);
-      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * prices[id], 0);
-      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * mu[cardIds.indexOf(id)], 0) / totalValue;
+      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * prices[id], 0);
+      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * mu[cardIds.indexOf(id)], 0) / totalValue;
       const allocVec = vec(best.alloc, cardIds);
       best.vol = Math.sqrt(numeric.dotVV(allocVec, numeric.dotMV(cov, allocVec)));
       best.sharpe = best.ret / best.vol;
