@@ -23,6 +23,7 @@ const blogDirectory = path.join(process.cwd(), 'content/blog');
 
 export interface ArticleFrontmatter {
   title: string;
+  description?: string;
   category: string;
   publishedAt: string;
   sourceCount: number;
@@ -31,6 +32,9 @@ export interface ArticleFrontmatter {
   og?: boolean; // Enable dynamic OG image generation
   draft?: boolean; // Hide from index and sitemap
   unlisted?: boolean; // Hide from index and sitemap, but accessible via direct URL
+  author?: string; // Author name, defaults to "Apex Intelligence Team"
+  authorRole?: string; // Author role/title
+  authorAvatar?: string; // Author avatar URL
   sources?: Array<{
     name: string;
     url: string;
@@ -49,6 +53,11 @@ export interface Article {
   slug: string;
   frontmatter: ArticleFrontmatter;
   content: any;
+  readingTime?: {
+    text: string;
+    minutes: number;
+    words: number;
+  };
 }
 
 // Map category to directory
@@ -102,8 +111,16 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       const filePath = path.join(articlesDirectory, category, `${slug}.mdx`);
       const source = await fs.readFile(filePath, 'utf8');
 
-      const { data: frontmatter, content } = matter(source);
-      const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${content}`;
+      const { data: frontmatter, content: rawContent } = matter(source);
+
+      // Calculate reading time
+      const readingTimeData = {
+        text: `${calculateReadTime(rawContent)} min read`,
+        minutes: calculateReadTime(rawContent),
+        words: rawContent.trim().split(/\s+/).length,
+      };
+
+      const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${rawContent}`;
 
       const { content: mdxContent } = await compileMDX<ArticleFrontmatter>({
         source: enrichedSource,
@@ -136,6 +153,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         slug,
         frontmatter: frontmatter as ArticleFrontmatter,
         content: mdxContent,
+        readingTime: readingTimeData,
       };
     } catch (error) {
       // File not in this category, try next one
