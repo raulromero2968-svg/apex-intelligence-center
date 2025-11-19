@@ -29,11 +29,24 @@ jobs:
           fi
       - name: Typecheck
         run: pnpm typecheck
+      - name: Validate MDX frontmatter
+        run: |
+          # Check if any .mdx files changed in this PR
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -q '\.mdx$' || [ "${{ github.event_name }}" != "pull_request" ]; then
+            node scripts/validate-mdx.mjs
+          else
+            echo "No MDX files changed, skipping validation"
+          fi
       - name: Tests
         run: |
           pnpm -w test --reporter=dot || pnpm test --reporter=dot || true
       - name: Build
         run: pnpm build
+      - name: Perf budget (warnings on PRs)
+        run: pnpm perf:budget || true
+      - name: Perf budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: pnpm perf:budget
       - name: Repo sanity
         run: |
           chmod +x scripts/repo-sanity.sh || true
@@ -121,6 +134,13 @@ jobs:
             head -n 60 artifacts/route-budget.txt >> "$GITHUB_STEP_SUMMARY"
           else
             echo "No route budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Performance Budget (routes, chunks, first load)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/perf-budget.txt ]; then
+            head -n 80 artifacts/perf-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No perf budget report found." >> "$GITHUB_STEP_SUMMARY"
           fi
           echo "
 ### CSS Budget (largest files)" >> "$GITHUB_STEP_SUMMARY"
