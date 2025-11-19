@@ -163,7 +163,7 @@ export async function enchantedRagQuery(query: string): Promise<EnchantedRAGResu
 
   // Step 3: Keyword search (PostgreSQL full-text search)
   const keywordResults: EnchantedChunk[] = allCards
-    .filter(card =>
+    .filter((card: (typeof allCards)[number]) =>
       card.name.toLowerCase().includes(query.toLowerCase()) ||
       card.chapter.toLowerCase().includes(query.toLowerCase()) ||
       card.serialNumber.includes(query)
