@@ -5,6 +5,9 @@
   "main": "index.html",
   "scripts": {
     "postinstall": "prisma generate",
+    "prepare": "turbo run prepare",
+    "lint:lockfile": "turbo run lint:lockfile --continue",
+    "lint:lockfile:fix": "pnpm install && git add pnpm-lock.yaml",
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=@apex/web",
     "dev:mobile": "turbo dev --filter=@apex/mobile",
@@ -57,7 +60,7 @@
   "author": "Apex Intelligence",
   "license": "MIT",
   "engines": {
-    "node": "20.x"
+    "node": ">=20.0.0 <23.0.0"
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {
