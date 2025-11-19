@@ -4,7 +4,6 @@
   "description": "Apex Intelligence - TCG Market Intelligence Platform",
   "main": "index.html",
   "scripts": {
-    "prepare": "turbo run prepare",
     "lint:lockfile": "turbo run lint:lockfile --continue",
     "lint:lockfile:fix": "pnpm install && git add pnpm-lock.yaml",
     "dev": "turbo dev",
