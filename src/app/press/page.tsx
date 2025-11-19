@@ -31,7 +31,7 @@ export default function PressPage() {
               <h2 className="text-3xl font-bold text-white">Logo Assets</h2>
               <p className="text-white/70">
                 Use these logo assets in articles, videos, and social media posts. Please maintain
-                the logo's aspect ratio and don't alter the design.
+                the logo&apos;s aspect ratio and don&apos;t alter the design.
               </p>
 
               <div className="grid gap-8 md:grid-cols-2">
