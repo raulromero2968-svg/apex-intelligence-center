@@ -1,5 +1,6 @@
-import { MessageCircle, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 import Link from 'next/link';
+import { SOCIAL_PROFILES } from '@/lib/constants/social';
 
 export const Footer = () => {
   return (
@@ -92,17 +93,41 @@ export const Footer = () => {
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <MessageCircle className="w-5 h-5 text-cyan-400" />
-              </a>
-              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+              <a
+                href={SOCIAL_PROFILES.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on X (Twitter)"
+                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              >
                 <Twitter className="w-5 h-5 text-cyan-400" />
               </a>
-              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
+              <a
+                href={SOCIAL_PROFILES.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Connect on LinkedIn"
+                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              >
+                <Linkedin className="w-5 h-5 text-cyan-400" />
+              </a>
+              <a
+                href={SOCIAL_PROFILES.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Instagram"
+                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              >
                 <Instagram className="w-5 h-5 text-cyan-400" />
               </a>
-              <a href="#" className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors">
-                <Linkedin className="w-5 h-5 text-cyan-400" />
+              <a
+                href={SOCIAL_PROFILES.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View our GitHub repository"
+                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              >
+                <Github className="w-5 h-5 text-cyan-400" />
               </a>
             </div>
           </div>
