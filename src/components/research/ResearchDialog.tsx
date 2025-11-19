@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Loader2 } from 'lucide-react';
+import { X, Send, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import { useLivePrices } from '@/hooks/useLivePrices';
+import { extractSymbols } from '@/lib/research/symbol-extractor';
 
 interface ResearchDialogProps {
   isOpen: boolean;
@@ -45,6 +47,18 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
       relevance: source.relevance ?? (source.score ? Math.round(source.score * 100) : undefined),
     }));
   };
+
+  // Extract symbols from the result
+  const symbols = useMemo(() => {
+    if (!result) return [];
+    return extractSymbols(result);
+  }, [result]);
+
+  // WebSocket connection for live prices
+  const { deltas, isConnected } = useLivePrices({
+    sessionId,
+    enabled: isOpen && !!result && symbols.length > 0,
+  });
 
   // Track panel open event
   useEffect(() => {
@@ -291,6 +305,10 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     setErrorType(null);
     streamStartTimeRef.current = Date.now();
 
+    // Generate session ID for this research query
+    const newSessionId = crypto.randomUUID();
+    setSessionId(newSessionId);
+
     try {
       // Track research_query_submitted event
       if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -529,14 +547,16 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-lg bg-white/5 border border-cyan-500/20 space-y-4"
+                    className="space-y-4"
                   >
-                    <h3 className="text-sm font-semibold text-cyan-400 mb-2">Research Result</h3>
-                    <p className="text-white/80 whitespace-pre-wrap text-sm">{result}</p>
-                    
+                    <div className="p-4 rounded-lg bg-white/5 border border-cyan-500/20">
+                      <h3 className="text-sm font-semibold text-cyan-400 mb-2">Research Result</h3>
+                      <p className="text-white/80 whitespace-pre-wrap text-sm">{result}</p>
+                    </div>
+
                     {/* Sources */}
                     {sources.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="p-4 rounded-lg bg-white/5 border border-cyan-500/20">
                         <h4 className="text-xs font-semibold text-cyan-400 mb-2">Sources</h4>
                         <ul className="space-y-2">
                           {sources.map((source) => (
@@ -557,6 +577,73 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
                             </li>
                           ))}
                         </ul>
+                      </div>
+                    )}
+
+                    {/* Live Price Deltas */}
+                    {symbols.length > 0 && (
+                      <div className="p-4 rounded-lg bg-white/5 border border-cyan-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-sm font-semibold text-cyan-400">
+                            Live Prices
+                          </h3>
+                          {isConnected && (
+                            <span className="flex items-center gap-1 text-xs text-green-400">
+                              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                              Live
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {symbols.map((symbol) => {
+                            const delta = deltas.get(symbol);
+                            const isPositive = delta && delta.priceChange > 0;
+                            const isNegative = delta && delta.priceChange < 0;
+
+                            return (
+                              <div
+                                key={symbol}
+                                className={`px-3 py-2 rounded-lg text-sm flex items-center gap-2 ${
+                                  delta
+                                    ? isPositive
+                                      ? 'bg-green-500/20 border border-green-500/50'
+                                      : isNegative
+                                      ? 'bg-red-500/20 border border-red-500/50'
+                                      : 'bg-white/5 border border-white/10'
+                                    : 'bg-white/5 border border-white/10'
+                                }`}
+                              >
+                                <span className="font-medium text-white">
+                                  {symbol.charAt(0) + symbol.slice(1).toLowerCase()}
+                                </span>
+                                {delta ? (
+                                  <>
+                                    {isPositive ? (
+                                      <TrendingUp className="w-4 h-4 text-green-400" />
+                                    ) : isNegative ? (
+                                      <TrendingDown className="w-4 h-4 text-red-400" />
+                                    ) : null}
+                                    <span
+                                      className={
+                                        isPositive
+                                          ? 'text-green-400'
+                                          : isNegative
+                                          ? 'text-red-400'
+                                          : 'text-white/70'
+                                      }
+                                    >
+                                      {isPositive ? '+' : ''}
+                                      ${delta.priceChange.toPrecision(3)} (
+                                      {delta.percentChange.toPrecision(3)}%)
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="text-white/50 text-xs">No data</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </motion.div>
