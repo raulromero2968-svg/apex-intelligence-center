@@ -40,6 +40,9 @@
     "patch:apply": "git apply --index patch.diff || git apply patch.diff && git add -A && pnpm golden",
     "golden": "pnpm build && pnpm -s budget:js && pnpm -s guard:delta && pnpm -s budget:route && pnpm -s budget:css && pnpm -s budget:media && pnpm -s audit:env && pnpm -s guard:libs && pnpm -s mirror && pnpm -s sanity"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm install && git add pnpm-lock.yaml"
+  },
   "keywords": [
     "tcg",
     "trading-cards",
@@ -115,6 +118,7 @@
     "@vitest/ui": "^4.0.10",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
+    "simple-git-hooks": "^2.13.1",
     "vercel": "^33.0.0",
     "vitest": "^4.0.10"
   }
