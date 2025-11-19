@@ -79,10 +79,6 @@ export default function PressPage() {
                       alt="Apex Intelligence Alternative Logo"
                       fill
                       className="object-contain mix-blend-screen"
-                      onError={(e) => {
-                        // Fallback if image doesn't exist
-                        e.currentTarget.style.display = 'none';
-                      }}
                     />
                   </div>
                   <div className="space-y-2">
