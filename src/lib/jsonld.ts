@@ -123,3 +123,4 @@ export function toScriptTag(schema: WithContext<Organization | WebSite | Softwar
 export function getFacts() {
   return facts;
 }
+
