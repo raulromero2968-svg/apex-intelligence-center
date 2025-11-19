@@ -11,13 +11,7 @@
  * - Trigger web push notifications for watchlist matches
  * - Update watchlist notification status
  *
- * Vercel cron configuration (vercel.json):
- * {
- *   "crons": [{
- *     "path": "/api/cron/update-prices",
- *     "schedule": "*/5 * * * *"
- *   }]
- * }
+ * Vercel cron configuration: Add to vercel.json crons array with schedule every 5 minutes
  *
  * Production patterns from knowledge-10-api-realtime.md
  */

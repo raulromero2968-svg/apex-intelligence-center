@@ -1,29 +1,26 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 import LiveScatter from "@/components/charts/LiveScatter";
-import { blogPosts } from "@/content/seed";
-import { getAllBlogPosts } from "@/lib/mdx";
-import { calculateReadTime } from "@/lib/mdx";
+import { getAllArticles } from "@/lib/mdx";
 
 export default async function BlogPage() {
-  // Get dynamic blog posts from content/blog/
-  const dynamicPosts = await getAllBlogPosts();
+  const allArticles = await getAllArticles();
 
-  // Convert dynamic posts to the ArticleCard format
-  const convertedPosts = dynamicPosts.map((post) => ({
-    href: `/blog/${post.slug}`,
-    title: post.frontmatter.title,
-    excerpt: post.frontmatter.description,
-    date: post.frontmatter.date,
-    read: `${Math.max(1, Math.ceil(post.frontmatter.description.split(' ').length / 200))} min read`,
-    readTime: Math.max(1, Math.ceil(post.frontmatter.description.split(' ').length / 200)),
-    tags: post.frontmatter.tags || [],
-    imageUrl: post.frontmatter.hero || "/press/og-default.png",
-    sources: 0,
+  // Filter out drafts and unlisted posts
+  const articles = allArticles.filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted);
+
+  // Map to ArticleCard format
+  const allPosts = articles.map(article => ({
+    href: `/blog/${article.slug}`,
+    title: article.frontmatter.title,
+    excerpt: article.frontmatter.tags?.join(', ') || '',
+    date: article.frontmatter.publishedAt,
+    read: "10 min read", // TODO: Calculate from content
+    readTime: 10,
+    tags: article.frontmatter.tags,
+    imageUrl: article.frontmatter.heroImage || '/images/research/default.jpg',
+    sources: article.frontmatter.sourceCount,
   }));
-
-  // Combine dynamic posts with static seed posts
-  const allPosts = [...convertedPosts, ...blogPosts];
 
   return (
     <SectionShell title="Blog" kicker="Latest Updates">
