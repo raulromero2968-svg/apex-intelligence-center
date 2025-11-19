@@ -1,12 +1,13 @@
 // src/app/api/research/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 interface Success { ok: true; answer: string; sources: never[] }
 interface Fail    { ok: false; error: string; requestId: string }
 type ResearchResponse = Success | Fail;
 
-const requestId = () => crypto.randomUUID().slice(0, 8);
+const requestId = () => randomUUID().slice(0, 8);
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

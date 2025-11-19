@@ -9,7 +9,7 @@
  * - Tax lot calculations (on acquisition)
  */
 
-import { Queue, QueueOptions, Worker, WorkerOptions } from 'bullmq';
+import { Queue, QueueOptions, Worker, WorkerOptions, Processor } from 'bullmq';
 import IORedis from 'ioredis';
 
 // Redis connection (Upstash compatible)
@@ -121,7 +121,7 @@ export async function initializeScheduledJobs() {
  */
 export function createWorker(
   queueName: string,
-  processor: WorkerOptions['processor'],
+  processor: Processor<any, any, string>,
   options?: Partial<WorkerOptions>
 ): Worker {
   return new Worker(queueName, processor, {
