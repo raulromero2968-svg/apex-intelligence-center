@@ -190,7 +190,9 @@ export async function sendPushNotification(
     const subs = await db.query.pushSubscriptions.findMany({
       where: and(
         eq(pushSubscriptions.userId, userId),
-        or(eq(pushSubscriptions.cardId, cardId), isNull(pushSubscriptions.cardId))
+        cardId 
+          ? or(eq(pushSubscriptions.cardId, cardId), isNull(pushSubscriptions.cardId))
+          : isNull(pushSubscriptions.cardId)
       ),
     });
 

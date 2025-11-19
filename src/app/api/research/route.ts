@@ -4,6 +4,7 @@ interface Success {
   ok: true;
   answer: string;
   sources: never[];
+  requestId: string;
 }
 
 interface Fail {
@@ -14,13 +15,11 @@ interface Fail {
 
 type ResearchResponse = Success | Fail;
 
-const requestId = () => crypto.randomUUID().slice(0, 8);
-
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-  const rid = requestId();
+  const rid = crypto.randomUUID().slice(0, 8);
   try {
     const { query } = await req.json();
 
@@ -35,6 +34,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       answer: `Research queued for: ${query}`,
       sources: [],
+      requestId: rid,
     };
 
     return NextResponse.json<ResearchResponse>(response);

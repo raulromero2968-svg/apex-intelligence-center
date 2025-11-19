@@ -12,9 +12,9 @@ import { tcgVolatilityV3 } from '@/lib/volatility';
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (velocity + premium + SEC multiplier)
@@ -118,7 +118,7 @@ export async function digimonSecFrontier(cardIds: string[], budget = 12000000): 
       [[1], [1]]                        // Equality constraints
     );
 
-    let best = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
+    let best: { sharpe: number; alloc: Record<string, number>; ret: number; vol: number } = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
 
     // Step 3: 220 iterations of randomized rounding → 99.999% optimal in 9ms
     for (let i = 0; i < 220; i++) {

@@ -90,7 +90,12 @@ export async function computeOptimalWeights(
 
       // Apply game exposure caps
       const gameWeights = await getGameWeights(weights);
-      weights = applyGameCaps(weights, gameWeights);
+      const adjustedWeights = applyGameCaps(weights, gameWeights);
+      
+      // Update weights with adjusted values
+      for (const cardId in adjustedWeights) {
+        weights[cardId] = adjustedWeights[cardId];
+      }
 
       span?.setAttribute('optimizationComplete', true);
 

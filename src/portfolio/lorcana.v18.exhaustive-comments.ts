@@ -12,9 +12,9 @@ import { tcgVolatilityV3 } from '@/lib/volatility';
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (velocity + enchanted/serial premium multiplier)
@@ -104,7 +104,7 @@ export async function lorcanaFrontierV18(cardIds: string[], budget = 16000000): 
   for (let t = 0; t < 40; t++) {  // 40 points – Lorcana enchanted highest vol
     const target = 0.52 + t * 4.8 / 39;  // 52–548% annual target (1/1 enchanted moons)
     const float = numeric.solveQP(cov, mu.map(m => -m), [[1]], [target], cardIds.map(() => [0, 0.18]), [[1], [1]]);  // Relaxed QP float weights
-    let best = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };  // Best integer solution tracker
+    let best: { sharpe: number; alloc: Record<string, number>; ret: number; vol: number } = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };  // Best integer solution tracker
     // Step 3: 160 iterations → 99.999999% optimal, <2ms total
     for (let i = 0; i < 160; i++) {  // 160 iterations (fastest yet)
       let alloc: Record<string, number> = {}, rem = budget;  // Integer allocation + remaining cash
@@ -137,8 +137,8 @@ export async function lorcanaFrontierV18(cardIds: string[], budget = 16000000): 
     const enchantedPct = calcLorcanaEnchantedPct(best.alloc, prices);
     if (enchantedPct < 0.65) {
       best.alloc = forceLorcanaEnchanted(best.alloc, cardIds, prices, budget, 0.65);
-      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * prices[id], 0);
-      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * mu[cardIds.indexOf(id)], 0) / totalValue;
+      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * prices[id], 0);
+      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * mu[cardIds.indexOf(id)], 0) / totalValue;
       const allocVec = vec(best.alloc, cardIds);
       best.vol = Math.sqrt(numeric.dotVV(allocVec, numeric.dotMV(cov, allocVec)));
       best.sharpe = best.ret / best.vol;

@@ -40,9 +40,9 @@ const identifyRlSet = (cardId: string): string | null => {
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (90d momentum)
@@ -149,7 +149,7 @@ export async function mtgReservedListFrontier(cardIds: string[], budget = 150000
       [[1], [1]] // Equality constraints
     );
 
-    let best = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
+    let best: { sharpe: number; alloc: Record<string, number>; ret: number; vol: number } = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
 
     // 240 iterations of randomized rounding for integer allocation
     for (let i = 0; i < 240; i++) {
@@ -215,7 +215,7 @@ export async function mtgReservedListFrontier(cardIds: string[], budget = 150000
     const setBreakdown: Record<string, number> = {};
     Object.keys(RL_CONVEXITY_MAP).forEach(set => {
       const setCards = cardIds.filter(id => identifyRlSet(id) === set);
-      const setValue = setCards.reduce((sum, id) => sum + (best.alloc[id] || 0) * prices[id], 0);
+      const setValue = setCards.reduce((sum, id) => sum + (best.alloc[id] ?? 0) * prices[id], 0);
       setBreakdown[set] = totalValue > 0 ? setValue / totalValue : 0;
     });
 

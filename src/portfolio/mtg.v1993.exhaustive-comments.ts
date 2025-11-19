@@ -12,9 +12,9 @@ import { tcgVolatilityV3 } from '@/lib/volatility';
 const covMatrix = async (cardIds: string[]) => {
   const returns = await Promise.all(cardIds.map(async id => {
     const prices = await prisma.price.findMany({ where: { card_id: id }, orderBy: { date: 'asc' } });
-    return prices.slice(1).map((p, i) => (p.market - prices[i].market) / prices[i].market);
+    return prices.slice(1).map((p: typeof prices[0], i: number) => (p.market - prices[i].market) / prices[i].market);
   }));
-  return numeric.dot(numeric.transpose(returns), returns).map(row => row.map(v => v / returns[0].length));
+  return numeric.dot(numeric.transpose(returns), returns).map((row: number[]) => row.map((v: number) => v / returns[0].length));
 };
 
 // Helper: Calculate expected returns (velocity + Power 9/dual lands vintage premium)
@@ -110,7 +110,7 @@ export async function mtg1993FrontierV1(cardIds: string[], budget = 35000000): P
   for (let t = 0; t < 28; t++) {
     const target = 0.38 + t * 2.4 / 27;  // 38–278% annual (Power 9 steady growth)
     const float = numeric.solveQP(cov, mu.map(m => -m), [[1]], [target], cardIds.map(() => [0, 0.12]), [[1], [1]]);
-    let best = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
+    let best: { sharpe: number; alloc: Record<string, number>; ret: number; vol: number } = { sharpe: -99, alloc: {}, ret: 0, vol: 0 };
     // Step 3: 175 iterations → 99.9999999% optimal in <2.5ms
     for (let i = 0; i < 175; i++) {
       let alloc: Record<string, number> = {}, rem = budget;
@@ -144,8 +144,8 @@ export async function mtg1993FrontierV1(cardIds: string[], budget = 35000000): P
     const vintagePct = calcMtg1993VintagePct(best.alloc, prices);
     if (vintagePct < 0.68) {
       best.alloc = forceMtg1993Vintage(best.alloc, cardIds, prices, budget, 0.68);
-      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * prices[id], 0);
-      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + q * mu[cardIds.indexOf(id)], 0) / totalValue;
+      const totalValue = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * prices[id], 0);
+      best.ret = Object.entries(best.alloc).reduce((s, [id, q]) => s + (q as number) * mu[cardIds.indexOf(id)], 0) / totalValue;
       const allocVec = vec(best.alloc, cardIds);
       best.vol = Math.sqrt(numeric.dotVV(allocVec, numeric.dotMV(cov, allocVec)));
       best.sharpe = best.ret / best.vol;

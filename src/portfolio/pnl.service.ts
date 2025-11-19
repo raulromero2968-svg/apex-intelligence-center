@@ -82,7 +82,7 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
                 orderBy: desc(prices.date),
                 limit: 1,
               },
-              populations: {
+              populationReports: {
                 orderBy: desc(populationReports.lastUpdated),
                 limit: 1,
               },
@@ -98,8 +98,9 @@ export async function calculatePortfolioPnL(userId: string): Promise<PortfolioPn
 
       for (const holding of userHoldings) {
         const card = holding.card;
+        if (!card) continue;
         const latestPrice = card.prices[0];
-        const latestPop = card.populations[0];
+        const latestPop = card.populationReports[0];
 
         // Determine current price based on grade
         let currentPrice = 0;
