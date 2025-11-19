@@ -13,8 +13,7 @@
  */
 
 import { OpenAIEmbeddings } from '@langchain/openai';
-// TODO: Install @langchain/textsplitters package
-// import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { db, pool } from '@/db';
 import { tcg_documents } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
@@ -30,12 +29,11 @@ const embeddings = new OpenAIEmbeddings({
 
 // Text splitter for chunking large documents
 // Optimized for TCG content (listings, articles, reports)
-// TODO: Re-enable after installing @langchain/textsplitters
-// const splitter = new RecursiveCharacterTextSplitter({
-//   chunkSize: 1000,
-//   chunkOverlap: 200,
-//   separators: ['\n\n', '\n', '. ', ' ', ''],
-// });
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 1000,
+  chunkOverlap: 200,
+  separators: ['\n\n', '\n', '. ', ' ', ''],
+});
 
 /**
  * Source types supported by the ingestion pipeline
@@ -122,8 +120,7 @@ export async function ingestTcgData(
           }
 
           // Split content into chunks for better retrieval
-          // TODO: Re-enable after installing @langchain/textsplitters
-          const chunks = [{ pageContent: item.content, metadata: {} }]; // await splitter.createDocuments([item.content]);
+          const chunks = await splitter.createDocuments([item.content]);
           result.chunks += chunks.length;
 
           // Generate embeddings for all chunks

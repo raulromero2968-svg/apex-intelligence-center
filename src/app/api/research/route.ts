@@ -1,13 +1,20 @@
-// src/app/api/research/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
-import { randomUUID } from 'crypto';
 
-interface Success { ok: true; answer: string; sources: never[] }
-interface Fail    { ok: false; error: string; requestId: string }
+interface Success {
+  ok: true;
+  answer: string;
+  sources: never[];
+}
+
+interface Fail {
+  ok: false;
+  error: string;
+  requestId: string;
+}
+
 type ResearchResponse = Success | Fail;
 
-const requestId = () => randomUUID().slice(0, 8);
+const requestId = () => crypto.randomUUID().slice(0, 8);
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,6 +36,7 @@ export async function POST(req: NextRequest) {
       answer: `Research queued for: ${query}`,
       sources: [],
     };
+
     return NextResponse.json<ResearchResponse>(response);
   } catch (error) {
     console.error('[RESEARCH_API_ERROR]', error);
