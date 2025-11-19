@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { test, expect, describe } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/research`;
 
 describe('Research API Smoke Tests', () => {
-  it('case 1: POST valid → 200 + schema {ok:true, answer:string, sources:[], requestId:string}', async () => {
+  test('case 1: POST valid → 200 + schema {ok:true, answer:string, sources:[], requestId:string}', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -25,7 +25,7 @@ describe('Research API Smoke Tests', () => {
     expect(typeof data.requestId).toBe('string');
   });
 
-  it('case 2: POST {"query":""} → 400 + {ok:false}', async () => {
+  test('case 2: POST {"query":""} → 400 + {ok:false}', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -44,7 +44,7 @@ describe('Research API Smoke Tests', () => {
     expect(typeof data.requestId).toBe('string');
   });
 
-  it('case 3: POST no body → 400 + {ok:false}', async () => {
+  test('case 3: POST no body → 400 + {ok:false}', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
