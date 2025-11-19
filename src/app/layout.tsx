@@ -8,21 +8,24 @@ import { TopBanner } from '@/components/nav/TopBanner';
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Footer } from '@/components/footer/Footer';
-import { StructuredData } from '@/components/StructuredData';
 import GuidedTour from '@/components/GuidedTour';
 import HelpFAB from '@/components/HelpFAB';
 import ToastHost from '@/components/ToastHost';
+import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 import '@/styles/animations.css';
 import './globals.css';
+
+// Load facts from central registry
+const facts = getFacts();
 
 // Default metadata - can be overridden on a per-page basis
 export const metadata: Metadata = {
   // Base metadata
   title: {
-    default: 'TCG Intelligence Center - Market Intelligence Platform',
+    default: facts.product.fullName,
     template: '%s | TCG Intelligence Center', // Allows pages to set title that gets this suffix
   },
-  description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor. PS5-style intelligence platform with advanced tools and analytics.',
+  description: facts.product.description,
 
   // Keywords for SEO
   keywords: ['TCG', 'trading cards', 'market intelligence', 'analytics', 'Pokemon', 'Magic', 'Yu-Gi-Oh'],
@@ -49,15 +52,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'TCG Intelligence Center',
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    siteName: facts.product.name,
+    title: facts.product.fullName,
+    description: facts.product.description,
     images: [
       {
         url: '/api/og', // Dynamic OG image endpoint
         width: 1200,
         height: 630,
-        alt: 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+        alt: facts.organization.tagline,
         type: 'image/png',
       },
     ],
@@ -66,8 +69,8 @@ export const metadata: Metadata = {
   // Twitter Card metadata
   twitter: {
     card: 'summary_large_image',
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    title: facts.product.fullName,
+    description: facts.product.description,
     images: ['/api/og'],
     creator: '@tcgintel', // Update with actual Twitter handle if available
   },
@@ -95,10 +98,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Generate JSON-LD schemas from facts registry
+  const schemas = generateAllSchemas();
+
   return (
     <html lang="en" className="h-full">
       <head>
-        <StructuredData />
+        {/* JSON-LD Structured Data - Generated from /data/facts.json */}
+        {schemas.map((schema, index) => (
+          <script
+            key={`jsonld-${index}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: toScriptTag(schema) }}
+          />
+        ))}
       </head>
       <body className="min-h-dvh font-sans antialiased cursor-none">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
