@@ -1,70 +1,35 @@
-# OSX
-.DS_Store
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# Xcode
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-ios/.xcode.env.local
-
-# Android/IntelliJ
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
-
-# node.js
+# dependencies
 node_modules/
-npm-debug.log
-yarn-error.log
-
-# fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-
-# Bundle artifacts
-*.jsbundle
 
 # Expo
 .expo/
 dist/
 web-build/
 
-# Testing
-coverage/
-*.log
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
 
-# Environment
-.env
-.env.local
-.env.production
+# Metro
+.metro-health-check*
 
-# Temporary files
-*.swp
-*.swo
-*~
-.tmp/
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
-# Firebase
-google-services.json
-GoogleService-Info.plist
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
