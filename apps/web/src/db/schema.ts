@@ -308,25 +308,6 @@ export const pushTickets = pgTable('push_tickets', {
 }));
 
 /**
- * Watchlist Items - User price watchlist with target alerts
- */
-export const watchlistItems = pgTable('watchlist_items', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  targetPrice: real('target_price'),
-  direction: text('direction'), // 'above' | 'below'
-  notified: boolean('notified').default(false).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  userIdx: index('idx_watchlist_user').on(table.userId),
-  cardIdx: index('idx_watchlist_card').on(table.cardId),
-  userCardIdx: uniqueIndex('idx_watchlist_user_card').on(table.userId, table.cardId),
-  notifiedIdx: index('idx_watchlist_notified').on(table.notified),
-}));
-
-/**
  * Arbitrage Opportunities - Cached arbitrage opportunities (15min TTL)
  */
 export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
@@ -458,7 +439,6 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
-  watchlistItems: many(watchlistItems),
 }));
 
 /**
@@ -569,20 +549,6 @@ export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one })
 }));
 
 /**
- * Watchlist Items relations
- */
-export const watchlistItemsRelations = relations(watchlistItems, ({ one }) => ({
-  user: one(users, {
-    fields: [watchlistItems.userId],
-    references: [users.id],
-  }),
-  card: one(cards, {
-    fields: [watchlistItems.cardId],
-    references: [cards.id],
-  }),
-}));
-
-/**
  * Arbitrage Opportunities relations
  */
 export const arbitrageOpportunitiesRelations = relations(arbitrageOpportunities, ({ one }) => ({
@@ -650,8 +616,6 @@ export type MobilePushToken = typeof mobilePushTokens.$inferSelect;
 export type NewMobilePushToken = typeof mobilePushTokens.$inferInsert;
 export type PushTicket = typeof pushTickets.$inferSelect;
 export type NewPushTicket = typeof pushTickets.$inferInsert;
-export type WatchlistItem = typeof watchlistItems.$inferSelect;
-export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
 export type NewArbitrageOpportunity = typeof arbitrageOpportunities.$inferInsert;
 export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSelect;
