@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { Search, Sparkles } from 'lucide-react';
 import MobileNav from '@/components/nav/MobileNav';
@@ -215,6 +216,32 @@ export default function HomePage() {
                 <ContentCard key={`${item.kind}-${item.slug}`} {...item} />
               ))}
             </HorizontalCarousel>
+          </section>
+
+          {/* Latest Insights Section */}
+          <section className="max-w-5xl mx-auto px-6 py-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold">Latest Insights</h2>
+              <Link href="/blog" className="text-cyan-400 hover:underline">View all</Link>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              {blogPosts
+                .sort((a, b) => +new Date(b.date) - +new Date(a.date))
+                .slice(0, 3)
+                .map((p) => (
+                  <Link
+                    key={p.href}
+                    href={p.href}
+                    className="border border-zinc-800 rounded-xl p-5 hover:border-cyan-400 transition"
+                  >
+                    <h3 className="text-lg font-medium">{p.title}</h3>
+                    <p className="text-zinc-400 mt-1 line-clamp-3">{p.excerpt}</p>
+                    <p className="text-xs text-zinc-500 mt-3">
+                      {new Date(p.date).toLocaleDateString()}
+                    </p>
+                  </Link>
+                ))}
+            </div>
           </section>
 
           {/* Tools Carousel */}
