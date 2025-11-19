@@ -8,6 +8,7 @@
  * - Sentry monitoring with user context
  * - Secure response headers (CSP, nosniff, no-frame)
  * - RESTful error responses with Retry-After
+ * - Lazy LLM instantiation to prevent build-time failures (knowledge-02)
  */
 
 import { NextRequest } from 'next/server';
@@ -17,6 +18,9 @@ import * as Sentry from '@sentry/nextjs';
 import type { Scope } from '@sentry/types';
 import { z } from 'zod';
 import { getUserFromRequest, UserWithTier } from '@/lib/auth/jwt';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { ChatOpenAI } from '@langchain/openai';
+import { CohereClient } from 'cohere-ai';
 
 // Strict input validation with PII blocking
 const QuerySchema = z.object({
@@ -44,6 +48,8 @@ const QuerySchema = z.object({
  * POST /api/rag
  *
  * Secure RAG query endpoint with zero-trust authentication
+ * ✅ GOOD: Runtime-only instantiation + graceful fallback
+ * ❌ BAD: Top-level instantiation → crashes build when key missing
  */
 export async function POST(req: NextRequest) {
   let user: UserWithTier | null = null;
@@ -128,22 +134,58 @@ export async function POST(req: NextRequest) {
 
     const { query } = parsed.data;
 
-    // Step 4: Execute RAG-Fusion pipeline
+    // Step 4: ✅ Lazy LLM instantiation - only runs at request time
+    // This prevents build-time failures when API keys are not set
+    const useClaude = !!process.env.ANTHROPIC_API_KEY;
+    const llm = useClaude
+      ? new ChatAnthropic({
+          modelName: 'claude-3-5-sonnet-20241022',
+          temperature: 0.2,
+          apiKey: process.env.ANTHROPIC_API_KEY,
+          maxTokens: 4096,
+        })
+      : new ChatOpenAI({
+          modelName: 'gpt-4o',
+          temperature: 0.2,
+          apiKey: process.env.OPENAI_API_KEY!,
+          maxTokens: 4096,
+        });
+
+    const judgeLlm = new ChatOpenAI({
+      modelName: 'gpt-4o-2024-11-20',
+      temperature: 0.0,
+      apiKey: process.env.OPENAI_API_KEY!,
+      maxTokens: 50,
+    });
+
+    const cohere = process.env.COHERE_API_KEY
+      ? new CohereClient({ token: process.env.COHERE_API_KEY })
+      : null;
+
+    // Step 5: Execute RAG-Fusion pipeline with lazy-instantiated clients
     Sentry.withScope((scope: Scope) => {
       scope.setUser({ id: user!.id, email: user!.email });
       scope.setTag('query_length', String(query.length));
       scope.setExtra('tier', user!.subscriptionTier);
+      scope.setExtra('useClaude', useClaude);
     });
 
-    const response = await ragFusionPipeline(query);
+    const response = await ragFusionPipeline({
+      query,
+      userId: user.id,
+      llm,
+      judgeLlm,
+      cohereReranker: cohere,
+    });
 
-    // Step 5: Return secure response with headers
+    // Step 6: Return secure response with headers
     return new Response(
       JSON.stringify({
         response,
         metadata: {
           userId: user.id,
           tier: user.subscriptionTier,
+          model: useClaude ? 'claude-3.5-sonnet' : 'gpt-4o',
           rateLimit: {
             limit,
             remaining,
@@ -166,7 +208,7 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (error) {
-    // Step 6: Error handling with Sentry context
+    // Step 7: Error handling with Sentry context
     Sentry.withScope((scope: Scope) => {
       if (user) {
         scope.setUser({ id: user.id, email: user.email });

@@ -16,11 +16,6 @@ import { SearchResult } from './search';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 
-// Initialize Cohere client
-const cohere = new CohereClient({
-  token: process.env.COHERE_API_KEY,
-});
-
 /**
  * Reranked search result with improved relevance score
  */
@@ -40,21 +35,23 @@ export interface RerankedResult extends SearchResult {
  * @param query - User's query
  * @param documents - Search results to rerank
  * @param topN - Number of top results to return after reranking
+ * @param cohereClient - Optional Cohere client instance (supports lazy instantiation)
  * @returns Reranked results sorted by relevance
  *
  * @example
  * ```typescript
  * const searchResults = await hybridSearch({ query, limit: 30 });
- * const reranked = await rerankResults(query, searchResults, 10);
+ * const reranked = await rerankResults(query, searchResults, 10, cohereClient);
  * ```
  */
 export async function rerankResults(
   query: string,
   documents: SearchResult[],
-  topN: number = 10
+  topN: number = 10,
+  cohereClient: CohereClient | null = null
 ): Promise<RerankedResult[]> {
-  if (!process.env.COHERE_API_KEY) {
-    console.warn('COHERE_API_KEY not set, skipping reranking');
+  if (!cohereClient) {
+    console.warn('Cohere client not provided, skipping reranking');
     return documents.slice(0, topN).map((doc) => ({
       ...doc,
       rerankScore: doc.score,
@@ -76,7 +73,7 @@ export async function rerankResults(
         }));
 
         // Call Cohere rerank API (optimized for investment-grade queries)
-        const reranked = await cohere.rerank({
+        const reranked = await cohereClient.rerank({
           query,
           documents: cohereDocuments,
           topN,
@@ -123,6 +120,7 @@ export async function rerankResults(
  * It combines hybrid search with reranking for optimal results.
  *
  * @param query - User's query
+ * @param cohereClient - Optional Cohere client instance (supports lazy instantiation)
  * @param preRerankLimit - Number of documents to retrieve before reranking (default: 30)
  * @param finalLimit - Number of documents to return after reranking (default: 10)
  * @returns Context string with provenance metadata
@@ -130,12 +128,14 @@ export async function rerankResults(
  * @example
  * ```typescript
  * const { context, sources } = await getTcgContext(
- *   "What is the ROI on PSA 10 vs BGS 9.5 for 1st Edition Charizard?"
+ *   "What is the ROI on PSA 10 vs BGS 9.5 for 1st Edition Charizard?",
+ *   cohereClient
  * );
  * ```
  */
 export async function getTcgContext(
   query: string,
+  cohereClient: CohereClient | null = null,
   preRerankLimit: number = 30,
   finalLimit: number = 8 // Optimized for investment queries
 ): Promise<{ context: string; sources: RerankedResult[] }> {
@@ -153,7 +153,7 @@ export async function getTcgContext(
       span?.setAttribute('searchResultCount', searchResults.length);
 
       // 2. Rerank for relevance
-      const reranked = await rerankResults(query, searchResults, finalLimit);
+      const reranked = await rerankResults(query, searchResults, finalLimit, cohereClient);
 
       // 3. Format context with provenance markers
       const context = reranked
