@@ -18,29 +18,79 @@ import './globals.css';
 // Load facts from central registry
 const facts = getFacts();
 
+// Default metadata - can be overridden on a per-page basis
 export const metadata: Metadata = {
-  title: facts.product.fullName,
+  // Base metadata
+  title: {
+    default: facts.product.fullName,
+    template: '%s | TCG Intelligence Center', // Allows pages to set title that gets this suffix
+  },
   description: facts.product.description,
+
+  // Keywords for SEO
+  keywords: ['TCG', 'trading cards', 'market intelligence', 'analytics', 'Pokemon', 'Magic', 'Yu-Gi-Oh'],
+
+  // Author and creator info
+  authors: [{ name: 'TCG Intelligence Center' }],
+  creator: 'TCG Intelligence Center',
+  publisher: 'TCG Intelligence Center',
+
+  // Robots directives
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  // OpenGraph metadata for rich social cards
   openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: facts.product.name,
     title: facts.product.fullName,
     description: facts.product.description,
     images: [
       {
-        url: '/api/og',
+        url: '/api/og', // Dynamic OG image endpoint
         width: 1200,
         height: 630,
         alt: facts.organization.tagline,
+        type: 'image/png',
       },
     ],
-    type: 'website',
-    siteName: facts.product.name,
   },
+
+  // Twitter Card metadata
   twitter: {
     card: 'summary_large_image',
     title: facts.product.fullName,
     description: facts.product.description,
     images: ['/api/og'],
+    creator: '@tcgintel', // Update with actual Twitter handle if available
   },
+
+  // Verification tags (add actual values when available)
+  // verification: {
+  //   google: 'google-site-verification-code',
+  //   yandex: 'yandex-verification-code',
+  // },
+
+  // App-specific metadata
+  applicationName: 'TCG Intelligence Center',
+
+  // Alternate languages (if internationalization is added)
+  // alternates: {
+  //   canonical: '/',
+  //   languages: {
+  //     'en-US': '/en-US',
+  //   },
+  // },
 };
 
 export default function RootLayout({
