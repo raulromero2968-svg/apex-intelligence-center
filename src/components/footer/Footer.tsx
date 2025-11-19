@@ -73,6 +73,7 @@ export const Footer = () => {
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Intel</Link></li>
+              <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Blog</Link></li>
               <li><Link href="/about" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">About</Link></li>
               <li><Link href="/tutorial" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">New to Apex?</Link></li>
               <li><Link href="/apex-omnis-studios" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Apex Omnis Studios</Link></li>
