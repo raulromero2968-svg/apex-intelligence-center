@@ -4,6 +4,7 @@
   "description": "Apex Intelligence - TCG Market Intelligence Platform",
   "main": "index.html",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
