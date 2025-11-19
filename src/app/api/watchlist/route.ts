@@ -1,125 +1,107 @@
 /**
- * Watchlist API - CRUD Operations for Price Alerts
+ * Watchlist API Routes
  *
- * Features:
- * - Add/update/remove watchlist items
- * - Get user's watchlist with card details
- * - Redis caching for fast lookups
- * - JWT authentication required
- * - Upsert semantics (one card per user)
+ * Manages user watchlist items with tiered limits:
+ * - Free: 10 items
+ * - Pro: 100 items
+ * - Enterprise: Unlimited
  *
- * Production patterns from knowledge-10-api-realtime.md
+ * All limits enforced server-side with zero trust.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { NextRequest } from 'next/server';
 import { db } from '@/db';
-import { watchlistItems, cards } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { invalidateUserWatchlistCache, cacheUserWatchlist } from '@/lib/redis';
-import { WatchlistConfig } from '@/lib/edge-config';
-import { randomUUID } from 'crypto';
+import { watchlistItems, users, cards } from '@/db/schema';
+import { eq, and, sql } from 'drizzle-orm';
+import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getTierLimits } from '@/lib/stripe';
+import {
+  AuthenticationError,
+  ValidationError,
+  TierLimitError,
+  NotFoundError,
+  handleApiError,
+} from '@/lib/errors';
+import { z } from 'zod';
+
+const createWatchlistSchema = z.object({
+  cardId: z.string().min(1, 'Card ID is required'),
+  targetPrice: z.number().positive('Target price must be positive'),
+  direction: z.enum(['above', 'below']),
+});
 
 /**
- * GET /api/watchlist - Get user's watchlist
+ * GET /api/watchlist
+ * Get all watchlist items for the authenticated user
  */
 export async function GET(req: NextRequest) {
   try {
-    // Authenticate user
     const user = await getUserFromRequest(req);
     if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized - please log in' },
-        { status: 401 }
-      );
+      throw new AuthenticationError();
     }
 
-    // Fetch watchlist with card details (using Drizzle relations)
     const items = await db.query.watchlistItems.findMany({
       where: eq(watchlistItems.userId, user.id),
       with: {
         card: true,
       },
-      orderBy: (items, { desc }) => [desc(items.createdAt)],
+      orderBy: (watchlistItems, { desc }) => [desc(watchlistItems.createdAt)],
     });
 
-    return NextResponse.json({
+    return Response.json({
       items,
       count: items.length,
+      tier: user.subscriptionTier,
+      limit: getTierLimits(user.subscriptionTier).watchlistLimit,
     });
   } catch (error) {
-    console.error('Error fetching watchlist:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch watchlist' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
 /**
- * POST /api/watchlist - Add or update watchlist item
- *
- * Body: { cardId, targetPrice?, direction?: 'above' | 'below' }
+ * POST /api/watchlist
+ * Create a new watchlist item (tier-limited)
  */
 export async function POST(req: NextRequest) {
   try {
-    // Authenticate user
     const user = await getUserFromRequest(req);
     if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized - please log in' },
-        { status: 401 }
-      );
+      throw new AuthenticationError();
     }
 
-    // Parse request body
+    // Validate request body
     const body = await req.json();
-    const { cardId, targetPrice, direction } = body;
+    const { cardId, targetPrice, direction } = createWatchlistSchema.parse(body);
 
-    if (!cardId) {
-      return NextResponse.json(
-        { error: 'Missing required field: cardId' },
-        { status: 400 }
+    // Check tier limit
+    const tierLimits = getTierLimits(user.subscriptionTier);
+    const currentCount = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(watchlistItems)
+      .where(eq(watchlistItems.userId, user.id));
+
+    const count = currentCount[0]?.count || 0;
+
+    if (count >= tierLimits.watchlistLimit) {
+      throw new TierLimitError(
+        `Watchlist limit reached (${tierLimits.watchlistLimit} items). Upgrade to add more.`,
+        tierLimits.watchlistLimit,
+        user.subscriptionTier
       );
     }
 
-    // Validate target price and direction together
-    if (targetPrice && !direction) {
-      return NextResponse.json(
-        { error: 'direction is required when targetPrice is set' },
-        { status: 400 }
-      );
-    }
-
-    if (direction && !['above', 'below'].includes(direction)) {
-      return NextResponse.json(
-        { error: 'direction must be "above" or "below"' },
-        { status: 400 }
-      );
-    }
-
-    // Check if card exists
+    // Verify card exists
     const card = await db.query.cards.findFirst({
       where: eq(cards.id, cardId),
     });
 
     if (!card) {
-      return NextResponse.json(
-        { error: 'Card not found' },
-        { status: 404 }
-      );
+      throw new NotFoundError('Card not found');
     }
 
-    // Check user's watchlist limit
-    const maxItems = await WatchlistConfig.getMaxItemsPerUser();
-    const existingCount = await db
-      .select({ count: watchlistItems.id })
-      .from(watchlistItems)
-      .where(eq(watchlistItems.userId, user.id));
-
-    const currentCount = existingCount.length;
-
-    // Check if this is an update (item already exists)
+    // Check if watchlist item already exists for this user and card
     const existingItem = await db.query.watchlistItems.findFirst({
       where: and(
         eq(watchlistItems.userId, user.id),
@@ -127,110 +109,89 @@ export async function POST(req: NextRequest) {
       ),
     });
 
-    if (!existingItem && currentCount >= maxItems) {
-      return NextResponse.json(
-        {
-          error: `Watchlist limit reached (${maxItems} items). Remove an item to add more.`,
-          limit: maxItems,
-          current: currentCount,
-        },
-        { status: 429 }
-      );
+    if (existingItem) {
+      // Update existing item
+      const updated = await db
+        .update(watchlistItems)
+        .set({
+          targetPrice,
+          direction,
+          isTriggered: false,
+          triggeredAt: null,
+        })
+        .where(eq(watchlistItems.id, existingItem.id))
+        .returning();
+
+      return Response.json({
+        item: updated[0],
+        updated: true,
+      });
     }
 
-    // Upsert watchlist item (insert or update if exists)
-    const [item] = await db
+    // Create new watchlist item
+    const newItem = await db
       .insert(watchlistItems)
       .values({
-        id: randomUUID(),
+        id: crypto.randomUUID(),
         userId: user.id,
         cardId,
-        targetPrice: targetPrice ?? null,
-        direction: direction ?? null,
-        notified: false,
-      })
-      .onConflictDoUpdate({
-        target: [watchlistItems.userId, watchlistItems.cardId],
-        set: {
-          targetPrice: targetPrice ?? null,
-          direction: direction ?? null,
-          notified: false,
-          updatedAt: new Date(),
-        },
+        targetPrice,
+        direction,
+        isTriggered: false,
       })
       .returning();
 
-    // Invalidate cache
-    await invalidateUserWatchlistCache(user.id);
-
-    return NextResponse.json({
-      item,
-      message: existingItem ? 'Watchlist item updated' : 'Added to watchlist',
-    });
+    return Response.json({
+      item: newItem[0],
+      created: true,
+    }, { status: 201 });
   } catch (error) {
-    console.error('Error adding to watchlist:', error);
-    return NextResponse.json(
-      { error: 'Failed to add to watchlist' },
-      { status: 500 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleApiError(new ValidationError(error.errors[0].message));
+    }
+    return handleApiError(error);
   }
 }
 
 /**
- * DELETE /api/watchlist?cardId=... - Remove item from watchlist
+ * DELETE /api/watchlist
+ * Delete a watchlist item
  */
 export async function DELETE(req: NextRequest) {
   try {
-    // Authenticate user
     const user = await getUserFromRequest(req);
     if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized - please log in' },
-        { status: 401 }
-      );
+      throw new AuthenticationError();
     }
 
-    // Get cardId from query params
     const { searchParams } = new URL(req.url);
-    const cardId = searchParams.get('cardId');
+    const itemId = searchParams.get('id');
 
-    if (!cardId) {
-      return NextResponse.json(
-        { error: 'Missing required parameter: cardId' },
-        { status: 400 }
-      );
+    if (!itemId) {
+      throw new ValidationError('Item ID is required');
     }
 
-    // Delete watchlist item
-    const deleted = await db
+    // Verify item belongs to user
+    const item = await db.query.watchlistItems.findFirst({
+      where: and(
+        eq(watchlistItems.id, itemId),
+        eq(watchlistItems.userId, user.id)
+      ),
+    });
+
+    if (!item) {
+      throw new NotFoundError('Watchlist item not found');
+    }
+
+    await db
       .delete(watchlistItems)
-      .where(
-        and(
-          eq(watchlistItems.userId, user.id),
-          eq(watchlistItems.cardId, cardId)
-        )
-      )
-      .returning();
+      .where(eq(watchlistItems.id, itemId));
 
-    if (deleted.length === 0) {
-      return NextResponse.json(
-        { error: 'Watchlist item not found' },
-        { status: 404 }
-      );
-    }
-
-    // Invalidate cache
-    await invalidateUserWatchlistCache(user.id);
-
-    return NextResponse.json({
-      message: 'Removed from watchlist',
-      cardId,
+    return Response.json({
+      deleted: true,
+      id: itemId,
     });
   } catch (error) {
-    console.error('Error removing from watchlist:', error);
-    return NextResponse.json(
-      { error: 'Failed to remove from watchlist' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

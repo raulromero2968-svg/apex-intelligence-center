@@ -15,7 +15,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.apexintelligence.app",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": ["remote-notification"],
+        "NSFaceIDUsageDescription": "Use Face ID to securely access your portfolio"
       },
       "googleServicesFile": "./GoogleService-Info.plist"
     },
@@ -26,7 +27,11 @@
       },
       "package": "com.apexintelligence.app",
       "googleServicesFile": "./google-services.json",
-      "permissions": ["RECEIVE_BOOT_COMPLETED"]
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -50,6 +55,13 @@
         }
       ],
       [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Apex Intelligence to use Face ID"
+        }
+      ],
+      "@sentry/react-native/expo",
+      [
         "expo-build-properties",
         {
           "android": {
@@ -63,6 +75,7 @@
         }
       ]
     ],
+    "scheme": "apex",
     "extra": {
       "router": {
         "origin": false
@@ -70,8 +83,14 @@
       "env": "development",
       "apiUrl": "http://localhost:3000",
       "eas": {
-        "projectId": "your-eas-project-id"
+        "projectId": "apex-intelligence-mobile"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/apex-intelligence-mobile"
     }
   }
 }
