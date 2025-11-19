@@ -1,4 +1,4 @@
-import { users, watchlist, portfolio, notificationPreferences, pushTokens, pushTickets } from './schema';
+import { users, watchlist, portfolio, notificationPreferences, pushTokens, pushTickets, priceHistory } from './schema';
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -17,3 +17,6 @@ export type NewPushToken = typeof pushTokens.$inferInsert;
 
 export type PushTicket = typeof pushTickets.$inferSelect;
 export type NewPushTicket = typeof pushTickets.$inferInsert;
+
+export type PriceHistory = typeof priceHistory.$inferSelect;
+export type NewPriceHistory = typeof priceHistory.$inferInsert;

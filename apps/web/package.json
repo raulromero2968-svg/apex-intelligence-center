@@ -44,6 +44,7 @@
     "@apex/auth": "workspace:*",
     "@apex/db": "workspace:*",
     "@apex/realtime": "workspace:*",
+    "@apex/valuation": "workspace:*",
     "@langchain/anthropic": "^1.0.1",
     "@langchain/cohere": "^1.0.0",
     "@langchain/community": "^1.0.3",
