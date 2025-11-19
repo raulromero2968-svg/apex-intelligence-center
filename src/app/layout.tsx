@@ -8,6 +8,7 @@ import { TopBanner } from '@/components/nav/TopBanner';
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Footer } from '@/components/footer/Footer';
+import { StructuredData } from '@/components/StructuredData';
 import GuidedTour from '@/components/GuidedTour';
 import HelpFAB from '@/components/HelpFAB';
 import ToastHost from '@/components/ToastHost';
@@ -45,6 +46,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        <StructuredData />
+      </head>
       <body className="min-h-dvh font-sans antialiased cursor-none">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
           Skip to main content
