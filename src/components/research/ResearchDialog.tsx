@@ -13,6 +13,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<'rate-limit' | 'stream-interrupted' | 'general' | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Track panel open event
@@ -35,6 +36,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
       setQuery('');
       setResult(null);
       setIsLoading(false);
+      setErrorType(null);
     }
   }, [isOpen]);
 
@@ -69,6 +71,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
 
     setIsLoading(true);
     setResult(null);
+    setErrorType(null);
 
     try {
       // Track research_query_submitted event
@@ -88,15 +91,71 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
         body: JSON.stringify({ query }),
       });
 
-      const data = await response.json();
+      // Handle rate limiting
+      if (response.status === 429) {
+        const data = await response.json();
+        setErrorType('rate-limit');
+        setResult(null);
+        return;
+      }
 
-      if (data.ok) {
-        setResult(data.answer);
+      // Check if response is SSE stream or JSON
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('text/event-stream')) {
+        // Handle SSE streaming
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+
+        if (!reader) {
+          throw new Error('Stream reader not available');
+        }
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            fullText += chunk;
+
+            // Check for error marker
+            if (fullText.includes('__ERROR__')) {
+              const errorText = fullText.split('__ERROR__')[1]?.trim() || 'Stream error occurred';
+              setResult(errorText);
+              setErrorType('general');
+              return;
+            }
+
+            // Check for sources marker (end of stream)
+            if (fullText.includes('__SOURCES__')) {
+              const [answer] = fullText.split('__SOURCES__');
+              setResult(answer.trim());
+              return;
+            }
+
+            // Update result with current content
+            setResult(fullText);
+          }
+        } catch (streamError) {
+          setErrorType('stream-interrupted');
+          setResult(fullText || null);
+        }
       } else {
-        setResult(`Error: ${data.error || 'Failed to process research query'}`);
+        // Handle JSON response
+        const data = await response.json();
+
+        if (data.ok) {
+          setResult(data.answer);
+          setErrorType(null);
+        } else {
+          setResult(`Error: ${data.error || 'Failed to process research query'}`);
+          setErrorType('general');
+        }
       }
     } catch (error) {
       setResult('Error: Failed to submit research query. Please try again.');
+      setErrorType('general');
     } finally {
       setIsLoading(false);
     }
@@ -142,6 +201,31 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
 
               {/* Content */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Error Banners */}
+                {errorType === 'rate-limit' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30"
+                  >
+                    <p className="text-amber-400 text-sm font-medium">
+                      Rate limit reached. Please try again in 60 seconds.
+                    </p>
+                  </motion.div>
+                )}
+
+                {errorType === 'stream-interrupted' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-lg bg-orange-500/10 border border-orange-500/30"
+                  >
+                    <p className="text-orange-400 text-sm font-medium">
+                      Stream interrupted. Please retry your query.
+                    </p>
+                  </motion.div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label
