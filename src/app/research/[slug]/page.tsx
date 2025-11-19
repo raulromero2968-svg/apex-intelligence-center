@@ -28,13 +28,18 @@ export async function generateMetadata({ params }: ResearchPageProps) {
     };
   }
 
+  // Generate OG image URL if og: true in frontmatter
+  const ogImageUrl = article.frontmatter.og
+    ? `/api/og?title=${encodeURIComponent(article.frontmatter.title)}&category=${encodeURIComponent(article.frontmatter.category)}`
+    : article.frontmatter.heroImage;
+
   return {
     title: article.frontmatter.title,
     description: article.frontmatter.tags?.join(', ') || '',
     openGraph: {
       title: article.frontmatter.title,
       description: article.frontmatter.tags?.join(', ') || '',
-      images: article.frontmatter.heroImage ? [{ url: article.frontmatter.heroImage }] : [],
+      images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
       type: 'article',
       publishedTime: article.frontmatter.publishedAt,
     },
