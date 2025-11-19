@@ -17,6 +17,25 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'TCG Intelligence Center - Market Intelligence Platform',
   description: 'PS5-style TCG market intelligence platform with advanced tools and analytics',
+  openGraph: {
+    title: 'TCG Intelligence Center - Market Intelligence Platform',
+    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    images: [
+      {
+        url: '/api/og',
+        width: 1200,
+        height: 630,
+        alt: 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TCG Intelligence Center - Market Intelligence Platform',
+    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    images: ['/api/og'],
+  },
 };
 
 export default function RootLayout({

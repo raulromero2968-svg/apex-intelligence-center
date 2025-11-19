@@ -73,20 +73,49 @@ Create/update `vercel.json` in project root:
 
 ## 3. Environment Variables
 
+### Quick Setup
+
+Paste into **Vercel → Project Settings → Environment Variables**:
+
+```bash
+# Core (already used)
+NODE_VERSION=20
+PNPM_VERSION=10.19.0
+
+# Feature flags
+FEATURE_RESEARCH_STREAMING=0        # set to 1 when ready
+
+# Optional for streaming mode
+OPENAI_API_KEY=...
+COHERE_API_KEY=...
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
 ### Required Variables
 
 Set in Vercel Dashboard → Project → Settings → Environment Variables:
 
 **Production + Preview + Development:**
+- `NODE_VERSION=20` - Node.js version
+- `PNPM_VERSION=10.19.0` - pnpm version
 - `DATABASE_URL` - PostgreSQL connection string
 - `ANTHROPIC_API_KEY` - Claude API key
 - `OPENAI_API_KEY` - OpenAI API key
-- `XAI_API_KEY` - Grok-3 API key (optional)
 - `VOYAGE_API_KEY` - Voyage AI embeddings
 - `COHERE_API_KEY` - Reranking
-- `PINATA_API_KEY` - IPFS provenance
-- `PINATA_API_SECRET` - IPFS provenance
-- `NEXT_PUBLIC_SENTRY_DSN` - Monitoring
+- `PINATA_API_KEY` - IPFS provenance (optional)
+- `PINATA_API_SECRET` - IPFS provenance (optional)
+- `NEXT_PUBLIC_SENTRY_DSN` - Monitoring (optional)
+
+**Feature Flags:**
+- `FEATURE_RESEARCH_STREAMING=0` - Enable streaming mode (set to `1` when ready)
+
+**Optional for Streaming Mode:**
+- `UPSTASH_REDIS_REST_URL` - Redis REST API URL
+- `UPSTASH_REDIS_REST_TOKEN` - Redis REST API token
+
+> 📚 **See [Environment Variables Reference](./ENVIRONMENT_VARIABLES.md) for complete list**
 
 ### Runtime Check Pattern
 
