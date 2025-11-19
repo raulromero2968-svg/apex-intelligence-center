@@ -7,6 +7,7 @@ import { BookOpen, Clock, Calendar } from 'lucide-react';
 
 interface BlogPostPageProps {
   params: { slug: string };
+  searchParams?: { preview?: string };
 }
 
 // Enable ISR with tag-based revalidation
@@ -112,10 +113,20 @@ function ArticleHeader({ article }: { article: any }) {
 }
 
 // Main article page component
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params, searchParams }: BlogPostPageProps) {
   const article = await getArticleBySlug(params.slug);
 
   if (!article) {
+    return notFound();
+  }
+
+  // Check if this is a preview request
+  const preview = searchParams?.preview === "1";
+
+  // Hide draft/unlisted posts in production unless preview is enabled
+  const isDraftHidden = (article.frontmatter.draft || article.frontmatter.unlisted) && !preview && process.env.NODE_ENV === "production";
+
+  if (isDraftHidden) {
     return notFound();
   }
 

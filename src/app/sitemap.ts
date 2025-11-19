@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { getAllArticles } from '@/lib/mdx';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
@@ -35,9 +36,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
-  // TODO: Add dynamic routes from content/articles when MDX content is available
-  // This would require reading the content directory or querying the database
-  // for blog posts, research articles, intel posts, and insights
+  // Dynamic routes from MDX articles
+  const allArticles = await getAllArticles();
 
-  return [...staticRoutes];
+  // Filter out drafts and unlisted posts from sitemap
+  const articles = allArticles
+    .filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted)
+    .map(p => ({
+      url: `${baseUrl}/blog/${p.slug}`,
+      lastModified: p.frontmatter.publishedAt ? new Date(p.frontmatter.publishedAt) : currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
+
+  return [...staticRoutes, ...articles];
 }

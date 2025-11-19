@@ -23,6 +23,8 @@ export interface ArticleFrontmatter {
   tags: string[];
   heroImage?: string;
   og?: boolean; // Enable dynamic OG image generation
+  draft?: boolean; // Hide from index and sitemap
+  unlisted?: boolean; // Hide from index and sitemap, but accessible via direct URL
   sources?: Array<{
     name: string;
     url: string;
