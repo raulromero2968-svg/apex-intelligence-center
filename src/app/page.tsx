@@ -237,6 +237,21 @@ export default function HomePage() {
           isOpen={isResearchDialogOpen}
           onClose={() => setIsResearchDialogOpen(false)}
         />
+
+        {/* Visible fallback button for Ctrl+K (always visible) */}
+        <button
+          onClick={handleOpenResearch}
+          className="fixed bottom-6 left-6 z-40 inline-flex items-center gap-2 px-4 py-3 bg-cyan-400/20 hover:bg-cyan-400/30 border border-cyan-400/50 rounded-lg text-cyan-400 font-medium transition-colors shadow-lg shadow-cyan-400/20 backdrop-blur-sm"
+          aria-label="Open Research (Ctrl+K)"
+          title="Open Research (Ctrl+K)"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span className="hidden sm:inline">Open Research</span>
+          <kbd className="hidden md:inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-white/10 text-white/70 border border-white/20">
+            <span>Ctrl</span>
+            <span>K</span>
+          </kbd>
+        </button>
       </div>
     </RouteTransition>
   );
