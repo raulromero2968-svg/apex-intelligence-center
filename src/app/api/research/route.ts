@@ -21,6 +21,7 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
+import { createHash } from 'crypto';
 
 interface Success {
   ok: true;
@@ -114,188 +115,297 @@ const tcgRagPrompt = ChatPromptTemplate.fromMessages([
   ['human', '{question}'],
 ]);
 
+// Helper: hash IP with salt for privacy-aware logging
+function hashIP(ip: string): string {
+  const salt = process.env.IP_HASH_SALT || 'default-salt-change-in-production';
+  return createHash('sha256')
+    .update(ip + salt)
+    .digest('hex')
+    .slice(0, 16); // First 16 chars for brevity
+}
+
+// Helper: structured logging
+function logStructured(data: {
+  level: 'info' | 'error' | 'warn';
+  rid: string;
+  message?: string;
+  latencyMs?: number;
+  tokenCount?: number;
+  sourceCount?: number;
+  cached?: boolean;
+  mode?: string;
+  ipHash?: string;
+  error?: string;
+}) {
+  const logEntry = {
+    ...data,
+    ts: new Date().toISOString(),
+  };
+  console.info(JSON.stringify(logEntry));
+}
+
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
   const rid = crypto.randomUUID().slice(0, 8);
-  
-  // Handle missing or invalid body
-  let body;
-  try {
-    body = await req.json();
-  } catch (error) {
-    // JSON parse error (empty body, invalid JSON, etc.)
-    return NextResponse.json(
-      { ok: false, error: 'Bad Request: invalid or missing body', requestId: rid },
-      { status: 400 }
-    );
-  }
 
-  // Validate query exists and is a non-empty string
-  const { query } = body || {};
-  if (typeof query !== 'string' || !query.trim()) {
-    return NextResponse.json(
-      { ok: false, error: 'Bad Request: missing query', requestId: rid },
-      { status: 400 }
-    );
-  }
-
-  // Feature flag check: if not enabled, return JSON stub
-  if (process.env.FEATURE_RESEARCH_STREAMING !== '1') {
-    const response: Success = {
-      ok: true,
-      answer: `Research queued for: ${query}`,
-      sources: [],
-      requestId: rid,
-    };
-    return NextResponse.json(response);
-  }
-
-  // Streaming mode: check if we have required keys
-  const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
-  const hasCohereKey = !!process.env.COHERE_API_KEY;
-  
-  // If no keys, return stub (works in CI)
-  if (!hasAnthropicKey && !hasCohereKey) {
-    const response: Success = {
-      ok: true,
-      answer: `Research queued for: ${query} (streaming requires API keys)`,
-      sources: [],
-      requestId: rid,
-    };
-    return NextResponse.json(response);
-  }
-
-  // Get IP for rate limiting
+  // Get IP for rate limiting and hashing
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ||
              req.headers.get('x-real-ip') ||
              'anonymous';
+  const ipHash = hashIP(ip);
 
-  // Rate limiting
-  const ratelimit = getRateLimiter();
-  if (ratelimit) {
-    try {
-      const { success, remaining } = await ratelimit.limit(ip);
-      if (!success) {
+  return Sentry.startSpan(
+    { name: 'research:post', op: 'http.server' },
+    async (rootSpan: Span) => {
+      rootSpan?.setAttribute('requestId', rid);
+      rootSpan?.setAttribute('ipHash', ipHash);
+
+      // Handle missing or invalid body
+      let body;
+      try {
+        body = await req.json();
+      } catch (error) {
+        logStructured({
+          level: 'warn',
+          rid,
+          ipHash,
+          message: 'Invalid JSON body',
+        });
         return NextResponse.json(
-          { ok: false, error: 'Rate limited. Please wait before making more requests.', requestId: rid },
-          {
-            status: 429,
-            headers: {
-              'X-RateLimit-Remaining': '0',
-              'Retry-After': '60',
-            },
-          }
+          { ok: false, error: 'Bad Request: invalid or missing body', requestId: rid },
+          { status: 400 }
         );
       }
-    } catch (rateLimitError) {
-      console.error('Rate limit check failed:', rateLimitError);
-      // Continue without rate limiting on error
-    }
-  }
 
-  // Create streaming response
-  const stream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder();
-      let fullAnswer = '';
-      let sources: any[] = [];
+      // Validate query exists and is a non-empty string
+      const { query } = body || {};
+      if (typeof query !== 'string' || !query.trim()) {
+        logStructured({
+          level: 'warn',
+          rid,
+          ipHash,
+          message: 'Missing query parameter',
+        });
+        return NextResponse.json(
+          { ok: false, error: 'Bad Request: missing query', requestId: rid },
+          { status: 400 }
+        );
+      }
 
-      return Sentry.startSpan(
-        { name: 'api.research.streaming', op: 'http.server' },
-        async (span: Span) => {
-          span?.setAttribute('requestId', rid);
-          span?.setAttribute('query', query.slice(0, 100));
-          span?.setAttribute('ip', ip);
+      // Feature flag check: if not enabled, return JSON stub
+      if (process.env.FEATURE_RESEARCH_STREAMING !== '1') {
+        rootSpan?.setAttribute('mode', 'json');
+        logStructured({
+          level: 'info',
+          rid,
+          ipHash,
+          mode: 'json',
+          message: 'Feature flag disabled, returning stub',
+          latencyMs: Date.now() - startTime,
+          cached: true,
+        });
+        const response: Success = {
+          ok: true,
+          answer: `Research queued for: ${query}`,
+          sources: [],
+          requestId: rid,
+        };
+        return NextResponse.json(response);
+      }
 
-          try {
-            // Step 1: RAG-Fusion (5 queries), hybrid search
-            const fusionResults = await ragFusionSearch(query, {
-              numQueries: 5,
-              preRerankLimit: 20,
-              finalLimit: 30,
+      // Streaming mode: check if we have required keys
+      const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
+      const hasCohereKey = !!process.env.COHERE_API_KEY;
+
+      // If no keys, return stub (works in CI)
+      if (!hasAnthropicKey && !hasCohereKey) {
+        rootSpan?.setAttribute('mode', 'json');
+        logStructured({
+          level: 'info',
+          rid,
+          ipHash,
+          mode: 'json',
+          message: 'API keys missing, returning stub',
+          latencyMs: Date.now() - startTime,
+          cached: true,
+        });
+        const response: Success = {
+          ok: true,
+          answer: `Research queued for: ${query} (streaming requires API keys)`,
+          sources: [],
+          requestId: rid,
+        };
+        return NextResponse.json(response);
+      }
+
+      // Set mode to SSE since we're streaming
+      rootSpan?.setAttribute('mode', 'sse');
+
+      // Rate limiting
+      const ratelimit = getRateLimiter();
+      if (ratelimit) {
+        try {
+          const { success, remaining } = await ratelimit.limit(ip);
+          if (!success) {
+            logStructured({
+              level: 'warn',
+              rid,
+              ipHash,
+              mode: 'sse',
+              message: 'Rate limit exceeded',
+              latencyMs: Date.now() - startTime,
             });
-
-            span?.setAttribute('fusionResultCount', fusionResults.length);
-
-            // Step 2: Cohere rerank topN=8, returnDocuments:false
-            const reranked = await rerankResults(query, fusionResults, 8);
-
-            span?.setAttribute('rerankResultCount', reranked.length);
-
-            // Step 3: Format context with source markers
-            const context = reranked
-              .map(
-                (doc, i) =>
-                  `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
-              )
-              .join('\n\n');
-
-            span?.setAttribute('contextLength', context.length);
-
-            // Step 4: Stream LLM tokens
-            const llm = getLLM();
-            if (!llm) {
-              throw new Error('Anthropic API key not configured');
-            }
-
-            const outputParser = new StringOutputParser();
-            const ragChain = tcgRagPrompt.pipe(llm).pipe(outputParser);
-
-            const streamIterator = await ragChain.stream({
-              context,
-              question: query,
-            });
-
-            // Stream tokens to client
-            for await (const chunk of streamIterator) {
-              fullAnswer += chunk;
-              controller.enqueue(encoder.encode(chunk));
-            }
-
-            // Step 5: Append final line with "__SOURCES__" + JSON
-            sources = reranked.map((doc, i) => ({
-              index: i + 1,
-              title: doc.metadata.title || doc.metadata.card_name || 'Market Data',
-              url: doc.metadata.source_url || '#',
-              relevance: Math.round((doc.rerankScore || 0) * 100),
-              sourceType: doc.source_type,
-              metadata: doc.metadata,
-            }));
-
-            controller.enqueue(
-              encoder.encode(`\n\n__SOURCES__\n${JSON.stringify(sources)}`)
+            return NextResponse.json(
+              { ok: false, error: 'Rate limited. Try again in 60s', requestId: rid },
+              {
+                status: 429,
+                headers: {
+                  'X-RateLimit-Remaining': '0',
+                  'Retry-After': '60',
+                },
+              }
             );
-
-            span?.setAttribute('answerLength', fullAnswer.length);
-            span?.setAttribute('sourceCount', sources.length);
-
-          } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            Sentry.captureException(error, {
-              extra: { requestId: rid, query },
-            });
-
-            controller.enqueue(
-              encoder.encode(
-                `\n\n__ERROR__\nAn error occurred while processing your request: ${errorMessage}`
-              )
-            );
-            // Error already captured by Sentry.captureException above
-          } finally {
-            controller.close();
-            span?.end?.();
           }
+        } catch (rateLimitError) {
+          logStructured({
+            level: 'error',
+            rid,
+            ipHash,
+            message: 'Rate limit check failed',
+            error: rateLimitError instanceof Error ? rateLimitError.message : 'Unknown error',
+          });
+          // Continue without rate limiting on error
         }
-      );
-    },
-  });
+      }
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      'Connection': 'keep-alive',
-      'X-Accel-Buffering': 'no', // Disable nginx buffering
-      'X-Request-Id': rid,
-    },
-  });
+      // Create streaming response
+      const stream = new ReadableStream({
+        async start(controller) {
+          const encoder = new TextEncoder();
+          let fullAnswer = '';
+          let sources: any[] = [];
+
+          return Sentry.startSpan(
+            { name: 'api.research.streaming', op: 'http.server' },
+            async (span: Span) => {
+              span?.setAttribute('requestId', rid);
+              span?.setAttribute('query', query.slice(0, 100));
+              span?.setAttribute('ipHash', ipHash);
+
+              try {
+                // Step 1: RAG-Fusion (5 queries), hybrid search
+                const fusionResults = await ragFusionSearch(query, {
+                  numQueries: 5,
+                  preRerankLimit: 20,
+                  finalLimit: 30,
+                });
+
+                span?.setAttribute('fusionResultCount', fusionResults.length);
+
+                // Step 2: Cohere rerank topN=8, returnDocuments:false
+                const reranked = await rerankResults(query, fusionResults, 8);
+
+                span?.setAttribute('rerankResultCount', reranked.length);
+
+                // Step 3: Format context with source markers
+                const context = reranked
+                  .map(
+                    (doc, i) =>
+                      `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
+                  )
+                  .join('\n\n');
+
+                span?.setAttribute('contextLength', context.length);
+
+                // Step 4: Stream LLM tokens
+                const llm = getLLM();
+                if (!llm) {
+                  throw new Error('Anthropic API key not configured');
+                }
+
+                const outputParser = new StringOutputParser();
+                const ragChain = tcgRagPrompt.pipe(llm).pipe(outputParser);
+
+                const streamIterator = await ragChain.stream({
+                  context,
+                  question: query,
+                });
+
+                // Stream tokens to client
+                for await (const chunk of streamIterator) {
+                  fullAnswer += chunk;
+                  controller.enqueue(encoder.encode(chunk));
+                }
+
+                // Step 5: Append final line with "__SOURCES__" + JSON
+                sources = reranked.map((doc, i) => ({
+                  index: i + 1,
+                  title: doc.metadata.title || doc.metadata.card_name || 'Market Data',
+                  url: doc.metadata.source_url || '#',
+                  relevance: Math.round((doc.rerankScore || 0) * 100),
+                  sourceType: doc.source_type,
+                  metadata: doc.metadata,
+                }));
+
+                controller.enqueue(
+                  encoder.encode(`\n\n__SOURCES__\n${JSON.stringify(sources)}`)
+                );
+
+                span?.setAttribute('answerLength', fullAnswer.length);
+                span?.setAttribute('sourceCount', sources.length);
+
+                // Log successful completion
+                logStructured({
+                  level: 'info',
+                  rid,
+                  ipHash,
+                  mode: 'sse',
+                  message: 'Research completed successfully',
+                  latencyMs: Date.now() - startTime,
+                  tokenCount: fullAnswer.length,
+                  sourceCount: sources.length,
+                  cached: false,
+                });
+
+              } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                Sentry.captureException(error, {
+                  extra: { requestId: rid, query },
+                });
+
+                logStructured({
+                  level: 'error',
+                  rid,
+                  ipHash,
+                  mode: 'sse',
+                  message: 'Research failed',
+                  latencyMs: Date.now() - startTime,
+                  error: errorMessage,
+                });
+
+                controller.enqueue(
+                  encoder.encode(
+                    `\n\n__ERROR__\nAn error occurred while processing your request: ${errorMessage}`
+                  )
+                );
+              } finally {
+                controller.close();
+                span?.end?.();
+              }
+            }
+          );
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no', // Disable nginx buffering
+          'X-Request-Id': rid,
+        },
+      });
+    }
+  );
 }
