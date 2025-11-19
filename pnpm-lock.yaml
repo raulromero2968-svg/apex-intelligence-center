@@ -162,6 +162,12 @@ importers:
       '@sentry/types':
         specifier: ^10.25.0
         version: 10.25.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.46.4
+        version: 8.46.4(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: ^8.46.4
+        version: 8.46.4(eslint@8.57.1)(typescript@5.9.3)
       eslint:
         specifier: ^8.57.1
         version: 8.57.1

@@ -1,8 +1,7 @@
 // src/lib/db.ts - Prisma client singleton for Next.js
 // Prevents multiple instances in development (hot reload)
 
-import type { PrismaClient as PrismaClientType } from '@prisma/client';
-
+type PrismaClientType = Record<string, any>;
 type PrismaConstructor = new (...args: any[]) => PrismaClientType;
 
 function resolvePrismaClient(): PrismaConstructor {
@@ -31,8 +30,8 @@ const globalForPrisma = globalThis as unknown as {
   prisma: InstanceType<PrismaConstructor> | undefined;
 };
 
-export const prisma =
-  globalForPrisma.prisma ??
+export const prisma: PrismaClientType =
+  (globalForPrisma.prisma as PrismaClientType | undefined) ??
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });

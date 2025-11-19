@@ -101,6 +101,8 @@
   "devDependencies": {
     "@playwright/test": "^1.48.0",
     "@sentry/types": "^10.25.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
     "vercel": "^33.0.0"

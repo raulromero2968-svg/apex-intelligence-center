@@ -313,7 +313,7 @@ async function scanSingleCard(
     });
 
     // Step 2: Extract prices (with voting)
-    const extractResult = await voteOnStep(() => extractPricesAgent(fetchResult), {
+    const extractResult = await voteOnStep(async () => extractPricesAgent(fetchResult), {
       taskId,
       cardId,
       stepName: 'extract_prices',
@@ -325,7 +325,7 @@ async function scanSingleCard(
 
     // Step 3: Calculate arbitrage (with voting)
     const arbitrageResult = await voteOnStep(
-      () => calculateArbitrageAgent(extractResult),
+      async () => calculateArbitrageAgent(extractResult),
       {
         taskId,
         cardId,
@@ -354,3 +354,10 @@ export function updateScannerConfig(
   Object.assign(SCANNER_CONFIG, config);
 }
 
+/**
+ * Backwards compatible entrypoint for existing workers
+ */
+export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
+  const result = await scanArbitrageWithMAKER(job);
+  return result.opportunities;
+}
