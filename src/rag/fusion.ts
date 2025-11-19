@@ -88,7 +88,7 @@ Generate exactly ${this.config.numQueries} diverse search queries, each explorin
       const text = typeof response.content === 'string' ? response.content : response.content[0].text;
 
       // Parse queries (one per line, remove numbering if present)
-      const queries = text
+      const queries = (typeof text === 'string' ? text : String(text))
         .split('\n')
         .map((line) => line.trim())
         .map((line) => line.replace(/^\d+[\.)]\s*/, '')) // Remove "1. " or "1) " prefixes
