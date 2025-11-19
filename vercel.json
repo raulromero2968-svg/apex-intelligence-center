@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/update-prices",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/push-receipts",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

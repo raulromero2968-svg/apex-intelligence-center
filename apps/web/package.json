@@ -41,8 +41,9 @@
     "rollback:list": "tsx scripts/rollback.ts --list"
   },
   "dependencies": {
-    "@apex/db": "workspace:*",
     "@apex/auth": "workspace:*",
+    "@apex/db": "workspace:*",
+    "@apex/realtime": "workspace:*",
     "@langchain/anthropic": "^1.0.1",
     "@langchain/cohere": "^1.0.0",
     "@langchain/community": "^1.0.3",
@@ -96,6 +97,7 @@
     "stripe": "^14.0.0",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
+    "expo-server-sdk": "^3.10.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
