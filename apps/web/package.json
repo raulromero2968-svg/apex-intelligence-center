@@ -1,21 +1,16 @@
 {
-  "name": "apex-intelligence-center",
+  "name": "@apex/web",
   "version": "1.0.0",
-  "description": "Apex Intelligence - TCG Market Intelligence Platform",
-  "main": "index.html",
+  "private": true,
+  "description": "Apex Intelligence Web - Next.js Application",
   "scripts": {
     "postinstall": "prisma generate",
-    "dev": "turbo dev",
-    "dev:web": "turbo dev --filter=@apex/web",
-    "dev:mobile": "turbo dev --filter=@apex/mobile",
-    "build": "turbo build",
-    "build:web": "turbo build --filter=@apex/web",
-    "build:mobile": "turbo build --filter=@apex/mobile",
-    "start": "turbo start",
-    "lint": "turbo lint",
-    "typecheck": "turbo typecheck",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "setup-stripe": "node setup-stripe-products.js",
-    "deploy": "vercel --prod",
     "test": "vitest",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
@@ -42,25 +37,14 @@
     "guard:delta": "DELTA_CHUNK_KB=${DELTA_CHUNK_KB:-40} STRICT_DELTA=0 scripts/bundle-delta.sh",
     "guard:libs": "LIB_BLOCKLIST=${LIB_BLOCKLIST:-moment,chart.js/auto,echarts,fullcalendar,lodash } scripts/library-watch.sh || true",
     "snapshot": "bash scripts/offender-snapshot.sh",
-    "patch:check": "git apply --check patch.diff",
-    "patch:apply": "git apply --index patch.diff || git apply patch.diff && git add -A && pnpm golden",
-    "golden": "pnpm build && pnpm -s budget:js && pnpm -s guard:delta && pnpm -s budget:route && pnpm -s budget:css && pnpm -s budget:media && pnpm -s audit:env && pnpm -s guard:libs && pnpm -s mirror && pnpm -s sanity",
     "rollback": "tsx scripts/rollback.ts",
     "rollback:list": "tsx scripts/rollback.ts --list"
   },
-  "keywords": [
-    "tcg",
-    "trading-cards",
-    "market-intelligence",
-    "stripe"
-  ],
-  "author": "Apex Intelligence",
-  "license": "MIT",
-  "engines": {
-    "node": "20.x"
-  },
-  "packageManager": "pnpm@10.19.0",
   "dependencies": {
+    "@apex/auth": "workspace:*",
+    "@apex/db": "workspace:*",
+    "@apex/realtime": "workspace:*",
+    "@apex/valuation": "workspace:*",
     "@langchain/anthropic": "^1.0.1",
     "@langchain/cohere": "^1.0.0",
     "@langchain/community": "^1.0.3",
@@ -114,6 +98,7 @@
     "stripe": "^14.0.0",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
+    "expo-server-sdk": "^3.10.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
@@ -125,7 +110,6 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
     "prisma": "^6.19.0",
-    "turbo": "^2.1.2",
     "vercel": "^33.0.0",
     "vitest": "^4.0.10"
   }
