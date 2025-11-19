@@ -13,7 +13,8 @@
 import { NextRequest } from 'next/server';
 import { ragFusionPipeline } from '@/lib/rag/rag-fusion';
 import { ratelimit, getLimitForTier, getRetryAfter } from '@/lib/rate-limit';
-import { captureException, withScope } from '@sentry/nextjs';
+import * as Sentry from '@sentry/nextjs';
+import type { Scope } from '@sentry/types';
 import { z } from 'zod';
 import { getUserFromRequest, UserWithTier } from '@/lib/auth/jwt';
 
@@ -72,10 +73,10 @@ export async function POST(req: NextRequest) {
     const { success, reset, remaining } = await ratelimit(limit, `rag:${user.id}`);
 
     if (!success) {
-      withScope((scope) => {
-        scope.setUser({ id: user.id, email: user.email });
+      Sentry.withScope((scope: Scope) => {
+        scope.setUser({ id: user!.id, email: user!.email });
         scope.setTag('rate_limit', 'exceeded');
-        scope.setExtra('tier', user.subscriptionTier);
+        scope.setExtra('tier', user!.subscriptionTier);
       });
 
       return new Response(
@@ -104,16 +105,16 @@ export async function POST(req: NextRequest) {
     const parsed = QuerySchema.safeParse(body);
 
     if (!parsed.success) {
-      withScope((scope) => {
-        scope.setUser({ id: user.id, email: user.email });
-        scope.setExtra('validation_errors', parsed.error.errors);
-        captureException(new Error('Invalid RAG query format'));
+      Sentry.withScope((scope: Scope) => {
+        scope.setUser({ id: user!.id, email: user!.email });
+        scope.setExtra('validation_errors', parsed.error.issues);
+        Sentry.captureException(new Error('Invalid RAG query format'));
       });
 
       return new Response(
         JSON.stringify({
           error: 'Invalid query format',
-          details: parsed.error.errors.map((e) => ({
+          details: parsed.error.issues.map((e) => ({
             path: e.path.join('.'),
             message: e.message,
           })),
@@ -128,10 +129,10 @@ export async function POST(req: NextRequest) {
     const { query } = parsed.data;
 
     // Step 4: Execute RAG-Fusion pipeline
-    withScope((scope) => {
-      scope.setUser({ id: user.id, email: user.email });
+    Sentry.withScope((scope: Scope) => {
+      scope.setUser({ id: user!.id, email: user!.email });
       scope.setTag('query_length', String(query.length));
-      scope.setExtra('tier', user.subscriptionTier);
+      scope.setExtra('tier', user!.subscriptionTier);
     });
 
     const response = await ragFusionPipeline(query);
@@ -166,12 +167,12 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     // Step 6: Error handling with Sentry context
-    withScope((scope) => {
+    Sentry.withScope((scope: Scope) => {
       if (user) {
         scope.setUser({ id: user.id, email: user.email });
       }
       scope.setExtra('error', error);
-      captureException(error);
+      Sentry.captureException(error);
     });
 
     return new Response(
