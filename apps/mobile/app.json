@@ -49,7 +49,11 @@
       },
       "eas": {
         "projectId": "apex-intelligence-mobile"
-      }
+      },
+      "apiUrl": "${EXPO_PUBLIC_API_URL}",
+      "sentryDsn": "${EXPO_PUBLIC_SENTRY_DSN}",
+      "vapidPublicKey": "${EXPO_PUBLIC_VAPID_PUBLIC_KEY}",
+      "appEnv": "${APP_ENV}"
     },
     "runtimeVersion": {
       "policy": "appVersion"

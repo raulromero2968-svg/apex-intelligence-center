@@ -5,14 +5,16 @@
  * - Sentry performance tracing
  * - React Query setup
  * - Biometric auth guard
+ * - First-launch biometric enrollment
  * - Offline-first data sync
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
+import { shouldPromptEnrollment, showEnrollmentPrompt } from '@/lib/biometric-enrollment';
 
 // Initialize Sentry with optimized sampling
 Sentry.init({
@@ -82,12 +84,46 @@ const queryClient = new QueryClient({
 });
 
 function RootLayout() {
+  const [enrollmentChecked, setEnrollmentChecked] = useState(false);
+
   useEffect(() => {
     // Set user context for Sentry
     Sentry.setContext('device', {
       model: 'unknown', // Would be filled by device info
       os: 'unknown',
     });
+
+    // Check if we should prompt for biometric enrollment on first launch
+    const checkEnrollment = async () => {
+      const shouldPrompt = await shouldPromptEnrollment();
+      setEnrollmentChecked(true);
+
+      if (shouldPrompt) {
+        // Delay prompt slightly to let app finish loading
+        setTimeout(() => {
+          showEnrollmentPrompt(
+            () => {
+              // Success callback
+              Sentry.addBreadcrumb({
+                category: 'onboarding',
+                message: 'Biometric enrollment completed on first launch',
+                level: 'info',
+              });
+            },
+            () => {
+              // Skip callback
+              Sentry.addBreadcrumb({
+                category: 'onboarding',
+                message: 'Biometric enrollment skipped',
+                level: 'info',
+              });
+            }
+          );
+        }, 1000);
+      }
+    };
+
+    checkEnrollment();
   }, []);
 
   return (
@@ -100,6 +136,7 @@ function RootLayout() {
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="settings/security" options={{ presentation: 'card' }} />
       </Stack>
       <StatusBar style="light" />
     </QueryClientProvider>

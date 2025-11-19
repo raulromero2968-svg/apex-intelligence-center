@@ -136,9 +136,60 @@ Face ID not available in simulator
 
 ---
 
+### 11. EAS Build Credentials Error
+```
+Error: No credentials configured for this project
+```
+**Fix:**
+```bash
+cd apps/mobile && eas credentials
+```
+**Time:** 2s
+
+---
+
+### 12. EAS Build Failed - Cache Issues
+```
+Build failed: Unable to resolve dependencies
+```
+**Fix:**
+```bash
+eas build --profile preview --clear-cache
+```
+**Time:** 2s
+
+---
+
+### 13. Biometric Enrollment Not Showing
+```
+First-launch enrollment prompt doesn't appear
+```
+**Fix:**
+```bash
+# Delete app, clear secure storage, reinstall
+# iOS: Long press app → Delete → Reinstall
+# Android: Settings → Apps → Apex → Storage → Clear Data
+```
+**Time:** 3s
+
+---
+
+### 14. Environment Variables Not Loading
+```
+process.env.EXPO_PUBLIC_API_URL is undefined
+```
+**Fix:**
+```bash
+# Check eas.json env section, rebuild with correct profile
+eas build --profile production
+```
+**Time:** 2s
+
+---
+
 ## API Issues
 
-### 11. Stripe Webhook 403
+### 15. Stripe Webhook 403
 ```
 Stripe webhook verification failed
 ```
@@ -152,7 +203,7 @@ vercel env add STRIPE_WEBHOOK_SECRET
 
 ---
 
-### 12. Rate Limit Not Working
+### 16. Rate Limit Not Working
 ```
 Redis rate limiting always returns success
 ```
@@ -165,7 +216,7 @@ vercel env pull && grep UPSTASH .env.local
 
 ---
 
-### 13. CORS Error on API Route
+### 17. CORS Error on API Route
 ```
 Access-Control-Allow-Origin missing
 ```
@@ -184,7 +235,7 @@ export async function OPTIONS() {
 
 ## Performance Issues
 
-### 14. Sentry 100% Trace Sample Rate in Prod
+### 18. Sentry 100% Trace Sample Rate in Prod
 ```
 Sentry bill = $$$, performance degraded
 ```
@@ -197,7 +248,7 @@ tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0
 
 ---
 
-### 15. Bundle Size Explosion
+### 19. Bundle Size Explosion
 ```
 Initial JS size > 500KB
 ```
