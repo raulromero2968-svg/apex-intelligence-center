@@ -1,10 +1,29 @@
 import * as Sentry from '@sentry/nextjs';
+import { sentryConfig } from './sentry.config';
 
+/**
+ * Sentry Client Configuration
+ * Tracks browser performance, errors, and user sessions with replay
+ */
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.05,
-  replaysOnErrorSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
-  environment: process.env.SENTRY_ENV || process.env.NODE_ENV,
-  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+  ...sentryConfig,
+
+  // Client-specific integrations
+  integrations: [
+    // Browser performance tracking (Web Vitals: LCP, FID, CLS)
+    Sentry.browserTracingIntegration(),
+
+    // Session replay with error recording
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
+
+    // HTTP client instrumentation
+    Sentry.httpClientIntegration(),
+  ],
+
+  // Session replay settings
+  replaysOnErrorSampleRate: 1.0, // 100% of sessions with errors
+  replaysSessionSampleRate: 0.1, // 10% of normal sessions
 });

@@ -14,6 +14,7 @@ const nextConfig = {
     typedRoutes: false,
     optimizeCss: true, // CSS optimization for better performance
     staleTimes: { dynamic: 0 }, // Keep default; tag invalidation is our lever
+    instrumentationHook: true, // Enable instrumentation.ts for Sentry auto-capture
     // Optimize package imports for large libraries (2025 serverless best practice)
     optimizePackageImports: [
       'langchain',
