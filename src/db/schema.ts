@@ -238,6 +238,49 @@ export const pushSubscriptions = pgTable('push_subscriptions', {
 }));
 
 /**
+ * Mobile Push Tokens - FCM and Expo Push tokens for mobile apps
+ */
+export const mobilePushTokens = pgTable('mobile_push_tokens', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  token: text('token').notNull().unique(),
+  type: text('type').notNull(), // 'fcm' or 'expo'
+  deviceId: text('device_id'),
+  platform: text('platform'), // 'ios' or 'android'
+  active: boolean('active').default(true).notNull(),
+  lastUsedAt: timestamp('last_used_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_mobile_push_user').on(table.userId),
+  tokenIdx: index('idx_mobile_push_token').on(table.token),
+  activeIdx: index('idx_mobile_push_active').on(table.active),
+}));
+
+/**
+ * Push Tickets - Track Expo push notification receipts and retries
+ */
+export const pushTickets = pgTable('push_tickets', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  ticketId: text('ticket_id').unique(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  token: text('token').notNull(),
+  type: text('type').notNull(), // 'fcm' or 'expo'
+  status: text('status').notNull().default('sent'), // 'sent', 'delivered', 'error', 'retry'
+  title: text('title').notNull(),
+  body: text('body').notNull(),
+  data: jsonb('data'),
+  retries: integer('retries').default(0).notNull(),
+  errorMessage: text('error_message'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  ticketIdIdx: index('idx_push_ticket_id').on(table.ticketId),
+  statusIdx: index('idx_push_ticket_status').on(table.status),
+  userIdx: index('idx_push_ticket_user').on(table.userId),
+}));
+
+/**
  * Watchlist Items - User price watchlist with target alerts
  */
 export const watchlistItems = pgTable('watchlist_items', {
@@ -559,6 +602,10 @@ export type AlertSubscription = typeof alertSubscriptions.$inferSelect;
 export type NewAlertSubscription = typeof alertSubscriptions.$inferInsert;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+export type MobilePushToken = typeof mobilePushTokens.$inferSelect;
+export type NewMobilePushToken = typeof mobilePushTokens.$inferInsert;
+export type PushTicket = typeof pushTickets.$inferSelect;
+export type NewPushTicket = typeof pushTickets.$inferInsert;
 export type WatchlistItem = typeof watchlistItems.$inferSelect;
 export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
