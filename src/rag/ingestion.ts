@@ -13,8 +13,7 @@
  */
 
 import { OpenAIEmbeddings } from '@langchain/openai';
-// TODO: Install @langchain/textsplitters package
-// import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { db, pool } from '@/db';
 import { tcg_documents } from '@/db/schema';
 import { eq, sql } from 'drizzle-orm';
@@ -30,12 +29,12 @@ const embeddings = new OpenAIEmbeddings({
 
 // Text splitter for chunking large documents
 // Optimized for TCG content (listings, articles, reports)
-// TODO: Re-enable after installing @langchain/textsplitters
-// const splitter = new RecursiveCharacterTextSplitter({
-//   chunkSize: 1000,
-//   chunkOverlap: 200,
-//   separators: ['\n\n', '\n', '. ', ' ', ''],
-// });
+// chunkSize ~ 1200, overlap ~ 150 as specified
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 1200,
+  chunkOverlap: 150,
+  separators: ['\n\n', '\n', '. ', ' ', ''],
+});
 
 /**
  * Source types supported by the ingestion pipeline
@@ -121,9 +120,15 @@ export async function ingestTcgData(
             throw new Error('metadata.unique_id is required for idempotent ingestion');
           }
 
+          // Guard: Warn if content exceeds 1e6 characters
+          if (item.content.length > 1e6) {
+            console.warn(
+              `⚠️  Large content detected for ${item.metadata.unique_id}: ${item.content.length.toLocaleString()} characters (>1M). This may result in many chunks.`
+            );
+          }
+
           // Split content into chunks for better retrieval
-          // TODO: Re-enable after installing @langchain/textsplitters
-          const chunks = [{ pageContent: item.content, metadata: {} }]; // await splitter.createDocuments([item.content]);
+          const chunks = await splitter.createDocuments([item.content]);
           result.chunks += chunks.length;
 
           // Generate embeddings for all chunks

@@ -78,8 +78,8 @@ cd apex-intelligence-center
 pnpm install
 
 # Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your API keys and database credentials
+# See docs/ENVIRONMENT_VARIABLES.md for complete list
+# Create .env.local with your API keys and database credentials
 
 # Run database migrations
 pnpm db:push
@@ -97,6 +97,7 @@ Visit `http://localhost:3000` to see the app.
 
 - [RAG System Architecture](./RAG_SYSTEM.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
+- [Environment Variables Reference](./docs/ENVIRONMENT_VARIABLES.md)
 - [Cache Tags Documentation](./docs/cache-tags.md)
 - [Deployment Debug Template](./docs/deploy-debug-template.md)
 

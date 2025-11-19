@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { Search, Sparkles } from 'lucide-react';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
 import ContentCard from '@/components/ContentCard';
 import HorizontalCarousel from '@/components/HorizontalCarousel';
 import RouteTransition from '@/layout/RouteTransition';
+import ResearchDialog from '@/components/research/ResearchDialog';
 import { blogPosts, researchReports, intelNotes } from '@/content/seed';
 import { ContentKind } from '@/lib/routeMap';
 
@@ -110,6 +112,7 @@ function getHomeFeed() {
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isResearchDialogOpen, setIsResearchDialogOpen] = useState(false);
   const feedItems = getHomeFeed();
 
   const handleSearch = (query: string) => {
@@ -120,6 +123,27 @@ export default function HomePage() {
       });
     }
   };
+
+  const handleOpenResearch = () => {
+    setIsResearchDialogOpen(true);
+  };
+
+  // Handle Ctrl+K to open research panel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        // Only if not in an input field
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          handleOpenResearch();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <RouteTransition>
@@ -144,6 +168,19 @@ export default function HomePage() {
               <p className="text-xl text-white/70 max-w-xl">
                 Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
               </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <button
+                  onClick={handleOpenResearch}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-400/20 hover:bg-cyan-400/30 border border-cyan-400/50 rounded-lg text-cyan-400 font-medium transition-colors group"
+                >
+                  <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  Ask Research
+                  <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-white/10 text-white/70 border border-white/20">
+                    <span>Ctrl</span>
+                    <span>K</span>
+                  </kbd>
+                </button>
+              </div>
             </div>
 
             {/* Right side: Wolf Logo */}
@@ -194,6 +231,12 @@ export default function HomePage() {
           {/* Footer Spacing */}
           <div className="h-24" />
         </main>
+
+        {/* Research Dialog */}
+        <ResearchDialog
+          isOpen={isResearchDialogOpen}
+          onClose={() => setIsResearchDialogOpen(false)}
+        />
       </div>
     </RouteTransition>
   );
