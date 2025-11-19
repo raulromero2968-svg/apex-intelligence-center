@@ -1,14 +1,31 @@
 import * as Sentry from '@sentry/nextjs';
+import { sentryConfig } from './sentry.config';
 
+/**
+ * Sentry Server Configuration
+ * Tracks server-side performance with Redis, Postgres, and HTTP spans
+ */
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-  profilesSampleRate: 0.1,
-  // Keep noise low; adjust later
+  ...sentryConfig,
+
+  // Server-specific integrations
   integrations: [
-    Sentry.captureConsoleIntegration({ levels: ['error'] }),
+    // HTTP server instrumentation
     Sentry.httpIntegration(),
+
+    // Database instrumentation (Postgres via Prisma/Drizzle)
+    Sentry.prismaIntegration(),
+
+    // Redis instrumentation (ioredis support)
+    Sentry.redisIntegration(),
+
+    // Console logging (errors only)
+    Sentry.captureConsoleIntegration({ levels: ['error'] }),
   ],
-  environment: process.env.SENTRY_ENV || process.env.NODE_ENV,
-  ignoreErrors: ['AbortError'],
 });
+
+/**
+ * Export request error handler for Next.js instrumentation
+ * Used in instrumentation.ts for automatic error capture
+ */
+export const onRequestError = Sentry.captureRequestError;
