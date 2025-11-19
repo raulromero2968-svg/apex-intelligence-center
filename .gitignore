@@ -32,6 +32,8 @@ dist/
 build/
 .cache/
 .next/
+.contentlayer/
+contentlayer/generated/
 
 # Deploy Sanity artifacts
 artifacts/
