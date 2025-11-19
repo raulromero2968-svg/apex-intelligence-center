@@ -1,10 +1,10 @@
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apex-intelligence.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
   const currentDate = new Date();
 
-  // Static routes
+  // Static routes - merged from both branches
   const staticRoutes = [
     '',
     '/about',
@@ -20,10 +20,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/subscribe',
     '/tools',
     '/tutorial',
+    // New routes for AI discoverability and legal
+    '/ai/meta',
+    '/llms.txt',
+    '/security.txt',
+    '/humans.txt',
+    '/legal/licensing',
+    '/legal/terms',
+    '/legal/privacy',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: currentDate,
-    changeFrequency: 'weekly' as const,
+    changeFrequency: route === '' ? 'daily' : 'weekly' as const,
     priority: route === '' ? 1.0 : 0.8,
   }));
 
