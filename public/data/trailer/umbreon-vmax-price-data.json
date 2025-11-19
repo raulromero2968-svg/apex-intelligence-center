@@ -1,0 +1,48 @@
+{
+  "card": "Umbreon VMAX Alternate Art (SWSH Evolving Skies)",
+  "grading": "PSA 10",
+  "setNumber": "215/203",
+  "currency": "USD",
+  "timeframe": "Oct 15 - Nov 12, 2025",
+  "percentIncrease": 247.1,
+  "catalyst": "PokéPost viral grading reveal + Japanese restock rumors",
+  "dataPoints": [
+    {
+      "date": "2025-10-15",
+      "price": 340,
+      "volume": 12,
+      "marketCap": 4080
+    },
+    {
+      "date": "2025-10-22",
+      "price": 385,
+      "volume": 18,
+      "marketCap": 6930
+    },
+    {
+      "date": "2025-10-29",
+      "price": 520,
+      "volume": 34,
+      "marketCap": 17680
+    },
+    {
+      "date": "2025-11-05",
+      "price": 890,
+      "volume": 67,
+      "marketCap": 59630
+    },
+    {
+      "date": "2025-11-12",
+      "price": 1180,
+      "volume": 92,
+      "marketCap": 108560
+    }
+  ],
+  "annotations": [
+    {
+      "date": "2025-11-12",
+      "label": "+247% in 28 days",
+      "type": "peak"
+    }
+  ]
+}
