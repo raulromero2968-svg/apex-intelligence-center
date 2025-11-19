@@ -1,123 +1,176 @@
-/**
- * Offline-First SQLite Database with Drizzle ORM
- *
- * Features:
- * - Local SQLite storage via expo-sqlite
- * - Same schema as server for easy sync
- * - Automatic sync when online
- * - Conflict resolution with last-write-wins
- */
-
 import * as SQLite from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
-import { sql } from 'drizzle-orm';
-
-// Open SQLite database
-const sqlite = SQLite.openDatabaseSync('apex.db');
-
-// Define local schema (mirrors server schema)
-export const localWatchlistItems = sqliteTable('watchlist_items', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull(),
-  cardId: text('card_id').notNull(),
-  targetPrice: real('target_price').notNull(),
-  direction: text('direction').notNull(), // 'above' | 'below'
-  isTriggered: integer('is_triggered', { mode: 'boolean' }).notNull().default(false),
-  triggeredAt: integer('triggered_at'),
-  createdAt: integer('created_at').notNull(),
-  updatedAt: integer('updated_at').notNull(),
-  syncedAt: integer('synced_at'), // Track last sync
-});
-
-export const localPortfolioItems = sqliteTable('portfolio_items', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull(),
-  cardId: text('card_id').notNull(),
-  quantity: integer('quantity').notNull(),
-  costBasis: real('cost_basis').notNull(),
-  createdAt: integer('created_at').notNull(),
-  updatedAt: integer('updated_at').notNull(),
-  syncedAt: integer('synced_at'),
-});
-
-export const localCards = sqliteTable('cards', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  setName: text('set_name').notNull(),
-  cardNumber: text('card_number').notNull(),
-  game: text('game').notNull(),
-  currentPrice: real('current_price'),
-  apexScore: real('apex_score'),
-  imageUrl: text('image_url'),
-  syncedAt: integer('synced_at'),
-});
-
-// Initialize Drizzle
-export const db = drizzle(sqlite, {
-  schema: {
-    watchlistItems: localWatchlistItems,
-    portfolioItems: localPortfolioItems,
-    cards: localCards,
-  },
-});
+import * as schema from '@apex/db';
 
 /**
- * Initialize database with tables
+ * Initialize SQLite database for offline-first data storage
+ * - Portfolio data
+ * - Watchlist
+ * - Cached card prices
+ * - Sync queue for pending changes
  */
-export async function initDatabase() {
-  // Create tables if they don't exist
-  await sqlite.execAsync(`
-    CREATE TABLE IF NOT EXISTS watchlist_items (
-      id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL,
-      card_id TEXT NOT NULL,
-      target_price REAL NOT NULL,
-      direction TEXT NOT NULL,
-      is_triggered INTEGER NOT NULL DEFAULT 0,
-      triggered_at INTEGER,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      synced_at INTEGER
-    );
 
-    CREATE TABLE IF NOT EXISTS portfolio_items (
-      id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL,
-      card_id TEXT NOT NULL,
-      quantity INTEGER NOT NULL,
-      cost_basis REAL NOT NULL,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      synced_at INTEGER
-    );
+// Open/create the SQLite database
+const expo = SQLite.openDatabaseSync('apex-intelligence.db');
 
-    CREATE TABLE IF NOT EXISTS cards (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      set_name TEXT NOT NULL,
-      card_number TEXT NOT NULL,
-      game TEXT NOT NULL,
-      current_price REAL,
-      apex_score REAL,
-      image_url TEXT,
-      synced_at INTEGER
-    );
+// Initialize Drizzle ORM with the Expo SQLite instance
+export const db = drizzle(expo);
 
-    CREATE INDEX IF NOT EXISTS idx_watchlist_user ON watchlist_items(user_id);
-    CREATE INDEX IF NOT EXISTS idx_watchlist_card ON watchlist_items(card_id);
-    CREATE INDEX IF NOT EXISTS idx_portfolio_user ON portfolio_items(user_id);
-    CREATE INDEX IF NOT EXISTS idx_portfolio_card ON portfolio_items(card_id);
-  `);
+/**
+ * Initialize database tables
+ * Should be called on app startup
+ */
+export async function initializeDatabase() {
+  try {
+    // Create tables if they don't exist
+    // Note: In production, you'd use Drizzle migrations
+    // For now, we'll create tables manually
+
+    await expo.execAsync(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT,
+        image TEXT,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS watchlist (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        card_id TEXT NOT NULL,
+        game TEXT NOT NULL,
+        target_price INTEGER,
+        notes TEXT,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS portfolio (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        card_id TEXT NOT NULL,
+        game TEXT NOT NULL,
+        quantity INTEGER DEFAULT 1,
+        purchase_price INTEGER,
+        purchase_date INTEGER,
+        notes TEXT,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS notification_preferences (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        email INTEGER DEFAULT 1,
+        push INTEGER DEFAULT 1,
+        price_alerts INTEGER DEFAULT 1,
+        weekly_digest INTEGER DEFAULT 1,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS sync_queue (
+        id TEXT PRIMARY KEY,
+        table_name TEXT NOT NULL,
+        operation TEXT NOT NULL,
+        data TEXT NOT NULL,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        synced INTEGER DEFAULT 0
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_watchlist_user_id ON watchlist(user_id);
+      CREATE INDEX IF NOT EXISTS idx_portfolio_user_id ON portfolio(user_id);
+      CREATE INDEX IF NOT EXISTS idx_sync_queue_synced ON sync_queue(synced);
+    `);
+
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    throw error;
+  }
 }
 
 /**
- * Clear all local data (logout)
+ * Queue a change for sync when online
  */
-export async function clearDatabase() {
-  await sqlite.execAsync(`
-    DELETE FROM watchlist_items;
-    DELETE FROM portfolio_items;
-    DELETE FROM cards;
-  `);
+export async function queueForSync(
+  tableName: string,
+  operation: 'insert' | 'update' | 'delete',
+  data: any
+) {
+  const id = generateId();
+
+  await expo.execAsync(`
+    INSERT INTO sync_queue (id, table_name, operation, data)
+    VALUES (?, ?, ?, ?)
+  `, [id, tableName, operation, JSON.stringify(data)]);
+}
+
+/**
+ * Sync pending changes to the server
+ */
+export async function syncToServer() {
+  try {
+    // Get all unsynced items
+    const result = await expo.execAsync(`
+      SELECT * FROM sync_queue WHERE synced = 0 ORDER BY created_at ASC
+    `);
+
+    if (!result.rows || result.rows.length === 0) {
+      return { success: true, synced: 0 };
+    }
+
+    const items = result.rows._array || result.rows;
+    let syncedCount = 0;
+
+    // Sync each item
+    for (const item of items) {
+      try {
+        // TODO: Replace with actual API endpoint
+        const response = await fetch(`/api/sync/${item.table_name}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            operation: item.operation,
+            data: JSON.parse(item.data),
+          }),
+        });
+
+        if (response.ok) {
+          // Mark as synced
+          await expo.execAsync(`
+            UPDATE sync_queue SET synced = 1 WHERE id = ?
+          `, [item.id]);
+          syncedCount++;
+        }
+      } catch (error) {
+        console.error(`Error syncing item ${item.id}:`, error);
+        // Continue with next item
+      }
+    }
+
+    // Clean up synced items older than 7 days
+    await expo.execAsync(`
+      DELETE FROM sync_queue
+      WHERE synced = 1
+      AND created_at < strftime('%s', 'now') - 604800
+    `);
+
+    return { success: true, synced: syncedCount };
+  } catch (error) {
+    console.error('Error syncing to server:', error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Simple ID generator (use a proper UUID library in production)
+ */
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
