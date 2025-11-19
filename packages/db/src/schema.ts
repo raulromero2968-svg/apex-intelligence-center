@@ -47,3 +47,30 @@ export const notificationPreferences = pgTable('notification_preferences', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// Push tokens (Expo/FCM/APNS)
+export const pushTokens = pgTable('push_tokens', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  token: text('token').notNull().unique(),
+  platform: text('platform').notNull(), // 'expo' | 'fcm' | 'apns'
+  active: boolean('active').default(true).notNull(),
+  lastUsed: timestamp('last_used').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Push notification tickets (for receipt validation)
+export const pushTickets = pgTable('push_tickets', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  tokenId: uuid('token_id').references(() => pushTokens.id).notNull(),
+  ticketId: text('ticket_id').notNull().unique(), // Expo ticket ID
+  status: text('status').notNull().default('sent'), // 'sent' | 'delivered' | 'failed'
+  retries: integer('retries').default(0).notNull(),
+  nextAttemptAt: timestamp('next_attempt_at'),
+  deliveredAt: timestamp('delivered_at'),
+  failedAt: timestamp('failed_at'),
+  errorDetails: jsonb('error_details'), // Store error info from Expo
+  payload: jsonb('payload').notNull(), // Original notification payload
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
