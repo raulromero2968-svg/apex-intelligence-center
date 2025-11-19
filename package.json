@@ -20,6 +20,7 @@
     "db:backfill:slugs": "tsx scripts/backfill-collection-slugs.ts",
     "rag:ingest": "tsx scripts/ingest-sample-data.ts",
     "rag:setup": "pnpm db:migrate && pnpm rag:ingest",
+    "validate:mdx": "node scripts/validate-mdx.mjs",
     "ci": "pnpm build:search && pnpm db:migrate && pnpm db:backfill:slugs && pnpm db:seed:ci && playwright test",
     "mirror": "DEBUG=1 scripts/vercel-local-mirror.sh",
     "sanity": "scripts/repo-sanity.sh",
