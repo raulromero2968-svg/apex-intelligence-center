@@ -279,7 +279,7 @@ export async function POST(req: NextRequest) {
                 `\n\n__ERROR__\nAn error occurred while processing your request: ${errorMessage}`
               )
             );
-            span?.setStatus?.('internal_error');
+            // Error already captured by Sentry.captureException above
           } finally {
             controller.close();
             span?.end?.();
