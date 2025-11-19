@@ -37,7 +37,7 @@ export const TopBanner = () => {
         >
           <Image
             src="/wolf-logo.png"
-            alt="Wolf Logo"
+            alt="Apex Intelligence Center - TCG Market Intelligence Platform Logo"
             width={32}
             height={32}
             className="w-8 h-8"
