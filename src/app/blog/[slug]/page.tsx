@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import SectionShell from '../../(sections)/SectionShell';
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/mdx';
-import { BookOpen, Clock, Calendar } from 'lucide-react';
-import { articleLd } from '@/lib/ld/article';
+import { BookOpen, Clock, Calendar, User } from 'lucide-react';
+import { ArticleSchema } from '@/components/structured-data/ArticleSchema';
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -30,28 +30,27 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     };
   }
 
-  // Use hero image if available, otherwise fallback to dynamic OG image
-  const ogImage = article.frontmatter.heroImage
-    ? [{ url: article.frontmatter.heroImage, width: 1200, height: 630 }]
-    : [{ url: `/api/og?title=${encodeURIComponent(article.frontmatter.title)}`, width: 1200, height: 630 }];
-
-  const description = article.frontmatter.tags?.join(', ') || '';
+  // Use dynamic OG image with slug or fallback to hero image
+  const ogImageUrl = `/api/og?slug=${params.slug}`;
+  const description = article.frontmatter.description || article.frontmatter.tags?.join(', ') || '';
 
   return {
     title: article.frontmatter.title,
     description,
+    authors: [{ name: article.frontmatter.author || 'Apex Intelligence Team' }],
     openGraph: {
       title: article.frontmatter.title,
       description,
-      images: ogImage,
+      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
       type: 'article',
       publishedTime: article.frontmatter.publishedAt,
+      authors: [article.frontmatter.author || 'Apex Intelligence Team'],
     },
     twitter: {
       card: 'summary_large_image',
       title: article.frontmatter.title,
       description,
-      images: ogImage.map(i => i.url),
+      images: [ogImageUrl],
     },
   };
 }
@@ -83,10 +82,30 @@ function ArticleHeader({ article }: { article: any }) {
 
       {/* Meta Information */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-white/60">
+        {article.frontmatter.author && (
+          <>
+            <div className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              <span>{article.frontmatter.author}</span>
+            </div>
+            <span className="text-white/30">•</span>
+          </>
+        )}
+
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
           <time dateTime={article.frontmatter.publishedAt}>{publishDate}</time>
         </div>
+
+        {article.readingTime && (
+          <>
+            <span className="text-white/30">•</span>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span>{article.readingTime.text}</span>
+            </div>
+          </>
+        )}
 
         {article.frontmatter.sourceCount && (
           <>
@@ -140,14 +159,10 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
   }
 
   return (
-    <SectionShell title={article.frontmatter.title} kicker={article.frontmatter.category}>
-      <article className="max-w-4xl mx-auto">
-        {/* JSON-LD for Article schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd(article)) }}
-        />
-
+    <>
+      <ArticleSchema article={article} />
+      <SectionShell title={article.frontmatter.title} kicker={article.frontmatter.category}>
+        <article className="max-w-4xl mx-auto">
         {/* Static shell - renders immediately */}
         <ArticleHeader article={article} />
 
@@ -204,8 +219,9 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
             </section>
           )}
         </Suspense>
-      </article>
-    </SectionShell>
+        </article>
+      </SectionShell>
+    </>
   );
 }
 
