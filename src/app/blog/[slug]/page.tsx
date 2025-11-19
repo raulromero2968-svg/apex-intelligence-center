@@ -4,6 +4,7 @@ import Image from 'next/image';
 import SectionShell from '../../(sections)/SectionShell';
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/mdx';
 import { BookOpen, Clock, Calendar } from 'lucide-react';
+import { articleLd } from '@/lib/ld/article';
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -130,6 +131,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <SectionShell title={article.frontmatter.title} kicker={article.frontmatter.category}>
       <article className="max-w-4xl mx-auto">
+        {/* JSON-LD for Article schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd(article)) }}
+        />
+
         {/* Static shell - renders immediately */}
         <ArticleHeader article={article} />
 
