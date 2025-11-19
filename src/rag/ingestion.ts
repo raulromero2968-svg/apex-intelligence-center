@@ -132,7 +132,7 @@ export async function ingestTcgData(
           result.chunks += chunks.length;
 
           // Generate embeddings for all chunks
-          const chunkTexts = chunks.map((c) => c.pageContent);
+          const chunkTexts = chunks.map((c: any) => c.pageContent);
           const embeddingVectors = await embeddings.embedDocuments(chunkTexts);
 
           // Insert each chunk as a separate document
