@@ -1,5 +1,6 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { getArticleBySlug } from '@/lib/mdx';
 
 export const runtime = 'edge';
 
@@ -7,10 +8,26 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // Get parameters from query string
-    const title = searchParams.get('title') || 'Apex Intelligence Center';
-    const subtitle = searchParams.get('subtitle') || 'TCG Market Intelligence & Research';
-    const category = searchParams.get('category') || '';
+    // Check if this is a blog post request via slug
+    const slug = searchParams.get('slug');
+    let title = searchParams.get('title') || 'Apex Intelligence Center';
+    let subtitle = searchParams.get('subtitle') || 'TCG Market Intelligence & Research';
+    let category = searchParams.get('category') || '';
+
+    // If slug is provided, fetch article data
+    if (slug) {
+      try {
+        const article = await getArticleBySlug(slug);
+        if (article) {
+          title = article.frontmatter.title;
+          subtitle = article.frontmatter.description || article.frontmatter.tags?.join(' • ') || subtitle;
+          category = article.frontmatter.category;
+        }
+      } catch (error) {
+        // If article not found, use defaults
+        console.warn('Article not found for slug:', slug);
+      }
+    }
 
     // Brand colors from Tailwind config
     const colors = {
