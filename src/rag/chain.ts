@@ -227,11 +227,14 @@ Claim: ${claim}
 Answer:`;
 
       const judgment = await judgeLlm.invoke(judgmentPrompt);
-      const judgmentText = typeof judgment.content === 'string'
-        ? judgment.content
-        : judgment.content[0]?.text || '';
+      let judgmentText: string = '';
+      if (typeof judgment.content === 'string') {
+        judgmentText = judgment.content;
+      } else if (typeof judgment.content === 'object' && Array.isArray(judgment.content) && judgment.content[0] && typeof judgment.content[0] === 'object' && 'text' in judgment.content[0]) {
+        judgmentText = String(judgment.content[0].text as string);
+      }
 
-      if (judgmentText.trim().toUpperCase() !== 'SUPPORTED') {
+      if (judgmentText && judgmentText.trim().toUpperCase() !== 'SUPPORTED') {
         // Fallback: Check cosine similarity
         // Note: This requires embedding the claim and sources, which adds latency
         // For now, we'll trust the LLM judge. Cosine similarity can be added if Voyage embeddings are integrated
@@ -303,21 +306,19 @@ export async function executeRagQuery(
 
         // Rerank fusion results
         sources = await rerankResults(question, fusionResults, 10);
-      } else {
-        // Standard hybrid search + rerank
-        const { context: ctx, sources: srcs } = await getTcgContext(question);
-        context = ctx;
-        sources = srcs;
-      }
-
-      // Format context with provenance
-      if (useRagFusion) {
+        
+        // Format context with provenance
         context = sources
           .map(
             (doc, i) =>
               `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
           )
           .join('\n\n');
+      } else {
+        // Standard hybrid search + rerank
+        const { context: ctx, sources: srcs } = await getTcgContext(question);
+        context = ctx;
+        sources = srcs;
       }
 
       span?.setAttribute('sourceCount', sources.length);
