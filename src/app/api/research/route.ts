@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const { query } = await req.json();
 
     if (typeof query !== 'string' || !query.trim()) {
-      return NextResponse.json<Fail>(
+      return NextResponse.json(
         { ok: false, error: 'Bad Request: missing query', requestId: rid },
         { status: 400 }
       );
@@ -37,10 +37,10 @@ export async function POST(req: NextRequest) {
       requestId: rid,
     };
 
-    return NextResponse.json<ResearchResponse>(response);
+    return NextResponse.json(response);
   } catch (error) {
     console.error('[RESEARCH_API_ERROR]', error);
-    return NextResponse.json<Fail>(
+    return NextResponse.json(
       { ok: false, error: 'Internal server error', requestId: rid },
       { status: 500 }
     );
