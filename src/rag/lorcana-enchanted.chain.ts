@@ -147,7 +147,7 @@ export async function enchantedRagQuery(query: string): Promise<EnchantedRAGResu
     take: 100,  // Limit for performance
   });
 
-  const vectorResults: EnchantedChunk[] = allCards.map(card => ({
+  const vectorResults: EnchantedChunk[] = allCards.map((card: (typeof allCards)[number]) => ({
     id: card.id,
     content: `${card.name} (Chapter: ${card.chapter}, Serial: ${card.serialNumber}) - PSA 10 Pop: ${card.psa10Pop}, PSA 10 Price: $${card.psa10Price}`,
     metadata: {
@@ -168,7 +168,7 @@ export async function enchantedRagQuery(query: string): Promise<EnchantedRAGResu
       card.chapter.toLowerCase().includes(query.toLowerCase()) ||
       card.serialNumber.includes(query)
     )
-    .map(card => ({
+    .map((card: (typeof allCards)[number]) => ({
       id: card.id,
       content: `${card.name} (Chapter: ${card.chapter}, Serial: ${card.serialNumber}) - PSA 10 Pop: ${card.psa10Pop}, PSA 10 Price: $${card.psa10Price}`,
       metadata: {
