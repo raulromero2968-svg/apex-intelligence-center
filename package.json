@@ -10,6 +10,8 @@
     "lint": "next lint",
     "setup-stripe": "node setup-stripe-products.js",
     "deploy": "vercel --prod",
+    "test": "vitest",
+    "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:smoke": "playwright test tests/smoke.spec.ts",
@@ -108,9 +110,10 @@
     "@sentry/types": "^10.25.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
+    "@vitest/ui": "^4.0.10",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
     "vercel": "^33.0.0",
-    "vitest": "^2.1.8"
+    "vitest": "^4.0.10"
   }
 }
