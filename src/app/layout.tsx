@@ -18,13 +18,13 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 import { Footer } from '@/components/footer/Footer';
 
-import { StructuredData } from '@/components/StructuredData';
-
 import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
 
 import ToastHost from '@/components/ToastHost';
+
+import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 
 import '@/styles/animations.css';
 
@@ -32,21 +32,27 @@ import './globals.css';
 
 
 
-// Default metadata - can be overridden on a per-page basis
+// Load facts from central registry
+
+const facts = getFacts();
+
+
+
+// Default metadata - uses facts registry where available, with fallbacks
 
 export const metadata: Metadata = {
 
-  // Base metadata
+  // Base metadata - using facts registry
 
   title: {
 
-    default: 'TCG Intelligence Center - Market Intelligence Platform',
+    default: facts.product.fullName || 'TCG Intelligence Center - Market Intelligence Platform',
 
-    template: '%s | TCG Intelligence Center', // Allows pages to set title that gets this suffix
+    template: '%s | TCG Intelligence Center',
 
   },
 
-  description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+  description: facts.product.description || 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor. PS5-style intelligence platform with advanced tools and analytics.',
 
 
 
@@ -58,11 +64,11 @@ export const metadata: Metadata = {
 
   // Author and creator info
 
-  authors: [{ name: 'TCG Intelligence Center' }],
+  authors: [{ name: facts.organization.name || 'TCG Intelligence Center' }],
 
-  creator: 'TCG Intelligence Center',
+  creator: facts.organization.name || 'TCG Intelligence Center',
 
-  publisher: 'TCG Intelligence Center',
+  publisher: facts.organization.name || 'TCG Intelligence Center',
 
 
 
@@ -100,11 +106,11 @@ export const metadata: Metadata = {
 
     locale: 'en_US',
 
-    siteName: 'TCG Intelligence Center',
+    siteName: facts.product.name || 'TCG Intelligence Center',
 
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
+    title: facts.product.fullName || 'TCG Intelligence Center - Market Intelligence Platform',
 
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    description: facts.product.description || 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
 
     images: [
 
@@ -116,7 +122,7 @@ export const metadata: Metadata = {
 
         height: 630,
 
-        alt: 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+        alt: facts.organization.tagline || 'TCG Intelligence Center - Underground Intel For Serious Collectors',
 
         type: 'image/png',
 
@@ -134,21 +140,49 @@ export const metadata: Metadata = {
 
     card: 'summary_large_image',
 
-    title: 'TCG Intelligence Center - Market Intelligence Platform',
+    title: facts.product.fullName || 'TCG Intelligence Center',
 
-    description: 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    description: facts.product.description || 'Data-driven market analysis for TCG investors',
 
     images: ['/api/og'],
 
-    creator: '@tcgintel', // Update with actual Twitter handle if available
+    creator: '@tcgintel',
 
   },
 
 
 
+  // Verification tags (add actual values when available)
+
+  // verification: {
+
+  //   google: 'google-site-verification-code',
+
+  //   yandex: 'yandex-verification-code',
+
+  // },
+
+
+
   // App-specific metadata
 
-  applicationName: 'TCG Intelligence Center',
+  applicationName: facts.product.name || 'TCG Intelligence Center',
+
+
+
+  // Alternate languages (if internationalization is added)
+
+  // alternates: {
+
+  //   canonical: '/',
+
+  //   languages: {
+
+  //     'en-US': '/en-US',
+
+  //   },
+
+  // },
 
 };
 
@@ -164,13 +198,33 @@ export default function RootLayout({
 
 }) {
 
+  // Generate JSON-LD schemas from facts registry
+
+  const schemas = generateAllSchemas();
+
+
+
   return (
 
     <html lang="en" className="h-full">
 
       <head>
 
-        <StructuredData />
+        {/* JSON-LD Structured Data - Generated from facts registry */}
+
+        {schemas.map((schema, index) => (
+
+          <script
+
+            key={`jsonld-${index}`}
+
+            type="application/ld+json"
+
+            dangerouslySetInnerHTML={{ __html: toScriptTag(schema) }}
+
+          />
+
+        ))}
 
       </head>
 
