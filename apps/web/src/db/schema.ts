@@ -276,6 +276,7 @@ export const watchlistItems = pgTable('watchlist_items', {
   triggeredAt: timestamp('triggered_at'),
   notified: boolean('notified').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdx: index('idx_watchlist_user').on(table.userId),
   cardIdx: index('idx_watchlist_card').on(table.cardId),

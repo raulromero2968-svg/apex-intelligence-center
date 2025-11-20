@@ -20,13 +20,13 @@ import * as Sentry from '@sentry/nextjs';
 export async function withServerTrace<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Partial<Parameters<typeof Sentry.startSpan>[0]>
+  options?: any
 ): Promise<T> {
   return Sentry.startSpan(
     {
       name,
       op: 'function',
-      ...(options || {}),
+      ...options,
     },
     fn
   );
@@ -46,13 +46,13 @@ export async function withServerTrace<T>(
 export async function withSpan<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Partial<Parameters<typeof Sentry.startSpan>[0]>
+  options?: any
 ): Promise<T> {
   return Sentry.startSpan(
     {
       name,
       op: 'db.query',
-      ...(options || {}),
+      ...options,
     },
     fn
   );
