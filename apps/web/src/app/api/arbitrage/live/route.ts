@@ -10,6 +10,9 @@
  * - Expiry timestamps (15min TTL)
  */
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { arbitrageOpportunities } from '@/db/schema';

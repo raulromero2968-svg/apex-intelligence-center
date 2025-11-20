@@ -3,7 +3,7 @@ import { getAllArticles } from '@/lib/mdx';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
-  const currentDate = new Date( );
+  const currentDate = new Date();
 
   // Static routes - merged from both branches
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -42,12 +42,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Filter out drafts and unlisted posts from sitemap
   const articles = allArticles
     .filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted)
-    .map(p => ({
-      url: `${baseUrl}/blog/${p.slug}`,
-      lastModified: p.frontmatter.publishedAt ? new Date(p.frontmatter.publishedAt) : currentDate,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    }));
+    .map(p => {
+      let lastModified = currentDate;
+      try {
+        if (p.frontmatter.publishedAt) {
+          const parsedDate = new Date(p.frontmatter.publishedAt);
+          // Validate the date is valid
+          if (!isNaN(parsedDate.getTime())) {
+            lastModified = parsedDate;
+          }
+        }
+      } catch (error) {
+        // If date parsing fails, use currentDate
+        console.warn(`Invalid date for article ${p.slug}:`, p.frontmatter.publishedAt);
+      }
+
+      return {
+        url: `${baseUrl}/blog/${p.slug}`,
+        lastModified,
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      };
+    });
 
   return [...staticRoutes, ...articles];
 }
