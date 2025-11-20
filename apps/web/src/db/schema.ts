@@ -193,6 +193,7 @@ export const watchlistItems = pgTable('watchlist_items', {
   direction: text('direction', { enum: ['above', 'below'] }).notNull(),
   isTriggered: boolean('is_triggered').notNull().default(false),
   triggeredAt: timestamp('triggered_at'),
+  notified: boolean('notified').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   userIdx: index('idx_watchlist_user').on(table.userId),

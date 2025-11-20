@@ -7,7 +7,7 @@
     "postinstall": "prisma generate",
     "dev": "next dev",
     "verify-barrels": "tsx scripts/verify-barrels.ts",
-    "prebuild": "pnpm verify-barrels",
+    "prebuild": "pnpm verify-barrels && tsx scripts/verify-schema-sync.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
