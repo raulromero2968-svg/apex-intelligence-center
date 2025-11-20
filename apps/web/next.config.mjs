@@ -73,6 +73,17 @@ const nextConfig = {
 
   // Webpack optimizations for serverless bundle size reduction (2025 best practices)
   webpack: (config, { isServer }) => {
+    // Exclude experimental RAG chains from both client and server bundles
+    // These chains may have missing/experimental dependencies that break builds
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      // Block experimental RAG chains unless ENABLE_EXPERIMENTAL_RAG=true
+      ...(process.env.ENABLE_EXPERIMENTAL_RAG !== 'true' && {
+        '@/rag/experimental': false,
+        '@/src/rag/experimental': false,
+      }),
+    };
+
     if (isServer) {
       // Reduce serverless function bundle size
       config.optimization = {

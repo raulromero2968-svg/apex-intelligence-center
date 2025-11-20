@@ -84,9 +84,11 @@ export {
 } from './citation-mapper';
 
 // ============================================================================
-// LORCANA - Specialized RAG chain for Lorcana Enchanted cards
+// EXPERIMENTAL CHAINS - Not included in production build
 // ============================================================================
-export {
-  enchantedRagQuery,
-  type EnchantedRAGResult,
-} from './lorcana-enchanted.chain';
+// Lorcana Enchanted RAG chain is experimental and moved to ./experimental/
+// Uncomment only when feature flag is enabled:
+// export {
+//   enchantedRagQuery,
+//   type EnchantedRAGResult,
+// } from './experimental/lorcana-enchanted.chain';

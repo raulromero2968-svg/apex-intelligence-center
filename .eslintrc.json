@@ -17,6 +17,14 @@
           {
             "group": ["@apex/*/*/**"],
             "message": "Deep imports from @apex packages are not allowed. Use package-level barrel exports (e.g., '@apex/auth' instead of '@apex/auth/jwt/session')."
+          },
+          {
+            "group": ["@langchain/voyage"],
+            "message": "Invalid LangChain import: '@langchain/voyage' does not exist. Use '@langchain/community/embeddings/voyage' instead."
+          },
+          {
+            "group": ["@langchain/!(@langchain|core|openai|community|anthropic|cohere|textsplitters)"],
+            "message": "Invalid LangChain package. Only allowed: @langchain/core, @langchain/openai, @langchain/community, @langchain/anthropic, @langchain/cohere, @langchain/textsplitters."
           }
         ]
       }
