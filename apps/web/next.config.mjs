@@ -105,6 +105,17 @@ const nextConfig = {
       config.externals = [...(config.externals || []), 'canvas', 'bufferutil', 'utf-8-validate'];
     }
 
+    // Exclude experimental RAG chains from production builds
+    // These are located in src/rag/experimental/ and should not be bundled
+    config.module = config.module || {};
+    config.module.rules = config.module.rules || [];
+    config.module.rules.push({
+      test: /[\\/]src[\\/]rag[\\/]experimental[\\/]/,
+      use: 'null-loader',
+      // Note: null-loader prevents these files from being bundled
+      // Experimental chains are not exported from rag/index.ts barrel
+    });
+
     // Enable tree-shaking for all modules
     config.optimization.usedExports = true;
 
