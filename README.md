@@ -1,5 +1,9 @@
 # Apex Intelligence - TCG Market Intelligence Platform
 
+<p align="center">
+  <img src="apps/web/public/immortal-badge.svg" alt="Apex Intelligence – Production Equilibrium Achieved November 19 2025" width="480" />
+</p>
+
 ## 🚀 Live Production
 
 **Live at:** https://apexintelligence.io  
