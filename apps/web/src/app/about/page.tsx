@@ -1,6 +1,6 @@
 import SectionShell from "../(sections)/SectionShell";
 import { Twitter, Linkedin, Instagram, Github } from 'lucide-react';
-import { SOCIAL_PROFILES } from '@/lib/constants/social';
+import { SOCIAL_PROFILES } from '@/lib/constants';
 
 export const revalidate = 3600;
 

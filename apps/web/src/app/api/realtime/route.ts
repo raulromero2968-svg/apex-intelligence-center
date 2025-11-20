@@ -20,7 +20,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { getLimitForTier, ratelimit } from '@/lib/rate-limit';
 import { redis, RedisKeys, PriceUpdatePayload } from '@/lib/redis';
 

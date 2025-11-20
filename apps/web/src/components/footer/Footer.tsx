@@ -1,6 +1,6 @@
 import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 import Link from 'next/link';
-import { SOCIAL_PROFILES } from '@/lib/constants/social';
+import { SOCIAL_PROFILES } from '@/lib/constants';
 
 export const Footer = () => {
   return (
