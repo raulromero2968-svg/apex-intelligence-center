@@ -193,11 +193,14 @@ export const watchlistItems = pgTable('watchlist_items', {
   direction: text('direction', { enum: ['above', 'below'] }).notNull(),
   isTriggered: boolean('is_triggered').notNull().default(false),
   triggeredAt: timestamp('triggered_at'),
+  notified: boolean('notified').notNull().default(false), // Price alert notification status
+  updatedAt: timestamp('updated_at').defaultNow().notNull(), // Track when notified status changes
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   userIdx: index('idx_watchlist_user').on(table.userId),
   cardIdx: index('idx_watchlist_card').on(table.cardId),
   triggeredIdx: index('idx_watchlist_triggered').on(table.isTriggered),
+  notifiedIdx: index('idx_watchlist_notified').on(table.notified), // Index for filtering unnotified items
   uniqueUserCard: uniqueIndex('idx_watchlist_user_card_unique').on(table.userId, table.cardId),
 }));
 
