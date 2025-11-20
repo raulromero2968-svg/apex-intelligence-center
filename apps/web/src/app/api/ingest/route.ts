@@ -3,6 +3,9 @@ export const dynamic = 'force-dynamic';
 import { ingestBatch, type Provider } from '@/jobs/ingest';
 import * as Sentry from '@sentry/nextjs';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 /**
  * Ingest API endpoint
  * Accepts batch updates from data providers
