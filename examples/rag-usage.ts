@@ -8,9 +8,14 @@
  *   npx tsx examples/rag-usage.ts
  */
 
-import { executeRagQuery, formatRagResponse } from '@/rag/chain';
-import { hybridSearch, vectorSearch, keywordSearch } from '@/rag/search';
-import { rerankResults } from '@/rag/reranker';
+import {
+  executeRagQuery,
+  formatRagResponse,
+  hybridSearch,
+  vectorSearch,
+  keywordSearch,
+  rerankResults,
+} from '@/rag';
 
 /**
  * Example 1: Basic RAG Query

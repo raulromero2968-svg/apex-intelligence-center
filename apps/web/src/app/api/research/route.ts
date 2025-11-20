@@ -17,10 +17,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { ragFusionSearch } from '@/rag/fusion';
-import { rerankResults } from '@/rag/reranker';
-import { deduplicateSources, formatSourcesForOutput } from '@/rag/dedupe';
-import { CitationMapper } from '@/rag/citation-mapper';
+import {
+  ragFusionSearch,
+  rerankResults,
+  deduplicateSources,
+  formatSourcesForOutput,
+  CitationMapper,
+} from '@/rag';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
