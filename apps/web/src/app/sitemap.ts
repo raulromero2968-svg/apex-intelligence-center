@@ -39,23 +39,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic routes from MDX articles
   const allArticles = await getAllArticles();
 
+  // Helper to safely parse dates
+  const safeDate = (date?: string | Date) => {
+    if (!date) return currentDate;
+    try {
+      const d = new Date(date);
+      return isNaN(d.getTime()) ? currentDate : d;
+    } catch {
+      return currentDate;
+    }
+  };
+
   // Filter out drafts and unlisted posts from sitemap
   const articles = allArticles
     .filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted)
     .map(p => {
-      let lastModified = currentDate;
-      try {
-        if (p.frontmatter.publishedAt) {
-          const parsedDate = new Date(p.frontmatter.publishedAt);
-          // Validate the date is valid
-          if (!isNaN(parsedDate.getTime())) {
-            lastModified = parsedDate;
-          }
-        }
-      } catch (error) {
-        // If date parsing fails, use currentDate
-        console.warn(`Invalid date for article ${p.slug}:`, p.frontmatter.publishedAt);
-      }
+      // Try publishedAt first, then date field, then fallback to currentDate
+      const dateValue = p.frontmatter.publishedAt || (p.frontmatter as any).date;
+      const lastModified = safeDate(dateValue);
 
       return {
         url: `${baseUrl}/blog/${p.slug}`,
