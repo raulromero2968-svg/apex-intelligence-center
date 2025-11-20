@@ -3,7 +3,7 @@
 // Expected: <1% hallucination rate on Enchanted serials, PSA 10 pops, prices
 // Production-ready November 17, 2025
 
-import { VoyageAIEmbeddings } from '@langchain/voyage';
+import { VoyageAIEmbeddings } from '@langchain/community/embeddings/voyage';
 import { CohereRerank } from '@langchain/cohere';
 import { prisma } from '@/lib/db';
 import Anthropic from '@anthropic-ai/sdk';
