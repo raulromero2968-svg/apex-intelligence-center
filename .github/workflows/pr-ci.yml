@@ -18,8 +18,24 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Install deps
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm --filter web lint
+
+      - name: Verify barrels
+        run: pnpm --filter web verify-barrels
+
+      - name: Verify schema sync
+        run: pnpm --filter web exec tsx scripts/verify-schema-sync.ts
+
+      - name: Verify Drizzle syntax
+        run: pnpm verify:drizzle-syntax
+
+      - name: Test
+        run: pnpm test
+
       - name: Verify Vercel Pro Limits
         run: |
           if grep -q '"memory":\s*4096' vercel.json; then
@@ -42,7 +58,7 @@ jobs:
           mkdir -p artifacts
           node scripts/validate-mdx.mjs --output-file artifacts/mdx-validation.txt
       - name: Build
-        run: pnpm build
+        run: pnpm --filter web build
       - name: Perf budget (strict on CI)
         run: pnpm perf:budget
       - name: Smoke tests (API)
