@@ -84,9 +84,7 @@ export {
 } from './citation-mapper';
 
 // ============================================================================
-// LORCANA - Specialized RAG chain for Lorcana Enchanted cards
+// EXPERIMENTAL CHAINS - Not exported in production
 // ============================================================================
-export {
-  enchantedRagQuery,
-  type EnchantedRAGResult,
-} from './lorcana-enchanted.chain';
+// Experimental chains (like Lorcana) are located in ./experimental/
+// and are not exported from the main barrel file to exclude from production builds.
