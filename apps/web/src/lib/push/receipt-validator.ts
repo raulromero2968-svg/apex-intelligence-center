@@ -33,7 +33,7 @@ interface ReceiptResult {
  * Called by cron every 15 minutes
  * Handles retry logic for temporary errors
  */
-export async function validateReceipts(): Promise<ReceiptResult[]> {
+export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
   // 1. Fetch pending tickets older than 1 minute (avoid race with immediate send)
   const pendingTickets = await db
     .select({
