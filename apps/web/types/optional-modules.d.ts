@@ -3,10 +3,7 @@ declare module '@sentry/nextjs' {
   export = sentry;
 }
 
-declare module '@/lib/redis' {
-  const redis: any;
-  export = redis;
-}
+// Removed: @/lib/redis module declaration - using actual module exports
 
 declare module '@upstash/redis' {
   export class Redis {
