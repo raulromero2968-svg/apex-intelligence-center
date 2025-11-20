@@ -32,16 +32,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm --filter web lint
 
-      - name: Type check
-        run: pnpm typecheck || echo "Type check completed with warnings"
+      - name: Verify barrels
+        run: pnpm --filter web verify-barrels
 
-      - name: Unit tests
-        run: pnpm test:unit --reporter=dot || echo "Unit tests completed"
+      - name: Verify schema sync
+        run: pnpm --filter web exec tsx scripts/verify-schema-sync.ts
+
+      - name: Verify Drizzle syntax
+        run: pnpm verify:drizzle-syntax
+
+      - name: Test
+        run: pnpm test
 
       - name: Build
-        run: pnpm build
+        run: pnpm --filter web build
         env:
           # Ensure Sentry DSN is available during build
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -49,8 +55,15 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-      - name: Performance budget
-        run: pnpm perf:budget || echo "Performance budget check completed"
+      - name: Create Sentry release
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ENVIRONMENT: production
+          DEPLOY_URL: https://apexintelligence.io
+        run: pnpm --filter web create-sentry-release
 
       - name: Deploy to Vercel (main only)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -65,17 +78,6 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Create Sentry release
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ github.sha }}
 
       - name: Upload artifacts
         if: always()
