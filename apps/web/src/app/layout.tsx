@@ -24,6 +24,10 @@ import HelpFAB from '@/components/HelpFAB';
 
 import ToastHost from '@/components/ToastHost';
 
+import { fontSans } from '@/lib/fonts';
+
+import { cn } from '@/lib/utils';
+
 import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 
 import '@/styles/animations.css';
@@ -227,7 +231,17 @@ export default function RootLayout({
 
       </head>
 
-      <body className="min-h-dvh font-sans antialiased cursor-none">
+      <body
+
+        className={cn(
+
+          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
+
+          fontSans.className,
+
+        )}
+
+      >
 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
@@ -289,19 +303,31 @@ export default function RootLayout({
 
 
 
-        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
 
-        <main className="relative z-10 pt-24" id="main">
+          {/* Main Content */}
 
-          {children}
+          <main className="relative z-10 flex-1 pt-24" id="main">
 
-        </main>
+            {children}
+
+          </main>
 
 
 
-        {/* Footer */}
+          {/* Footer */}
 
-        <Footer />
+          <Footer />
+
+        </div>
+
+
+
+        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
+
+          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
+
+        </footer>
 
 
 
