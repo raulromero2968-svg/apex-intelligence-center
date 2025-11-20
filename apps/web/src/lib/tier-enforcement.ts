@@ -13,7 +13,7 @@
 
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-import { UserWithTier } from '@/lib/auth/jwt';
+import { UserWithTier } from '@/lib/auth';
 import { getTierLimits, type SubscriptionTier } from '@/lib/stripe';
 import { RateLimitError } from '@/lib/errors';
 
