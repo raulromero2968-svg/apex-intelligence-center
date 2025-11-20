@@ -49,6 +49,8 @@ const facts = getFacts();
 
 export const metadata: Metadata = {
 
+  metadataBase: new URL(facts.links.website || 'https://apexintelligence.io'),
+
   // Base metadata - using facts registry
 
   title: {

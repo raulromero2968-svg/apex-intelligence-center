@@ -18,6 +18,10 @@ import ImageWithCaption from '@/components/mdx/ImageWithCaption';
 import ShareButtons from '@/components/mdx/ShareButtons';
 import DiscoverMore from '@/components/mdx/DiscoverMore';
 
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return typeof error === 'object' && error !== null && 'code' in error;
+}
+
 const articlesDirectory = path.join(process.cwd(), 'src/content/articles');
 // Blog directory is at repo root, so go up from apps/web to find it
 const blogDirectory = path.join(process.cwd(), '..', '..', 'content', 'blog');
@@ -95,10 +99,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
     }
   }
 
-  // Also include blog post slugs
-  const blogSlugs = await getAllBlogPostSlugs();
-  slugs.push(...blogSlugs);
-
   return slugs;
 }
 
@@ -121,10 +121,8 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         words: rawContent.trim().split(/\s+/).length,
       };
 
-      const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${rawContent}`;
-
       const { content: mdxContent } = await compileMDX<ArticleFrontmatter>({
-        source: enrichedSource,
+        source: rawContent,
         components: {
           AreaChartViz,
           BarChartViz,
@@ -143,9 +141,13 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         },
         options: {
           parseFrontmatter: false, // We already parsed with gray-matter
+          scope: {
+            frontMatter: frontmatter,
+          },
           mdxOptions: {
             remarkPlugins: [remarkGfm],
             rehypePlugins: [],
+            useDynamicImport: true,
           },
         },
       });
@@ -157,8 +159,12 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         readingTime: readingTimeData,
       };
     } catch (error) {
-      // File not in this category, try next one
-      continue;
+      if (isErrnoException(error) && error.code === 'ENOENT') {
+        continue;
+      }
+
+      console.error(`Error reading article ${slug} in category ${category}:`, error);
+      throw error;
     }
   }
 
@@ -268,10 +274,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const source = await readFile(filePath, 'utf8');
 
     const { data: frontmatter, content } = matter(source);
-    const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${content}`;
-
     const { content: mdxContent } = await compileMDX<BlogPostFrontmatter>({
-      source: enrichedSource,
+      source: content,
       components: {
         AreaChartViz,
         BarChartViz,
@@ -290,9 +294,13 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       },
       options: {
         parseFrontmatter: false,
+        scope: {
+          frontMatter: frontmatter,
+        },
         mdxOptions: {
           remarkPlugins: [remarkGfm],
           rehypePlugins: [],
+          useDynamicImport: true,
         },
       },
     });
