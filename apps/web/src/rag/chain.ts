@@ -18,8 +18,8 @@ import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { getTcgContext, RerankedResult } from './reranker';
 import { ragFusionSearch } from './fusion';
 import { rerankResults } from './reranker';
-import { createComplianceLogger } from '@/lib/compliance/eu-ai-act';
-import { cosineSimilarity } from '@/lib/embeddings/voyage';
+import { createComplianceLogger } from '@/lib/compliance';
+import { cosineSimilarity } from '@/lib/embeddings';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 import type { CohereClient } from 'cohere-ai';

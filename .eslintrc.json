@@ -1,5 +1,22 @@
 {
   "extends": ["next/core-web-vitals"],
-  "plugins": ["@typescript-eslint"]
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@/lib/*/*"],
+            "message": "Deep imports from lib subdirectories are not allowed. Use barrel files (e.g., '@/lib/auth' instead of '@/lib/auth/jwt')."
+          },
+          {
+            "group": ["@/lib/**/!(index)"],
+            "message": "Import from barrel files only (e.g., '@/lib/auth' instead of '@/lib/auth/jwt')."
+          }
+        ]
+      }
+    ]
+  }
 }
 

@@ -12,7 +12,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { ragFusionPipeline } from '@/lib/rag/rag-fusion';
+import { ragFusionPipeline } from '@/lib/rag';
 import { ratelimit, getLimitForTier, getRetryAfter } from '@/lib/rate-limit';
 import * as Sentry from '@sentry/nextjs';
 import type { Scope } from '@sentry/types';

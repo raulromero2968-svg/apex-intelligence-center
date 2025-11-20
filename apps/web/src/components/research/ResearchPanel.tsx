@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useLivePrices } from '@/hooks/useLivePrices';
-import { extractSymbols } from '@/lib/research/symbol-extractor';
+import { extractSymbols } from '@/lib/research';
 
 interface ResearchPanelProps {
   userText?: string;

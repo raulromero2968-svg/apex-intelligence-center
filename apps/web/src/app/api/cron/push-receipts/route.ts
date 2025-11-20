@@ -8,7 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAndRetryReceipts } from '@/lib/push/receipt-validator';
+import { validateAndRetryReceipts } from '@/lib/push';
 import * as Sentry from '@sentry/nextjs';
 
 /**

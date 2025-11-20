@@ -12,7 +12,7 @@
  *
  * Usage:
  * ```typescript
- * import { VoyageEmbeddings } from '@/lib/embeddings/voyage';
+ * import { VoyageEmbeddings } from '@/lib/embeddings';
  * const embeddings = new VoyageEmbeddings();
  * const vectors = await embeddings.embedDocuments(['text1', 'text2']);
  * const queryVector = await embeddings.embedQuery('search query');
