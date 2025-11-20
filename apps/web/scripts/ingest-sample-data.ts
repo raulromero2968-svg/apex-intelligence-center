@@ -13,7 +13,7 @@
  *   - OPENAI_API_KEY
  */
 
-import { ingestEbayListings, ingestPsaPopReports, ingestNewsArticles } from '@/rag/ingestion';
+import { ingestEbayListings, ingestPsaPopReports, ingestNewsArticles } from '@/rag';
 
 /**
  * Sample eBay listings data

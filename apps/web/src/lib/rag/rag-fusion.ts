@@ -5,7 +5,7 @@
  * Updated to support lazy LLM instantiation (prevents build-time failures)
  */
 
-import { executeRagQuery } from '@/rag/chain';
+import { executeRagQuery } from '@/rag';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { CohereClient } from 'cohere-ai';
 

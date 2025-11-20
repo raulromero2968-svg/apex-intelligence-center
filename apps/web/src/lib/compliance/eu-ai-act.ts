@@ -25,7 +25,7 @@ import { complianceLogs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
-import { RagResponse } from '@/rag/chain';
+import { type RagResponse } from '@/rag';
 
 export interface ComplianceReport {
   traceHash: string;
