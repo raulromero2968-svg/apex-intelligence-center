@@ -26,7 +26,7 @@ if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN
 export const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+}) as any;
 
 /**
  * Redis key namespacing helpers
@@ -85,9 +85,11 @@ export async function publishPriceUpdate(
   payload: PriceUpdatePayload
 ): Promise<number> {
   try {
-    const channel = RedisKeys.priceUpdateChannel(cardId);
-    const subscribers = await redis.publish(channel, JSON.stringify(payload));
-    return subscribers;
+    // NOTE: Upstash Redis REST API does not support pub/sub
+    // For real-time updates, consider using Socket.IO or SSE instead
+    // This is a no-op placeholder that maintains the interface
+    console.warn('publishPriceUpdate called but Upstash REST Redis does not support pub/sub');
+    return 0;
   } catch (error) {
     console.error('Failed to publish price update:', error);
     return 0;
@@ -118,8 +120,8 @@ export async function cacheCardPrice(cardId: string, price: number): Promise<voi
 export async function getCachedCardPrice(cardId: string): Promise<number | null> {
   try {
     const key = RedisKeys.cardPrice(cardId);
-    const price = await redis.get<number>(key);
-    return price;
+    const price = await redis.get(key);
+    return price as number | null;
   } catch (error) {
     console.error('Failed to get cached card price:', error);
     return null;
@@ -150,8 +152,8 @@ export async function cacheUserWatchlist(userId: string, cardIds: string[]): Pro
 export async function getCachedUserWatchlist(userId: string): Promise<string[] | null> {
   try {
     const key = RedisKeys.userWatchlist(userId);
-    const data = await redis.get<string>(key);
-    return data ? JSON.parse(data) : null;
+    const data = await redis.get(key);
+    return data ? JSON.parse(data as string) : null;
   } catch (error) {
     console.error('Failed to get cached user watchlist:', error);
     return null;

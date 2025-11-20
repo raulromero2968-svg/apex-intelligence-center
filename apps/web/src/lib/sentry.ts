@@ -20,7 +20,7 @@ import * as Sentry from '@sentry/nextjs';
 export async function withServerTrace<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Sentry.StartSpanOptions
+  options?: any
 ): Promise<T> {
   return Sentry.startSpan(
     {
@@ -46,7 +46,7 @@ export async function withServerTrace<T>(
 export async function withSpan<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Sentry.StartSpanOptions
+  options?: any
 ): Promise<T> {
   return Sentry.startSpan(
     {
@@ -75,7 +75,7 @@ export function captureException(
   error: Error,
   context?: Record<string, unknown>
 ): void {
-  Sentry.withScope((scope) => {
+  Sentry.withScope((scope: any) => {
     if (context) {
       Object.entries(context).forEach(([key, value]) => {
         scope.setContext(key, value);

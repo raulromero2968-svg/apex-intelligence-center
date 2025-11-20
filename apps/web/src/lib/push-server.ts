@@ -239,10 +239,8 @@ export async function checkPushReceipts(ticketIds: string[]): Promise<void> {
  */
 async function getUserPushTokens(userId: string): Promise<string[]> {
   try {
-    // TODO: Update this to match your actual pushTokens table schema
-    // This is a placeholder implementation
-    const results = await db.query.pushTokens?.findMany({
-      where: (pushTokens: any, { eq }: any) => eq(pushTokens.userId, userId),
+    const results = await db.query.mobilePushTokens.findMany({
+      where: (mobilePushTokens: any, { eq }: any) => eq(mobilePushTokens.userId, userId),
       columns: {
         token: true,
       },

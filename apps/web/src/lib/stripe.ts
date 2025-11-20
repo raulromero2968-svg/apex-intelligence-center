@@ -12,7 +12,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2023-10-16',
   typescript: true,
   appInfo: {
     name: 'Apex Intelligence Center',
@@ -55,5 +55,5 @@ export function getTierLimits(tier: SubscriptionTier) {
  * Check if a tier has a specific feature
  */
 export function hasTierFeature(tier: SubscriptionTier, feature: string): boolean {
-  return TIER_LIMITS[tier].features.includes(feature);
+  return TIER_LIMITS[tier].features.includes(feature as any);
 }

@@ -47,7 +47,7 @@ export function useValuation(cardId: string | null, years: number = 5) {
       setError(null);
 
       try {
-        const result = await fetchValuation(cardId, years);
+        const result = await fetchValuation(cardId!, years);
         if (!cancelled) {
           setValuation(result);
         }
@@ -128,7 +128,7 @@ export function useLiveValuation(cardId: string | null, years: number = 5) {
         });
 
         // Fetch initial valuation
-        const initial = await fetchValuation(cardId, years);
+        const initial = await fetchValuation(cardId!, years);
         if (!cancelled) {
           setValuation(initial);
           setLoading(false);

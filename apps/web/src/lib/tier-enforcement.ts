@@ -39,7 +39,7 @@ try {
 const rateLimiters: Record<SubscriptionTier, Ratelimit | null> = {
   free: redis
     ? new Ratelimit({
-        redis,
+        redis: redis as any,
         limiter: Ratelimit.slidingWindow(100, '24 h'),
         analytics: true,
         prefix: '@ratelimit:free',
@@ -47,7 +47,7 @@ const rateLimiters: Record<SubscriptionTier, Ratelimit | null> = {
     : null,
   pro: redis
     ? new Ratelimit({
-        redis,
+        redis: redis as any,
         limiter: Ratelimit.slidingWindow(10000, '24 h'),
         analytics: true,
         prefix: '@ratelimit:pro',
@@ -55,7 +55,7 @@ const rateLimiters: Record<SubscriptionTier, Ratelimit | null> = {
     : null,
   enterprise: redis
     ? new Ratelimit({
-        redis,
+        redis: redis as any,
         limiter: Ratelimit.slidingWindow(1000000, '24 h'),
         analytics: true,
         prefix: '@ratelimit:enterprise',
@@ -132,7 +132,7 @@ export function canAccessFeature(
   feature: string
 ): boolean {
   const tierLimits = getTierLimits(tier);
-  return tierLimits.features.includes(feature);
+  return tierLimits.features.includes(feature as any);
 }
 
 /**

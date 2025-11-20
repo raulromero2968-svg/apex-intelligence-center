@@ -13,7 +13,7 @@
 import { Expo, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
 import { db } from '@/db';
 import { pushTickets } from '@/db/schema';
-import { eq, inArray, and, lt } from 'drizzle-orm';
+import { eq, inArray, and, lt, sql } from 'drizzle-orm';
 
 // Singleton Expo client – safe for serverless
 const expo = new Expo({
@@ -103,7 +103,7 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
         .set({
           status: shouldRetry ? 'retry' : 'error',
           errorMessage: receipt.message,
-          retries: shouldRetry ? pushTickets.retries + 1 : pushTickets.retries,
+          retries: shouldRetry ? sql`${pushTickets.retries} + 1` : pushTickets.retries,
           updatedAt: new Date(),
         })
         .where(eq(pushTickets.id, ticket.id));
