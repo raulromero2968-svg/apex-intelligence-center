@@ -17,7 +17,7 @@ import { ratelimit, getLimitForTier, getRetryAfter } from '@/lib/rate-limit';
 import * as Sentry from '@sentry/nextjs';
 import type { Scope } from '@sentry/types';
 import { z } from 'zod';
-import { getUserFromRequest, UserWithTier } from '@/lib/auth/jwt';
+import { getUserFromRequest, UserWithTier } from '@/lib/auth';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatOpenAI } from '@langchain/openai';
 import { CohereClient } from 'cohere-ai';

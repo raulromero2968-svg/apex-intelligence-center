@@ -197,7 +197,7 @@ async function addToWatchlist(cardId: string, targetPrice: number, direction: 'a
 ### Checking Rate Limits (Backend)
 
 ```typescript
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { enforceRateLimit } from '@/lib/tier-enforcement';
 
 export async function GET(req: NextRequest) {

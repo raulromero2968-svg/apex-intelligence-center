@@ -20,7 +20,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { db } from '@/db';
 import { watchlistItems } from '@/db/schema';
 import { eq } from 'drizzle-orm';

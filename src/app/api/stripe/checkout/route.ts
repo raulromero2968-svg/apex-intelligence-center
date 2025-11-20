@@ -10,7 +10,7 @@ import { stripe } from '@/lib/stripe';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import {
   AuthenticationError,
   ValidationError,
