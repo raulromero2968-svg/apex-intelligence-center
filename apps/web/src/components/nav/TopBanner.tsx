@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 export const TopBanner = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   const navLinks = [
     { href: '/', label: 'Home' },
