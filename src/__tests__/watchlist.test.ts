@@ -38,7 +38,7 @@ vi.mock('drizzle-orm', () => ({
   sql: vi.fn(),
 }));
 
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { db } from '@/db';
 
 describe('Watchlist API', () => {
