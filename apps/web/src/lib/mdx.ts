@@ -1,5 +1,5 @@
-import { readFile, readdir } from 'node:fs/promises';
-import path from 'node:path';
+import { readFile, readdir } from 'fs/promises';
+import path from 'path';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';

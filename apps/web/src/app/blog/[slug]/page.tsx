@@ -4,7 +4,6 @@ import Image from 'next/image';
 import SectionShell from '../../(sections)/SectionShell';
 import { getArticleBySlug, getAllArticleSlugs } from '@/lib/mdx';
 import { BookOpen, Clock, Calendar, User } from 'lucide-react';
-import { ArticleSchema } from '@/components/structured-data/ArticleSchema';
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -160,7 +159,6 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
 
   return (
     <>
-      <ArticleSchema article={article} />
       <SectionShell title={article.frontmatter.title} kicker={article.frontmatter.category}>
         <article className="max-w-4xl mx-auto">
         {/* Static shell - renders immediately */}
