@@ -7,18 +7,15 @@
 
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
+// Stripe client - will be null if key is not set (e.g., during build)
+export const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2023-10-16',
   typescript: true,
   appInfo: {
     name: 'Apex Intelligence Center',
     version: '1.0.0',
   },
-});
+}) : null;
 
 /**
  * Tier configuration mapping
@@ -55,5 +52,5 @@ export function getTierLimits(tier: SubscriptionTier) {
  * Check if a tier has a specific feature
  */
 export function hasTierFeature(tier: SubscriptionTier, feature: string): boolean {
-  return TIER_LIMITS[tier].features.includes(feature);
+  return (TIER_LIMITS[tier].features as readonly string[]).includes(feature);
 }

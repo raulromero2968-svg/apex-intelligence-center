@@ -9,6 +9,7 @@ import { extractSymbols } from '@/lib/research';
 interface ResearchDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  initialQuery?: string;
 }
 
 interface Source {
@@ -20,7 +21,7 @@ interface Source {
   sourceType?: string;
 }
 
-export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps) {
+export default function ResearchDialog({ isOpen, onClose, initialQuery = '' }: ResearchDialogProps) {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -60,7 +61,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
     enabled: isOpen && !!result && symbols.length > 0,
   });
 
-  // Track panel open event
+  // Track panel open event and handle initial query
   useEffect(() => {
     if (isOpen) {
       // Track research_panel_open event
@@ -69,6 +70,11 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
           event_category: 'engagement',
           event_label: 'research_panel',
         });
+      }
+
+      // Set initial query if provided
+      if (initialQuery) {
+        setQuery(initialQuery);
       }
 
       // Focus input when opened
@@ -84,7 +90,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
       setErrorType(null);
       streamStartTimeRef.current = null;
     }
-  }, [isOpen]);
+  }, [isOpen, initialQuery]);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -324,7 +330,7 @@ export default function ResearchDialog({ isOpen, onClose }: ResearchDialogProps)
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query, sessionId: sessionId || undefined }),
+        body: JSON.stringify({ query, sessionId: newSessionId }),
       });
 
       // Check for rate limit (429)

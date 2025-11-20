@@ -15,7 +15,7 @@ export default function ArticleCard({ a }: { a: Article }) {
     <article className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition
                         hover:border-cyan-400/40 hover:bg-white/[0.07]">
       <div className="mb-2 text-xs text-cyan-300/80">
-        {new Date(a.date).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric"})}
+        {new Date(a.date).toLocaleDateString('en-US', { month: "long", day: "numeric", year: "numeric"})}
         {" · "}{a.read}
       </div>
 

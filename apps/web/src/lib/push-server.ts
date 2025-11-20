@@ -13,6 +13,7 @@
 
 import { Expo, ExpoPushMessage, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
 import { db } from '@/db';
+import { mobilePushTokens } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 
@@ -239,20 +240,14 @@ export async function checkPushReceipts(ticketIds: string[]): Promise<void> {
  */
 async function getUserPushTokens(userId: string): Promise<string[]> {
   try {
-    // TODO: Update this to match your actual pushTokens table schema
-    // This is a placeholder implementation
-    const results = await db.query.pushTokens?.findMany({
-      where: (pushTokens: any, { eq }: any) => eq(pushTokens.userId, userId),
+    const results = await db.query.mobilePushTokens.findMany({
+      where: eq(mobilePushTokens.userId, userId),
       columns: {
         token: true,
       },
     });
 
-    if (!results) {
-      return [];
-    }
-
-    return results.map((r: any) => r.token);
+    return results.map((r) => r.token);
   } catch (error) {
     console.error('Failed to get push tokens:', error);
     return [];

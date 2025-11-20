@@ -114,14 +114,15 @@ function getHomeFeed() {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isResearchDialogOpen, setIsResearchDialogOpen] = useState(false);
+  const [initialQuery, setInitialQuery] = useState('');
   const feedItems = getHomeFeed();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query) {
-      toast.success(`Searching for: ${query}`, {
-        description: 'Results will appear below',
-      });
+    // When user submits search (Enter key or form submit), open ResearchDialog
+    if (query.trim()) {
+      setInitialQuery(query.trim());
+      setIsResearchDialogOpen(true);
     }
   };
 
@@ -237,7 +238,11 @@ export default function HomePage() {
                     <h3 className="text-lg font-medium">{p.title}</h3>
                     <p className="text-zinc-400 mt-1 line-clamp-3">{p.excerpt}</p>
                     <p className="text-xs text-zinc-500 mt-3">
-                      {new Date(p.date).toLocaleDateString()}
+                      {new Date(p.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
                     </p>
                   </Link>
                 ))}
@@ -262,7 +267,11 @@ export default function HomePage() {
         {/* Research Dialog */}
         <ResearchDialog
           isOpen={isResearchDialogOpen}
-          onClose={() => setIsResearchDialogOpen(false)}
+          onClose={() => {
+            setIsResearchDialogOpen(false);
+            setInitialQuery('');
+          }}
+          initialQuery={initialQuery}
         />
 
         {/* Visible fallback button for Ctrl+K (always visible) */}

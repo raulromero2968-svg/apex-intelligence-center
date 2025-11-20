@@ -35,9 +35,11 @@ const steps: Step[] = [
 export default function GuidedTour() {
   const [run, setRun] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Check if user has seen the tour
+    setIsClient(true);
+    // Check if user has seen the tour (only on client)
     const tourCompleted = localStorage.getItem('apex_tour_completed');
     if (!tourCompleted) {
       setHasSeenTour(false);

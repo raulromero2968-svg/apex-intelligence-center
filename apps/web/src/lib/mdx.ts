@@ -19,7 +19,8 @@ import ShareButtons from '@/components/mdx/ShareButtons';
 import DiscoverMore from '@/components/mdx/DiscoverMore';
 
 const articlesDirectory = path.join(process.cwd(), 'src/content/articles');
-const blogDirectory = path.join(process.cwd(), 'content/blog');
+// Blog directory is at repo root, so go up from apps/web to find it
+const blogDirectory = path.join(process.cwd(), '..', '..', 'content', 'blog');
 
 export interface ArticleFrontmatter {
   title: string;

@@ -199,6 +199,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // Log RAG API call for debugging
+      console.log('RAG API called with query:', query);
+
       // Feature flag check: if not enabled, return JSON stub
       if (process.env.FEATURE_RESEARCH_STREAMING !== '1') {
         rootSpan?.setAttribute('mode', 'json');

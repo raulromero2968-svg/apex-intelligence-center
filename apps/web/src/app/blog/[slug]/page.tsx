@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import SectionShell from '../../(sections)/SectionShell';
-import { getArticleBySlug, getAllArticleSlugs } from '@/lib/mdx';
+import { getArticleBySlug, getAllArticleSlugs, getAllBlogPostSlugs } from '@/lib/mdx';
 import { BookOpen, Clock, Calendar, User } from 'lucide-react';
 
 interface BlogPostPageProps {
@@ -13,9 +13,9 @@ interface BlogPostPageProps {
 // Enable ISR with tag-based revalidation
 export const revalidate = false; // On-demand via tags
 
-// Generate static params for all articles
+// Generate static params for blog posts only
 export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs();
+  const slugs = await getAllBlogPostSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 

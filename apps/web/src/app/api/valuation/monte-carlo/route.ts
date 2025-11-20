@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { runMonteCarloSimulation } from '@apex/valuation';
 import { db } from '@/db';
 import { priceHistory } from '@apex/db';
-import { eq, desc, gte } from 'drizzle-orm';
+import { eq, desc, gte, and } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: NextRequest) {
@@ -42,8 +42,10 @@ export async function POST(request: NextRequest) {
       .select({ price: priceHistory.price, recordedAt: priceHistory.recordedAt })
       .from(priceHistory)
       .where(
-        eq(priceHistory.cardId, cardId),
-        gte(priceHistory.recordedAt, cutoffDate)
+        and(
+          eq(priceHistory.cardId, cardId),
+          gte(priceHistory.recordedAt, cutoffDate)
+        )
       )
       .orderBy(priceHistory.recordedAt)
       .limit(730);
