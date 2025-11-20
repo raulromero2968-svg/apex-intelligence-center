@@ -9,6 +9,9 @@
  * All limits enforced server-side with zero trust.
  */
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { watchlistItems, users, cards } from '@/db/schema';
