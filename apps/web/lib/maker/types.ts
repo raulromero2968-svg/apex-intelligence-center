@@ -6,7 +6,7 @@
  */
 
 import { z } from 'zod';
-import type { Card, Price } from '@/db/schema';
+import type { Card, Price } from '@/lib/db';
 
 /**
  * Card schema for validation

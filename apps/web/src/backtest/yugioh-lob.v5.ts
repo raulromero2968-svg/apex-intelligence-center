@@ -14,8 +14,8 @@
  * Entry on pop stagnation (<5% 90d growth) + low vol = 1.75× multiplier with 78% less drawdown
  */
 
-import { db, pool } from '@/db';
-import { cards } from '@/db/schema';
+import { db, pool } from '@/lib/db';
+import { cards } from '@/lib/db';
 import { and, eq, inArray, like } from 'drizzle-orm';
 import { pass, RISK, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';

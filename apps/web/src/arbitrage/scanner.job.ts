@@ -19,9 +19,9 @@
  */
 
 import { Job } from 'bullmq';
-import { db } from '@/db';
-import { arbitrageOpportunities } from '@/db/schema';
-import { getCardsWithLatestPricesBySource } from '@/db/queries/cards';
+import { db } from '@/lib/db';
+import { arbitrageOpportunities } from '@/lib/db';
+import { getCardsWithLatestPricesBySource } from '@/lib/db/queries/cards';
 import { lte } from 'drizzle-orm';
 import { sendArbitrageNotification } from '@/notifications';
 import { pass, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';

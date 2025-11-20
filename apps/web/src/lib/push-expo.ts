@@ -4,8 +4,8 @@
  */
 
 import { Expo, ExpoPushMessage, ExpoPushTicket } from 'expo-server-sdk';
-import { db } from '@/db';
-import { mobilePushTokens, pushTickets } from '@/db/schema';
+import { db } from '@/lib/db';
+import { mobilePushTokens, pushTickets } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 
 const expo = new Expo({

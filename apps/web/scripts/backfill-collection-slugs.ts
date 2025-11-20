@@ -33,7 +33,7 @@ async function main() {
   // Placeholder implementation - uncomment when database is set up:
   /*
   import { db } from '@/db';
-  import { collections } from '@/db/schema';
+  import { collections } from '@/lib/db';
   import { eq, isNull } from 'drizzle-orm';
   import { customAlphabet } from 'nanoid';
 

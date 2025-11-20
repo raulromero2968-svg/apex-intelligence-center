@@ -8,8 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { Expo } from 'expo-server-sdk';
-import { db } from '@/db';
-import { pushTickets, mobilePushTokens } from '@/db/schema';
+import { db } from '@/lib/db';
+import { pushTickets, mobilePushTokens } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
 import { sendExpoMessage } from '@/lib/push-expo';
 

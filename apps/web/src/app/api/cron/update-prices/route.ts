@@ -17,8 +17,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db';
-import { watchlistItems, pushSubscriptions, cards, prices } from '@/db/schema';
+import { db } from '@/lib/db';
+import { watchlistItems, pushSubscriptions, cards, prices } from '@/lib/db';
 import { eq, and, gte, lte } from 'drizzle-orm';
 import {
   getCachedCardPrice,

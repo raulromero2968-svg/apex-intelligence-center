@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { runMonteCarloSimulation } from '@apex/valuation';
-import { db } from '@/db';
+import { db } from '@/lib/db';
 import { priceHistory } from '@apex/db';
 import { eq, desc, gte } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';

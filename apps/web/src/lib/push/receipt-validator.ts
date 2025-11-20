@@ -12,7 +12,7 @@
 
 import { Expo, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
 import { db } from '@/lib/db';
-import { pushTickets } from '@/db/schema';
+import { pushTickets } from '@/lib/db';
 import { eq, inArray, and, lt } from 'drizzle-orm';
 
 // Singleton Expo client – safe for serverless

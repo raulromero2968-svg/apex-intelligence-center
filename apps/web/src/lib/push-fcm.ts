@@ -4,8 +4,8 @@
  */
 
 import * as admin from 'firebase-admin';
-import { db } from '@/db';
-import { mobilePushTokens, pushTickets } from '@/db/schema';
+import { db } from '@/lib/db';
+import { mobilePushTokens, pushTickets } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 
 // Initialize Firebase Admin SDK

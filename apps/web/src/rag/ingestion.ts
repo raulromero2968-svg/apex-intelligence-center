@@ -14,8 +14,8 @@
 
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { db, pool } from '@/db';
-import { tcg_documents } from '@/db/schema';
+import { db, pool } from '@/lib/db';
+import { tcg_documents } from '@/lib/db';
 import { eq, sql } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';

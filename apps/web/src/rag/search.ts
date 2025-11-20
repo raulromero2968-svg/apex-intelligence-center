@@ -10,7 +10,7 @@
  */
 
 import { OpenAIEmbeddings } from '@langchain/openai';
-import { pool } from '@/db';
+import { pool } from '@/lib/db';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 

@@ -15,8 +15,8 @@
  * Performance: <18ms for 500-card universe, 99.97% optimal solution
  */
 
-import { db } from '@/db';
-import { cards, prices } from '@/db/schema';
+import { db } from '@/lib/db';
+import { cards, prices } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import { RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';

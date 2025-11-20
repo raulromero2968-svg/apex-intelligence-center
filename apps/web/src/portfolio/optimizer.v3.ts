@@ -19,8 +19,8 @@
  * Performance: <100ms for 50-card portfolio
  */
 
-import { db } from '@/db';
-import { cards, prices } from '@/db/schema';
+import { db } from '@/lib/db';
+import { cards, prices } from '@/lib/db';
 import { eq, desc, inArray } from 'drizzle-orm';
 import { RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';

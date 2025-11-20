@@ -15,8 +15,8 @@
  * 3× profit-taking prevents euphoria losses
  */
 
-import { db, pool } from '@/db';
-import { cards } from '@/db/schema';
+import { db, pool } from '@/lib/db';
+import { cards } from '@/lib/db';
 import { and, eq, inArray } from 'drizzle-orm';
 import { pass, RISK, shouldStopLoss, shouldExitPopGrowth } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';

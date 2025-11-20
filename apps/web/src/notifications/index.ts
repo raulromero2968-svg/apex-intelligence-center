@@ -13,8 +13,8 @@
 import { Webhook as DiscordWebhook } from 'discord-webhook-node';
 import TelegramBot from 'node-telegram-bot-api';
 import webpush from 'web-push';
-import { db } from '@/db';
-import { alertSubscriptions, pushSubscriptions } from '@/db/schema';
+import { db } from '@/lib/db';
+import { alertSubscriptions, pushSubscriptions } from '@/lib/db';
 import { eq, and, or, isNull } from 'drizzle-orm';
 import { PopDeltaAlert, formatPopDeltaMessage } from '@/jobs/pop-delta/detector.job';
 import * as Sentry from '@sentry/nextjs';

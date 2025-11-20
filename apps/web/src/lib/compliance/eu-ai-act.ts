@@ -20,8 +20,8 @@
  */
 
 import { IpfsProvenanceLogger, RagTrace } from '../provenance/ipfs';
-import { db } from '@/db';
-import { complianceLogs } from '@/db/schema';
+import { db } from '@/lib/db';
+import { complianceLogs } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';

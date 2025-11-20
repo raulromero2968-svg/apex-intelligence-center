@@ -5,8 +5,8 @@
  * Achieves 99.9%+ reliability through consensus-based micro-agent execution.
  */
 
-import { db } from '@/db';
-import { makerVotes, makerTasks } from '@/db/schema';
+import { db } from '@/lib/db';
+import { makerVotes, makerTasks } from '@/lib/db';
 import { eq, sql } from 'drizzle-orm';
 import { hashResult, generateId } from './utils';
 import type { VotingOptions } from './types';

@@ -1,5 +1,8 @@
-// src/lib/db.ts - Prisma client singleton for Next.js
+// src/lib/db/prisma.ts - Prisma client singleton for Next.js
 // Prevents multiple instances in development (hot reload)
+//
+// NOTE: This is legacy code. Most of the app uses Drizzle ORM.
+// Only import this if you specifically need the Prisma client.
 
 type PrismaClientType = Record<string, any>;
 type PrismaConstructor = new (...args: any[]) => PrismaClientType;

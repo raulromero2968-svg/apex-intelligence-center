@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db } from '@/lib/db';
 import { revalidateTag } from '@/lib/cache';
 import { recordIngestBatch } from '@/lib/ingest-metrics';
 

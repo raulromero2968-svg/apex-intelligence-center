@@ -11,7 +11,7 @@
 
 import { voteOnStep } from './voting';
 import { hashResult } from './utils';
-import { db } from '@/db';
+import { db } from '@/lib/db';
 
 // Mock database for tests
 jest.mock('@/db', () => ({

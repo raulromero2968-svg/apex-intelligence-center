@@ -11,8 +11,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db';
-import { arbitrageOpportunities } from '@/db/schema';
+import { db } from '@/lib/db';
+import { arbitrageOpportunities } from '@/lib/db';
 import { gte, desc } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';

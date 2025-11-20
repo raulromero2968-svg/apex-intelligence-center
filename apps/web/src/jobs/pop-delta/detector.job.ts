@@ -11,8 +11,8 @@
  */
 
 import { Job } from 'bullmq';
-import { db } from '@/db';
-import { populationReports, cards, alertSubscriptions } from '@/db/schema';
+import { db } from '@/lib/db';
+import { populationReports, cards, alertSubscriptions } from '@/lib/db';
 import { sql, eq, and, gte } from 'drizzle-orm';
 import { sendPopDeltaNotifications } from '@/notifications';
 import * as Sentry from '@sentry/nextjs';

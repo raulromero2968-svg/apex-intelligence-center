@@ -17,8 +17,8 @@
  * Position sizing: 8% (smaller due to extreme volatility)
  */
 
-import { db, pool } from '@/db';
-import { cards } from '@/db/schema';
+import { db, pool } from '@/lib/db';
+import { cards } from '@/lib/db';
 import { and, eq, like, or } from 'drizzle-orm';
 import { pass, RISK } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';

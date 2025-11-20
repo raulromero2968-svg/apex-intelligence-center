@@ -10,8 +10,8 @@
  */
 
 import { NextRequest } from 'next/server';
-import { db } from '@/db';
-import { watchlistItems, users, cards } from '@/db/schema';
+import { db } from '@/lib/db';
+import { watchlistItems, users, cards } from '@/lib/db';
 import { eq, and, sql } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth/jwt';
 import { getTierLimits } from '@/lib/stripe';

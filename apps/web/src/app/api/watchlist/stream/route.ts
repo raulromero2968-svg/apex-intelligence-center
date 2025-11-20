@@ -21,8 +21,8 @@
 
 import { NextRequest } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth/jwt';
-import { db } from '@/db';
-import { watchlistItems } from '@/db/schema';
+import { db } from '@/lib/db';
+import { watchlistItems } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import Redis from 'ioredis';
 

@@ -7,8 +7,8 @@
 
 import { NextRequest } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth/jwt';
 import {

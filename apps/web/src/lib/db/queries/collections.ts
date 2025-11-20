@@ -1,5 +1,4 @@
-import { db } from '@/db';
-import { collections, collection_items } from '@/db/schema';
+import { db, collections, collection_items } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import { getCached, stableKey } from '@/lib/cache';
 import * as Sentry from '@sentry/nextjs';

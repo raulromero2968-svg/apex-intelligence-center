@@ -23,7 +23,7 @@
  */
 
 import webpush from 'web-push';
-import { PushSubscription as DBPushSubscription } from '@/db/schema';
+import { PushSubscription as DBPushSubscription } from '@/lib/db';
 
 // Configure VAPID details
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;

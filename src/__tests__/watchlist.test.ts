@@ -39,7 +39,7 @@ vi.mock('drizzle-orm', () => ({
 }));
 
 import { getUserFromRequest } from '@/lib/auth/jwt';
-import { db } from '@/db';
+import { db } from '@/lib/db';
 
 describe('Watchlist API', () => {
   beforeEach(() => {

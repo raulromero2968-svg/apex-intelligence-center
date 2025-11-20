@@ -5,8 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { db } from '@/db';
-import { mobilePushTokens } from '@/db/schema';
+import { db } from '@/lib/db';
+import { mobilePushTokens } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { authOptions } from '@/lib/auth';
 

@@ -4,8 +4,7 @@
  * All queries use Drizzle's relational API for proper type inference
  */
 
-import { db } from '@/db';
-import { cards, prices } from '@/db/schema';
+import { db, cards, prices } from '@/lib/db';
 import { desc, gte, and } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';

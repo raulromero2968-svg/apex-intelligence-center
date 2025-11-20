@@ -1,8 +1,8 @@
 'use server';
 
 import { revalidateTag } from '@/lib/cache';
-import { db } from '@/db';
-import { collections, collection_items } from '@/db/schema';
+import { db } from '@/lib/db';
+import { collections, collection_items } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';

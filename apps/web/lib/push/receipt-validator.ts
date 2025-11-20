@@ -11,7 +11,7 @@
  */
 
 import { Expo, ExpoPushMessage, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
-import { db } from '@/db';
+import { db } from '@/lib/db';
 import { pushTickets, pushTokens } from '@apex/db';
 import { eq, and, lt } from 'drizzle-orm';
 

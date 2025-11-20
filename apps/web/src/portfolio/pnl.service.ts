@@ -8,8 +8,8 @@
  * - Performance metrics (Sharpe, max drawdown, win rate)
  */
 
-import { db } from '@/db';
-import { holdings, cards, prices, populationReports } from '@/db/schema';
+import { db } from '@/lib/db';
+import { holdings, cards, prices, populationReports } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import { checkRisk, RISK, type TradeSignal, type Portfolio } from '@/risk/rules.v3';
 import * as Sentry from '@sentry/nextjs';
