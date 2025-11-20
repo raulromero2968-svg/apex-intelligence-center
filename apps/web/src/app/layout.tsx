@@ -237,6 +237,16 @@ export default function RootLayout({
 
 
 
+        {/* Permanent Equilibrium Banner - Non-dismissible */}
+
+        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
+
+          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
+
+        </div>
+
+
+
         {/* Custom Cursor */}
 
         <CustomCursor />
@@ -281,7 +291,7 @@ export default function RootLayout({
 
         {/* Main Content */}
 
-        <main className="relative z-10 pt-16" id="main">
+        <main className="relative z-10 pt-24" id="main">
 
           {children}
 

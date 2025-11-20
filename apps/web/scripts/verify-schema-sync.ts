@@ -11,20 +11,40 @@ function collectSchemaColumns(schemaPath: string): TableColumns {
   const src = readFile(schemaPath);
   const tables: TableColumns = {};
 
-  // Naive regex to find pgTable definitions: export const tableName = pgTable('table_name', { ... });
-  const tableRegex = /export const\s+(\w+)\s*=\s*pgTable\([^,]+,\s*\{([\s\S]*?)\}\s*\)/g;
+  // Find pgTable definitions: export const tableName = pgTable('table_name', { ... });
+  const tableRegex = /export const\s+(\w+)\s*=\s*pgTable\([^,]+,\s*\{/g;
   let match: RegExpExecArray | null;
 
   while ((match = tableRegex.exec(src)) !== null) {
     const tableVarName = match[1];
-    const columnsBlock = match[2];
+    const startPos = match.index + match[0].length;
+    
+    // Find the matching closing brace for the column definition block
+    let braceCount = 1;
+    let pos = startPos;
+    let columnsBlockEnd = startPos;
+    
+    while (pos < src.length && braceCount > 0) {
+      if (src[pos] === '{') braceCount++;
+      else if (src[pos] === '}') braceCount--;
+      if (braceCount === 0) {
+        columnsBlockEnd = pos;
+        break;
+      }
+      pos++;
+    }
+    
+    const columnsBlock = src.slice(startPos, columnsBlockEnd);
 
     const columnNames = new Set<string>();
-    const columnRegex = /^\s*([\w$]+)\s*:/gm;
+    // More robust regex: match column names at start of line (with optional whitespace) or after comma/newline
+    const columnRegex = /(?:^|\n|,)\s*([\w$]+)\s*:/gm;
     let colMatch: RegExpExecArray | null;
 
     while ((colMatch = columnRegex.exec(columnsBlock)) !== null) {
       const colName = colMatch[1];
+      // Skip if it's a TypeScript keyword or common non-column patterns
+      if (colName === 'table' || colName === 'export' || colName === 'const') continue;
       columnNames.add(colName);
     }
 
@@ -83,20 +103,35 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): void {
   for (const file of files) {
     const content = readFile(file);
     for (const [tableVar, columns] of Object.entries(tables)) {
-      // Match table.column patterns but exclude method calls (those followed by '(')
-      const usageRegex = new RegExp(`${tableVar}\\.([A-Za-z0-9_]+)(?!\\s*\\()`, 'g');
+      // Match table.column patterns - we'll filter out method calls after matching
+      const usageRegex = new RegExp(`${tableVar}\\.([A-Za-z0-9_]+)`, 'g');
       let usageMatch: RegExpExecArray | null;
 
       while ((usageMatch = usageRegex.exec(content)) !== null) {
         const col = usageMatch[1];
+        const matchStart = usageMatch.index;
 
-        // Skip if it's a known Drizzle method or if it's followed by a parenthesis (method call)
+        // Skip if it's a known Drizzle method
         if (drizzleMethods.has(col)) continue;
 
-        // Check if the next character after the match is a parenthesis (indicating a method call)
-        const matchEnd = usageMatch.index + usageMatch[0].length;
-        const afterMatch = content.slice(matchEnd, matchEnd + 10).trim();
-        if (afterMatch.startsWith('(')) continue;
+        // Check if followed by a parenthesis (indicating a method call)
+        const matchEnd = matchStart + usageMatch[0].length;
+        const afterMatch = content.slice(matchEnd);
+        // Look for optional whitespace followed by '('
+        if (/^\s*\(/.test(afterMatch)) continue;
+
+        // Skip if inside a SQL template literal (sql`...` or sql.raw(...))
+        // Check backwards from match position for sql` or sql.raw
+        const beforeMatch = content.slice(Math.max(0, matchStart - 50), matchStart);
+        if (/sql[`.]/.test(beforeMatch)) {
+          // Find the start of the SQL template
+          const sqlStart = beforeMatch.lastIndexOf('sql');
+          if (sqlStart >= 0) {
+            const sqlContext = beforeMatch.slice(sqlStart);
+            // If it's sql` or sql.raw, skip this match
+            if (sqlContext.includes('sql`') || sqlContext.includes('sql.raw')) continue;
+          }
+        }
 
         if (!columns.has(col)) {
           errors.push(

@@ -45,9 +45,7 @@ export default function SearchBar({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
-    if (onSearch) {
-      onSearch(value);
-    }
+    // Don't call onSearch on every keystroke - only on form submit
   };
 
   // Detect platform for displaying correct keyboard shortcut

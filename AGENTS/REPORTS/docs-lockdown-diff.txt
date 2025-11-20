@@ -1,0 +1,431 @@
+﻿diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index c671394..f450ffb 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -1,3 +1,7 @@
++> **Production Lockdown Complete ΓÇô November 19 2025**  
++> 
++> All contributions must preserve LangChain safety fixes, experimental chain isolation, and strict `src/lib` barrel imports. CI and Vercel production deploys will fail on violations.
++
+ # Contributing Guide ΓÇö Deploy Sanity & Pre-Push Ritual
+ 
+ This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires, JS/CSS/route/media budgets, delta + library guards, env audit, and a PR ΓÇ£Deploy Sanity Report.ΓÇ¥ The goal is boring deploys and fast, surgical fixes.
+@@ -15,6 +19,47 @@ This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires
+    pnpm patch:apply   # applies diff + runs golden loop
+    ```
+ 
++## Production Guardrails
++
++**ΓÜá∩╕Å CRITICAL: These rules are enforced by CI and will cause PR rejection if violated.**
++
++### LangChain Import Rules
++- **No direct imports from experimental LangChain packages**: Only use officially supported packages:
++  - `@langchain/core`
++  - `@langchain/community`
++  - `@langchain/openai`
++  - `@langchain/anthropic`
++  - `@langchain/cohere`
++  - `@langchain/textsplitters`
++  - `langchain` (main package)
++- **No experimental imports**: Direct imports from experimental or internal LangChain paths are prohibited and will fail CI.
++
++### Barrel Import Requirements
++- **No deep imports into `src/lib/*`**: All imports from `src/lib` must use barrel exports via `@/lib/<module>`.
++- **Example (CORRECT)**:
++  ```typescript
++  import { function } from '@/lib/module'
++  ```
++- **Example (WRONG - will fail CI)**:
++  ```typescript
++  import { function } from '@/lib/module/subdirectory/file'
++  ```
++- **All new `src/lib` modules must ship with an `index.ts` barrel file**: Every module in `src/lib` must export its public API through an `index.ts` file.
++
++### Required CI Checks
++The following commands **must pass** before PR approval:
++- **`pnpm lint`**: ESLint validation
++- **`pnpm verify-barrels`**: Barrel export validation (checks for deep imports and missing barrels)
++- **`pnpm test`**: Unit and integration tests
++- **`pnpm test:e2e`**: End-to-end test suite
++
++### PR Rejection Policy
++**PRs that break these rules will be rejected automatically:**
++- Direct imports from experimental LangChain packages
++- Deep imports into `src/lib/*` subdirectories
++- Missing `index.ts` barrel files for new `src/lib` modules
++- Any CI check failures (lint, verify-barrels, tests)
++
+ ## Branch Rules
+ - `main` is protected. Required checks include: build, typecheck, repo sanity, bundle/route/css/media budgets, bundle delta, library watchlist, and the CI summary job.
+ - Enforce admins; squash or linear history; dismiss stale approvals.
+diff --git a/ARCHITECTURE.md b/ARCHITECTURE.md
+new file mode 100644
+index 0000000..dcd6fd9
+--- /dev/null
++++ b/ARCHITECTURE.md
+@@ -0,0 +1,118 @@
++> **Production Lockdown Complete ΓÇô November 19 2025**  
++> 
++> This architecture reflects the hardened, production-only configuration: LangChain imports fixed, experimental chains exiled, strict `src/lib` barrel enforcement, CI lint + verify-barrels, and Vercel + Sentry production guardrails.
++
++# Architecture Overview
++
++This document describes the production architecture of the Apex Intelligence Center platform.
++
++## Production Guardrails
++
++The following guardrails are enforced to maintain production stability and prevent regressions:
++
++### 1. LangChain Path Corrections
++- **Supported modules only**: All LangChain imports must use the official, supported packages:
++  - `@langchain/core`
++  - `@langchain/community`
++  - `@langchain/openai`
++  - `@langchain/anthropic`
++  - `@langchain/cohere`
++  - `@langchain/textsplitters`
++  - `langchain` (main package)
++- **No experimental imports**: Direct imports from experimental LangChain packages or internal paths are prohibited.
++- **Path corrections**: All LangChain imports have been corrected to use the proper package paths.
++
++### 2. Experimental RAG Chains
++- **Isolation**: Experimental RAG chains have been removed or isolated from production code paths.
++- **Production-only chains**: Only stable, production-tested RAG chains are used in the main application.
++- **Testing requirements**: Any new RAG chains must pass full test coverage before being integrated into production.
++
++### 3. Barrel-Only `src/lib` Imports
++- **Strict barrel enforcement**: All imports from `src/lib` must use barrel exports via `@/lib/<module>`.
++- **Index.ts requirement**: Every module in `src/lib` must have an `index.ts` barrel file that exports all public APIs.
++- **No deep imports**: Direct imports into `src/lib/*/subdirectories` are prohibited. Use the module's barrel export instead.
++- **Example**: Use `import { function } from '@/lib/module'` instead of `import { function } from '@/lib/module/subdirectory/file'`.
++
++### 4. CI Pipeline
++The following CI steps must pass before any code is merged:
++- **`pnpm lint`**: ESLint validation for code quality and style consistency.
++- **`pnpm verify-barrels`**: Validates that all `src/lib` modules have proper barrel exports and no deep imports exist.
++- **`pnpm test`**: Unit and integration test suite execution.
++- **`pnpm test:e2e`**: End-to-end test validation with Playwright.
++- **Vercel deployment**: Production build and deployment validation.
++
++### 5. Sentry Monitoring
++- **Release tracking**: All production deployments are tracked with Sentry releases.
++- **Error monitoring**: Production errors are automatically captured and reported to Sentry.
++- **Performance monitoring**: Application performance metrics are tracked and monitored.
++- **Source maps**: Production source maps are uploaded to Sentry for accurate error reporting.
++
++## System Architecture
++
++### Technology Stack
++- **Framework**: Next.js 14 (App Router)
++- **Language**: TypeScript
++- **Database**: PostgreSQL with Drizzle ORM
++- **Vector Database**: LanceDB (production RAG pipeline)
++- **Authentication**: Custom JWT-based auth
++- **Payments**: Stripe
++- **Monitoring**: Sentry
++- **Deployment**: Vercel
++
++### Key Components
++- **RAG System**: Hybrid search with LanceDB vector database and Grok-3 tool calling
++- **Portfolio Tracking**: Real-time collection value tracking
++- **Market Intelligence**: TCG market analysis and insights
++- **Tools Ecosystem**: Grading ROI calculator, sealed product analyzer, and more
++
++### Directory Structure
++```
++src/
++Γö£ΓöÇΓöÇ app/              # Next.js App Router pages
++Γö£ΓöÇΓöÇ components/       # React components
++Γö£ΓöÇΓöÇ lib/              # Shared libraries (barrel exports only)
++Γö£ΓöÇΓöÇ rag/              # RAG system implementation
++Γö£ΓöÇΓöÇ portfolio/        # Portfolio tracking
++Γö£ΓöÇΓöÇ arbitrage/        # Market arbitrage tools
++ΓööΓöÇΓöÇ jobs/             # Background jobs
++```
++
++## Deployment Architecture
++
++### Vercel Configuration
++- **Production environment**: Automatic deployments from `main` branch
++- **Preview deployments**: Automatic preview deployments for pull requests
++- **Environment variables**: Managed through Vercel dashboard
++- **Edge runtime**: Optimized for edge deployment where applicable
++
++### Monitoring & Observability
++- **Sentry**: Error tracking and performance monitoring
++- **Vercel Analytics**: Deployment and performance metrics
++- **Custom logging**: Structured logging for debugging and audit trails
++
++## Security
++
++### Authentication & Authorization
++- JWT-based authentication with secure token storage
++- Role-based access control (RBAC) for premium features
++- API rate limiting via Upstash Redis
++
++### Data Protection
++- Environment variable validation on startup
++- Secure database connections
++- Input validation and sanitization
++
++## Performance
++
++### Optimization Strategies
++- **Code splitting**: Automatic route-based code splitting
++- **Image optimization**: Next.js Image component with WebP/AVIF support
++- **Bundle size monitoring**: Automated bundle budget enforcement
++- **Caching**: Strategic use of Next.js caching and Redis for frequently accessed data
++
++### Budget Enforcement
++- **Bundle budgets**: Per-route and global bundle size limits
++- **CSS budgets**: Maximum CSS file size enforcement
++- **Media budgets**: Image and video file size limits
++- **Delta monitoring**: Chunk size delta tracking to prevent regressions
++
+new file mode 100644
+index 0000000..dcd6fd9
+--- /dev/null
++++ b/ARCHITECTURE.md
+@@ -0,0 +1,118 @@
++> **Production Lockdown Complete ΓÇô November 19 2025**  
++> 
++> This architecture reflects the hardened, production-only configuration: LangChain imports fixed, experimental chains exiled, strict `src/lib` barrel enforcement, CI lint + verify-barrels, and Vercel + Sentry production guardrails.
++
++# Architecture Overview
++
++This document describes the production architecture of the Apex Intelligence Center platform.
++
++## Production Guardrails
++
++The following guardrails are enforced to maintain production stability and prevent regressions:
++
++### 1. LangChain Path Corrections
++- **Supported modules only**: All LangChain imports must use the official, supported packages:
++  - `@langchain/core`
++  - `@langchain/community`
++  - `@langchain/openai`
++  - `@langchain/anthropic`
++  - `@langchain/cohere`
++  - `@langchain/textsplitters`
++  - `langchain` (main package)
++- **No experimental imports**: Direct imports from experimental LangChain packages or internal paths are prohibited.
++- **Path corrections**: All LangChain imports have been corrected to use the proper package paths.
++
++### 2. Experimental RAG Chains
++- **Isolation**: Experimental RAG chains have been removed or isolated from production code paths.
++- **Production-only chains**: Only stable, production-tested RAG chains are used in the main application.
++- **Testing requirements**: Any new RAG chains must pass full test coverage before being integrated into production.
++
++### 3. Barrel-Only `src/lib` Imports
++- **Strict barrel enforcement**: All imports from `src/lib` must use barrel exports via `@/lib/<module>`.
++- **Index.ts requirement**: Every module in `src/lib` must have an `index.ts` barrel file that exports all public APIs.
++- **No deep imports**: Direct imports into `src/lib/*/subdirectories` are prohibited. Use the module's barrel export instead.
++- **Example**: Use `import { function } from '@/lib/module'` instead of `import { function } from '@/lib/module/subdirectory/file'`.
++
++### 4. CI Pipeline
++The following CI steps must pass before any code is merged:
++- **`pnpm lint`**: ESLint validation for code quality and style consistency.
++- **`pnpm verify-barrels`**: Validates that all `src/lib` modules have proper barrel exports and no deep imports exist.
++- **`pnpm test`**: Unit and integration test suite execution.
++- **`pnpm test:e2e`**: End-to-end test validation with Playwright.
++- **Vercel deployment**: Production build and deployment validation.
++
++### 5. Sentry Monitoring
++- **Release tracking**: All production deployments are tracked with Sentry releases.
++- **Error monitoring**: Production errors are automatically captured and reported to Sentry.
++- **Performance monitoring**: Application performance metrics are tracked and monitored.
++- **Source maps**: Production source maps are uploaded to Sentry for accurate error reporting.
++
++## System Architecture
++
++### Technology Stack
++- **Framework**: Next.js 14 (App Router)
++- **Language**: TypeScript
++- **Database**: PostgreSQL with Drizzle ORM
++- **Vector Database**: LanceDB (production RAG pipeline)
++- **Authentication**: Custom JWT-based auth
++- **Payments**: Stripe
++- **Monitoring**: Sentry
++- **Deployment**: Vercel
++
++### Key Components
++- **RAG System**: Hybrid search with LanceDB vector database and Grok-3 tool calling
++- **Portfolio Tracking**: Real-time collection value tracking
++- **Market Intelligence**: TCG market analysis and insights
++- **Tools Ecosystem**: Grading ROI calculator, sealed product analyzer, and more
++
++### Directory Structure
++```
++src/
++Γö£ΓöÇΓöÇ app/              # Next.js App Router pages
++Γö£ΓöÇΓöÇ components/       # React components
++Γö£ΓöÇΓöÇ lib/              # Shared libraries (barrel exports only)
++Γö£ΓöÇΓöÇ rag/              # RAG system implementation
++Γö£ΓöÇΓöÇ portfolio/        # Portfolio tracking
++Γö£ΓöÇΓöÇ arbitrage/        # Market arbitrage tools
++ΓööΓöÇΓöÇ jobs/             # Background jobs
++```
++
++## Deployment Architecture
++
++### Vercel Configuration
++- **Production environment**: Automatic deployments from `main` branch
++- **Preview deployments**: Automatic preview deployments for pull requests
++- **Environment variables**: Managed through Vercel dashboard
++- **Edge runtime**: Optimized for edge deployment where applicable
++
++### Monitoring & Observability
++- **Sentry**: Error tracking and performance monitoring
++- **Vercel Analytics**: Deployment and performance metrics
++- **Custom logging**: Structured logging for debugging and audit trails
++
++## Security
++
++### Authentication & Authorization
++- JWT-based authentication with secure token storage
++- Role-based access control (RBAC) for premium features
++- API rate limiting via Upstash Redis
++
++### Data Protection
++- Environment variable validation on startup
++- Secure database connections
++- Input validation and sanitization
++
++## Performance
++
++### Optimization Strategies
++- **Code splitting**: Automatic route-based code splitting
++- **Image optimization**: Next.js Image component with WebP/AVIF support
++- **Bundle size monitoring**: Automated bundle budget enforcement
++- **Caching**: Strategic use of Next.js caching and Redis for frequently accessed data
++
++### Budget Enforcement
++- **Bundle budgets**: Per-route and global bundle size limits
++- **CSS budgets**: Maximum CSS file size enforcement
++- **Media budgets**: Image and video file size limits
++- **Delta monitoring**: Chunk size delta tracking to prevent regressions
++
+diff --git a/ARCHITECTURE.md b/ARCHITECTURE.md
+new file mode 100644
+index 0000000..dcd6fd9
+--- /dev/null
++++ b/ARCHITECTURE.md
+@@ -0,0 +1,118 @@
++> **Production Lockdown Complete ΓÇô November 19 2025**  
++> 
++> This architecture reflects the hardened, production-only configuration: LangChain imports fixed, experimental chains exiled, strict `src/lib` barrel enforcement, CI lint + verify-barrels, and Vercel + Sentry production guardrails.
++
++# Architecture Overview
++
++This document describes the production architecture of the Apex Intelligence Center platform.
++
++## Production Guardrails
++
++The following guardrails are enforced to maintain production stability and prevent regressions:
++
++### 1. LangChain Path Corrections
++- **Supported modules only**: All LangChain imports must use the official, supported packages:
++  - `@langchain/core`
++  - `@langchain/community`
++  - `@langchain/openai`
++  - `@langchain/anthropic`
++  - `@langchain/cohere`
++  - `@langchain/textsplitters`
++  - `langchain` (main package)
++- **No experimental imports**: Direct imports from experimental LangChain packages or internal paths are prohibited.
++- **Path corrections**: All LangChain imports have been corrected to use the proper package paths.
++
++### 2. Experimental RAG Chains
++- **Isolation**: Experimental RAG chains have been removed or isolated from production code paths.
++- **Production-only chains**: Only stable, production-tested RAG chains are used in the main application.
++- **Testing requirements**: Any new RAG chains must pass full test coverage before being integrated into production.
++
++### 3. Barrel-Only `src/lib` Imports
++- **Strict barrel enforcement**: All imports from `src/lib` must use barrel exports via `@/lib/<module>`.
++- **Index.ts requirement**: Every module in `src/lib` must have an `index.ts` barrel file that exports all public APIs.
++- **No deep imports**: Direct imports into `src/lib/*/subdirectories` are prohibited. Use the module's barrel export instead.
++- **Example**: Use `import { function } from '@/lib/module'` instead of `import { function } from '@/lib/module/subdirectory/file'`.
++
++### 4. CI Pipeline
++The following CI steps must pass before any code is merged:
++- **`pnpm lint`**: ESLint validation for code quality and style consistency.
++- **`pnpm verify-barrels`**: Validates that all `src/lib` modules have proper barrel exports and no deep imports exist.
++- **`pnpm test`**: Unit and integration test suite execution.
++- **`pnpm test:e2e`**: End-to-end test validation with Playwright.
++- **Vercel deployment**: Production build and deployment validation.
++
++### 5. Sentry Monitoring
++- **Release tracking**: All production deployments are tracked with Sentry releases.
++- **Error monitoring**: Production errors are automatically captured and reported to Sentry.
++- **Performance monitoring**: Application performance metrics are tracked and monitored.
++- **Source maps**: Production source maps are uploaded to Sentry for accurate error reporting.
++
++## System Architecture
++
++### Technology Stack
++- **Framework**: Next.js 14 (App Router)
++- **Language**: TypeScript
++- **Database**: PostgreSQL with Drizzle ORM
++- **Vector Database**: LanceDB (production RAG pipeline)
++- **Authentication**: Custom JWT-based auth
++- **Payments**: Stripe
++- **Monitoring**: Sentry
++- **Deployment**: Vercel
++
++### Key Components
++- **RAG System**: Hybrid search with LanceDB vector database and Grok-3 tool calling
++- **Portfolio Tracking**: Real-time collection value tracking
++- **Market Intelligence**: TCG market analysis and insights
++- **Tools Ecosystem**: Grading ROI calculator, sealed product analyzer, and more
++
++### Directory Structure
++```
++src/
++Γö£ΓöÇΓöÇ app/              # Next.js App Router pages
++Γö£ΓöÇΓöÇ components/       # React components
++Γö£ΓöÇΓöÇ lib/              # Shared libraries (barrel exports only)
++Γö£ΓöÇΓöÇ rag/              # RAG system implementation
++Γö£ΓöÇΓöÇ portfolio/        # Portfolio tracking
++Γö£ΓöÇΓöÇ arbitrage/        # Market arbitrage tools
++ΓööΓöÇΓöÇ jobs/             # Background jobs
++```
++
++## Deployment Architecture
++
++### Vercel Configuration
++- **Production environment**: Automatic deployments from `main` branch
++- **Preview deployments**: Automatic preview deployments for pull requests
++- **Environment variables**: Managed through Vercel dashboard
++- **Edge runtime**: Optimized for edge deployment where applicable
++
++### Monitoring & Observability
++- **Sentry**: Error tracking and performance monitoring
++- **Vercel Analytics**: Deployment and performance metrics
++- **Custom logging**: Structured logging for debugging and audit trails
++
++## Security
++
++### Authentication & Authorization
++- JWT-based authentication with secure token storage
++- Role-based access control (RBAC) for premium features
++- API rate limiting via Upstash Redis
++
++### Data Protection
++- Environment variable validation on startup
++- Secure database connections
++- Input validation and sanitization
++
++## Performance
++
++### Optimization Strategies
++- **Code splitting**: Automatic route-based code splitting
++- **Image optimization**: Next.js Image component with WebP/AVIF support
++- **Bundle size monitoring**: Automated bundle budget enforcement
++- **Caching**: Strategic use of Next.js caching and Redis for frequently accessed data
++
++### Budget Enforcement
++- **Bundle budgets**: Per-route and global bundle size limits
++- **CSS budgets**: Maximum CSS file size enforcement
++- **Media budgets**: Image and video file size limits
++- **Delta monitoring**: Chunk size delta tracking to prevent regressions
++

@@ -23,7 +23,11 @@ export default function IntelArticlePage({ params }: IntelPageProps) {
     <SectionShell title={article.title} kicker="Intel Note">
       <article className="max-w-3xl mx-auto space-y-6">
         <div className="text-sm text-white/60">
-          <span>{new Date(article.date).toLocaleDateString()}</span>
+          <span>{new Date(article.date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          })}</span>
           <span className="mx-2">•</span>
           <span>{article.read}</span>
           {article.badge && (

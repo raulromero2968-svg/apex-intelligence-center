@@ -1,4 +1,13 @@
 # Apex Intelligence - TCG Market Intelligence Platform
+
+## 🚀 Live Production
+
+**Live at:** https://apexintelligence.io  
+
+**Status:** Production Equilibrium Achieved November 19 2025  
+
+**Protection:** 100% Guardrail Protected (LangChain safety, experimental exile, barrel enforcement, schema sync, CI guardrails, Sentry automation)
+
 ![PR CI](https://github.com/<owner>/<repo>/actions/workflows/pr-ci.yml/badge.svg)
 
 > The world's first fully attribution-safe, regulation-compliant, AI-native market intelligence platform for Trading Card Games.

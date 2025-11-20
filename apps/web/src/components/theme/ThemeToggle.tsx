@@ -5,9 +5,11 @@ import { Sun, Moon } from 'lucide-react';
 
 export const ThemeToggle = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
-    // Load saved theme
+    setIsClient(true);
+    // Load saved theme (only on client)
     const saved = (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
     setTheme(saved);
     document.documentElement.classList.toggle('light', saved === 'light');
@@ -20,6 +22,11 @@ export const ThemeToggle = () => {
     document.documentElement.classList.toggle('light', newTheme === 'light');
   };
   
+  // Don't render until client-side to avoid hydration mismatch
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <button
       onClick={toggleTheme}

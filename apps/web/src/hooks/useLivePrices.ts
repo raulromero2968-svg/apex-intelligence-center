@@ -50,6 +50,8 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
     setIsConnected(false);
   }, []);
 
+  const connectRef = useRef<() => void>(() => {});
+
   const connect = useCallback(() => {
     // Check feature flag (client-side)
     const featureEnabled = process.env.NEXT_PUBLIC_FEATURE_LIVE_PRICES === '1';
@@ -91,7 +93,7 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
         }
         heartbeatTimeoutRef.current = setTimeout(() => {
           console.warn('Heartbeat timeout, reconnecting...');
-          reconnect();
+          connectRef.current?.();
         }, 25000); // 25s timeout (server sends every 20s)
       });
 
@@ -107,12 +109,12 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
       eventSource.onerror = () => {
         setIsConnected(false);
         cleanup();
-        reconnect();
+        connectRef.current?.();
       };
     } catch (err) {
       console.error('Failed to create EventSource:', err);
       setError('Failed to connect');
-      reconnect();
+      connectRef.current?.();
     }
   }, [sessionId, enabled, cleanup, onDelta]);
 
@@ -120,11 +122,13 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
     // Exponential backoff with max 5s
     const delay = Math.min(reconnectDelayRef.current, 5000);
     reconnectTimeoutRef.current = setTimeout(() => {
-      connect();
+      connectRef.current?.();
     }, delay);
     reconnectDelayRef.current = Math.min(reconnectDelayRef.current * 2, 5000);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Update the ref when connect changes
+  connectRef.current = connect;
 
   useEffect(() => {
     connect();

@@ -1,0 +1,56 @@
+SENTRY RELEASE & ERROR VERIFICATION REPORT
+==========================================
+Generated: 2025-11-19 20:09:59 UTC
+Production Verification for: apex-intelligence-center
+
+1. PRODUCTION COMMIT SHA
+-----------------------
+Latest commit on main branch: 7378d30
+Commit message: Merge pull request #131 from raulromero2968-svg/claude/eslint-langchain-imports-01E4Sq24LkoWvecgqXAw6oGH
+
+Note: The specific commit mentioned in instructions ("chore(release): production lockdown complete – LangChain + barrel + experimental exile") was not found in the recent 30 commits. The latest commit SHA above is the current HEAD of main branch.
+
+2. SENTRY ACCESS STATUS
+-----------------------
+Status: AUTHENTICATION REQUIRED
+URL Attempted: https://sentry.io/issues/
+Current State: Login page displayed - requires user authentication to proceed
+
+Action Required: User must log in to Sentry dashboard to complete verification:
+- Navigate to https://sentry.io/issues/
+- Select project: apex-intelligence-center (or associated project)
+- Filter time range to "Last 5 minutes"
+- Check for new unresolved errors
+
+3. VERIFICATION CHECKLIST
+-------------------------
+[ ] Sentry dashboard accessed successfully
+[ ] Time range set to "Last 5 minutes"
+[ ] Confirmed no new unresolved errors after deployment
+[ ] Release tracking verified in Sentry Releases section
+[ ] Release marked as deployed to production environment
+[ ] Release version/commit hash matches: 7378d30
+[ ] No abnormal spike in error counts for this release
+[ ] Screenshots captured:
+    [ ] Sentry Releases page showing latest release
+    [ ] Sentry Issues page (Last 5 minutes) showing zero new errors
+
+4. NEXT STEPS
+------------
+1. Log in to Sentry dashboard at https://sentry.io/issues/
+2. Navigate to the project associated with apex-intelligence.com / apex-intelligence-center
+3. Set time filter to "Last 5 minutes"
+4. Verify no new errors exist
+5. Navigate to Releases section
+6. Locate release corresponding to commit SHA: 7378d30
+7. Verify release is marked as deployed to production
+8. Capture screenshots as specified
+9. Update this report with findings
+
+5. COMMIT INFORMATION
+---------------------
+File saved: AGENTS/REPORTS/current-production-commit.txt
+Content: 7378d30 Merge pull request #131 from raulromero2968-svg/claude/eslint-langchain-imports-01E4Sq24LkoWvecgqXAw6oGH
+
+---
+END OF REPORT

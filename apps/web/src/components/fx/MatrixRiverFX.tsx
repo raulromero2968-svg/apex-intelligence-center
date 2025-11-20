@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 // Water and flow-related characters for river effect
@@ -6,21 +7,39 @@ const GLYPHS = "水海流波濤浪滴流川河湖池泉源湧滝瀧渓溪流波�
 
 export default function MatrixRiverFX() {
   const reduced = useReducedMotion();
+  const [isClient, setIsClient] = useState(false);
+  const [glyphText, setGlyphText] = useState<string>("");
+
+  // Generate glyph text only on client to avoid server/client mismatch
+  useEffect(() => {
+    setIsClient(true);
+    // Generate deterministic-looking glyph sequence (still random but consistent on client)
+    const text = Array.from({ length: 150 })
+      .map(() => GLYPHS[Math.floor(Math.random() * GLYPHS.length)])
+      .join(" ");
+    setGlyphText(text);
+  }, []);
+
   // Create columns only on left side
   const leftCols = 4; // 4 columns on left side
   const colWidth = 2.5; // Width in rem for each column
   const dur = (i: number) => 30 + (i % 8) * 2; // 30–44s (faster for water flow)
 
   // Left side columns only
-  const leftColumns = Array.from({ length: leftCols }).map((_, i) => ({
+  const leftColumns = useMemo(() => Array.from({ length: leftCols }).map((_, i) => ({
     id: `left-${i}`,
     position: 'left' as const,
     offset: `${i * colWidth}rem`,
     delay: i * 0.5,
     duration: dur(i),
-  }));
+  })), [leftCols]);
 
   const allColumns = [...leftColumns];
+
+  // Don't render until client-side to avoid hydration mismatch
+  if (!isClient || !glyphText) {
+    return null;
+  }
 
   return (
     <div aria-hidden className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
@@ -62,9 +81,7 @@ export default function MatrixRiverFX() {
                 "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.4) 8%, white 20%, white 80%, rgba(255,255,255,0.4) 92%, transparent 100%)",
             }}
           >
-            {Array.from({ length: 150 })
-              .map(() => GLYPHS[Math.floor(Math.random() * GLYPHS.length)])
-              .join(" ")}
+            {glyphText}
           </span>
         </motion.div>
       ))}

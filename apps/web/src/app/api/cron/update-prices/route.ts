@@ -150,7 +150,7 @@ export async function GET(req: NextRequest) {
               // Mark as notified
               await db
                 .update(watchlistItems)
-                .set({ notified: true, updatedAt: new Date() })
+                .set({ notified: true })
                 .where(eq(watchlistItems.id, item.id));
 
               // Send web push notifications

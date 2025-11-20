@@ -39,6 +39,7 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
     .select({
       id: pushTickets.id,
       ticketId: pushTickets.ticketId,
+      retries: pushTickets.retries,
     })
     .from(pushTickets)
     .where(
@@ -98,12 +99,13 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
       // Error case - check if retryable
       const shouldRetry = receipt.details?.error && ['DeviceNotRegistered', 'InvalidCredentials'].includes(receipt.details.error);
 
+      const currentRetries = ticket.retries ?? 0;
       await db
         .update(pushTickets)
         .set({
           status: shouldRetry ? 'retry' : 'error',
           errorMessage: receipt.message,
-          retries: shouldRetry ? pushTickets.retries + 1 : pushTickets.retries,
+          retries: shouldRetry ? currentRetries + 1 : currentRetries,
           updatedAt: new Date(),
         })
         .where(eq(pushTickets.id, ticket.id));
