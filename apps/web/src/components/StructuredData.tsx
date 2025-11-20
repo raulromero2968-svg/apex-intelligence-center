@@ -1,4 +1,4 @@
-import { SAME_AS_LINKS } from '@/lib/constants/social';
+import { SAME_AS_LINKS } from '@/lib/constants';
 
 /**
  * JSON-LD Structured Data for Organization

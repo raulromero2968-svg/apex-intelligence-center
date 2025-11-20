@@ -11,7 +11,7 @@
 // Security: No secrets in code – uses Expo token from env
 
 import { Expo, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
-import { db } from '@/lib/db';
+import { db } from '@/db';
 import { pushTickets } from '@/db/schema';
 import { eq, inArray, and, lt } from 'drizzle-orm';
 

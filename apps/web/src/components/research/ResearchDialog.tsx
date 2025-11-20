@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useLivePrices } from '@/hooks/useLivePrices';
-import { extractSymbols } from '@/lib/research/symbol-extractor';
+import { extractSymbols } from '@/lib/research';
 
 interface ResearchDialogProps {
   isOpen: boolean;
