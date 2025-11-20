@@ -13,7 +13,7 @@ import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { watchlistItems, users, cards } from '@/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { getTierLimits } from '@/lib/stripe';
 import {
   AuthenticationError,
