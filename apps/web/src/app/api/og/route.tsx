@@ -2,7 +2,9 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import { getArticleBySlug } from '@/lib/mdx';
 
-export const runtime = 'edge';
+// Required because we use fs/promises for MDX → cannot run in Edge runtime
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic'; // OG images are always dynamic
 
 export async function GET(req: NextRequest) {
   try {

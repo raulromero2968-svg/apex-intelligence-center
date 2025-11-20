@@ -26,7 +26,6 @@ import {
   publishPriceUpdate,
   PriceUpdatePayload,
 } from '@/lib/redis';
-import { WatchlistConfig } from '@/lib/edge-config';
 import { sendPushNotification } from '@/lib/webpush';
 
 /**
@@ -59,9 +58,9 @@ export async function GET(req: NextRequest) {
     let alertsTriggered = 0;
     let pushNotificationsSent = 0;
 
-    // Get config values
-    const minChangePercent = await WatchlistConfig.getMinChangePercent();
-    const isPushEnabled = await WatchlistConfig.isPushEnabled();
+    // Config values (defaults - Edge Config package was removed)
+    const minChangePercent = 5; // 5% minimum change to trigger alerts
+    const isPushEnabled = true;
 
     // Get all unique cards that are being watched
     const watchedCardIds = await db
