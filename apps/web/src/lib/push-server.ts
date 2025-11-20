@@ -12,7 +12,7 @@
  */
 
 import { Expo, ExpoPushMessage, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
-import { db } from './db';
+import { db } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 
