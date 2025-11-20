@@ -125,6 +125,7 @@
     "@vitest/ui": "^4.0.10",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
+    "tsx": "^4.20.6",
     "turbo": "^2.1.2",
     "vercel": "^33.0.0",
     "vitest": "^4.0.10"
