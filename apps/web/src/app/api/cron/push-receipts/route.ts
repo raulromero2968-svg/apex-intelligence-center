@@ -4,13 +4,7 @@
  * Vercel Cron endpoint - runs every 15 minutes
  * Validates push notification receipts and retries failed deliveries
  *
- * Configuration in vercel.json:
- * {
- *   "crons": [{
- *     "path": "/api/cron/push-receipts",
- *     "schedule": "*/15 * * * *"
- *   }]
- * }
+ * Configured via vercel.json crons array
  */
 
 import { NextRequest, NextResponse } from 'next/server';
