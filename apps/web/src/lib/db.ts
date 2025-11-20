@@ -39,3 +39,6 @@ export const prisma: PrismaClientType =
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
+
+// Re-export db from the main db module for compatibility
+export { db } from '@/db';

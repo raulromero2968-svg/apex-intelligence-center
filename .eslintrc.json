@@ -1,5 +1,31 @@
 {
   "extends": ["next/core-web-vitals"],
-  "plugins": ["@typescript-eslint"]
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-restricted-imports": ["error", {
+      "patterns": [
+        {
+          "group": ["@apex/auth/*"],
+          "message": "Import from '@apex/auth' barrel instead of direct file paths"
+        },
+        {
+          "group": ["@apex/db/*"],
+          "message": "Import from '@apex/db' barrel instead of direct file paths"
+        },
+        {
+          "group": ["@apex/valuation/*"],
+          "message": "Import from '@apex/valuation' barrel instead of direct file paths"
+        },
+        {
+          "group": ["@apex/realtime/*"],
+          "message": "Import from '@apex/realtime' barrel instead of direct file paths"
+        },
+        {
+          "group": ["**/notifications/*"],
+          "message": "Import from notifications barrel (index.ts) instead of direct file paths"
+        }
+      ]
+    }]
+  }
 }
 
