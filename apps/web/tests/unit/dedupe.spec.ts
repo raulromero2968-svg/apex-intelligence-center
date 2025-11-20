@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { deduplicateSources, formatSourcesForOutput } from '@/rag/dedupe';
-import type { RerankedResult } from '@/rag/reranker';
+import { deduplicateSources, formatSourcesForOutput, type RerankedResult } from '@/rag';
 
 test.describe('Source Deduplication', () => {
   test('should remove exact URL duplicates', () => {
