@@ -10,6 +10,9 @@
  * - Game exposure breakdown
  */
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePortfolioPnL } from '@/portfolio/pnl.service';
 import * as Sentry from '@sentry/nextjs';
