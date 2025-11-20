@@ -17,6 +17,18 @@
           {
             "group": ["@apex/*/*/**"],
             "message": "Deep imports from @apex packages are not allowed. Use package-level barrel exports (e.g., '@apex/auth' instead of '@apex/auth/jwt/session')."
+          },
+          {
+            "group": ["langchain", "langchain/*"],
+            "message": "Invalid LangChain import. Use scoped packages like '@langchain/core', '@langchain/openai', etc. instead of the old 'langchain' package."
+          },
+          {
+            "group": ["@langchain/*/dist/*", "@langchain/*/dist/**"],
+            "message": "Deep imports from LangChain /dist/ folders are not allowed. Use the public API exports (e.g., '@langchain/core/prompts' instead of '@langchain/core/dist/prompts')."
+          },
+          {
+            "group": ["@langchain/langchain"],
+            "message": "Invalid package '@langchain/langchain'. Use specific scoped packages like '@langchain/core', '@langchain/openai', etc."
           }
         ]
       }
