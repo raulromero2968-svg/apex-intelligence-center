@@ -18409,7 +18409,7 @@ snapshots:
       foreground-child: 3.3.1
       jackspeak: 2.3.6
       minimatch: 9.0.5
-      minipass: 5.0.0
+      minipass: 7.1.2
       path-scurry: 1.11.1
 
   glob@10.5.0:
@@ -20890,7 +20890,7 @@ snapshots:
   path-scurry@1.11.1:
     dependencies:
       lru-cache: 10.4.3
-      minipass: 5.0.0
+      minipass: 7.1.2
 
   path-to-regexp@1.9.0:
     dependencies:
