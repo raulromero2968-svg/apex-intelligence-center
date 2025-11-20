@@ -1,6 +1,9 @@
+> **Production Equilibrium Achieved – November 19 2025**  
+> All contributions must preserve the six active guardrails and the migration requirement. Any change that breaks schema sync, barrels, LangChain safety, CI, or Sentry release integrity will be rejected.
+
 # Contributing Guide — Deploy Sanity & Pre-Push Ritual
 
-This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires, JS/CSS/route/media budgets, delta + library guards, env audit, and a PR “Deploy Sanity Report.” The goal is boring deploys and fast, surgical fixes.
+This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires, JS/CSS/route/media budgets, delta + library guards, env audit, and a PR "Deploy Sanity Report." The goal is boring deploys and fast, surgical fixes.
 
 ## TL;DR
 1. Before pushing:
@@ -14,6 +17,22 @@ This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires
    pnpm patch:check   # optional dry run
    pnpm patch:apply   # applies diff + runs golden loop
    ```
+
+## Production Guardrails
+
+All contributors must adhere to the following production guardrails:
+
+- **Do not add columns in code without updating `apps/web/src/db/schema.ts` and creating a migration in `apps/web/prisma/migrations`**: Every column referenced in code must have a schema entry and a migration. Schema drift will cause CI to fail.
+
+- **Do not bypass `verify-barrels` or `verify-schema-sync.ts`**: These verification scripts are mandatory and must pass before any code is merged.
+
+- **Ensure new features pass the full CI pipeline before requesting review**: The CI pipeline includes lint → verify-barrels → verify-schema-sync → verify-drizzle-syntax → test → build. All steps must pass.
+
+- **Preserve LangChain safety**: Only use supported LangChain packages. No experimental imports allowed.
+
+- **Maintain barrel-only imports**: All `src/lib` imports must use barrel exports via `@/lib/*`. No deep imports.
+
+- **Maintain Sentry release integrity**: All production deployments must create a Sentry release via `scripts/create-sentry-release.ts` after each deploy.
 
 ## Branch Rules
 - `main` is protected. Required checks include: build, typecheck, repo sanity, bundle/route/css/media budgets, bundle delta, library watchlist, and the CI summary job.
