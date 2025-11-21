@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { ingestBatch, type Provider } from '@/jobs/ingest';
 import * as Sentry from '@sentry/nextjs';
 
