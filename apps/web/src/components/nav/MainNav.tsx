@@ -7,12 +7,14 @@ const links = [
   { href: "/insights", label: "Insights" },
   { href: "/blog", label: "Blog" },
   { href: "/research", label: "Research" },
+  { href: "/hall-of-disciples", label: "Hall of Disciples" },
+  { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
 ];
 
 export function MainNav() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   return (
     <nav aria-label="Global">
       <ul className="flex gap-2">

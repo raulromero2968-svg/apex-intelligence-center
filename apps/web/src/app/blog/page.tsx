@@ -1,25 +1,22 @@
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 import LiveScatter from "@/components/charts/LiveScatter";
-import { getAllArticles } from "@/lib/mdx";
+import { getAllBlogPosts } from "@/lib/mdx";
 
 export default async function BlogPage() {
-  const allArticles = await getAllArticles();
-
-  // Filter out drafts and unlisted posts
-  const articles = allArticles.filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted);
+  const allBlogPosts = await getAllBlogPosts();
 
   // Map to ArticleCard format
-  const allPosts = articles.map(article => ({
-    href: `/blog/${article.slug}`,
-    title: article.frontmatter.title,
-    excerpt: article.frontmatter.tags?.join(', ') || '',
-    date: article.frontmatter.publishedAt,
+  const allPosts = allBlogPosts.map(post => ({
+    href: `/blog/${post.slug}`,
+    title: post.frontmatter.title,
+    excerpt: post.frontmatter.description || post.frontmatter.tags?.join(', ') || '',
+    date: post.frontmatter.date,
     read: "10 min read", // TODO: Calculate from content
     readTime: 10,
-    tags: article.frontmatter.tags,
-    imageUrl: article.frontmatter.heroImage || '/images/research/default.jpg',
-    sources: article.frontmatter.sourceCount,
+    tags: post.frontmatter.tags,
+    imageUrl: post.frontmatter.hero || '/images/research/default.jpg',
+    sources: 0, // Blog posts don't have sourceCount
   }));
 
   return (

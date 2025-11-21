@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
  * Use this if you want a simpler navigation without the TopBanner styling.
  */
 export default function Nav() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   const links = [
     { href: '/', label: 'Home' },
