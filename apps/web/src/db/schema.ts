@@ -645,6 +645,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
+  parentLinks: many(familyLinks, { relationName: 'parent' }),
+  childLinks: many(familyLinks, { relationName: 'child' }),
+  sessionHistory: many(sessionHistory),
 }));
 
 /**
@@ -741,6 +744,148 @@ export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
 }));
 
 // ============================================================================
+// PARENT DASHBOARD TABLES
+// ============================================================================
+
+/**
+ * Family Links - OAuth-based parent-child account linking
+ *
+ * Allows parents to link child accounts for supervision and monitoring.
+ * Uses OAuth flow for secure authorization.
+ */
+export const familyLinks = pgTable('family_links', {
+  id: text('id').primaryKey(),
+  parentId: text('parent_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status', {
+    enum: ['pending', 'active', 'revoked']
+  }).default('pending').notNull(),
+  // OAuth tokens for accessing child's data
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  tokenExpiresAt: timestamp('token_expires_at'),
+  // Child cannot revoke this link
+  childCannotRevoke: boolean('child_cannot_revoke').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  parentIdx: index('idx_family_links_parent').on(table.parentId),
+  childIdx: index('idx_family_links_child').on(table.childId),
+  statusIdx: index('idx_family_links_status').on(table.status),
+  uniqueParentChild: uniqueIndex('idx_family_links_parent_child_unique').on(table.parentId, table.childId),
+}));
+
+/**
+ * Parental Controls - Per-child control settings
+ *
+ * Stores all parental control configurations including:
+ * - Bedtime mode (disables trading during specified hours)
+ * - Cool down mode (enforces waiting periods between trades)
+ * - Notification controls (parent can disable child's notifications)
+ */
+export const parentalControls = pgTable('parental_controls', {
+  id: text('id').primaryKey(),
+  familyLinkId: text('family_link_id').notNull().references(() => familyLinks.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Bedtime mode
+  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
+  bedtimeStart: text('bedtime_start'), // e.g., "21:00"
+  bedtimeEnd: text('bedtime_end'), // e.g., "07:00"
+  bedtimeTimezone: text('bedtime_timezone').default('America/New_York'),
+
+  // Cool down mode
+  coolDownEnabled: boolean('cool_down_enabled').default(false).notNull(),
+  coolDownMinutes: integer('cool_down_minutes').default(30), // Minutes between actions
+
+  // Notification controls
+  notificationsDisabled: boolean('notifications_disabled').default(false).notNull(),
+  disabledChannels: jsonb('disabled_channels').$type<string[]>().default([]), // ["email", "push", "discord"]
+
+  // Activity limits
+  dailyTradingLimit: integer('daily_trading_limit'), // Max trades per day
+  maxPortfolioValue: real('max_portfolio_value'), // Max USD value
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  childIdx: index('idx_parental_controls_child').on(table.childId),
+  familyLinkIdx: index('idx_parental_controls_family_link').on(table.familyLinkId),
+  uniqueChild: uniqueIndex('idx_parental_controls_child_unique').on(table.childId),
+}));
+
+/**
+ * Session History - Tracks child activity for parent monitoring
+ *
+ * Records all significant child activities for real-time monitoring and history review.
+ */
+export const sessionHistory = pgTable('session_history', {
+  id: text('id').primaryKey(),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Activity details
+  activityType: text('activity_type').notNull(), // "login" | "trade" | "watchlist_add" | "alert_set" | "portfolio_update"
+  activityData: jsonb('activity_data').$type<Record<string, any>>().notNull(),
+
+  // Context
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  deviceInfo: jsonb('device_info'),
+
+  // Timestamps
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+
+  // Parental control enforcement
+  blockedByBedtime: boolean('blocked_by_bedtime').default(false).notNull(),
+  blockedByCoolDown: boolean('blocked_by_cool_down').default(false).notNull(),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  childTimestampIdx: index('idx_session_history_child_timestamp').on(table.childId, table.timestamp.desc()),
+  activityTypeIdx: index('idx_session_history_activity_type').on(table.activityType),
+  timestampIdx: index('idx_session_history_timestamp').on(table.timestamp.desc()),
+}));
+
+/**
+ * Family Links relations
+ */
+export const familyLinksRelations = relations(familyLinks, ({ one, many }) => ({
+  parent: one(users, {
+    fields: [familyLinks.parentId],
+    references: [users.id],
+  }),
+  child: one(users, {
+    fields: [familyLinks.childId],
+    references: [users.id],
+  }),
+  parentalControls: many(parentalControls),
+}));
+
+/**
+ * Parental Controls relations
+ */
+export const parentalControlsRelations = relations(parentalControls, ({ one }) => ({
+  familyLink: one(familyLinks, {
+    fields: [parentalControls.familyLinkId],
+    references: [familyLinks.id],
+  }),
+  child: one(users, {
+    fields: [parentalControls.childId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * Session History relations
+ */
+export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
+  child: one(users, {
+    fields: [sessionHistory.childId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
 // TypeScript types for better DX
 // ============================================================================
 
@@ -793,6 +938,12 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type FamilyLink = typeof familyLinks.$inferSelect;
+export type NewFamilyLink = typeof familyLinks.$inferInsert;
+export type ParentalControl = typeof parentalControls.$inferSelect;
+export type NewParentalControl = typeof parentalControls.$inferInsert;
+export type SessionHistory = typeof sessionHistory.$inferSelect;
+export type NewSessionHistory = typeof sessionHistory.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
