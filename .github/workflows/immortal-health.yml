@@ -1,0 +1,35 @@
+name: Weekly Immortal Health
+
+on:
+  schedule:
+    - cron: "0 5 * * 0"
+  workflow_dispatch: {}
+
+jobs:
+  immortal-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.19.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run weekly immortal health report
+        env:
+          PROD_URL: https://apexintelligence.io
+          SLACK_IMMORTAL_WEBHOOK_URL: ${{ secrets.SLACK_IMMORTAL_WEBHOOK_URL }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: pnpm report:immortal-health
+

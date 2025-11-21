@@ -37,6 +37,7 @@ function ArticleFilterContent({ articles }: ArticleFilterProps) {
 
   // Sync with URL on mount
   useEffect(() => {
+    if (!searchParams) return;
     const urlCategory = searchParams.get('cat') as Category | null;
     if (urlCategory && CATEGORIES.some(c => c.id === urlCategory)) {
       setActiveCategory(urlCategory);
@@ -57,7 +58,7 @@ function ArticleFilterContent({ articles }: ArticleFilterProps) {
     setActiveCategory(category);
 
     // Update URL with category parameter
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
     if (category === 'all') {
       params.delete('cat');
     } else {
