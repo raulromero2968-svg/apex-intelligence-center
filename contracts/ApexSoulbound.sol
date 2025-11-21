@@ -69,29 +69,20 @@ contract ApexSoulbound is ERC721, Ownable {
     }
 
     /**
-     * Override transfer function to make token Soulbound
+     * Override transfer function to make token Soulbound - non-transferable
      * Allow minting (from == address(0)) and burning (to == address(0))
      * Block all other transfers
      */
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override
-        returns (address)
-    {
-        address from = _ownerOf(tokenId);
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal virtual override {
+        // Block transfers if both from and to are non-zero (Soulbound - non-transferable)
+        require(from == address(0) || to == address(0), "ApexSoulbound: Token is non-transferable (Soulbound)");
 
-        // Allow minting (from == 0)
-        if (from == address(0)) {
-            return super._update(to, tokenId, auth);
-        }
-
-        // Allow burning (to == 0)
-        if (to == address(0)) {
-            return super._update(to, tokenId, auth);
-        }
-
-        // Block all other transfers (Soulbound)
-        revert("ApexSoulbound: Token is non-transferable");
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
     /**
