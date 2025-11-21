@@ -6,10 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/lib/redis';
-
-const REDIS_KEY = 'reality-check:global-trigger';
-const REDIS_USER_ACK_KEY = (userId: string) => `reality-check:ack:${userId}`;
+import { redis, RedisKeys } from '@/lib/redis';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,11 +14,11 @@ export async function GET(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Check if there's a global trigger active
-    const globalTrigger = await redis.get(REDIS_KEY);
+    const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {
       // Check if user has already acknowledged this trigger
-      const userAck = await redis.get(REDIS_USER_ACK_KEY(userId));
+      const userAck = await redis.get(RedisKeys.realityCheckAck(userId));
 
       if (!userAck || userAck !== globalTrigger) {
         // User hasn't seen this trigger yet

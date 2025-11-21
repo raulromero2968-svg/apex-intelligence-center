@@ -47,6 +47,12 @@ export const RedisKeys = {
   // Session management (used by JWT auth)
   sessionRevoked: (sessionId: string) => `session:revoked:${sessionId}`,
 
+  // Reality Check - Session Tracking
+  sessionActivity: (userId: string) => `session:activity:${userId}`,
+  realityCheckTrigger: () => `reality-check:global-trigger`,
+  realityCheckAck: (userId: string) => `reality-check:ack:${userId}`,
+  realityCheckChannel: () => `reality-check:trigger`,
+
   // Rate limiting
   rateLimit: (identifier: string) => `ratelimit:${identifier}`,
 } as const;
@@ -59,6 +65,9 @@ export const CacheTTL = {
   PRICE_HISTORY: 3600, // 1 hour for historical data
   WATCHLIST: 300, // 5 minutes for watchlist cache
   SESSION_REVOKE: 7 * 24 * 60 * 60, // 7 days (max JWT lifetime)
+  SESSION_ACTIVITY: 5, // 5 seconds (session heartbeat)
+  REALITY_CHECK_TRIGGER: 3600, // 1 hour (global trigger TTL)
+  REALITY_CHECK_ACK: 24 * 60 * 60, // 24 hours (user acknowledgment)
 } as const;
 
 /**
