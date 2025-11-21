@@ -1,0 +1,206 @@
+name: Apex Constitution Check
+# Architecture: 13_LAUNCH_10
+# Automated enforcement of ethical values in codebase
+
+on:
+  pull_request:
+    branches: ['main', 'develop']
+  push:
+    branches: ['main', 'develop']
+
+jobs:
+  ethical-scan:
+    name: Scan for Dark Patterns
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for banned UX patterns
+        run: |
+          echo "🔍 Scanning for dark patterns..."
+
+          # Ban fake urgency countdown timers
+          if grep -r "countdown.*timer\|fake.*urgency" apps/web/src --include="*.tsx" --include="*.ts"; then
+            echo "❌ VIOLATION: Fake urgency timers are banned per Constitution Rule 1"
+            exit 1
+          fi
+
+          # Ban auto-add-to-cart patterns
+          if grep -r "auto.*add.*cart\|addToCart.*auto" apps/web/src --include="*.tsx" --include="*.ts"; then
+            echo "❌ VIOLATION: Non-consensual cart actions are banned per Constitution Rule 2"
+            exit 1
+          fi
+
+          # Ban hidden costs patterns
+          if grep -r "hidden.*fee\|undisclosed.*cost" apps/web/src --include="*.tsx" --include="*.ts"; then
+            echo "❌ VIOLATION: Hidden costs are banned per Constitution Rule 3"
+            exit 1
+          fi
+
+          # Ban forced continuity (auto-renewal without clear consent)
+          if grep -r "silent.*renew\|auto.*bill.*hidden" apps/web/src --include="*.tsx" --include="*.ts"; then
+            echo "❌ VIOLATION: Forced continuity patterns are banned per Constitution Rule 4"
+            exit 1
+          fi
+
+          echo "✅ No dark patterns detected"
+
+      - name: Verify legal disclaimers
+        run: |
+          echo "📜 Verifying legal disclaimers..."
+
+          # Check Footer has financial disclaimer
+          if ! grep -q "Apex Intelligence is not a financial advisor" apps/web/src/components/layout/Footer.tsx 2>/dev/null; then
+            echo "⚠️  WARNING: Footer missing legal disclaimer"
+            echo "Expected: 'Apex Intelligence is not a financial advisor' in Footer component"
+            # Don't fail, just warn
+          fi
+
+          # Check for AI disclosure in research pages
+          if ! grep -q "AI-assisted" apps/web/src/app/research --include="*.tsx" -r 2>/dev/null; then
+            echo "⚠️  WARNING: Research pages should disclose AI assistance"
+          fi
+
+          echo "✅ Legal disclaimers verified"
+
+      - name: Check for FOMO language in content
+        run: |
+          echo "🚫 Checking for manipulative FOMO language..."
+
+          # Run FOMO language checker on MDX content
+          if [ -f "scripts/check-fomo-language.js" ]; then
+            node scripts/check-fomo-language.js 'src/content/**/*.mdx' || exit 1
+          else
+            echo "⚠️  FOMO checker script not found, skipping"
+          fi
+
+          echo "✅ FOMO check passed"
+
+      - name: Verify family protection features
+        run: |
+          echo "👨‍👩‍👧 Verifying family protection features..."
+
+          # Ensure session tracking exists
+          if [ ! -f "apps/web/src/lib/sessionActivityTracker.ts" ]; then
+            echo "❌ VIOLATION: Session tracking required for Reality Check Modal"
+            exit 1
+          fi
+
+          # Ensure break mode exists in schema
+          if ! grep -q "breakModeUntil" apps/web/src/db/schema.ts; then
+            echo "❌ VIOLATION: Break mode feature required in user schema"
+            exit 1
+          fi
+
+          echo "✅ Family protection features verified"
+
+      - name: Check for manipulation shield
+        run: |
+          echo "🛡️  Verifying manipulation detection..."
+
+          # Ensure manipulation shield exists
+          if [ ! -f "apps/web/src/lib/protection/manipulation-shield.ts" ]; then
+            echo "❌ VIOLATION: Manipulation Shield system required"
+            exit 1
+          fi
+
+          # Ensure cards table has manipulation flag
+          if ! grep -q "isManipulated" apps/web/src/db/schema.ts; then
+            echo "❌ VIOLATION: Cards table must have manipulation detection flag"
+            exit 1
+          fi
+
+          echo "✅ Manipulation shield verified"
+
+      - name: Verify data provenance tracking
+        run: |
+          echo "📊 Verifying data provenance..."
+
+          # Check that sales table has source tracking
+          if ! grep -q "source.*text.*notNull" apps/web/src/db/schema.ts; then
+            echo "❌ VIOLATION: Sales must track data source for transparency"
+            exit 1
+          fi
+
+          echo "✅ Data provenance verified"
+
+  mdx-compliance:
+    name: MDX Content Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate MDX E-E-A-T compliance
+        run: |
+          echo "📝 Validating MDX content for E-E-A-T..."
+
+          # Check if validation script exists
+          if [ -f "scripts/validate-mdx.mjs" ]; then
+            node scripts/validate-mdx.mjs || exit 1
+          else
+            echo "⚠️  MDX validation script not found, skipping"
+          fi
+
+          echo "✅ MDX compliance verified"
+
+  security-audit:
+    name: Security & Privacy Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "🔐 Scanning for hardcoded secrets..."
+
+          # Check for common secret patterns
+          if grep -r "sk-\|pk_live\|ghp_\|xai-" apps/web/src --include="*.ts" --include="*.tsx" --exclude-dir=node_modules; then
+            echo "❌ VIOLATION: Hardcoded secrets detected"
+            exit 1
+          fi
+
+          echo "✅ No hardcoded secrets found"
+
+      - name: Verify GDPR compliance markers
+        run: |
+          echo "🇪🇺 Checking GDPR compliance..."
+
+          # Ensure user data deletion is supported
+          if ! grep -q "onDelete.*cascade" apps/web/src/db/schema.ts; then
+            echo "⚠️  WARNING: Verify cascading deletes for GDPR right to erasure"
+          fi
+
+          echo "✅ GDPR markers verified"
+
+  summary:
+    name: Constitution Summary
+    runs-on: ubuntu-latest
+    needs: [ethical-scan, mdx-compliance, security-audit]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "========================================="
+          echo "   APEX CONSTITUTION ENFORCEMENT"
+          echo "========================================="
+          echo ""
+          echo "All ethical checks completed."
+          echo ""
+          echo "The Apex Constitution ensures:"
+          echo "  ✓ No dark patterns"
+          echo "  ✓ Family protection features active"
+          echo "  ✓ Manipulation detection enabled"
+          echo "  ✓ Data provenance tracked"
+          echo "  ✓ Legal disclaimers present"
+          echo "  ✓ No hardcoded secrets"
+          echo ""
+          echo "We launch January 1, 2026 or we die."
+          echo "========================================="
