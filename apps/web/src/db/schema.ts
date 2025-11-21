@@ -260,6 +260,11 @@ export const users = pgTable('users', {
   breakModeActivatedBy: text('break_mode_activated_by', {
     enum: ['child', 'parent']
   }),
+  birthDate: timestamp('birth_date'),
+  isMinor: boolean('is_minor').default(false).notNull(),
+  parentalConsentGiven: boolean('parental_consent_given').default(false).notNull(),
+  parentalConsentDate: timestamp('parental_consent_date'),
+  parentalGuardianEmail: text('parental_guardian_email'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -793,6 +798,40 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type VaultEvent = typeof vaultEvents.$inferSelect;
+export type NewVaultEvent = typeof vaultEvents.$inferInsert;
+
+// ============================================================================
+// FOUNDING MEMBER NFT CLAIMS
+// ============================================================================
+
+/**
+ * Founding Member NFT Claims table
+ *
+ * Tracks founding member NFT claims to prevent duplicate claims per user
+ */
+export const foundingMemberClaims = pgTable('founding_member_claims', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').references(() => users.id).notNull(),
+  walletAddress: text('wallet_address').notNull(),
+  tier: text('tier').notNull(),
+  txHash: text('tx_hash'),
+  tokenId: text('token_id'),
+  chainId: integer('chain_id'),
+  gasPaidByPaymaster: boolean('gas_paid_by_paymaster').default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  // Unique constraint: one claim per user
+  userIdIdx: uniqueIndex('idx_founding_member_claims_user_id').on(table.userId),
+  // Index for wallet lookups
+  walletAddressIdx: index('idx_founding_member_claims_wallet_address').on(table.walletAddress),
+  // Index for transaction lookups
+  txHashIdx: index('idx_founding_member_claims_tx_hash').on(table.txHash),
+}));
+
+export type FoundingMemberClaim = typeof foundingMemberClaims.$inferSelect;
+export type NewFoundingMemberClaim = typeof foundingMemberClaims.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:

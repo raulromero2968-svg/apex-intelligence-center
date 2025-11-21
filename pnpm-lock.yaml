@@ -31,19 +31,22 @@ importers:
         version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
       '@mdx-js/loader':
         specifier: ^3.1.1
-        version: 3.1.1(webpack@5.102.1)
+        version: 3.1.1(webpack@5.102.1(esbuild@0.25.12))
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.5)(react@18.3.1)
       '@next/mdx':
         specifier: ^16.0.3
-        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
+        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
       '@sentry/nextjs':
         specifier: ^10.25.0
-        version: 10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)
+        version: 10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/mdx':
         specifier: ^2.0.13
         version: 2.0.13
@@ -68,6 +71,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.22
         version: 10.4.22(postcss@8.5.6)
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
       bullmq:
         specifier: ^5.63.2
         version: 5.63.2
@@ -369,19 +375,19 @@ importers:
         version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
       '@mdx-js/loader':
         specifier: ^3.1.1
-        version: 3.1.1(webpack@5.102.1)
+        version: 3.1.1(webpack@5.102.1(esbuild@0.25.12))
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.5)(react@18.3.1)
       '@next/mdx':
         specifier: ^16.0.3
-        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
+        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
       '@prisma/client':
         specifier: ^6.19.0
         version: 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
       '@sentry/nextjs':
         specifier: ^10.25.0
-        version: 10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)
+        version: 10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
@@ -4192,6 +4198,9 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
+  '@types/bcrypt@6.0.0':
+    resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
+
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -5105,6 +5114,10 @@ packages:
 
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
+
+  bcrypt@6.0.0:
+    resolution: {integrity: sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==}
+    engines: {node: '>= 18'}
 
   better-opn@3.0.2:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
@@ -8640,6 +8653,10 @@ packages:
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+
+  node-addon-api@8.5.0:
+    resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
+    engines: {node: ^18 || ^20 || >= 21}
 
   node-dir@0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}
@@ -14156,12 +14173,12 @@ snapshots:
       - encoding
       - supports-color
 
-  '@mdx-js/loader@3.1.1(webpack@5.102.1)':
+  '@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12))':
     dependencies:
       '@mdx-js/mdx': 3.1.1
       source-map: 0.7.6
     optionalDependencies:
-      webpack: 5.102.1
+      webpack: 5.102.1(esbuild@0.25.12)
     transitivePeerDependencies:
       - supports-color
 
@@ -14232,11 +14249,11 @@ snapshots:
     dependencies:
       glob: 10.3.10
 
-  '@next/mdx@16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))':
+  '@next/mdx@16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))':
     dependencies:
       source-map: 0.7.6
     optionalDependencies:
-      '@mdx-js/loader': 3.1.1(webpack@5.102.1)
+      '@mdx-js/loader': 3.1.1(webpack@5.102.1(esbuild@0.25.12))
       '@mdx-js/react': 3.1.1(@types/react@19.2.5)(react@18.3.1)
 
   '@next/swc-darwin-arm64@14.2.33':
@@ -15432,7 +15449,7 @@ snapshots:
       '@sentry/utils': 7.119.1
       localforage: 1.10.0
 
-  '@sentry/nextjs@10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)':
+  '@sentry/nextjs@10.25.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.38.0
@@ -15444,7 +15461,7 @@ snapshots:
       '@sentry/opentelemetry': 10.25.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       '@sentry/react': 10.25.0(react@18.3.1)
       '@sentry/vercel-edge': 10.25.0
-      '@sentry/webpack-plugin': 4.6.0(webpack@5.102.1)
+      '@sentry/webpack-plugin': 4.6.0(webpack@5.102.1(esbuild@0.25.12))
       next: 14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       resolve: 1.22.8
       rollup: 4.53.2
@@ -15587,12 +15604,12 @@ snapshots:
       '@opentelemetry/resources': 2.2.0(@opentelemetry/api@1.9.0)
       '@sentry/core': 10.25.0
 
-  '@sentry/webpack-plugin@4.6.0(webpack@5.102.1)':
+  '@sentry/webpack-plugin@4.6.0(webpack@5.102.1(esbuild@0.25.12))':
     dependencies:
       '@sentry/bundler-plugin-core': 4.6.0
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.102.1
+      webpack: 5.102.1(esbuild@0.25.12)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -16148,6 +16165,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@types/bcrypt@6.0.0':
+    dependencies:
+      '@types/node': 24.10.1
 
   '@types/body-parser@1.19.6':
     dependencies:
@@ -17263,6 +17284,11 @@ snapshots:
   bcrypt-pbkdf@1.0.2:
     dependencies:
       tweetnacl: 0.14.5
+
+  bcrypt@6.0.0:
+    dependencies:
+      node-addon-api: 8.5.0
+      node-gyp-build: 4.8.4
 
   better-opn@3.0.2:
     dependencies:
@@ -19783,7 +19809,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.2(debug@4.4.3))
+      retry-axios: 2.6.0(axios@1.13.2)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -21619,6 +21645,8 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
+  node-addon-api@8.5.0: {}
+
   node-dir@0.1.17:
     dependencies:
       minimatch: 3.1.2
@@ -22890,7 +22918,7 @@ snapshots:
 
   restructure@3.0.2: {}
 
-  retry-axios@2.6.0(axios@1.13.2(debug@4.4.3)):
+  retry-axios@2.6.0(axios@1.13.2):
     dependencies:
       axios: 1.13.2(debug@4.4.3)
 
@@ -23595,14 +23623,16 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-  terser-webpack-plugin@5.3.14(webpack@5.102.1):
+  terser-webpack-plugin@5.3.14(esbuild@0.25.12)(webpack@5.102.1(esbuild@0.25.12)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.44.1
-      webpack: 5.102.1
+      webpack: 5.102.1(esbuild@0.25.12)
+    optionalDependencies:
+      esbuild: 0.25.12
 
   terser@5.44.1:
     dependencies:
@@ -24252,7 +24282,7 @@ snapshots:
 
   webpack-virtual-modules@0.5.0: {}
 
-  webpack@5.102.1:
+  webpack@5.102.1(esbuild@0.25.12):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -24276,7 +24306,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(webpack@5.102.1)
+      terser-webpack-plugin: 5.3.14(esbuild@0.25.12)(webpack@5.102.1(esbuild@0.25.12))
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:
