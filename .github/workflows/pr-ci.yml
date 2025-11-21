@@ -24,6 +24,9 @@ jobs:
       - name: Lint
         run: pnpm --filter web lint
 
+      - name: Check for FOMO language (STRICT - blocks PRs)
+        run: pnpm check:fomo
+
       - name: Verify barrels
         run: pnpm --filter web verify-barrels
 
