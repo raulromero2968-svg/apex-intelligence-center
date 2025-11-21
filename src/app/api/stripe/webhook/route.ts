@@ -4,6 +4,10 @@
  * Handles Stripe webhook events for subscription lifecycle management.
  * Implements idempotent updates and proper error handling.
  *
+ * SECURITY CRITICAL: This is the ONLY route that can update subscription tiers.
+ * Tier assignment is derived server-side from priceId using PRICE_TO_TIER_MAP.
+ * NEVER trust tier information from metadata or client requests.
+ *
  * Events handled:
  * - checkout.session.completed: Initial subscription creation
  * - customer.subscription.updated: Subscription changes (upgrades, renewals)
@@ -11,7 +15,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import { stripe, mapPriceIdToTier } from '@/lib/stripe';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -140,6 +144,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
       subscriptionTier: 'free',
       subscriptionStatus: 'canceled',
       subscriptionEndsAt: new Date(subscription.current_period_end * 1000),
+      stripeSubscriptionId: null,
     })
     .where(eq(users.id, userId));
 
@@ -148,45 +153,46 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 
 /**
  * Update user subscription in database (idempotent)
+ *
+ * SECURITY CRITICAL: Tier is ONLY derived from priceId using server-side mapping.
+ * NEVER trust metadata or client-provided tier information.
  */
 async function updateUserSubscription(
   userId: string,
   subscription: Stripe.Subscription
 ) {
-  // Determine tier from price ID
+  // SECURITY: Get priceId from subscription and map to tier server-side
   const priceId = subscription.items.data[0]?.price.id;
-  const tier = subscription.metadata?.tier || determineTierFromPrice(priceId);
+
+  if (!priceId) {
+    console.error('No price ID found in subscription');
+    return;
+  }
+
+  // SECURITY: Use ONLY server-side price-to-tier mapping
+  // NEVER trust tier from metadata - it may have been manipulated
+  const tier = mapPriceIdToTier(priceId);
 
   // Map Stripe status to our status
   const status = mapSubscriptionStatus(subscription.status);
 
+  // Update user with tier derived ONLY from priceId
   await db
     .update(users)
     .set({
-      subscriptionTier: tier as 'free' | 'pro' | 'enterprise',
+      subscriptionTier: tier,
       subscriptionStatus: status,
       subscriptionEndsAt: new Date(subscription.current_period_end * 1000),
+      stripeSubscriptionId: subscription.id,
     })
     .where(eq(users.id, userId));
 
   console.log(
-    `Updated subscription for user ${userId}: tier=${tier}, status=${status}`
+    `SECURITY: Updated subscription for user ${userId}: ` +
+    `tier=${tier} (derived from priceId=${priceId}), ` +
+    `status=${status}, ` +
+    `subscriptionId=${subscription.id}`
   );
-}
-
-/**
- * Determine tier from Stripe price ID
- * Fallback logic if tier is not in metadata
- */
-function determineTierFromPrice(priceId: string): string {
-  // Map price IDs to tiers
-  // These should match your Stripe price IDs from setup-stripe-products.js
-  const priceMap: Record<string, string> = {
-    [process.env.STRIPE_PRICE_PRO_MONTHLY || '']: 'pro',
-    [process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || '']: 'enterprise',
-  };
-
-  return priceMap[priceId] || 'free';
 }
 
 /**
