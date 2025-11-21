@@ -468,6 +468,62 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
 }));
 
 /**
+ * Spend Tracking - Tracks all payment transactions for spend limit enforcement
+ *
+ * Implements unbreakable daily ($50) and weekly ($200) spend limits across:
+ * - Stripe payments (subscriptions, one-time)
+ * - On-chain payments (crypto)
+ *
+ * Uses rolling windows: 24h for daily, 7d for weekly
+ */
+export const spendTracking = pgTable('spend_tracking', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Transaction details
+  amountUsd: real('amount_usd').notNull(), // Normalized to USD
+  paymentType: text('payment_type', {
+    enum: ['stripe', 'onchain']
+  }).notNull(),
+
+  // Payment-specific identifiers
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  stripeChargeId: text('stripe_charge_id'),
+  onchainTxHash: text('onchain_tx_hash'),
+  onchainNetwork: text('onchain_network'), // 'ethereum', 'polygon', etc.
+
+  // Status tracking
+  status: text('status', {
+    enum: ['pending', 'completed', 'failed', 'refunded']
+  }).notNull().default('pending'),
+
+  // Metadata
+  metadata: jsonb('metadata').$type<{
+    currency?: string;
+    originalAmount?: number;
+    usdRate?: number;
+    productId?: string;
+    description?: string;
+    [key: string]: any;
+  }>().default({}),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+
+}, (table) => ({
+  // Critical indexes for spend limit queries
+  userCreatedIdx: index('idx_spend_tracking_user_created').on(table.userId, table.createdAt),
+  userStatusIdx: index('idx_spend_tracking_user_status').on(table.userId, table.status),
+  stripePaymentIntentIdx: index('idx_spend_tracking_stripe_pi').on(table.stripePaymentIntentId),
+  onchainTxIdx: index('idx_spend_tracking_onchain_tx').on(table.onchainTxHash),
+  createdAtIdx: index('idx_spend_tracking_created').on(table.createdAt),
+  // Unique constraints to prevent double-counting
+  uniqueStripePayment: uniqueIndex('idx_spend_tracking_stripe_unique').on(table.stripePaymentIntentId),
+  uniqueOnchainTx: uniqueIndex('idx_spend_tracking_onchain_unique').on(table.onchainTxHash, table.onchainNetwork),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -645,6 +701,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
+  spendTracking: many(spendTracking),
 }));
 
 /**
@@ -716,6 +773,16 @@ export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one 
   card: one(cards, {
     fields: [manipulationAlerts.cardId],
     references: [cards.id],
+  }),
+}));
+
+/**
+ * Spend Tracking relations
+ */
+export const spendTrackingRelations = relations(spendTracking, ({ one }) => ({
+  user: one(users, {
+    fields: [spendTracking.userId],
+    references: [users.id],
   }),
 }));
 
@@ -793,6 +860,8 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type SpendTracking = typeof spendTracking.$inferSelect;
+export type NewSpendTracking = typeof spendTracking.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
