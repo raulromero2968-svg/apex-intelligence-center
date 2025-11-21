@@ -266,8 +266,40 @@ export const users = pgTable('users', {
   phoneVerified: boolean('phone_verified').default(false).notNull(),
   nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
   walletAddress: text('wallet_address'), // Base wallet for NFT
+  // Parent Dashboard (PROMPT_06)
+  parentId: text('parent_id').references((): any => users.id, { onDelete: 'cascade' }),
+  accountType: text('account_type', {
+    enum: ['parent', 'child', 'independent']
+  }).default('independent').notNull(),
+  accountFrozen: boolean('account_frozen').default(false).notNull(),
+  accountFrozenAt: timestamp('account_frozen_at'),
+  accountFrozenBy: text('account_frozen_by'), // Parent user ID
+  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
+  bedtimeStart: text('bedtime_start'), // HH:MM format
+  bedtimeEnd: text('bedtime_end'), // HH:MM format
+  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
+  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+/**
+ * Session History - Tracks user session activity for parent monitoring
+ */
+export const sessionHistory = pgTable('session_history', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  sessionStart: timestamp('session_start').notNull(),
+  sessionEnd: timestamp('session_end'),
+  durationMinutes: integer('duration_minutes'),
+  pagesViewed: integer('pages_viewed').default(0).notNull(),
+  cardsViewed: jsonb('cards_viewed').$type<string[]>().default([]).notNull(),
+  actionsPerformed: jsonb('actions_performed').$type<Array<{ type: string; timestamp: string; details?: any }>>().default([]).notNull(),
+  deviceInfo: jsonb('device_info').$type<{ userAgent?: string; platform?: string; isMobile?: boolean }>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_session_history_user').on(table.userId),
+  sessionStartIdx: index('idx_session_history_start').on(table.sessionStart),
+}));
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -686,12 +718,28 @@ export const holdingsRelations = relations(holdings, ({ one }) => ({
 /**
  * Users relations
  */
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   portfolios: many(portfolios),
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
   marketSubmissions: many(marketSubmissions),
+  sessionHistory: many(sessionHistory),
+  parent: one(users, {
+    fields: [users.parentId],
+    references: [users.id],
+  }),
+  children: many(users),
+}));
+
+/**
+ * Session History relations
+ */
+export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [sessionHistory.userId],
+    references: [users.id],
+  }),
 }));
 
 /**
@@ -824,6 +872,8 @@ export type PopulationReport = typeof populationReports.$inferSelect;
 export type NewPopulationReport = typeof populationReports.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type SessionHistory = typeof sessionHistory.$inferSelect;
+export type NewSessionHistory = typeof sessionHistory.$inferInsert;
 export type WatchlistItem = typeof watchlistItems.$inferSelect;
 export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type Portfolio = typeof portfolios.$inferSelect;
