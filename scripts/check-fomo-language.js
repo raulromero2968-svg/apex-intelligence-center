@@ -15,7 +15,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const glob = require('glob');
 
 const FOMO_PHRASES = [
   'limited time',
@@ -23,7 +22,20 @@ const FOMO_PHRASES = [
   'last chance',
   'act now',
   'don\'t miss',
-  'few left'
+  'only X left',
+  'only 1 left',
+  'only 2 left',
+  'only 3 left',
+  'only 4 left',
+  'only 5 left',
+  'only 6 left',
+  'only 7 left',
+  'only 8 left',
+  'only 9 left',
+  'few remaining',
+  'few left',
+  'flash sale',
+  'urgent'
 ];
 
 const DEFAULT_PATTERNS = [
@@ -80,6 +92,11 @@ function findFomoLanguage(text) {
  * @returns {Object|null} Result object or null if no violations
  */
 function scanFile(filePath) {
+  // Skip if file should be ignored
+  if (shouldIgnore(filePath)) {
+    return null;
+  }
+
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     const matches = findFomoLanguage(content);
@@ -98,37 +115,80 @@ function scanFile(filePath) {
 }
 
 /**
+ * Checks if a path should be ignored
+ * @param {string} filePath - The file path to check
+ * @returns {boolean} True if the path should be ignored
+ */
+function shouldIgnore(filePath) {
+  // Normalize the path for comparison
+  const normalizedPath = filePath.replace(/\\/g, '/');
+
+  return IGNORE_PATTERNS.some(pattern => {
+    // Remove ** and * from pattern for simple matching
+    const cleanPattern = pattern.replace(/\*\*/g, '').replace(/\*/g, '').replace(/^\/+/, '');
+    return normalizedPath.includes(cleanPattern) || normalizedPath.endsWith(cleanPattern);
+  });
+}
+
+/**
+ * Recursively gets all files matching extensions in a directory
+ * @param {string} dir - Directory to scan
+ * @param {string[]} extensions - File extensions to match
+ * @returns {string[]} List of matching files
+ */
+function getFilesRecursively(dir, extensions) {
+  const files = [];
+
+  if (!fs.existsSync(dir)) {
+    return files;
+  }
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (shouldIgnore(fullPath)) {
+      continue;
+    }
+
+    if (entry.isDirectory()) {
+      files.push(...getFilesRecursively(fullPath, extensions));
+    } else if (entry.isFile()) {
+      const ext = path.extname(entry.name);
+      if (extensions.includes(ext)) {
+        files.push(fullPath);
+      }
+    }
+  }
+
+  return files;
+}
+
+/**
  * Gets list of files to scan
- * @param {string[]} patterns - Glob patterns or file paths
+ * @param {string[]} patterns - File paths or directory paths
  * @returns {string[]} List of files to scan
  */
 function getFilesToScan(patterns) {
   const files = new Set();
+  const extensions = ['.mdx', '.md', '.tsx', '.ts', '.jsx', '.js'];
 
   patterns.forEach(pattern => {
-    // Check if it's a file or directory
     if (fs.existsSync(pattern)) {
       const stat = fs.statSync(pattern);
 
       if (stat.isFile()) {
         files.add(pattern);
       } else if (stat.isDirectory()) {
-        // Scan directory with default patterns
-        DEFAULT_PATTERNS.forEach(filePattern => {
-          const matches = glob.sync(path.join(pattern, filePattern), {
-            ignore: IGNORE_PATTERNS,
-            nodir: true
-          });
-          matches.forEach(file => files.add(file));
-        });
+        const dirFiles = getFilesRecursively(pattern, extensions);
+        dirFiles.forEach(file => files.add(file));
       }
     } else {
-      // Treat as glob pattern
-      const matches = glob.sync(pattern, {
-        ignore: IGNORE_PATTERNS,
-        nodir: true
-      });
-      matches.forEach(file => files.add(file));
+      // Try as a pattern from current directory
+      const currentDir = process.cwd();
+      const dirFiles = getFilesRecursively(currentDir, extensions);
+      dirFiles.forEach(file => files.add(file));
     }
   });
 
@@ -140,7 +200,7 @@ function getFilesToScan(patterns) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const patterns = args.length > 0 ? args : DEFAULT_PATTERNS;
+  const patterns = args.length > 0 ? args : [process.cwd()];
 
   console.log('🔍 Scanning for FOMO language...\n');
 
