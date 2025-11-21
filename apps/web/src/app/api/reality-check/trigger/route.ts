@@ -2,14 +2,11 @@
  * Reality Check Force Trigger API
  *
  * Admin endpoint to force trigger reality check for all active users.
- * Sets a global flag in Redis that clients will pick up.
+ * Sets a global flag in Redis that clients will pick up via SSE.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/lib/redis';
-
-const REDIS_KEY = 'reality-check:global-trigger';
-const TRIGGER_TTL = 60 * 60; // 1 hour TTL for trigger
+import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,15 +17,19 @@ export async function POST(request: NextRequest) {
     const triggerId = `trigger-${Date.now()}`;
 
     // Set global trigger flag with TTL
-    await redis.set(REDIS_KEY, triggerId, { ex: TRIGGER_TTL });
+    await redis.set(
+      RedisKeys.realityCheckTrigger(),
+      triggerId,
+      { ex: CacheTTL.REALITY_CHECK_TRIGGER }
+    );
 
     // Publish to pub/sub channel (if available)
-    // This would notify all connected clients immediately
+    // This would notify all connected SSE clients immediately
     try {
       // @ts-expect-error - publish may not be available in Upstash REST API
-      await redis.publish('reality-check:trigger', triggerId);
+      await redis.publish(RedisKeys.realityCheckChannel(), triggerId);
     } catch {
-      // Pub/sub not available, clients will pick up via polling
+      // Pub/sub not available, clients will pick up via SSE polling
     }
 
     return NextResponse.json({
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Clear global trigger
-    await redis.del(REDIS_KEY);
+    await redis.del(RedisKeys.realityCheckTrigger());
 
     return NextResponse.json({
       ok: true,
