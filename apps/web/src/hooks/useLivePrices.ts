@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useBreakMode } from './useBreakMode';
 
 export interface PriceDelta {
   symbol: string;
@@ -28,6 +29,7 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
   const [deltas, setDeltas] = useState<Map<string, PriceDelta>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isActive: isBreakModeActive } = useBreakMode();
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -55,7 +57,7 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
   const connect = useCallback(() => {
     // Check feature flag (client-side)
     const featureEnabled = process.env.NEXT_PUBLIC_FEATURE_LIVE_PRICES === '1';
-    if (!featureEnabled || !enabled) {
+    if (!featureEnabled || !enabled || isBreakModeActive) {
       return;
     }
 
@@ -116,7 +118,7 @@ export function useLivePrices({ sessionId, enabled = true, onDelta }: UseLivePri
       setError('Failed to connect');
       connectRef.current?.();
     }
-  }, [sessionId, enabled, cleanup, onDelta]);
+  }, [sessionId, enabled, cleanup, onDelta, isBreakModeActive]);
 
   const reconnect = useCallback(() => {
     // Exponential backoff with max 5s
