@@ -1,0 +1,140 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+      - SENTRY_ORG=${SENTRY_ORG}
+      - SENTRY_PROJECT=${SENTRY_PROJECT}
+      - VARC_SERVICE_URL=http://varc_service:8000
+      - LAMP_SERVICE_URL=http://lamp_sim:8000
+      - VARC_SERVICE_URL_SHADOW=${VARC_SERVICE_URL_SHADOW:-}
+      - LAMP_SERVICE_URL_SHADOW=${LAMP_SERVICE_URL_SHADOW:-}
+      - SHADOW_MODE_PERCENT=${SHADOW_MODE_PERCENT:-0}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+    depends_on:
+      - db
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - VARC_SERVICE_URL=http://varc_service:8000
+      - LAMP_SERVICE_URL=http://lamp_sim:8000
+      - VARC_SERVICE_URL_SHADOW=${VARC_SERVICE_URL_SHADOW:-}
+      - LAMP_SERVICE_URL_SHADOW=${LAMP_SERVICE_URL_SHADOW:-}
+      - SHADOW_MODE_PERCENT=${SHADOW_MODE_PERCENT:-0}
+    depends_on:
+      - db
+      - varc_service
+      - lamp_sim
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+  varc_service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.varc
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - VARC_MODEL_PATH=${VARC_MODEL_PATH:-}
+      - FAISS_INDEX_PATH=${FAISS_INDEX_PATH:-./data/faiss_index.bin}
+      - DEVICE=${DEVICE:-cuda}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=varc_service
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+  lamp_sim:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lamp
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - LAMP_MODEL_DIR=${LAMP_MODEL_DIR:-./models}
+      - EXPERIENCE_INDEX_PATH=${EXPERIENCE_INDEX_PATH:-./data/experience_index.bin}
+      - DEVICE=${DEVICE:-cuda}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=lamp_sim
+      - MAX_SIMULATION_STEPS=${MAX_SIMULATION_STEPS:-50}
+      - NUM_AGENTS=${NUM_AGENTS:-6}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-apex_intelligence}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - apex-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  apex-network:
+    driver: bridge
+

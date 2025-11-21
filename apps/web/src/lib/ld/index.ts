@@ -1,6 +1,6 @@
 /**
  * Public API for ld (Linked Data) module
- * Barrel file for linked data functionality
+ * Explicit exports for linked data functionality
  */
 
-export * from './article';
+export { articleLd } from './article';

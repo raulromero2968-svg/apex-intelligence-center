@@ -1,6 +1,18 @@
 /**
  * Public API for auth module
- * Barrel file for authentication functionality
+ * Explicit exports - no barrel exports allowed
  */
 
-export * from './jwt';
+export {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  revokeSession,
+  getUserFromRequest,
+  rotateRefreshToken,
+  setAuthCookies,
+  clearAuthCookies,
+  type SubscriptionTier,
+  type UserWithTier,
+} from './jwt';

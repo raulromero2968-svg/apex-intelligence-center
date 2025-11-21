@@ -10,6 +10,7 @@ interface ResearchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   initialQuery?: string;
+  onContrarianQuery?: (query: string) => void;
 }
 
 interface Source {

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
+import { Analytics } from '@vercel/analytics/react';
+
 import AuroraFX from '@/components/fx/AuroraFX';
 
 import BackgroundFX from '@/components/fx/BackgroundFX';
@@ -22,11 +24,7 @@ import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
 
-import { BreakModeButton } from '@/components/BreakModeButton';
-
 import ToastHost from '@/components/ToastHost';
-
-import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
 
 import { fontSans } from '@/lib/fonts';
 
@@ -349,12 +347,6 @@ export default function RootLayout({
 
 
 
-        {/* Break Mode Button */}
-
-        <BreakModeButton />
-
-
-
         {/* Toast Notifications */}
 
         <Toaster
@@ -393,9 +385,9 @@ export default function RootLayout({
 
         <ToastHost />
 
-        {/* Reality Check Modal - Triggers every 2h active session */}
+        {/* Vercel Analytics */}
 
-        <RealityCheckProvider />
+        <Analytics />
 
       </body>
 

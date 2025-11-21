@@ -1,6 +1,6 @@
 /**
  * Public API for research module
- * Barrel file for research and analysis functionality
+ * Explicit exports - no barrel exports allowed
  */
 
-export * from './symbol-extractor';
+export { extractSymbols, extractSymbolsWithConfidence } from './symbol-extractor';

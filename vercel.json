@@ -6,9 +6,15 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "functions": {
-    "app/api/**/*.ts": {
+    "apps/web/src/app/api/**/*.ts": {
       "memory": 4096,
-      "maxDuration": 300
+      "maxDuration": 300,
+      "runtime": "nodejs20.x"
+    },
+    "apps/web/app/api/**/*.ts": {
+      "memory": 4096,
+      "maxDuration": 300,
+      "runtime": "nodejs20.x"
     }
   },
   "crons": [
@@ -20,5 +26,8 @@
       "path": "/api/cron/push-receipts",
       "schedule": "*/15 * * * *"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

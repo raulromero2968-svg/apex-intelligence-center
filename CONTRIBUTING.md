@@ -90,6 +90,77 @@ pnpm patch:check    # optional
 pnpm patch:apply    # applies + runs golden loop
 ```
 
+## Pre-Commit Hooks
+
+### JavaScript/TypeScript (Husky + lint-staged)
+
+Pre-commit hooks automatically run on staged files:
+
+1. **Installation** (one-time setup):
+   ```bash
+   pnpm install
+   # Husky is configured automatically via package.json postinstall script
+   ```
+
+2. **What runs automatically**:
+   - `eslint --fix` on all staged `.ts`, `.tsx`, `.js`, `.jsx` files
+   - `prettier --write` on all staged files
+   - `pnpm test -- --passWithNoTests` to ensure tests pass
+
+3. **Manual execution**:
+   ```bash
+   # Run hooks manually
+   pnpm lint-staged
+   
+   # Or run the full pre-commit hook
+   .husky/pre-commit
+   ```
+
+4. **Bypassing hooks** (not recommended):
+   ```bash
+   git commit --no-verify
+   ```
+   ⚠️ **Warning**: Bypassing hooks may cause CI to fail. Always run hooks before pushing.
+
+### Python Services (pre-commit)
+
+For Python services (`services/varc_service/`, `services/lamp_sim/`):
+
+1. **Installation** (one-time setup):
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+2. **What runs automatically**:
+   - `black` for code formatting
+   - `isort` for import sorting
+   - `ruff` for linting
+   - `mypy` for type checking
+
+3. **Manual execution**:
+   ```bash
+   pre-commit run --all-files
+   ```
+
+4. **Expected CI behavior**:
+   - If hooks fail locally, CI will also fail
+   - All Python files must pass formatting, linting, and type checks
+
+## Schema Synchronization
+
+The `schema:check` script validates that database migrations are in sync with the schema:
+
+```bash
+# Check for schema drift (fails if drift detected)
+pnpm schema:check
+
+# Auto-fix by running pending migrations (local only)
+pnpm schema:fix
+```
+
+**CI Integration**: The `schema:check` command runs automatically in CI before build and deployment. If schema drift is detected, the pipeline will fail.
+
 ## Runtime & Tooling
 - Node 20; `pnpm`; Next.js App Router; Vercel. All guard scripts are dependency-free.
 

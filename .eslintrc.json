@@ -1,11 +1,6 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:mdx/recommended"],
-  "plugins": ["@typescript-eslint", "rulesdir", "mdx"],
-  "settings": {
-    "rulesdir": {
-      "files": [".eslint/custom-rules/**/*.js"]
-    }
-  },
+  "extends": ["next/core-web-vitals"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -38,16 +33,20 @@
         ]
       }
     ],
-    "rulesdir/no-fomo-language": "error"
-  },
-  "overrides": [
-    {
-      "files": ["*.mdx"],
-      "extends": ["plugin:mdx/recommended"],
-      "rules": {
-        "rulesdir/no-fomo-language": "error"
-      }
-    }
-  ]
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "ExportAllDeclaration[source.value=/index\\.ts$/]",
+          "message": "Barrel exports (export * from) are not allowed. Use explicit named exports instead."
+        },
+        {
+          "selector": "ExportAllDeclaration[source.value=/index\\.tsx$/]",
+          "message": "Barrel exports (export * from) are not allowed. Use explicit named exports instead."
+        },
+        {
+          "selector": "ExportAllDeclaration",
+          "message": "Barrel exports (export * from) are not allowed in any file. Use explicit named exports instead."
+        }
+      ]
+  }
 }
-

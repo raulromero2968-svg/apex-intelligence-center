@@ -1,6 +1,6 @@
 /**
  * Public API for constants module
- * Barrel file for application constants
+ * Explicit exports for application constants
  */
 
-export * from './social';
+export { SOCIAL_PROFILES, SAME_AS_LINKS } from './social';
