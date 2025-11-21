@@ -15,7 +15,11 @@ The following phrases are prohibited and will cause the build to fail:
 - "last chance"
 - "act now"
 - "don't miss"
+- "only X left" (including "only 1 left", "only 2 left", etc.)
+- "few remaining"
 - "few left"
+- "flash sale"
+- "urgent"
 
 ## Enforcement
 
@@ -28,7 +32,9 @@ The following phrases are prohibited and will cause the build to fail:
 ### CI Pipeline
 
 The FOMO check is integrated into:
+- Dedicated FOMO workflow (`.github/workflows/no-fomo.yml`)
 - PR CI workflow (`.github/workflows/pr-ci.yml`)
+- Constitution workflow (`.github/workflows/constitution.yml`)
 - Main CI script (`pnpm ci`)
 - Golden build script (`pnpm golden`)
 

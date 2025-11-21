@@ -11,7 +11,20 @@ const FOMO_PHRASES = [
   'last chance',
   'act now',
   'don\'t miss',
-  'few left'
+  'only X left',
+  'only 1 left',
+  'only 2 left',
+  'only 3 left',
+  'only 4 left',
+  'only 5 left',
+  'only 6 left',
+  'only 7 left',
+  'only 8 left',
+  'only 9 left',
+  'few remaining',
+  'few left',
+  'flash sale',
+  'urgent'
 ];
 
 /**
