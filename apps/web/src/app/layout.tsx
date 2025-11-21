@@ -24,6 +24,8 @@ import HelpFAB from '@/components/HelpFAB';
 
 import ToastHost from '@/components/ToastHost';
 
+import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
+
 import { fontSans } from '@/lib/fonts';
 
 import { cn } from '@/lib/utils';
@@ -380,6 +382,10 @@ export default function RootLayout({
         {/* Custom Toast Bus */}
 
         <ToastHost />
+
+        {/* Reality Check Modal - Triggers every 2h active session */}
+
+        <RealityCheckProvider />
 
       </body>
 
