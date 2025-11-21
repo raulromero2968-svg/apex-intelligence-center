@@ -14,7 +14,7 @@ import { Webhook as DiscordWebhook } from 'discord-webhook-node';
 import TelegramBot from 'node-telegram-bot-api';
 import webpush from 'web-push';
 import { db } from '@/db';
-import { alertSubscriptions, pushSubscriptions } from '@/db/schema';
+import { alertSubscriptions, pushSubscriptions, users } from '@/db/schema';
 import { eq, and, or, isNull } from 'drizzle-orm';
 import { PopDeltaAlert, formatPopDeltaMessage } from '@/jobs/pop-delta/detector.job';
 import * as Sentry from '@sentry/nextjs';
@@ -50,6 +50,31 @@ if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 }
 
 /**
+ * Check if a user is in break mode (24-hour notification pause)
+ * @param userId - User ID to check
+ * @returns true if user is in break mode, false otherwise
+ */
+export async function isUserInBreakMode(userId: string): Promise<boolean> {
+  try {
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
+
+    if (!user || !user.breakModeUntil) {
+      return false;
+    }
+
+    const now = new Date();
+    const expiresAt = new Date(user.breakModeUntil);
+
+    return expiresAt > now;
+  } catch (error) {
+    console.error('[BreakMode] Check failed for user:', userId, error);
+    return false; // Fail open - send notifications if check fails
+  }
+}
+
+/**
  * Send Pop Delta notifications to all subscribed users
  *
  * @param alert - Pop delta alert data
@@ -74,6 +99,12 @@ export async function sendPopDeltaNotifications(alert: PopDeltaAlert): Promise<v
 
     // Send to each subscriber based on their channel preferences
     for (const sub of subscriptions) {
+      // Check if user is in break mode
+      if (await isUserInBreakMode(sub.userId)) {
+        console.log(`[Notifications] Skipping user ${sub.userId} - in break mode`);
+        continue;
+      }
+
       // Check if alert meets user's threshold
       if (Math.abs(alert.deltaPct30d) < sub.threshold) {
         continue; // Skip if below user's threshold
@@ -145,6 +176,12 @@ export async function sendTelegramAlert(userId: string, message: string): Promis
     return;
   }
 
+  // Check break mode
+  if (await isUserInBreakMode(userId)) {
+    console.log(`[Telegram] Skipping user ${userId} - in break mode`);
+    return;
+  }
+
   try {
     // In production, userId would map to telegram chat_id
     // For now, send to configured chat
@@ -163,6 +200,12 @@ export async function sendEmailAlert(
   subject: string,
   message: string
 ): Promise<void> {
+  // Check break mode
+  if (await isUserInBreakMode(userId)) {
+    console.log(`[Email] Skipping user ${userId} - in break mode`);
+    return;
+  }
+
   // TODO: Integrate with SendGrid/Resend
   console.log('[Email] Would send:', { userId, subject, message: message.slice(0, 100) });
 
@@ -185,12 +228,18 @@ export async function sendPushNotification(
   cardId: string | null,
   message: string
 ): Promise<void> {
+  // Check break mode
+  if (await isUserInBreakMode(userId)) {
+    console.log(`[Push] Skipping user ${userId} - in break mode`);
+    return;
+  }
+
   try {
     // Get user's push subscriptions
     const subs = await db.query.pushSubscriptions.findMany({
       where: and(
         eq(pushSubscriptions.userId, userId),
-        cardId 
+        cardId
           ? or(eq(pushSubscriptions.cardId, cardId), isNull(pushSubscriptions.cardId))
           : isNull(pushSubscriptions.cardId)
       ),
