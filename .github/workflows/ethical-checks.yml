@@ -1,0 +1,124 @@
+name: 🛡️ Ethical Enforcement Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+      - master
+
+# Cancel in-progress runs for the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ethical-checks:
+    name: 🛡️ Enforce Ethical Standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for comprehensive checks
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          npm install -g tsx glob
+          npm install --no-save glob @types/node
+
+      - name: 🛡️ Run Ethical Enforcement Checks
+        id: ethical-checks
+        run: |
+          echo "::group::Ethical Checks Output"
+          tsx scripts/ethical-checks.ts
+          echo "::endgroup::"
+
+      - name: 📊 Check Results
+        if: always()
+        run: |
+          if [ ${{ steps.ethical-checks.outcome }} == 'success' ]; then
+            echo "✅ All ethical checks passed"
+          else
+            echo "❌ Ethical violations detected - BUILD FAILED"
+            exit 1
+          fi
+
+      - name: 💬 Comment on PR (if violations found)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `## 🚫 Ethical Violations Detected
+
+            This PR has been **automatically blocked** due to ethical violations.
+
+            ### 🛡️ Zero Tolerance Policy
+
+            The Ethical Enforcement Gate has detected violations of our ethical standards.
+            **This PR cannot be merged** until all violations are resolved.
+
+            ### Common Violations:
+
+            - ❌ Missing or modified risk rules
+            - ❌ FOMO manipulation language
+            - ❌ API routes without rate limiting
+            - ❌ Missing citation validation
+            - ❌ PII protection disabled
+
+            ### Next Steps:
+
+            1. Review the check output above for specific violations
+            2. Fix all CRITICAL and ERROR level issues
+            3. Push your changes to re-run the checks
+            4. Only PRs with **zero violations** can be merged
+
+            ---
+
+            **This check is automated and cannot be overridden.**
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+      - name: ✅ Success Message
+        if: success()
+        run: |
+          echo "🎉 Ethical checks passed!"
+          echo "✅ Code meets all ethical standards"
+          echo "🚀 Safe to merge"
+
+  # Block merge if ethical checks fail
+  ethical-gate-status:
+    name: 🚧 Ethical Gate Status
+    runs-on: ubuntu-latest
+    needs: ethical-checks
+    if: always()
+    steps:
+      - name: ✅ All checks passed
+        if: needs.ethical-checks.result == 'success'
+        run: echo "Ethical gate passed - PR can be merged"
+
+      - name: ❌ Checks failed - Block merge
+        if: needs.ethical-checks.result != 'success'
+        run: |
+          echo "🚫 MERGE BLOCKED"
+          echo "Ethical violations must be fixed before merge"
+          exit 1
