@@ -5,7 +5,7 @@
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
 
@@ -69,6 +69,78 @@ export const tcg_documents = pgTable('tcg_documents', {
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
+
+/**
+ * Market Knowledge table for AI-generated market intelligence
+ *
+ * Stores market intelligence claims with vector embeddings, sentiment analysis,
+ * and reliability scoring. Designed for high-performance semantic search with HNSW indexing.
+ *
+ * Features:
+ * - Vector embeddings (1536-dim) for semantic similarity search
+ * - Sentiment classification (bullish/bearish/neutral)
+ * - Reliability scoring (0.0-1.0) for filtering high-confidence claims
+ * - Cluster grouping for related knowledge
+ * - HNSW indexing for fast vector search
+ * - Provenance tracking via metadata
+ */
+export const market_knowledge = pgTable('market_knowledge', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // Vector embedding - using custom type to work around Drizzle type issues
+  embedding: sql<number[]>`vector(1536)`.notNull(),
+
+  // Market sentiment (enum enforced at DB level via CHECK constraint)
+  sentiment: text('sentiment', {
+    enum: ['bullish', 'bearish', 'neutral']
+  }).notNull(),
+
+  // Type/category of the claim
+  claim_type: text('claim_type').notNull(),
+
+  // Reliability score (0.0 to 1.0) - CHECK constraint enforced at DB level
+  reliability_score: real('reliability_score').notNull(),
+
+  // Cluster ID for knowledge grouping
+  cluster_id: integer('cluster_id'),
+
+  // Claim content (the actual market intelligence statement)
+  content: text('content').notNull(),
+
+  // Source metadata (provenance, citations, etc.)
+  metadata: jsonb('metadata').$type<{
+    source?: string;
+    task_id?: string;
+    vote_consensus?: number;
+    red_flags?: number;
+    citations?: Array<{ type: string; id: string }>;
+    generated_at?: string;
+    model?: string;
+    unique_id?: string;
+    [key: string]: any;
+  }>().notNull().default({}),
+
+  // Timestamps
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  // HNSW index for vector similarity (created in migration)
+  // B-tree composite index on sentiment + claim_type
+  sentimentClaimTypeIdx: index('idx_market_knowledge_sentiment_claim_type')
+    .on(table.sentiment, table.claim_type),
+  // Index on reliability_score for high-confidence filtering
+  reliabilityIdx: index('idx_market_knowledge_reliability')
+    .on(table.reliability_score),
+  // Index on cluster_id
+  clusterIdx: index('idx_market_knowledge_cluster')
+    .on(table.cluster_id),
+  // Composite index for common query patterns (sentiment + reliability)
+  sentimentReliabilityIdx: index('idx_market_knowledge_sentiment_reliability')
+    .on(table.sentiment, table.reliability_score),
+  // Timestamp index for temporal queries
+  createdAtIdx: index('idx_market_knowledge_created_at')
+    .on(table.created_at),
+}));
 
 // ============================================================================
 // PRODUCTION TCG MARKET DATA MODELS
@@ -627,6 +699,8 @@ export type MakerTask = typeof makerTasks.$inferSelect;
 export type NewMakerTask = typeof makerTasks.$inferInsert;
 export type MakerVote = typeof makerVotes.$inferSelect;
 export type NewMakerVote = typeof makerVotes.$inferInsert;
+export type MarketKnowledge = typeof market_knowledge.$inferSelect;
+export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
