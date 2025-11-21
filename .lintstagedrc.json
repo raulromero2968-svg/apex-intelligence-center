@@ -1,0 +1,15 @@
+{
+  "apps/web/src/db/schema.ts": [
+    "pnpm --filter web exec tsx scripts/verify-schema-sync.ts",
+    "pnpm --filter web exec drizzle-kit check"
+  ],
+  "apps/web/**/*.{ts,tsx}": [
+    "pnpm --filter web lint --fix"
+  ],
+  "apps/web/drizzle.config.ts": [
+    "pnpm --filter web exec drizzle-kit check"
+  ],
+  "*.{json,md,yml,yaml}": [
+    "prettier --write"
+  ]
+}
