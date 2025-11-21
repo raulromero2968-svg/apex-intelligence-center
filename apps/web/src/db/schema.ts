@@ -252,6 +252,10 @@ export const users = pgTable('users', {
     enum: ['active', 'canceled', 'past_due', 'trialing']
   }),
   subscriptionEndsAt: timestamp('subscription_ends_at'),
+  breakModeUntil: timestamp('break_mode_until'),
+  breakModeActivatedBy: text('break_mode_activated_by', {
+    enum: ['child', 'parent']
+  }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
