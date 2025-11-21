@@ -330,6 +330,34 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
 }));
 
 /**
+ * Card Forensics - AI-powered card authenticity analysis
+ *
+ * Stores comprehensive forensic analysis of TCG cards including:
+ * - Visual embeddings for similarity matching (768-dim CLIP vectors)
+ * - Structured reasoning trace for explainability
+ * - Detected defects catalog
+ * - Authenticity scoring
+ */
+export const cardForensics = pgTable('card_forensics', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  // pgvector extension - stores as vector(768) for CLIP ViT-L/14
+  embedding: sql`vector(768)`,
+  reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
+  detectedDefects: jsonb('detected_defects').notNull().default({}),
+  authenticityScore: real('authenticity_score').notNull(),
+  modelVersion: text('model_version').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  cardIdIdx: index('idx_card_forensics_card_id').on(table.cardId),
+  authenticityScoreIdx: index('idx_card_forensics_authenticity_score').on(table.authenticityScore),
+  modelVersionIdx: index('idx_card_forensics_model_version').on(table.modelVersion),
+  createdAtIdx: index('idx_card_forensics_created_at').on(table.createdAt),
+  uniqueCard: uniqueIndex('card_forensics_card_unique').on(table.cardId),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -440,6 +468,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
+  cardForensics: many(cardForensics),
 }));
 
 /**
@@ -560,6 +589,16 @@ export const arbitrageOpportunitiesRelations = relations(arbitrageOpportunities,
 }));
 
 /**
+ * Card Forensics relations
+ */
+export const cardForensicsRelations = relations(cardForensics, ({ one }) => ({
+  card: one(cards, {
+    fields: [cardForensics.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -619,6 +658,8 @@ export type PushTicket = typeof pushTickets.$inferSelect;
 export type NewPushTicket = typeof pushTickets.$inferInsert;
 export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
 export type NewArbitrageOpportunity = typeof arbitrageOpportunities.$inferInsert;
+export type CardForensics = typeof cardForensics.$inferSelect;
+export type NewCardForensics = typeof cardForensics.$inferInsert;
 export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSelect;
 export type NewHumanConceptionStatement = typeof humanConceptionStatements.$inferInsert;
 export type ComplianceLog = typeof complianceLogs.$inferSelect;
