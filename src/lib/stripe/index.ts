@@ -21,6 +21,27 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 /**
+ * SECURITY: Server-side price ID to subscription tier mapping
+ *
+ * This is the ONLY source of truth for mapping Stripe price IDs to subscription tiers.
+ * NEVER trust tier information from client requests or metadata.
+ * All tier assignments MUST go through this mapping.
+ */
+export const PRICE_TO_TIER_MAP: Record<string, 'free' | 'pro' | 'enterprise'> = {
+  [process.env.STRIPE_PRICE_PRO_MONTHLY || '']: 'pro',
+  [process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || '']: 'enterprise',
+} as const;
+
+/**
+ * Maps a Stripe price ID to a subscription tier
+ * Returns 'free' if price ID is not recognized
+ */
+export function mapPriceIdToTier(priceId: string | undefined): 'free' | 'pro' | 'enterprise' {
+  if (!priceId) return 'free';
+  return PRICE_TO_TIER_MAP[priceId] || 'free';
+}
+
+/**
  * Tier configuration mapping
  * These limits are enforced server-side in middleware and API routes
  */

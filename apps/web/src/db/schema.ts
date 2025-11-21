@@ -244,6 +244,7 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name'),
   stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
   subscriptionTier: text('subscription_tier', {
     enum: ['free', 'pro', 'enterprise']
   }).default('free').notNull(),
