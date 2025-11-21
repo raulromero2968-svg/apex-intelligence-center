@@ -77,3 +77,4 @@ export const Starfield = () => {
 
   return <canvas ref={canvasRef} className="absolute inset-0 opacity-70" aria-hidden="true" />;
 };
+

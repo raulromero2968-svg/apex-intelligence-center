@@ -193,3 +193,4 @@ describe('Red Flag Functions', () => {
     expect(redFlag({ prices: { source1: 10, source2: 20 } })).toBeNull();
   });
 });
+

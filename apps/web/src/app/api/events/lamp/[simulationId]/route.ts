@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
-import { lampUpdateChannel } from '@apex/shared/src/contracts/queues';
+import { lampUpdateChannel } from '@apex/shared';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

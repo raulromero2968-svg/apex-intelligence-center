@@ -357,3 +357,4 @@ export function getRecommended2025Allocation(): Record<string, number> {
     'sealed-booster-boxes': 0.10,
   };
 }
+

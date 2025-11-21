@@ -159,3 +159,4 @@ export async function mtg1993FrontierV1(cardIds: string[], budget = 35000000): P
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { router, publicProcedure } from '../init';
 import { enqueueContrarianJob } from '@/server/queues/producers';
-import { ContrarianJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { ContrarianJobPayloadSchema } from '@apex/shared';
 
 export const contrarianRouter = router({
   runContrarianQuery: publicProcedure
@@ -32,4 +32,5 @@ export const contrarianRouter = router({
       };
     }),
 });
+
 

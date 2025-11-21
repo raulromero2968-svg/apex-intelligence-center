@@ -4,3 +4,4 @@
  */
 
 export { extractSymbols, extractSymbolsWithConfidence } from './symbol-extractor';
+

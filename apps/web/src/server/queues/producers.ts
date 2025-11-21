@@ -7,7 +7,7 @@ import {
   VARC_QUEUE_NAME,
   LAMP_QUEUE_NAME,
   CONTRARIAN_QUEUE_NAME,
-} from '@apex/shared/src/contracts/queues';
+} from '@apex/shared';
 import { varcQueue, lampQueue, contrarianQueue } from './bullmqClient';
 
 export async function enqueueVarcJob(
@@ -75,4 +75,5 @@ export async function enqueueContrarianJob(
 
   return jobId;
 }
+
 

@@ -134,3 +134,4 @@ export const lampUpdateChannel = (simulationId: string): string => `events.lamp.
 
 export const contrarianCompletedChannel = (jobId: string): string => `events.contrarian.completed.${jobId}`;
 
+

@@ -68,3 +68,4 @@ if (missing.length > 0) {
 
 console.log('\n✅ All lib modules have barrel files!\n');
 process.exit(0);
+

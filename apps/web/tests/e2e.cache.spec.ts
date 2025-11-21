@@ -18,3 +18,4 @@ test('collection page is hot after first request and updates after mutation', as
   const r2 = await get(`/collections/${slug}`, request);
   expect(r2.text).toContain('TEST-123');
 });
+

@@ -232,3 +232,4 @@ export async function getOnePieceCards(): Promise<string[]> {
 
   return result.map((c) => c.id);
 }
+

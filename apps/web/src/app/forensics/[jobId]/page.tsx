@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import SectionShell from '../../(sections)/SectionShell';
 import { Loader2, AlertCircle, ExternalLink, ChevronDown, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { trpc } from '@/lib/trpc/client';
+import { trpc } from '@/lib/trpc';
 
 interface ForensicResult {
   id: string;
@@ -33,7 +33,7 @@ function JsonTreeView({ data, level = 0 }: { data: unknown; level?: number }) {
   }
 
   if (typeof data === 'string') {
-    return <span className="text-green-400">"{data}"</span>;
+    return <span className="text-green-400">&quot;{data}&quot;</span>;
   }
 
   if (typeof data === 'number' || typeof data === 'boolean') {
@@ -80,7 +80,7 @@ function JsonTreeView({ data, level = 0 }: { data: unknown; level?: number }) {
                     )}
                   </button>
                 )}
-                <span className="text-purple-400">"{key}"</span>
+                <span className="text-purple-400">&quot;{key}&quot;</span>;
                 <span className="text-white/50">:</span>
                 {isComplex && !isExpanded ? (
                   <span className="text-white/50">

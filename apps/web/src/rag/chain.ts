@@ -448,3 +448,4 @@ export function formatRagResponse(response: RagResponse): string {
 
   return output;
 }
+

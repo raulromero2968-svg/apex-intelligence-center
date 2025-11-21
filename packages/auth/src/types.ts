@@ -11,3 +11,4 @@ export interface BiometricConfig {
   promptMessage?: string;
   fallbackLabel?: string;
 }
+

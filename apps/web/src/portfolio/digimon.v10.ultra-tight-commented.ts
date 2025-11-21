@@ -180,3 +180,4 @@ export async function digimonIntegerFrontier(cardIds: string[], budget = 8000000
   // Return sorted by Sharpe (highest first)
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
 }
+

@@ -24,3 +24,5 @@ export type NewPriceHistory = typeof priceHistory.$inferInsert;
 
 export type { CardForensics, NewCardForensics } from './schema/cardForensics';
 export type { MarketKnowledge, NewMarketKnowledge } from './schema/marketKnowledge';
+
+

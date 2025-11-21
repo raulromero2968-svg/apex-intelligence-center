@@ -8,3 +8,4 @@ export type {
   BiometricAuthResult,
   BiometricConfig,
 } from './types';
+

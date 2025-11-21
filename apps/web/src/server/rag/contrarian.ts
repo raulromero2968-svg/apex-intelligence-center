@@ -14,9 +14,9 @@
 import type {
   QueuedJobEnvelope,
   ContrarianJobPayload,
-} from '@apex/shared/src/contracts/queues';
+} from '@apex/shared';
 import * as Sentry from '@sentry/nextjs';
-import { createLogger } from '@apex/shared/src/logger';
+import { createLogger } from '@apex/shared';
 import {
   retrieveCandidates,
   applyMMR,
@@ -490,4 +490,5 @@ function generateSentimentClusterSummary(
 
   return summary;
 }
+
 

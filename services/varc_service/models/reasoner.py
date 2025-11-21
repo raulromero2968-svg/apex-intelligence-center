@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from typing import Dict, List, Optional, Tuple, Any
 import time
+import hashlib
+import numpy as np
 
 
 class DirectionalEmbeddingProjector(nn.Module):
@@ -380,6 +382,84 @@ class VarcReasoner(nn.Module):
         return factors
 
 
+class FingerprintComputer:
+    """
+    Computes unique fingerprint from vision embedding.
+    
+    Converts 768-d vision embedding into:
+    - 256-d normalized fingerprint vector (via MLP projection)
+    - 64-char hex digest (SHA-256 over quantized vector)
+    
+    Designed for 99.9% uniqueness within same card/grade cohort.
+    """
+
+    def __init__(
+        self,
+        input_dim: int = 768,
+        fingerprint_dim: int = 256,
+        hash_version: str = "v1",
+    ):
+        self.input_dim = input_dim
+        self.fingerprint_dim = fingerprint_dim
+        self.hash_version = hash_version
+
+        # MLP projection: 768 -> 512 -> 256
+        self.projection = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.LayerNorm(512),
+            nn.GELU(),
+            nn.Dropout(0.1),
+            nn.Linear(512, fingerprint_dim),
+            nn.LayerNorm(fingerprint_dim),
+        )
+
+    def compute(
+        self,
+        vision_embedding: torch.Tensor,
+        device: str = "cpu",
+    ) -> Dict[str, Any]:
+        """
+        Compute fingerprint from vision embedding.
+
+        Args:
+            vision_embedding: Vision embedding of shape (batch_size, input_dim)
+            device: PyTorch device
+
+        Returns:
+            Dictionary with:
+                - fingerprint_vector: List[float] (256-d normalized vector)
+                - fingerprint_hex: str (64-char hex digest)
+                - hash_version: str
+        """
+        # Move projection to device if needed
+        self.projection = self.projection.to(device)
+        self.projection.eval()
+
+        # Project to fingerprint dimension
+        with torch.no_grad():
+            fingerprint_tensor = self.projection(vision_embedding)  # (B, 256)
+
+            # L2 normalize
+            fingerprint_tensor = F.normalize(fingerprint_tensor, p=2, dim=1)
+
+            # Convert to numpy
+            fingerprint_np = fingerprint_tensor.cpu().numpy().squeeze(0)  # (256,)
+
+            # Quantize to 8-bit for hash (0-255 range)
+            # Map from [-1, 1] to [0, 255]
+            fingerprint_quantized = ((fingerprint_np + 1.0) * 127.5).astype(np.uint8)
+
+            # Compute SHA-256 hex digest
+            fingerprint_bytes = fingerprint_quantized.tobytes()
+            fingerprint_hex = hashlib.sha256(fingerprint_bytes).hexdigest()
+
+            return {
+                "fingerprint_vector": fingerprint_np.tolist(),
+                "fingerprint_hex": fingerprint_hex,
+                "hash_version": self.hash_version,
+            }
+
+
 def create_reasoner(
     embed_dim: int = 768,
     device: str = "cpu",
@@ -396,4 +476,27 @@ def create_reasoner(
     """
     reasoner = VarcReasoner(embed_dim=embed_dim, device=device)
     return reasoner
+
+
+def create_fingerprint_computer(
+    input_dim: int = 768,
+    fingerprint_dim: int = 256,
+    hash_version: str = "v1",
+) -> FingerprintComputer:
+    """
+    Create a fingerprint computer instance.
+
+    Args:
+        input_dim: Input embedding dimension (default 768)
+        fingerprint_dim: Output fingerprint dimension (default 256)
+        hash_version: Hash version identifier (default "v1")
+
+    Returns:
+        Initialized FingerprintComputer
+    """
+    return FingerprintComputer(
+        input_dim=input_dim,
+        fingerprint_dim=fingerprint_dim,
+        hash_version=hash_version,
+    )
 

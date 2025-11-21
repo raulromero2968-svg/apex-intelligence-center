@@ -167,3 +167,4 @@ export async function getCardById(cardId: string) {
 export type CardWithPrices = Awaited<ReturnType<typeof getHighValueCardsWithPrices>>[0];
 export type CardWithLatestPrices = Awaited<ReturnType<typeof getCardsWithLatestPricesBySource>>[0];
 export type CardWithAllRelations = Awaited<ReturnType<typeof getCardById>>;
+

@@ -189,3 +189,4 @@ export async function mtgIntegerFrontier(cardIds: string[], budget = 15000000): 
   // Return sorted by Sharpe (highest first)
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
 }
+

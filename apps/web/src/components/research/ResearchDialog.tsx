@@ -671,3 +671,4 @@ export default function ResearchDialog({ isOpen, onClose, initialQuery = '' }: R
   );
 }
 
+

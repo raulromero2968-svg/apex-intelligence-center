@@ -88,6 +88,36 @@ class ReasoningTrace(BaseModel):
         allow_population_by_field_name = True
 
 
+class FingerprintPayload(BaseModel):
+    """Fingerprint payload for card identification."""
+
+    hash_version: str = Field(..., description="Fingerprint hash version (e.g., 'v1')")
+    fingerprint_vector: List[float] = Field(
+        ...,
+        description="256-dimensional normalized fingerprint vector",
+    )
+    fingerprint_hex: str = Field(
+        ...,
+        description="64-character hex digest (SHA-256) of quantized fingerprint",
+    )
+
+    @validator("fingerprint_vector")
+    def validate_fingerprint_vector_length(cls, v: List[float]) -> List[float]:
+        """Ensure fingerprint_vector has exactly 256 dimensions."""
+        if len(v) != 256:
+            raise ValueError(f"fingerprint_vector must have 256 dimensions, got {len(v)}")
+        return v
+
+    @validator("fingerprint_hex")
+    def validate_fingerprint_hex_format(cls, v: str) -> str:
+        """Ensure fingerprint_hex is 64-character hex string."""
+        if len(v) != 64:
+            raise ValueError(f"fingerprint_hex must be 64 characters, got {len(v)}")
+        if not all(c in "0123456789abcdef" for c in v.lower()):
+            raise ValueError("fingerprint_hex must be hexadecimal")
+        return v
+
+
 class VarcInferenceResult(BaseModel):
     """Complete inference result matching Intelligence Bus contract."""
 
@@ -116,6 +146,10 @@ class VarcInferenceResult(BaseModel):
         default=None,
         alias="reasoningTrace",
         description="Detailed reasoning trace, null if error",
+    )
+    fingerprint: Optional[FingerprintPayload] = Field(
+        default=None,
+        description="Optional fingerprint payload for card identification (backwards-compatible)",
     )
     error: Optional[str] = Field(
         default=None,

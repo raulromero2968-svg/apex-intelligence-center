@@ -26,6 +26,8 @@ import HelpFAB from '@/components/HelpFAB';
 
 import ToastHost from '@/components/ToastHost';
 
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
+
 import { fontSans } from '@/lib/fonts';
 
 import { cn } from '@/lib/utils';
@@ -217,6 +219,16 @@ export default function RootLayout({
 
       <head>
 
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0891b2" />
+        
+        {/* iOS PWA Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Apex Intelligence" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
         {/* JSON-LD Structured Data - Generated from facts registry */}
 
         {schemas.map((schema, index) => (
@@ -385,6 +397,10 @@ export default function RootLayout({
 
         <ToastHost />
 
+        {/* PWA Install Prompt */}
+
+        <PwaInstallPrompt />
+
         {/* Vercel Analytics */}
 
         <Analytics />
@@ -396,3 +412,4 @@ export default function RootLayout({
   );
 
 }
+

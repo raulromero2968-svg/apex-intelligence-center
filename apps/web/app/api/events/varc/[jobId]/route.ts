@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
-import { varcCompletedChannel, VarcResultPayload } from '@apex/shared/src/contracts/queues';
+import { varcCompletedChannel, type VarcResultPayload } from '@apex/shared';
 
 if (!process.env.REDIS_URL) {
   throw new Error('REDIS_URL environment variable is required');

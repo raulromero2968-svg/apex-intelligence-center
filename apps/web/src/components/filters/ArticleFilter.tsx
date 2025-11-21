@@ -163,3 +163,4 @@ export default function ArticleFilter({ articles }: ArticleFilterProps) {
     </Suspense>
   );
 }
+

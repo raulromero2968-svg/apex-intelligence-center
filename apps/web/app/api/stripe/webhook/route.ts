@@ -14,7 +14,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripeClient } from '@/server/services/stripeClient';
 import { createLogger } from '@apex/shared/logger';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -244,4 +244,5 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 }
+
 

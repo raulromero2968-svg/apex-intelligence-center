@@ -109,3 +109,4 @@ export default function ContentCard(props: Props) {
     </Link>
   );
 }
+

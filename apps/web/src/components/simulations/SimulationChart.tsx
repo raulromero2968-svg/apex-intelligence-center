@@ -70,3 +70,4 @@ export default function SimulationChart({ data, metric, title }: SimulationChart
   );
 }
 
+

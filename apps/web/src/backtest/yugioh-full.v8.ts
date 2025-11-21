@@ -230,3 +230,4 @@ export async function getYugiohEarlySetCards(): Promise<string[]> {
 
   return result.map((c) => c.id);
 }
+

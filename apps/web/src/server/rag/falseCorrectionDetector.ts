@@ -9,7 +9,7 @@
  */
 
 import * as Sentry from '@sentry/nextjs';
-import { createLogger } from '@apex/shared/src/logger';
+import { createLogger } from '@apex/shared';
 
 const logger = createLogger('contrarian-false-correction-detector');
 
@@ -344,4 +344,5 @@ async function callOpenAI(
   const data = await response.json();
   return data.choices[0]?.message?.content || '';
 }
+
 

@@ -52,17 +52,23 @@ export const jobsRouter = router({
       ]);
 
       const filteredJobs = userId
-        ? allJobs.filter((job) => {
-            const jobData = job.type === 'varc'
-              ? varcJobs.find((j) => j.id === job.id)?.data
-              : job.type === 'lamp'
-                ? lampJobs.find((j) => j.id === job.id)?.data
-                : contrarianJobs.find((j) => j.id === job.id)?.data;
-            return (jobData as { userId?: string | null })?.userId === userId;
-          })
+        ? await Promise.all(
+            allJobs.map(async (job) => {
+              const sourceJob =
+                job.type === 'varc'
+                  ? varcJobs.find((j) => j.id === job.id)
+                  : job.type === 'lamp'
+                    ? lampJobs.find((j) => j.id === job.id)
+                    : contrarianJobs.find((j) => j.id === job.id);
+              if (!sourceJob) return null;
+              const jobData = sourceJob.data as { userId?: string | null } | undefined;
+              return jobData?.userId === userId ? job : null;
+            })
+          ).then((jobs) => jobs.filter((j): j is NonNullable<typeof j> => j !== null))
         : allJobs;
 
       return filteredJobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }),
 });
+
 

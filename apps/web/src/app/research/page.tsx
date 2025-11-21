@@ -54,7 +54,7 @@ export default function ResearchPage() {
     setContrarianResult(null);
 
     try {
-      const { trpc } = await import('@/lib/trpc/client');
+      const { trpc } = await import('@/lib/trpc');
       const result = await trpc.contrarian.runContrarianQuery.mutate({
         query,
         mode: 'both',
@@ -137,3 +137,4 @@ export default function ResearchPage() {
     </SectionShell>
   );
 }
+

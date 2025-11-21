@@ -347,3 +347,4 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
     return [];
   }
 }
+

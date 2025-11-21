@@ -80,3 +80,5 @@ export const cardForensics = pgTable(
 export type CardForensics = InferSelectModel<typeof cardForensics>;
 export type NewCardForensics = InferInsertModel<typeof cardForensics>;
 
+
+

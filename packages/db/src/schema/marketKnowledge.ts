@@ -82,3 +82,5 @@ export const marketKnowledge = pgTable(
 export type MarketKnowledge = InferSelectModel<typeof marketKnowledge>;
 export type NewMarketKnowledge = InferInsertModel<typeof marketKnowledge>;
 
+
+

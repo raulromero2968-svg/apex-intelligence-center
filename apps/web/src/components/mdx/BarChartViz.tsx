@@ -53,3 +53,4 @@ export default function BarChartViz({
     </div>
   );
 }
+

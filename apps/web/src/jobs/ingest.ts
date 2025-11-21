@@ -33,3 +33,4 @@ export async function ingestBatch(provider: Provider, items: any[]) {
 
   return { provider, count: items.length };
 }
+

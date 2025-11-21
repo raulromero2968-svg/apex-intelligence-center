@@ -200,3 +200,4 @@ export async function mtgReservedListFrontierV14(cardIds: string[], budget = 250
   // Return sorted by descending Sharpe ratio
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
 }
+

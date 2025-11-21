@@ -2,6 +2,7 @@
 
 import io
 import time
+import base64
 from typing import Optional
 import numpy as np
 import torch
@@ -16,9 +17,9 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from config import settings
 from logging_config import setup_logging, get_trace_logger
 from schemas.requests import JobEnvelope
-from schemas.responses import VarcInferenceResult, Embeddings, ReasoningTrace, NeighborInfo
+from schemas.responses import VarcInferenceResult, Embeddings, ReasoningTrace, NeighborInfo, FingerprintPayload
 from models.vision_model import create_vision_model
-from models.reasoner import create_reasoner
+from models.reasoner import create_reasoner, create_fingerprint_computer
 from faiss_index.index_manager import IndexManager, query_neighbors
 
 
@@ -59,6 +60,7 @@ app = FastAPI(
 vision_model: Optional[torch.nn.Module] = None
 reasoner: Optional[object] = None
 index_manager: Optional[IndexManager] = None
+fingerprint_computer: Optional[object] = None
 
 
 def preprocess_image(image: Image.Image) -> torch.Tensor:
@@ -95,11 +97,11 @@ def preprocess_image(image: Image.Image) -> torch.Tensor:
 
 async def download_image(image_url: str, timeout: int = 30) -> Image.Image:
     """
-    Download image from URL.
+    Download image from URL or parse data URL.
 
     Args:
-        image_url: URL of the image
-        timeout: Request timeout in seconds
+        image_url: URL of the image or data URL (data:image/...;base64,...)
+        timeout: Request timeout in seconds (ignored for data URLs)
 
     Returns:
         PIL Image instance
@@ -108,6 +110,26 @@ async def download_image(image_url: str, timeout: int = 30) -> Image.Image:
         HTTPException: If download fails
     """
     try:
+        # Handle data URLs (e.g., from mobile camera captures)
+        if image_url.startswith("data:"):
+            # Parse data URL: data:image/jpeg;base64,/9j/4AAQ...
+            header, data = image_url.split(",", 1)
+            
+            # Decode base64
+            image_bytes = base64.b64decode(data)
+            
+            max_size_bytes = settings.max_image_size_mb * 1024 * 1024
+            if len(image_bytes) > max_size_bytes:
+                raise ValueError(
+                    f"Image size {len(image_bytes)} bytes exceeds maximum {max_size_bytes} bytes"
+                )
+            
+            image = Image.open(io.BytesIO(image_bytes))
+            image.load()  # Load into memory
+            
+            return image
+
+        # Handle regular URLs
         async with httpx.AsyncClient(timeout=timeout) as client:
             max_size_bytes = settings.max_image_size_mb * 1024 * 1024
             response = await client.get(
@@ -142,7 +164,7 @@ async def download_image(image_url: str, timeout: int = 30) -> Image.Image:
 @app.on_event("startup")
 async def startup_event():
     """Initialize models and index on startup."""
-    global vision_model, reasoner, index_manager
+    global vision_model, reasoner, index_manager, fingerprint_computer
 
     logger.info("Starting VARC inference service...")
 
@@ -163,6 +185,16 @@ async def startup_event():
             device=settings.device,
         )
         logger.info("Reasoner loaded successfully")
+
+        # Load fingerprint computer
+        logger.info("Loading fingerprint computer...")
+        hash_version = getattr(settings, 'fingerprint_hash_version', 'v1')
+        fingerprint_computer = create_fingerprint_computer(
+            input_dim=768,
+            fingerprint_dim=256,
+            hash_version=hash_version,
+        )
+        logger.info("Fingerprint computer loaded successfully")
 
         # Load FAISS index
         logger.info(f"Loading FAISS index from {settings.faiss_index_path}...")
@@ -295,6 +327,24 @@ async def infer(job: JobEnvelope):
                 metadata=job.payload.extra_metadata,
             )
 
+        # Compute fingerprint
+        fingerprint_payload = None
+        if fingerprint_computer:
+            trace_logger.info("Computing fingerprint...")
+            try:
+                fingerprint_data = fingerprint_computer.compute(
+                    vision_embedding,
+                    device=settings.device,
+                )
+                fingerprint_payload = FingerprintPayload(
+                    hash_version=fingerprint_data["hash_version"],
+                    fingerprint_vector=fingerprint_data["fingerprint_vector"],
+                    fingerprint_hex=fingerprint_data["fingerprint_hex"],
+                )
+                trace_logger.info(f"Fingerprint computed: {fingerprint_data['fingerprint_hex'][:16]}...")
+            except Exception as e:
+                trace_logger.warning(f"Failed to compute fingerprint: {e}")
+
         # Build response
         response = VarcInferenceResult(
             jobId=job.job_id,
@@ -322,6 +372,7 @@ async def infer(job: JobEnvelope):
                 mainFactors=result["reasoning_trace"]["mainFactors"],
                 processingTimeMs=result["reasoning_trace"]["processingTimeMs"],
             ),
+            fingerprint=fingerprint_payload,
             error=None,
         )
 
@@ -372,6 +423,7 @@ async def infer(job: JobEnvelope):
             counterfeitScore=None,
             embeddings=None,
             reasoningTrace=None,
+            fingerprint=None,
             error=error_msg,
         )
 

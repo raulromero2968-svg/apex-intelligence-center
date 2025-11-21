@@ -5,7 +5,7 @@ import {
   VARC_QUEUE_NAME,
   LAMP_QUEUE_NAME,
   CONTRARIAN_QUEUE_NAME,
-} from '@apex/shared/src/contracts/queues';
+} from '@apex/shared';
 
 export const dynamic = 'force-dynamic';
 
@@ -109,3 +109,4 @@ export async function GET() {
 
   return NextResponse.json(health, { status: statusCode });
 }
+

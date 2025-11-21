@@ -230,3 +230,4 @@ export async function getVintagePokemonCards(): Promise<string[]> {
 
   return result.map((c) => c.id);
 }
+

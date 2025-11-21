@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../init';
 import { db } from '@/lib/db';
 import { cardForensics } from '@/db/schema';
+import { digitalTwinTokens } from '@apex/db';
 import { eq } from 'drizzle-orm';
 
 export const forensicsRouter = router({
@@ -24,5 +25,25 @@ export const forensicsRouter = router({
 
       return result[0];
     }),
+  getDigitalTwinForForensics: publicProcedure
+    .input(
+      z.object({
+        cardForensicsId: z.string().uuid(),
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await db
+        .select()
+        .from(digitalTwinTokens)
+        .where(eq(digitalTwinTokens.cardForensicsId, input.cardForensicsId))
+        .limit(1);
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      return result[0];
+    }),
 });
+
 

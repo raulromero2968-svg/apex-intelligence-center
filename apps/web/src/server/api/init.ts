@@ -1,6 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import { NextRequest } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth/jwt';
+import { getUserFromRequest } from '@/lib/auth';
 import { randomUUID } from 'crypto';
 import { createLogger } from '@apex/shared/logger';
 
@@ -69,4 +69,5 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     },
   });
 });
+
 

@@ -242,3 +242,4 @@ export async function ragFusionSearch(
   const fusion = createRagFusion(config);
   return fusion.search(query);
 }
+

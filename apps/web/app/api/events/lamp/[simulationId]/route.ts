@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
-import { lampUpdateChannel, LampSimulationUpdatePayload } from '@apex/shared/src/contracts/queues';
+import { lampUpdateChannel, type LampSimulationUpdatePayload } from '@apex/shared';
 
 if (!process.env.REDIS_URL) {
   throw new Error('REDIS_URL environment variable is required');

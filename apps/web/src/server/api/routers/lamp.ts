@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { router, publicProcedure } from '../init';
 import { enqueueLampJob } from '@/server/queues/producers';
-import { LampJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { LampJobPayloadSchema } from '@apex/shared';
 
 export const lampRouter = router({
   startSimulation: publicProcedure
@@ -33,4 +33,5 @@ export const lampRouter = router({
       };
     }),
 });
+
 

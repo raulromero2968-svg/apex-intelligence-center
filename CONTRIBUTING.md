@@ -94,22 +94,24 @@ pnpm patch:apply    # applies + runs golden loop
 
 ### JavaScript/TypeScript (Husky + lint-staged)
 
-Pre-commit hooks automatically run on staged files:
+Pre-commit hooks automatically run on staged files before every commit:
 
 1. **Installation** (one-time setup):
    ```bash
    pnpm install
    # Husky is configured automatically via package.json postinstall script
+   # If Husky is not installed, run: pnpm add -D husky && npx husky install
    ```
 
 2. **What runs automatically**:
-   - `eslint --fix` on all staged `.ts`, `.tsx`, `.js`, `.jsx` files
-   - `prettier --write` on all staged files
+   - `eslint --fix` on all staged `.ts`, `.tsx`, `.js`, `.jsx` files (via lint-staged)
+   - `prettier --write` on all staged files (via lint-staged)
    - `pnpm test -- --passWithNoTests` to ensure tests pass
+   - Format check (if prettier is configured)
 
 3. **Manual execution**:
    ```bash
-   # Run hooks manually
+   # Run lint-staged manually
    pnpm lint-staged
    
    # Or run the full pre-commit hook
@@ -121,6 +123,11 @@ Pre-commit hooks automatically run on staged files:
    git commit --no-verify
    ```
    ⚠️ **Warning**: Bypassing hooks may cause CI to fail. Always run hooks before pushing.
+
+5. **Expected CI behavior**:
+   - If hooks fail locally, CI will also fail
+   - All TypeScript/JavaScript files must pass linting, formatting, and tests
+   - The CI pipeline runs `pnpm lint`, `pnpm test`, and `pnpm schema:check` before build
 
 ### Python Services (pre-commit)
 

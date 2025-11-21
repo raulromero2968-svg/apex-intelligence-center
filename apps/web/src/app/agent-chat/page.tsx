@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import SectionShell from '../(sections)/SectionShell';
 import AgentChatPanel from '@/components/agent/AgentChatPanel';
-import { trpc } from '@/lib/trpc/client';
+import { trpc } from '@/lib/trpc';
 
 interface Job {
   id: string;
@@ -84,4 +84,5 @@ export default function AgentChatPage() {
     </SectionShell>
   );
 }
+
 

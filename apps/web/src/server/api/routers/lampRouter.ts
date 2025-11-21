@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
 import { enqueueLampJob } from '@/server/queues/producers';
-import { LampJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { LampJobPayloadSchema } from '@apex/shared';
 
 const StartSimulationSchema = z.object({
   scenarioId: z.string(),
@@ -30,4 +30,5 @@ export async function startSimulation(input: z.infer<typeof StartSimulationSchem
     simulationId: validated.scenarioId,
   };
 }
+
 

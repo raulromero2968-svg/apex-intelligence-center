@@ -13,6 +13,16 @@ export {
   pushTokens,
   pushTickets,
   priceHistory,
+  cardForensics,
+  marketKnowledge,
+  arbitrageOpportunities,
+  blockchainFloorPrices,
+  cardFingerprints,
+  projectOotcOrders,
+  projectOwhitelistPrices,
+  projectOdiscordMessages,
+  digitalTwinTokens,
+  digitalTwinStatusEnum,
 } from './schema';
 
 export type {
@@ -30,4 +40,24 @@ export type {
   NewPushTicket,
   PriceHistory,
   NewPriceHistory,
-} from './types';
+  CardForensics,
+  NewCardForensics,
+  MarketKnowledge,
+  NewMarketKnowledge,
+  ArbitrageOpportunity,
+  NewArbitrageOpportunity,
+  BlockchainFloorPrice,
+  NewBlockchainFloorPrice,
+  CardFingerprint,
+  NewCardFingerprint,
+  ProjectOOtcOrder,
+  NewProjectOOtcOrder,
+  ProjectOWhitelistPrice,
+  NewProjectOWhitelistPrice,
+  ProjectODiscordMessage,
+  NewProjectODiscordMessage,
+  DigitalTwinToken,
+  NewDigitalTwinToken,
+} from './schema';
+
+

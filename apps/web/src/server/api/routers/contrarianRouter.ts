@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
 import { enqueueContrarianJob } from '@/server/queues/producers';
-import { ContrarianJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { ContrarianJobPayloadSchema } from '@apex/shared';
 
 const RunContrarianQuerySchema = z.object({
   query: z.string().min(1),
@@ -29,4 +29,5 @@ export async function runContrarianQuery(input: z.infer<typeof RunContrarianQuer
     traceId,
   };
 }
+
 

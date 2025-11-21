@@ -6,7 +6,7 @@
  */
 
 import * as Sentry from '@sentry/nextjs';
-import { createLogger } from '@apex/shared/src/logger';
+import { createLogger } from '@apex/shared';
 import type { CandidateDoc } from './retrieval';
 
 const logger = createLogger('contrarian-resilience-scoring');
@@ -319,4 +319,5 @@ function scorePrestigeDiversity(
   }
   return 0.2 + stdDev * 3.0; // 0.2 to 0.5
 }
+
 

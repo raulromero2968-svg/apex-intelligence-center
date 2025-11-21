@@ -345,3 +345,4 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ gameData, className = 
 };
 
 export default GameSidebar;
+

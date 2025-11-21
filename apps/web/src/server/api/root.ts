@@ -4,6 +4,11 @@ import { lampRouter } from './routers/lamp';
 import { contrarianRouter } from './routers/contrarian';
 import { forensicsRouter } from './routers/forensics';
 import { jobsRouter } from './routers/jobs';
+import { blockchainRouter } from './routers/blockchain';
+import { arbitrageRouter } from './routers/arbitrage';
+import { convergenceRouter } from './routers/convergence';
+import { vaultRouter } from './routers/vault';
+import { projectORouter } from './routers/projectO';
 
 export const appRouter = router({
   varc: varcRouter,
@@ -11,7 +16,13 @@ export const appRouter = router({
   contrarian: contrarianRouter,
   forensics: forensicsRouter,
   jobs: jobsRouter,
+  blockchain: blockchainRouter,
+  arbitrage: arbitrageRouter,
+  convergence: convergenceRouter,
+  vault: vaultRouter,
+  projectO: projectORouter,
 });
 
 export type AppRouter = typeof appRouter;
+
 

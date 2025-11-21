@@ -6,10 +6,10 @@
  */
 
 import { pool } from '@/db';
-import { marketKnowledge } from '@apex/db/src/schema/marketKnowledge';
+import { marketKnowledge } from '@apex/db';
 import { sql } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
-import { createLogger } from '@apex/shared/src/logger';
+import { createLogger } from '@apex/shared';
 
 const logger = createLogger('contrarian-rag-retrieval');
 
@@ -371,4 +371,5 @@ export function filterBySentimentAndCluster(
 
   return filtered;
 }
+
 

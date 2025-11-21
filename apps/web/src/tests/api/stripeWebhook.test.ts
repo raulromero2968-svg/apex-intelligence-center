@@ -16,7 +16,7 @@ import { createLogger } from '@apex/shared/logger';
 // Mock dependencies
 vi.mock('@/server/services/stripeClient');
 vi.mock('@apex/shared/logger');
-vi.mock('@/lib/auth/jwt');
+vi.mock('@/lib/auth');
 vi.mock('@/db');
 vi.mock('@/db/schema');
 
@@ -258,3 +258,4 @@ describe('Stripe Webhook Handler', () => {
     );
   });
 });
+

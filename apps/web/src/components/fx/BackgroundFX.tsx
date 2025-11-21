@@ -78,3 +78,4 @@ export default function BackgroundFX({ className }: { className?: string }) {
     </div>
   );
 }
+

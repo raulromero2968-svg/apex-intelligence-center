@@ -47,3 +47,4 @@ export function getStripeClient(): Stripe {
   return createStripeClient();
 }
 
+

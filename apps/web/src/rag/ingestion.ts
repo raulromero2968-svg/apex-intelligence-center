@@ -341,3 +341,4 @@ export async function ingestNewsArticles(
 
   return ingestTcgData('news_article', items);
 }
+

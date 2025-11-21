@@ -14,3 +14,4 @@ export function hrefForItem(item: ContentItem): string {
     default: return '/';
   }
 }
+

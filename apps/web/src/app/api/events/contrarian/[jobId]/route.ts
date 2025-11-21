@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
-import { contrarianCompletedChannel } from '@apex/shared/src/contracts/queues';
+import { contrarianCompletedChannel } from '@apex/shared';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

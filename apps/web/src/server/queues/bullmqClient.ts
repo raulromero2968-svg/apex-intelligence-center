@@ -4,7 +4,7 @@ import {
   VARC_QUEUE_NAME,
   LAMP_QUEUE_NAME,
   CONTRARIAN_QUEUE_NAME,
-} from '@apex/shared/src/contracts/queues';
+} from '@apex/shared';
 
 if (!process.env.REDIS_URL) {
   throw new Error('REDIS_URL environment variable is required');
@@ -80,4 +80,5 @@ export const lampQueueEvents = new QueueEvents(LAMP_QUEUE_NAME, {
 export const contrarianQueueEvents = new QueueEvents(CONTRARIAN_QUEUE_NAME, {
   connection,
 });
+
 

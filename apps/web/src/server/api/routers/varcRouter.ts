@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
 import { enqueueVarcJob } from '@/server/queues/producers';
-import { VarcJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { VarcJobPayloadSchema } from '@apex/shared';
 
 const RequestVarcForensicsSchema = z.object({
   cardId: z.string().nullable().optional(),
@@ -27,4 +27,5 @@ export async function requestVarcForensics(input: z.infer<typeof RequestVarcFore
     traceId,
   };
 }
+
 

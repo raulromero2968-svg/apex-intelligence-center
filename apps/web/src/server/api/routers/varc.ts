@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { router, publicProcedure } from '../init';
 import { enqueueVarcJob } from '@/server/queues/producers';
-import { VarcJobPayloadSchema } from '@apex/shared/src/contracts/queues';
+import { VarcJobPayloadSchema } from '@apex/shared';
 import { varcQueue } from '@/server/queues/bullmqClient';
 
 export const varcRouter = router({
@@ -31,4 +31,5 @@ export const varcRouter = router({
       };
     }),
 });
+
 

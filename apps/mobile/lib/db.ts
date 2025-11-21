@@ -1,6 +1,5 @@
 import * as SQLite from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
-import * as schema from '@apex/db';
 
 /**
  * Initialize SQLite database for offline-first data storage
@@ -101,7 +100,7 @@ export async function initializeDatabase() {
 export async function queueForSync(
   tableName: string,
   operation: 'insert' | 'update' | 'delete',
-  data: any
+  data: Record<string, unknown>
 ) {
   const id = generateId();
 

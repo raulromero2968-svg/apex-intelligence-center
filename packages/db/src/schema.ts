@@ -87,3 +87,5 @@ export const priceHistory = pgTable('price_history', {
   cardDateIdx: index('price_history_card_date_idx').on(table.cardId, table.recordedAt.desc()),
   cardMarketIdx: index('price_history_card_market_idx').on(table.cardId, table.market),
 }));
+
+

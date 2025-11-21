@@ -1,0 +1,17 @@
+This PR ships the complete Convergence MVP implementation:
+
+- VARC visual forensics service
+- LAMP multi-agent simulation core
+- Contrarian RAG engine
+- Intelligence Bus (Redis/BullMQ + SSE)
+- Next.js orchestration & visualization
+- Deployment, observability, and shadow-mode harness
+
+All deployment infrastructure is in place:
+- Dockerfiles for web, worker, varc_service, and lamp_sim
+- Docker Compose with GPU support for Python services
+- Vercel + Modal/AWS SageMaker hybrid deployment scaffolding
+- Sentry integration for Node and Python services
+- Vercel Analytics for web
+- Shadow mode testing harness for new models/services
+

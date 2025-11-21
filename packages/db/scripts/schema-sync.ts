@@ -14,7 +14,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { Pool } from 'pg';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '../../shared/src/logger';
 
 const logger = createLogger('schema-sync', 'info');
 
@@ -98,6 +98,8 @@ async function main(): Promise<void> {
     shouldFix,
   });
 
+  let pool: Pool | null = null;
+
   try {
     // Get migration files
     const migrationFiles = await getMigrationFiles(migrationsDir);
@@ -109,7 +111,7 @@ async function main(): Promise<void> {
     }
 
     // Connect to database
-    const pool = new Pool({
+    pool = new Pool({
       connectionString: databaseUrl,
     });
 
@@ -136,24 +138,33 @@ async function main(): Promise<void> {
         try {
           await migrate(db, { migrationsFolder: migrationsDir });
           logger.info('Migrations applied successfully');
-          await pool.end();
+          if (pool) {
+            await pool.end();
+          }
           process.exit(0);
         } catch (error) {
           logger.error('Failed to apply migrations', {
             error: error instanceof Error ? error.message : String(error),
           });
-          await pool.end();
+          if (pool) {
+            await pool.end();
+          }
           process.exit(1);
         }
       } else {
         logger.error(
           'Schema drift detected. Run with --fix to auto-apply migrations.'
         );
+        if (pool) {
+          await pool.end();
+        }
         process.exit(1);
       }
     } else {
       logger.info('Schema is in sync - no drift detected');
-      await pool.end();
+      if (pool) {
+        await pool.end();
+      }
       process.exit(0);
     }
   } catch (error) {
@@ -161,6 +172,9 @@ async function main(): Promise<void> {
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     });
+    if (pool) {
+      await pool.end();
+    }
     process.exit(1);
   }
 }
@@ -172,4 +186,6 @@ main().catch((error) => {
   });
   process.exit(1);
 });
+
+
 

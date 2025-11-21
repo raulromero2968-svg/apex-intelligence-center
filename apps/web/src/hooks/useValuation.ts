@@ -177,3 +177,4 @@ export function getRiskCategory(volatility: number): {
   if (volatility < 80) return { category: 'High', color: 'text-orange-500' };
   return { category: 'Extreme', color: 'text-red-500' };
 }
+

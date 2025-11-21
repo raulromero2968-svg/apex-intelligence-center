@@ -73,6 +73,12 @@ class Settings(BaseSettings):
         description="PyTorch device (cpu, cuda, mps)",
     )
 
+    fingerprint_hash_version: str = Field(
+        default="v1",
+        env="FINGERPRINT_HASH_VERSION",
+        description="Fingerprint hash version identifier (e.g., 'v1')",
+    )
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
