@@ -37,6 +37,33 @@ export default function CardDetailPage() {
       fetchCardData();
       checkManipulationAlert();
     }
+
+    // Listen for manipulation alerts (push notifications)
+    const handleManipulationAlert = (event: any) => {
+      const { cardName, message, combinedScore } = event.detail;
+      console.log(`[ManipulationAlert] ${cardName}: ${message} (Score: ${combinedScore})`);
+
+      // Show toast notification
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('show-toast', {
+            detail: {
+              message: `🛡️ ${cardName}: ${message}`,
+              type: 'warning',
+            },
+          })
+        );
+      }
+
+      // Refresh manipulation alert status
+      checkManipulationAlert();
+    };
+
+    window.addEventListener('manipulation-alert', handleManipulationAlert);
+
+    return () => {
+      window.removeEventListener('manipulation-alert', handleManipulationAlert);
+    };
   }, [cardId]);
 
   const fetchCardData = async () => {
