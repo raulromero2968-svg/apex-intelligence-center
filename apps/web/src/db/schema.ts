@@ -431,6 +431,35 @@ export const cardForensics = pgTable('card_forensics', {
 }));
 
 /**
+ * Manipulation Alerts - Detected coordinated pump patterns
+ *
+ * Stores alerts when LAMP + Contrarian detect volume spikes (>40%) with no organic drivers.
+ * Used to display warning banners and send notifications to users.
+ */
+export const manipulationAlerts = pgTable('manipulation_alerts', {
+  id: text('id').primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  volumeSpikePct: real('volume_spike_pct').notNull(),
+  baselineVolume: real('baseline_volume').notNull(),
+  currentVolume: integer('current_volume').notNull(),
+  lampSentiment: text('lamp_sentiment', {
+    enum: ['bullish', 'bearish', 'neutral']
+  }).notNull(),
+  contrarianDiversity: real('contrarian_diversity').notNull(),
+  severity: text('severity', {
+    enum: ['warning', 'critical']
+  }).notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+  detectedAt: timestamp('detected_at').notNull(),
+  resolvedAt: timestamp('resolved_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  cardActiveIdx: index('idx_manipulation_card_active').on(table.cardId, table.isActive),
+  severityIdx: index('idx_manipulation_severity').on(table.severity),
+  detectedAtIdx: index('idx_manipulation_detected').on(table.detectedAt),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -542,6 +571,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
   cardForensics: many(cardForensics),
+  manipulationAlerts: many(manipulationAlerts),
 }));
 
 /**
@@ -672,6 +702,16 @@ export const cardForensicsRelations = relations(cardForensics, ({ one }) => ({
 }));
 
 /**
+ * Manipulation Alerts relations
+ */
+export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one }) => ({
+  card: one(cards, {
+    fields: [manipulationAlerts.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -743,6 +783,8 @@ export type MakerVote = typeof makerVotes.$inferSelect;
 export type NewMakerVote = typeof makerVotes.$inferInsert;
 export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
+export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
+export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
