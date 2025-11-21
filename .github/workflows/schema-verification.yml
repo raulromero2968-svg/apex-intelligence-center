@@ -1,0 +1,116 @@
+name: Schema Verification
+
+# Run on all pushes to main and all pull requests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/src/db/**'
+      - 'apps/web/drizzle/**'
+      - 'apps/web/drizzle.config.ts'
+      - 'apps/web/scripts/verify-schema-sync.ts'
+      - '.github/workflows/schema-verification.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/src/db/**'
+      - 'apps/web/drizzle/**'
+      - 'apps/web/drizzle.config.ts'
+      - 'apps/web/scripts/verify-schema-sync.ts'
+      - '.github/workflows/schema-verification.yml'
+
+jobs:
+  verify-schema:
+    name: Verify Database Schema Synchronization
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Schema Sync
+        id: schema-sync
+        run: |
+          echo "🔍 Running schema synchronization checks..."
+          pnpm --filter web exec tsx scripts/verify-schema-sync.ts
+        continue-on-error: false
+
+      - name: Verify Drizzle Syntax
+        id: drizzle-syntax
+        run: |
+          echo "✅ Checking Drizzle schema syntax..."
+          pnpm --filter web exec drizzle-kit check
+        continue-on-error: false
+
+      - name: Check for Pending Migrations
+        id: migration-check
+        run: |
+          echo "📦 Checking for uncommitted migrations..."
+          cd apps/web
+          if [ -d "drizzle" ] && [ -n "$(find drizzle -name '*.sql' -newer src/db/schema.ts 2>/dev/null)" ]; then
+            echo "✅ Migrations are up to date"
+          else
+            echo "⚠️  Schema may have been modified without generating migrations"
+            echo "Run 'drizzle-kit generate' if you made schema changes"
+          fi
+
+      - name: Generate Job Summary
+        if: always()
+        run: |
+          echo "## 🔍 Schema Verification Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.schema-sync.outcome }}" == "success" ]; then
+            echo "✅ **Schema Sync**: Passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ **Schema Sync**: Failed" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [ "${{ steps.drizzle-syntax.outcome }}" == "success" ]; then
+            echo "✅ **Drizzle Syntax**: Passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ **Drizzle Syntax**: Failed" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Commit**: ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Branch**: ${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Triggered by**: ${{ github.event_name }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ❌ Schema Verification Failed
+
+              The schema verification checks failed. Please review the errors above and:
+
+              1. Ensure all column references in code match the schema definitions
+              2. Run \`drizzle-kit generate\` if you modified the schema
+              3. Check for any SQL injection vulnerabilities
+              4. Verify that all tables have proper timestamps
+
+              See the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`
+            })
