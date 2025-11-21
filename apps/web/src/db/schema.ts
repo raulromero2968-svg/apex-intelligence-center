@@ -161,6 +161,10 @@ export const cards = pgTable('cards', {
   scryfallId: text('scryfall_id'),
   justTcgId: text('just_tcg_id'),
   apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
+  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
+  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
+  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({

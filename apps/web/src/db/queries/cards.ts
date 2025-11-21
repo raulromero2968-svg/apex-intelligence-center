@@ -44,6 +44,10 @@ export async function getHighValueCardsWithPrices(
           tcgplayerId: true,
           scryfallId: true,
           justTcgId: true,
+          sevenDayGainPercent: true,
+          isManipulated: true,
+          manipulationReason: true,
+          lastFlaggedAt: true,
         },
         with: {
           prices: {
