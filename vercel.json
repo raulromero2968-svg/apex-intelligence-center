@@ -19,6 +19,18 @@
     {
       "path": "/api/cron/push-receipts",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/detect-high-volatility",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/reset-monthly-spend",
+      "schedule": "0 0 1 * *"
+    },
+    {
+      "path": "/api/cron/process-vault-jobs",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
