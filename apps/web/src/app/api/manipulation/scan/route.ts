@@ -6,8 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { scanAllCardsForManipulation } from '@/services/manipulation-detector';
-import { activateManipulationShield } from '@/services/manipulation-shield.service';
+import { scanAllCardsForManipulation, activateManipulationShield } from '@/services/manipulation-detector';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,14 +31,28 @@ export async function POST(request: NextRequest) {
     // Activate shield for each detected manipulation
     const results = [];
     for (const detection of detections) {
-      const shieldResult = await activateManipulationShield(detection.cardId);
-      results.push({
-        cardId: detection.cardId,
-        cardName: detection.cardName,
-        volumeSpikePct: detection.volumeSpikePct,
-        severity: detection.severity,
-        shieldActivated: shieldResult.success,
-      });
+      try {
+        await activateManipulationShield(detection);
+        results.push({
+          cardId: detection.cardId,
+          cardName: detection.cardName,
+          combinedScore: detection.combinedScore,
+          volumeSpikePct: detection.volumeSpikePct,
+          severity: detection.severity,
+          shieldActivated: true,
+        });
+      } catch (error) {
+        console.error(`[ManipulationScan] Failed to activate shield for ${detection.cardId}:`, error);
+        results.push({
+          cardId: detection.cardId,
+          cardName: detection.cardName,
+          combinedScore: detection.combinedScore,
+          volumeSpikePct: detection.volumeSpikePct,
+          severity: detection.severity,
+          shieldActivated: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
     }
 
     return NextResponse.json(
