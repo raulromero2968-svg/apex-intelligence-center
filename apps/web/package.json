@@ -42,7 +42,14 @@
     "snapshot": "bash scripts/offender-snapshot.sh",
     "rollback": "tsx scripts/rollback.ts",
     "rollback:list": "tsx scripts/rollback.ts --list",
-    "create-sentry-release": "tsx scripts/create-sentry-release.ts"
+    "create-sentry-release": "tsx scripts/create-sentry-release.ts",
+    "redis:start": "docker-compose up -d redis",
+    "redis:stop": "docker-compose down",
+    "redis:logs": "docker-compose logs -f redis",
+    "redis:ui": "echo 'BullBoard: http://localhost:3001' && echo 'Redis Commander: http://localhost:8081 (admin/apex2025)'",
+    "workers:example": "tsx lib/workers.example.ts",
+    "intelligence:health": "tsx -e \"import('./lib/queue').then(m => m.checkIntelligenceBusHealth()).then(console.log)\"",
+    "intelligence:init": "tsx -e \"import('./lib/queue').then(m => m.initializeIntelligenceBus())\""
   },
   "dependencies": {
     "@apex/auth": "workspace:*",
