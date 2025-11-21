@@ -260,6 +260,12 @@ export const users = pgTable('users', {
   breakModeActivatedBy: text('break_mode_activated_by', {
     enum: ['child', 'parent']
   }),
+  // Trust Score System (13_LAUNCH_02)
+  trustScore: integer('trust_score').default(10).notNull(),
+  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
+  phoneVerified: boolean('phone_verified').default(false).notNull(),
+  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
+  walletAddress: text('wallet_address'), // Base wallet for NFT
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -468,6 +474,45 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
 }));
 
 /**
+ * Market Submissions - Crowdsourced sale data from users
+ *
+ * Architecture: 13_LAUNCH_02
+ * Users submit verified sales with proof (receipt/PWCC link/Goldin link)
+ * VARC validates card identity from uploaded images
+ * Trust score system prevents spam and fake submissions
+ */
+export const marketSubmissions = pgTable('market_submissions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  price: real('price').notNull(),
+  currency: text('currency').notNull().default('USD'),
+  saleDate: timestamp('sale_date').notNull(),
+  grade: text('grade'),
+  gradingCompany: text('grading_company'),
+  certNumber: text('cert_number'),
+  proofUrl: text('proof_url').notNull(), // S3 URL or external link
+  proofType: text('proof_type', {
+    enum: ['receipt', 'auction_link', 'marketplace_screenshot']
+  }).notNull(),
+  status: text('status', {
+    enum: ['pending', 'approved', 'rejected']
+  }).default('pending').notNull(),
+  verifiedByVarc: boolean('verified_by_varc').default(false).notNull(),
+  varcConfidence: real('varc_confidence'), // 0.0-1.0
+  reviewedBy: text('reviewed_by'), // Admin user ID
+  reviewedAt: timestamp('reviewed_at'),
+  rejectionReason: text('rejection_reason'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_submissions_user').on(table.userId),
+  cardIdx: index('idx_submissions_card').on(table.cardId),
+  statusIdx: index('idx_submissions_status').on(table.status),
+  createdIdx: index('idx_submissions_created').on(table.createdAt),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -580,6 +625,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   makerVotes: many(makerVotes),
   cardForensics: many(cardForensics),
   manipulationAlerts: many(manipulationAlerts),
+  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -645,6 +691,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
+  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -715,6 +762,20 @@ export const cardForensicsRelations = relations(cardForensics, ({ one }) => ({
 export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one }) => ({
   card: one(cards, {
     fields: [manipulationAlerts.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
+ * Market Submissions relations
+ */
+export const marketSubmissionsRelations = relations(marketSubmissions, ({ one }) => ({
+  user: one(users, {
+    fields: [marketSubmissions.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [marketSubmissions.cardId],
     references: [cards.id],
   }),
 }));
@@ -793,6 +854,8 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type MarketSubmission = typeof marketSubmissions.$inferSelect;
+export type NewMarketSubmission = typeof marketSubmissions.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
