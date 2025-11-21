@@ -22,6 +22,8 @@ import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
 
+import { BreakModeButton } from '@/components/BreakModeButton';
+
 import ToastHost from '@/components/ToastHost';
 
 import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
@@ -342,6 +344,12 @@ export default function RootLayout({
         {/* Help FAB */}
 
         <HelpFAB />
+
+
+
+        {/* Break Mode Button */}
+
+        <BreakModeButton />
 
 
 
