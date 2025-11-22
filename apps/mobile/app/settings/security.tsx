@@ -15,7 +15,7 @@ import {
   getBiometricStatus,
   enableBiometricFromSettings,
   disableBiometrics,
-} from '@/lib/biometric-enrollment';
+} from '../../lib/biometric-enrollment';
 
 export default function SecuritySettingsScreen() {
   const [biometricStatus, setBiometricStatus] = useState({
