@@ -179,7 +179,7 @@ Private project - All rights reserved
 ## 🤝 Support
 
 For issues or questions:
-- Twitter: [@apexcollectionz](https://twitter.com/apexcollectionz)
+- Twitter: [@TCGAISociety](https://twitter.com/TCGAISociety)
 - Website: [apexintelligence.io](https://apexintelligence.io)
 
 ---
