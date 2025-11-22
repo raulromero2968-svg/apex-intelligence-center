@@ -1,0 +1,23 @@
+# Multi-Modal RAG - Python ML Dependencies
+# Install with: pip3 install -r ml-requirements.txt
+
+# Core ML frameworks
+torch>=2.0.0
+transformers>=4.30.0
+
+# Image processing
+Pillow>=10.0.0
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.0
+
+# Optional: Video generation (heavy dependencies, install separately if needed)
+# opencv-python>=4.8.0
+# diffusers>=0.25.0
+# insightface>=0.7.3
+# TTS>=0.22.0  # Coqui TTS
+
+# Optional: Accelerated inference
+# accelerate>=0.20.0
+# bitsandbytes>=0.41.0

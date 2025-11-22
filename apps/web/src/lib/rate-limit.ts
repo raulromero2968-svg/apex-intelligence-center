@@ -129,3 +129,72 @@ export function getLimitForTier(tier: 'free' | 'pro' | 'enterprise'): number {
 export function getRetryAfter(reset: number): number {
   return Math.ceil((reset - Date.now()) / 1000);
 }
+
+/**
+ * Specialized rate limiters for multi-modal endpoints
+ */
+export const multiModalRateLimiters = {
+  /**
+   * Multi-modal upload rate limiter
+   * 5 uploads per hour per user
+   */
+  multiModalUpload: {
+    limit: async (userId: string): Promise<RateLimitResult> => {
+      if (!redis) {
+        return {
+          success: true,
+          limit: 5,
+          remaining: 5,
+          reset: Date.now() + 3600 * 1000,
+        };
+      }
+
+      const limiter = new Ratelimit({
+        redis: redis as any,
+        limiter: Ratelimit.slidingWindow(5, '1 h'),
+        analytics: true,
+        prefix: 'apex:multimodal:upload',
+      });
+
+      const result = await limiter.limit(userId);
+      return {
+        success: result.success,
+        limit: result.limit,
+        remaining: result.remaining,
+        reset: result.reset,
+      };
+    },
+  },
+
+  /**
+   * Video generation rate limiter
+   * 3 generations per day per user
+   */
+  videoGeneration: {
+    limit: async (userId: string): Promise<RateLimitResult> => {
+      if (!redis) {
+        return {
+          success: true,
+          limit: 3,
+          remaining: 3,
+          reset: Date.now() + 24 * 3600 * 1000,
+        };
+      }
+
+      const limiter = new Ratelimit({
+        redis: redis as any,
+        limiter: Ratelimit.slidingWindow(3, '24 h'),
+        analytics: true,
+        prefix: 'apex:multimodal:video',
+      });
+
+      const result = await limiter.limit(userId);
+      return {
+        success: result.success,
+        limit: result.limit,
+        remaining: result.remaining,
+        reset: result.reset,
+      };
+    },
+  },
+};

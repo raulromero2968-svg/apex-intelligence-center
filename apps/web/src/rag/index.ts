@@ -84,6 +84,19 @@ export {
 } from './citation-mapper';
 
 // ============================================================================
+// MULTI-MODAL RAG - Vector search for images and audio
+// ============================================================================
+export {
+  type MultiModalSearchResult,
+  type MultiModalSearchOptions,
+  multiModalVectorSearch,
+  hybridMultiModalSearch,
+  getUserEmbeddings,
+  findSimilarFaces,
+  findSimilarVoices,
+} from './multi-modal';
+
+// ============================================================================
 // EXPERIMENTAL CHAINS - Not exported in production
 // ============================================================================
 // Experimental chains (like Lorcana) are located in ./experimental/
