@@ -142,6 +142,117 @@ export const market_knowledge = pgTable('market_knowledge', {
     .on(table.created_at),
 }));
 
+/**
+ * Multi-Modal Embeddings table for AI-powered video generation
+ *
+ * Stores multi-modal embeddings for images (CLIP) and audio (Wav2Vec2) to enable
+ * RAG-based retrieval for personalized video generation. Supports hybrid search
+ * for finding similar faces, poses, expressions, and voice characteristics.
+ *
+ * Features:
+ * - Vector embeddings (512-dim for CLIP, 768-dim for Wav2Vec2)
+ * - Support for both image and audio modalities
+ * - User-specific embeddings for personalization
+ * - File storage references (S3/local)
+ * - HNSW indexing for fast similarity search
+ */
+export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // User reference for personalization
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Modality type (image or audio)
+  type: text('type', {
+    enum: ['image', 'audio']
+  }).notNull(),
+
+  // Vector embedding - dimension varies by type:
+  // - image (CLIP ViT-B/32): 512 dimensions
+  // - audio (Wav2Vec2): 768 dimensions
+  // Using 768 to accommodate both (images will be padded/truncated if needed)
+  embedding: sql<number[]>`vector(768)`.notNull(),
+
+  // File storage reference (S3 URL or local path)
+  fileUrl: text('file_url').notNull(),
+
+  // Additional metadata (facial landmarks, audio features, etc.)
+  metadata: jsonb('metadata').$type<{
+    filename?: string;
+    fileSize?: number;
+    mimeType?: string;
+    duration?: number; // for audio
+    width?: number; // for images
+    height?: number; // for images
+    faceLandmarks?: any; // facial landmarks for face embeddings
+    emotionScores?: any; // emotion detection results
+    voiceCharacteristics?: any; // pitch, tone, etc.
+    [key: string]: any;
+  }>().notNull().default({}),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  // Index on user for quick user-specific queries
+  userIdx: index('idx_multimodal_user').on(table.userId),
+  // Index on type for filtering by modality
+  typeIdx: index('idx_multimodal_type').on(table.type),
+  // Composite index for common query patterns
+  userTypeIdx: index('idx_multimodal_user_type').on(table.userId, table.type),
+  // Timestamp index for temporal queries
+  createdAtIdx: index('idx_multimodal_created_at').on(table.createdAt),
+  // HNSW index for vector similarity (created in migration)
+  // embeddingIdx: index('idx_multimodal_embedding').on(table.embedding).using('hnsw'),
+}));
+
+/**
+ * Video Generation Requests - Track video generation jobs
+ *
+ * Stores metadata about video generation requests including script,
+ * settings, status, and output file references.
+ */
+export const videoGenerationRequests = pgTable('video_generation_requests', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // User reference
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Request parameters
+  script: text('script').notNull(),
+  setting: text('setting').notNull(), // e.g., "cyberpunk", "professional", "casual"
+  duration: integer('duration').notNull(), // in seconds
+
+  // Status tracking
+  status: text('status', {
+    enum: ['pending', 'processing', 'completed', 'failed']
+  }).default('pending').notNull(),
+
+  // Output references
+  outputUrl: text('output_url'), // S3 URL or local path to generated video
+
+  // Processing metadata
+  processingStartedAt: timestamp('processing_started_at'),
+  processingCompletedAt: timestamp('processing_completed_at'),
+  errorMessage: text('error_message'),
+
+  // RAG retrieval metadata (which embeddings were used)
+  retrievalMetadata: jsonb('retrieval_metadata').$type<{
+    imageEmbeddingIds?: string[];
+    audioEmbeddingIds?: string[];
+    similarityScores?: number[];
+    [key: string]: any;
+  }>(),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_video_gen_user').on(table.userId),
+  statusIdx: index('idx_video_gen_status').on(table.status),
+  createdAtIdx: index('idx_video_gen_created_at').on(table.createdAt),
+}));
+
 // ============================================================================
 // PRODUCTION TCG MARKET DATA MODELS
 // ============================================================================
@@ -725,6 +836,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   watchlistItems: many(watchlistItems),
   marketSubmissions: many(marketSubmissions),
   sessionHistory: many(sessionHistory),
+  multiModalEmbeddings: many(multiModalEmbeddings),
+  videoGenerationRequests: many(videoGenerationRequests),
   parent: one(users, {
     fields: [users.parentId],
     references: [users.id],
@@ -849,6 +962,26 @@ export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
   }),
 }));
 
+/**
+ * Multi-Modal Embeddings relations
+ */
+export const multiModalEmbeddingsRelations = relations(multiModalEmbeddings, ({ one }) => ({
+  user: one(users, {
+    fields: [multiModalEmbeddings.userId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * Video Generation Requests relations
+ */
+export const videoGenerationRequestsRelations = relations(videoGenerationRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [videoGenerationRequests.userId],
+    references: [users.id],
+  }),
+}));
+
 // ============================================================================
 // TypeScript types for better DX
 // ============================================================================
@@ -906,6 +1039,10 @@ export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
 export type MarketSubmission = typeof marketSubmissions.$inferSelect;
 export type NewMarketSubmission = typeof marketSubmissions.$inferInsert;
+export type MultiModalEmbedding = typeof multiModalEmbeddings.$inferSelect;
+export type NewMultiModalEmbedding = typeof multiModalEmbeddings.$inferInsert;
+export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
+export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
