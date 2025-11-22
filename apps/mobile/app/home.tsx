@@ -1,3 +1,4 @@
+/// <reference types="nativewind/types" />
 import { View, Text, ScrollView } from 'react-native';
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react-native';
