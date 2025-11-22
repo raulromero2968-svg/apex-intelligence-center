@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Intelligence Society | Underground TCG Intel</title>
+    <meta name="description" content="Data-driven TCG intelligence for serious collectors. Real-time market analysis, price tracking, and alpha insights.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00FFF0;
+            --matrix-blue: #00d4ff;
+            --bg-dark: #0a0a0f;
+            --bg-darker: #050508;
+            --text-light: #F4F6F8;
+            --text-gray: #9ca3af;
+            --card-bg: rgba(15, 15, 25, 0.9);
+            --border-subtle: rgba(0, 255, 240, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0f;
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ANIMATED MATRIX GRID BACKGROUND */
+        .matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Animated grid lines */
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% {
+                opacity: 0.3;
+                background-size: 40px 40px;
+            }
+            50% {
+                opacity: 0.5;
+                background-size: 41px 41px;
+            }
+        }
+
+        /* Matrix rain effect */
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--matrix-blue);
+            opacity: 0.6;
+            text-shadow: 0 0 8px var(--matrix-blue);
+            white-space: nowrap;
+            animation: matrixFall linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes matrixFall {
+            0% {
+                top: -100%;
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Glowing accent lines */
+        .accent-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .accent-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 240, 0.6), 
+                transparent);
+            animation: accentSweep 8s ease-in-out infinite;
+        }
+
+        @keyframes accentSweep {
+            0%, 100% {
+                left: -100%;
+                opacity: 0;
+            }
+            50% {
+                left: 100%;
+                opacity: 0.8;
+            }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--apex-cyan);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: particleFloat 15s ease-in-out infinite;
+            box-shadow: 0 0 4px var(--apex-cyan);
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(80px, -80px) scale(1.3);
+                opacity: 0.6;
+            }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--apex-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+            text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid var(--apex-cyan);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--apex-cyan);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
+            animation: badgePulse 4s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 240, 0.5);
+            }
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            text-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
+        }
+
+        .hero-title-accent {
+            color: var(--apex-cyan);
+            text-shadow: 0 0 30px rgba(0, 255, 240, 0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 255, 240, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #00e6dd;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 255, 240, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--apex-cyan);
+            color: var(--apex-cyan);
+            box-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 240, 0.1), 
+                transparent);
+            transition: left 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            border-color: var(--apex-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 240, 0.2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            color: var(--apex-cyan);
+            filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 20px rgba(0, 255, 240, 0.8));
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .feature-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Latest Intel Section */
+        .intel-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            margin-bottom: 3rem;
+        }
+
+        .intel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .intel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+        }
+
+        .intel-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                var(--apex-cyan), 
+                var(--matrix-blue), 
+                var(--apex-cyan));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .intel-card:hover::after {
+            opacity: 1;
+        }
+
+        .intel-card:hover {
+            border-color: var(--apex-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 240, 0.25);
+        }
+
+        .intel-content {
+            padding: 2rem;
+        }
+
+        .intel-date {
+            color: var(--apex-cyan);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+        }
+
+        .intel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .intel-excerpt {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-darker);
+            border-top: 1px solid var(--border-subtle);
+            padding: 3rem 2rem 2rem;
+            margin-top: 6rem;
+            box-shadow: 0 -4px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--apex-cyan);
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: var(--text-gray);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--apex-cyan);
+            text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .features-grid,
+            .intel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- ANIMATED MATRIX BACKGROUND -->
+    <div class="matrix-background">
+        <!-- Grid Lines -->
+        <div class="grid-lines"></div>
+        
+        <!-- Matrix Rain Container -->
+        <div class="matrix-rain" id="matrixRain"></div>
+        
+        <!-- Accent Lines -->
+        <div class="accent-lines">
+            <div class="accent-line" style="top: 15%; animation-delay: 0s; animation-duration: 15s;"></div>
+            <div class="accent-line" style="top: 35%; animation-delay: 8s; animation-duration: 18s;"></div>
+            <div class="accent-line" style="top: 55%; animation-delay: 4s; animation-duration: 16s;"></div>
+            <div class="accent-line" style="top: 75%; animation-delay: 12s; animation-duration: 20s;"></div>
+        </div>
+        
+        <!-- Floating Particles -->
+        <div class="particle" style="left: 10%; top: 20%; animation-delay: 0s; animation-duration: 25s;"></div>
+        <div class="particle" style="left: 30%; top: 60%; animation-delay: 10s; animation-duration: 30s;"></div>
+        <div class="particle" style="left: 60%; top: 30%; animation-delay: 5s; animation-duration: 28s;"></div>
+        <div class="particle" style="left: 80%; top: 70%; animation-delay: 15s; animation-duration: 32s;"></div>
+        <div class="particle" style="left: 50%; top: 50%; animation-delay: 8s; animation-duration: 27s;"></div>
+        <div class="particle" style="left: 20%; top: 80%; animation-delay: 12s; animation-duration: 26s;"></div>
+        <div class="particle" style="left: 70%; top: 15%; animation-delay: 18s; animation-duration: 29s;"></div>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <a href="#home" class="logo">
+                    <span class="logo-apex">APEX</span> INTELLIGENCE
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#intel">Intel</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#subscribe">Subscribe</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="badge">TCG INTELLIGENCE NETWORK</div>
+            <h1 class="hero-title">
+                <span class="hero-title-accent">Underground</span> Intel<br>
+                For Serious Collectors
+            </h1>
+            <p class="hero-subtitle">
+                Data-driven market analysis, real-time price tracking, and exclusive alpha insights for the modern TCG investor.
+            </p>
+            <div class="cta-buttons">
+                <a href="#subscribe" class="btn btn-primary">Get Free Intel →</a>
+                <a href="#intel" class="btn btn-secondary">Browse Archives</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="features-grid">
+                <!-- Market Intelligence -->
+                <div class="feature-card">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    <h3 class="feature-title">Market Intelligence</h3>
+                    <p class="feature-description">
+                        Real-time market analysis and trend forecasting powered by comprehensive data analytics.
+                    </p>
+                </div>
+
+                <!-- Price Tracking -->
+                <div class="feature-card">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="feature-title">Price Tracking</h3>
+                    <p class="feature-description">
+                        Monitor card values across multiple marketplaces with automated alerts for significant movements.
+                    </p>
+                </div>
+
+                <!-- Community Insights -->
+                <div class="feature-card">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <h3 class="feature-title">Community Intel</h3>
+                    <p class="feature-description">
+                        Exclusive insights from top collectors and investors in the TCG space.
+                    </p>
+                </div>
+
+                <!-- Alpha Access -->
+                <div class="feature-card">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <h3 class="feature-title">Alpha Access</h3>
+                    <p class="feature-description">
+                        Early access to market-moving information before it becomes public knowledge.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Proof / Testimonials Section -->
+        <section class="intel-section">
+            <h2 class="section-title">Trusted by Serious Collectors</h2>
+            <p class="section-subtitle">See what our community is saying</p>
+            
+            <div style="max-width: 1000px; margin: 3rem auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Testimonial 1 -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; box-shadow: 0 10px 40px rgba(0, 255, 240, 0.1);">
+                        <div style="color: var(--apex-cyan); font-size: 2rem; margin-bottom: 1rem;">"</div>
+                        <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 1.5rem; font-style: italic;">
+                            The market insights from Apex Intelligence have completely changed how I approach TCG investing. Their data-driven approach cuts through the hype.
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--apex-cyan), var(--matrix-blue)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--bg-dark);">
+                                M
+                            </div>
+                            <div>
+                                <div style="color: var(--text-light); font-weight: 600;">Marcus Chen</div>
+                                <div style="color: var(--text-gray); font-size: 0.875rem;">Vintage Collector</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; box-shadow: 0 10px 40px rgba(0, 255, 240, 0.1);">
+                        <div style="color: var(--apex-cyan); font-size: 2rem; margin-bottom: 1rem;">"</div>
+                        <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 1.5rem; font-style: italic;">
+                            Finally, someone who understands that TCG investing requires real data analysis. The weekly reports alone are worth their weight in gold.
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--apex-cyan), var(--matrix-blue)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--bg-dark);">
+                                S
+                            </div>
+                            <div>
+                                <div style="color: var(--text-light); font-weight: 600;">Sarah Rodriguez</div>
+                                <div style="color: var(--text-gray); font-size: 0.875rem;">Portfolio Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; box-shadow: 0 10px 40px rgba(0, 255, 240, 0.1);">
+                        <div style="color: var(--apex-cyan); font-size: 2rem; margin-bottom: 1rem;">"</div>
+                        <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 1.5rem; font-style: italic;">
+                            Been in the TCG game for 15 years. Apex Intelligence is the first service that actually delivers actionable insights instead of just regurgitating prices.
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--apex-cyan), var(--matrix-blue)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--bg-dark);">
+                                D
+                            </div>
+                            <div>
+                                <div style="color: var(--text-light); font-weight: 600;">David Park</div>
+                                <div style="color: var(--text-gray); font-size: 0.875rem;">Pro Seller</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Intel Section -->
+        <section id="intel" class="intel-section">
+            <h2 class="section-title">Latest Intel</h2>
+            <p class="section-subtitle">Stay ahead of the market with our latest analysis and insights</p>
+            
+            <div class="intel-grid">
+                <!-- Placeholder Card 1 -->
+                <a href="#" class="intel-card">
+                    <div class="intel-content">
+                        <div class="intel-date">Coming Soon</div>
+                        <h3 class="intel-title">Q4 2025 TCG Market Outlook</h3>
+                        <p class="intel-excerpt">
+                            Comprehensive analysis of upcoming releases and their potential market impact heading into the holiday season.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Placeholder Card 2 -->
+                <a href="#" class="intel-card">
+                    <div class="intel-content">
+                        <div class="intel-date">Coming Soon</div>
+                        <h3 class="intel-title">Investment Strategies for Vintage Cards</h3>
+                        <p class="intel-excerpt">
+                            Deep dive into long-term value preservation and growth strategies in the vintage TCG market.
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Placeholder Card 3 -->
+                <a href="#" class="intel-card">
+                    <div class="intel-content">
+                        <div class="intel-date">Coming Soon</div>
+                        <h3 class="intel-title">Sealed Product vs Singles: 2025 Analysis</h3>
+                        <p class="intel-excerpt">
+                            Data-driven comparison of investment returns across different product types and TCG brands.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="intel-section">
+            <h2 class="section-title">About Apex Intelligence</h2>
+            <p class="section-subtitle">Data-driven insights for the modern TCG investor</p>
+            
+            <div style="max-width: 800px; margin: 3rem auto;">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 3rem; box-shadow: 0 10px 40px rgba(0, 255, 240, 0.1);">
+                    <h3 style="color: var(--apex-cyan); font-size: 1.75rem; margin-bottom: 1.5rem; text-align: center;">
+                        Underground Intelligence for Serious Collectors
+                    </h3>
+                    
+                    <p style="color: var(--text-gray); line-height: 1.8; margin-bottom: 1.5rem; text-align: center; font-size: 1.125rem;">
+                        Apex Intelligence Society was founded on a simple principle: <strong style="color: var(--text-light);">information is power</strong>.
+                    </p>
+                    
+                    <div style="display: grid; gap: 2rem; margin-top: 3rem;">
+                        <div style="display: flex; align-items: start; gap: 1.5rem;">
+                            <svg style="width: 48px; height: 48px; min-width: 48px; color: var(--apex-cyan); filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.6));" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h4 style="color: var(--apex-cyan); font-size: 1.25rem; margin-bottom: 0.75rem;">
+                                    Our Mission
+                                </h4>
+                                <p style="color: var(--text-gray); line-height: 1.8;">
+                                    To democratize access to professional-grade TCG market intelligence, empowering collectors and investors with the data and insights they need to make informed decisions.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: start; gap: 1.5rem;">
+                            <svg style="width: 48px; height: 48px; min-width: 48px; color: var(--apex-cyan); filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.6));" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            <div>
+                                <h4 style="color: var(--apex-cyan); font-size: 1.25rem; margin-bottom: 0.75rem;">
+                                    What We Offer
+                                </h4>
+                                <p style="color: var(--text-gray); line-height: 1.8;">
+                                    Real-time market analysis, historical price tracking, community insights, and exclusive alpha from industry experts. We cut through the noise to deliver actionable intelligence.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: start; gap: 1.5rem;">
+                            <svg style="width: 48px; height: 48px; min-width: 48px; color: var(--apex-cyan); filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.6));" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <div>
+                                <h4 style="color: var(--apex-cyan); font-size: 1.25rem; margin-bottom: 0.75rem;">
+                                    Why Trust Us
+                                </h4>
+                                <p style="color: var(--text-gray); line-height: 1.8;">
+                                    We're collectors first, analysts second. Every piece of intel we share is vetted, data-backed, and designed to give you an edge in the market. No hype, just facts.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscribe Section -->
+        <section id="subscribe" class="intel-section">
+            <h2 class="section-title">Subscribe for Free Intel</h2>
+            <p class="section-subtitle">Get exclusive market analysis delivered to your inbox weekly</p>
+            
+            <div style="max-width: 600px; margin: 3rem auto; text-align: center;">
+                <!-- Beehiiv Embed Placeholder - Replace with your actual Beehiiv embed code -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 3rem; box-shadow: 0 10px 40px rgba(0, 255, 240, 0.1);">
+                    <h3 style="color: var(--apex-cyan); margin-bottom: 1rem; font-size: 1.5rem;">Join the Intelligence Network</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 2rem; line-height: 1.8;">
+                        Get weekly market insights, price alerts, and exclusive alpha delivered straight to your inbox.
+                    </p>
+                    
+                    <!-- Email Input Form -->
+                    <form style="display: flex; flex-direction: column; gap: 1rem;">
+                        <input 
+                            type="email" 
+                            placeholder="your@email.com" 
+                            required
+                            style="padding: 1rem; border-radius: 8px; border: 1px solid var(--border-subtle); background: rgba(10, 10, 15, 0.8); color: var(--text-light); font-size: 1rem;"
+                        >
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary" 
+                            style="width: 100%;"
+                        >
+                            Get Free Intel →
+                        </button>
+                    </form>
+                    
+                    <p style="color: var(--text-gray); font-size: 0.875rem; margin-top: 1rem;">
+                        ✓ Free forever · ✓ Unsubscribe anytime · ✓ No spam, ever
+                    </p>
+                </div>
+                
+                <p style="color: var(--text-gray); margin-top: 2rem; font-size: 0.875rem;">
+                    <strong style="color: var(--apex-cyan);">Coming Soon:</strong> Premium tier with advanced analytics and real-time alerts
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Apex Intelligence</h3>
+                    <p style="color: var(--text-gray); line-height: 1.8;">
+                        Underground intelligence for serious TCG collectors and investors.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#intel">Latest Intel</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#subscribe">Subscribe</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="mailto:contact@apexintelligence.io">Contact Us</a></li>
+                        <li><a href="https://twitter.com/apexcollectionz" target="_blank">Twitter/X</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                © 2025 Apex Intelligence Society. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ANIMATED MATRIX RAIN EFFECT
+        function createMatrixRain() {
+            const container = document.getElementById('matrixRain');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const columnCount = Math.floor(window.innerWidth / 20);
+
+            // Create matrix columns
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = `${i * 20}px`;
+                
+                // Random characters
+                let text = '';
+                const charCount = Math.floor(Math.random() * 20) + 10;
+                for (let j = 0; j < charCount; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '\n';
+                }
+                column.textContent = text;
+                
+                // Random animation duration (slower, river-like flow)
+                const duration = Math.random() * 15 + 20;
+                column.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(column);
+            }
+        }
+
+        // Initialize matrix rain on page load
+        createMatrixRain();
+
+        // Recreate on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                document.getElementById('matrixRain').innerHTML = '';
+                createMatrixRain();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
