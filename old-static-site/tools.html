@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collector Tools - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <link rel="stylesheet" href="apex-enhancements.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        nav {
+            background: rgba(10, 14, 26, 0.95);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-apex {
+            color: var(--apex-cyan);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--apex-cyan));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .page-header {
+            max-width: 1200px;
+            margin: 4rem auto 2rem;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .tools-grid {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--apex-cyan);
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.2);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .tool-tier {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-tier.free {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .tool-tier.premium {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--apex-cyan);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .tool-tier.pro {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(0, 217, 255, 0.2));
+            color: white;
+            border: 1px solid var(--apex-purple);
+        }
+
+        .tool-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.9rem 2rem;
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: white;
+            transform: scale(1.02);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor (Desktop Only) -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <div class="content">
+        <nav>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <img src="apex-wolf-logo-subtle-final.png" alt="Apex Intelligence" />
+                    </div>
+                    <span><span class="logo-apex">APEX</span> INTELLIGENCE</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="insights.html">Insights</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="research.html">Research</a></li>
+                    <li><a href="tools.html">Tools</a></li>
+                    <li><a href="subscribe.html" class="btn-subscribe">Subscribe</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="page-header">
+            <h1 class="page-title">Collector Tools</h1>
+            <p class="page-subtitle">
+                Professional-grade tools for serious TCG collectors and investors
+            </p>
+        </div>
+
+        <div class="tools-grid">
+            <!-- FREE TOOLS -->
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <h2 class="tool-title">Set Completion Calculator</h2>
+                <span class="tool-tier free">FREE</span>
+                <p class="tool-description">
+                    Calculate the cheapest path to complete your TCG sets. Compare buying singles vs opening packs with detailed cost analysis.
+                </p>
+                <a href="tool-set-completion.html" class="tool-btn">Calculate Completion</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💱</div>
+                <h2 class="tool-title">Trade Fairness Evaluator</h2>
+                <span class="tool-tier free">FREE</span>
+                <p class="tool-description">
+                    Calculate fair trade values with trend predictions. Get trade win probability scores and market momentum indicators (Premium).
+                </p>
+                <a href="tool-calculator.html" class="tool-btn">Evaluate Trade</a>
+            </div>
+
+            <!-- PREMIUM TOOLS -->
+            <div class="tool-card">
+                <div class="tool-icon">🌍</div>
+                <h2 class="tool-title">Cross-Market Arbitrage Finder</h2>
+                <span class="tool-tier premium">PREMIUM</span>
+                <p class="tool-description">
+                    Find profitable price differences across US, Japan, and Europe markets. Calculate net profit after shipping, fees, and currency conversion.
+                </p>
+                <a href="tool-arbitrage.html" class="tool-btn">Find Opportunities</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <h2 class="tool-title">Grading ROI Calculator</h2>
+                <span class="tool-tier premium">PREMIUM</span>
+                <p class="tool-description">
+                    Determine if grading your cards is profitable. Compare PSA vs BGS costs and expected value increases with detailed ROI analysis.
+                </p>
+                <a href="tool-grading.html" class="tool-btn">Calculate ROI</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📊</div>
+                <h2 class="tool-title">Portfolio Tracker</h2>
+                <span class="tool-tier premium">PREMIUM</span>
+                <p class="tool-description">
+                    Track your collection's value over time with interactive charts. Monitor ROI, set alerts, and export detailed reports.
+                </p>
+                <a href="tool-tracker.html" class="tool-btn">Track Portfolio</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <h2 class="tool-title">Bulk Grading Optimizer</h2>
+                <span class="tool-tier premium">PREMIUM</span>
+                <p class="tool-description">
+                    Maximize ROI by optimizing which cards to grade first based on your budget. Get prioritized grading recommendations with profit projections.
+                </p>
+                <a href="tool-bulk-grading.html" class="tool-btn">Optimize Grading</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📦</div>
+                <h2 class="tool-title">Bulk Deal Analyzer</h2>
+                <span class="tool-tier premium">PREMIUM</span>
+                <p class="tool-description">
+                    Evaluate bulk card lots from eBay and Facebook. Get instant value estimates, profit projections, and red flag warnings before you buy.
+                </p>
+                <a href="tool-bulk-deal.html" class="tool-btn">Analyze Bulk Lots</a>
+            </div>
+
+            <!-- PRO TOOLS -->
+            <div class="tool-card">
+                <div class="tool-icon">⚠️</div>
+                <h2 class="tool-title">Reprint Risk Predictor</h2>
+                <span class="tool-tier pro">PRO - AI POWERED</span>
+                <p class="tool-description">
+                    Protect your investments with AI-powered reprint probability analysis. The only tool that predicts which cards are at risk of value-destroying reprints.
+                </p>
+                <a href="tool-reprint-risk.html" class="tool-btn">Analyze Risk</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📦</div>
+                <h2 class="tool-title">Sealed Product Analyzer</h2>
+                <span class="tool-tier pro">PRO</span>
+                <p class="tool-description">
+                    Analyze sealed product investment potential with historical ROI data and projected returns based on similar products across multiple TCGs.
+                </p>
+                <a href="tool-sealed.html" class="tool-btn">Analyze Products</a>
+            </div>
+
+            <!-- TAX OPTIMIZATION TOOLS -->
+            <div class="tool-card">
+                <div class="tool-icon">📊</div>
+                <h2 class="tool-title">Tax Optimization Dashboard</h2>
+                <span class="tool-tier pro">PRO - PHASE 3</span>
+                <p class="tool-description">
+                    Your central hub for all tax optimization tools. Save thousands in taxes with professional-grade tax planning for TCG collectors.
+                </p>
+                <a href="tool-tax-dashboard.html" class="tool-btn">Open Dashboard</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📉</div>
+                <h2 class="tool-title">Tax Loss Harvesting Calculator</h2>
+                <span class="tool-tier pro">PRO - KILLER FEATURE 🔥</span>
+                <p class="tool-description">
+                    Identify cards with losses and calculate potential tax savings. Export Schedule D reports and get wash sale warnings. The only TCG tax tool on the market.
+                </p>
+                <a href="tool-tax-harvesting.html" class="tool-btn">Harvest Losses</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <h2 class="tool-title">Collection Diversification Analyzer</h2>
+                <span class="tool-tier pro">PRO - KILLER FEATURE 🔥</span>
+                <p class="tool-description">
+                    Apply Modern Portfolio Theory to your TCG collection. Get risk scores, allocation charts, and rebalancing recommendations like a Wall Street portfolio manager.
+                </p>
+                <a href="tool-diversification.html" class="tool-btn">Analyze Risk</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💵</div>
+                <h2 class="tool-title">Capital Gains Tax Estimator</h2>
+                <span class="tool-tier pro">PRO</span>
+                <p class="tool-description">
+                    Calculate tax liability before selling cards. Compare short-term vs long-term rates, batch calculations, and get "hold until" date recommendations.
+                </p>
+                <a href="tool-capital-gains.html" class="tool-btn">Estimate Taxes</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📄</div>
+                <h2 class="tool-title">Portfolio Performance Report</h2>
+                <span class="tool-tier pro">PRO</span>
+                <p class="tool-description">
+                    Generate annual tax summaries for IRS Schedule D filing. Track transactions, export PDF/CSV reports, and stay organized for tax season.
+                </p>
+                <a href="tool-tax-report.html" class="tool-btn">Generate Report</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Apex Intelligence. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Apex Enhancements -->
+    <script src="apex-enhancements.js"></script>
+</body>
+</html>

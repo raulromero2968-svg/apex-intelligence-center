@@ -1,0 +1,26 @@
+{
+  "name": "@apex/auth",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "expo-local-authentication": "*",
+    "expo-secure-store": "*"
+  },
+  "peerDependenciesMeta": {
+    "expo-local-authentication": {
+      "optional": true
+    },
+    "expo-secure-store": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

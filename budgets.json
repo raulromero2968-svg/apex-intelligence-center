@@ -1,0 +1,18 @@
+{
+  "routeBudgets": [
+    { "pattern": "^/$", "maxKB": 320 },
+    { "pattern": "^/auth", "maxKB": 380 },
+    { "pattern": "^/marketing", "maxKB": 360 },
+    { "pattern": "^/dashboard", "maxKB": 550 },
+    { "pattern": "^/admin", "maxKB": 520 }
+  ],
+  "temporaryAllow": [
+    {
+      "route": "^/dashboard/reports$",
+      "maxKB": 650,
+      "until": "2025-12-15",
+      "note": "chart refactor in progress; remove after split"
+    }
+  ]
+}
+

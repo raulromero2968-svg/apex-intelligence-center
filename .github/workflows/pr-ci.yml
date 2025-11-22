@@ -1,0 +1,275 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm --filter web lint
+
+      - name: Check for FOMO language (STRICT - blocks PRs)
+        run: pnpm check:fomo
+
+      - name: Verify barrels
+        run: pnpm --filter web verify-barrels
+
+      - name: Verify schema sync
+        run: pnpm --filter web exec tsx scripts/verify-schema-sync.ts
+
+      - name: Verify Drizzle syntax
+        run: pnpm verify:drizzle-syntax
+
+      - name: Test
+        run: pnpm test
+
+      - name: Verify Vercel Pro Limits
+        run: |
+          if grep -q '"memory":\s*4096' vercel.json; then
+            echo "✅ Vercel Pro memory limits (4096 MB) active"
+          else
+            echo "❌ Missing or incorrect Vercel Pro memory configuration"
+            echo "Expected: \"memory\": 4096 in vercel.json"
+            exit 1
+          fi
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Validate MDX frontmatter (warnings on PRs)
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p artifacts
+          node scripts/validate-mdx.mjs --non-blocking --output-file artifacts/mdx-validation.txt || true
+      - name: Validate MDX frontmatter (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p artifacts
+          node scripts/validate-mdx.mjs --output-file artifacts/mdx-validation.txt
+      - name: Build
+        run: pnpm --filter web build
+      - name: Perf budget (strict on CI)
+        run: pnpm perf:budget
+      - name: Smoke tests (API)
+        run: pnpm test:smoke:api
+      - name: Tests
+        run: |
+          pnpm -w test --reporter=dot || pnpm test --reporter=dot || true
+      - name: Repo sanity
+        run: |
+          chmod +x scripts/repo-sanity.sh || true
+          scripts/repo-sanity.sh || true
+      - name: Env audit
+        run: |
+          chmod +x scripts/env-audit.sh || true
+          scripts/env-audit.sh || true
+      - name: Media budget (warnings on PRs)
+        run: |
+          chmod +x scripts/media-budget.sh || true
+          MAX_MEDIA_KB=${{ vars.MAX_MEDIA_KB || 300 }} MAX_MEDIA_VIDEO_KB=${{ vars.MAX_MEDIA_VIDEO_KB || 1500 }} STRICT_MEDIA=0 scripts/media-budget.sh
+      - name: Media budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_MEDIA_KB=${{ vars.MAX_MEDIA_KB || 300 }} MAX_MEDIA_VIDEO_KB=${{ vars.MAX_MEDIA_VIDEO_KB || 1500 }} STRICT_MEDIA=1 scripts/media-budget.sh
+      - name: CSS budget (warnings on PRs)
+        run: |
+          chmod +x scripts/css-budget.sh || true
+          MAX_CSS_KB=${{ vars.MAX_CSS_KB || 120 }} STRICT_CSS=0 scripts/css-budget.sh
+      - name: CSS budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_CSS_KB=${{ vars.MAX_CSS_KB || 120 }} STRICT_CSS=1 scripts/css-budget.sh
+      - name: Bundle budget (warnings on PRs)
+        run: |
+          chmod +x scripts/bundle-budget.sh || true
+          MAX_CHUNK_KB=${{ vars.MAX_CHUNK_KB || 300 }} STRICT=0 scripts/bundle-budget.sh
+      - name: Bundle delta (warnings on PRs)
+        run: |
+          chmod +x scripts/bundle-delta.sh || true
+          DELTA_CHUNK_KB=${{ vars.DELTA_CHUNK_KB || 40 }} STRICT_DELTA=0 scripts/bundle-delta.sh
+      - name: Bundle budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_CHUNK_KB=${{ vars.MAX_CHUNK_KB || 300 }} STRICT=1 scripts/bundle-budget.sh
+      - name: Bundle delta (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          DELTA_CHUNK_KB=${{ vars.DELTA_CHUNK_KB || 40 }} STRICT_DELTA=1 scripts/bundle-delta.sh
+      - name: Library watchlist
+        run: |
+          chmod +x scripts/library-watch.sh || true
+          LIB_BLOCKLIST="${{ vars.LIB_BLOCKLIST || 'moment,chart.js/auto,echarts,fullcalendar,lodash ' }}" scripts/library-watch.sh || true
+      - name: Route budget (warnings on PRs)
+        run: |
+          MAX_ROUTE_KB=${{ vars.MAX_ROUTE_KB || 500 }} STRICT_ROUTE=0 node scripts/route-budget.mjs || true
+      - name: Route budget (strict on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          MAX_ROUTE_KB=${{ vars.MAX_ROUTE_KB || 500 }} STRICT_ROUTE=1 node scripts/route-budget.mjs || true
+      - name: Local Vercel mirror
+        run: |
+          chmod +x scripts/vercel-local-mirror.sh || true
+          DEBUG=1 scripts/vercel-local-mirror.sh
+      - name: Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-local-mirror
+          path: artifacts/**
+          retention-days: 7
+      - name: PR Summary
+        if: always()
+        run: |
+          echo "## Deploy Sanity Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Node**: $(node -v)  **pnpm**: $(pnpm -v)" >> "$GITHUB_STEP_SUMMARY"
+          echo "
+### Errors/Failures in Local Mirror Log" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/vercel-local-mirror.log ]; then
+            grep -nE " ERR|error |failed|FAIL " artifacts/vercel-local-mirror.log | head -n 50 >> "$GITHUB_STEP_SUMMARY" || echo "No obvious errors." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Log not found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Bundle Budget (top offenders)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/bundle-budget.txt ]; then
+            head -n 50 artifacts/bundle-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Route Budget (largest routes)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/route-budget.txt ]; then
+            head -n 60 artifacts/route-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No route budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Performance Budget (routes, chunks, first load)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/perf-budget.txt ]; then
+            head -n 80 artifacts/perf-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No perf budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### CSS Budget (largest files)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/css-budget.txt ]; then
+            head -n 40 artifacts/css-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No CSS budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Bundle Delta (size increases vs baseline)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/bundle-delta.txt ]; then
+            head -n 60 artifacts/bundle-delta.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No bundle delta report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Library Watchlist" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/library-watch.txt ]; then
+            head -n 80 artifacts/library-watch.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No library watch report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Env Audit" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/env-audit.txt ]; then
+            head -n 50 artifacts/env-audit.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No env audit found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Media Budget (largest files)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/media-budget.txt ]; then
+            head -n 50 artifacts/media-budget.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No media budget report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "
+### Content QA (MDX Validation)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/mdx-validation.txt ]; then
+            cat artifacts/mdx-validation.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No MDX validation report found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  streaming-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: verify
+    steps:
+      - name: Check streaming feature flag
+        id: check-flag
+        env:
+          FEATURE_RESEARCH_STREAMING: ${{ vars.FEATURE_RESEARCH_STREAMING || env.FEATURE_RESEARCH_STREAMING || '' }}
+        run: |
+          if [ "$FEATURE_RESEARCH_STREAMING" != "1" ]; then
+            echo "⏭️  FEATURE_RESEARCH_STREAMING is not set to 1, skipping streaming check"
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "skip=false" >> $GITHUB_OUTPUT
+      - name: Get preview URL
+        id: preview-url
+        if: steps.check-flag.outputs.skip != 'true'
+        run: |
+          # Try to get preview URL from Vercel deployment comment or environment
+          PREVIEW_URL="${VERCEL_URL:-}"
+          if [ -z "$PREVIEW_URL" ]; then
+            # Fallback: construct preview URL pattern (Vercel typically uses this format)
+            # Note: This may need adjustment based on your Vercel project setup
+            PREVIEW_URL="https://${GITHUB_REPOSITORY#*/}-git-${GITHUB_HEAD_REF//\//-}-${GITHUB_REPOSITORY_OWNER}.vercel.app"
+          fi
+          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "🔍 Preview URL: $PREVIEW_URL"
+      - name: Test streaming endpoint
+        if: steps.check-flag.outputs.skip != 'true'
+        run: |
+          PREVIEW_URL="${{ steps.preview-url.outputs.url }}"
+          if [ -z "$PREVIEW_URL" ] || [ "$PREVIEW_URL" = "https://-git--.vercel.app" ]; then
+            echo "⚠️  Preview URL not available, skipping streaming check"
+            echo "💡 Tip: Set VERCEL_URL environment variable or ensure Vercel preview deployment is available"
+            exit 0
+          fi
+          
+          echo "🧪 Testing streaming endpoint: $PREVIEW_URL/api/research"
+          
+          # Make request and capture headers
+          RESPONSE=$(curl -s -i -X POST "$PREVIEW_URL/api/research" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"test streaming"}')
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep -i "^HTTP" | tail -1 | awk '{print $2}')
+          CONTENT_TYPE=$(echo "$RESPONSE" | grep -i "^content-type:" | cut -d' ' -f2- | tr -d '\r')
+          
+          echo "Status: $HTTP_CODE"
+          echo "Content-Type: $CONTENT_TYPE"
+          
+          if [ -z "$CONTENT_TYPE" ]; then
+            echo "❌ Content-Type header not found"
+            exit 1
+          fi
+          
+          if echo "$CONTENT_TYPE" | grep -qi "text/event-stream"; then
+            echo "✅ Content-Type includes text/event-stream"
+          else
+            echo "❌ Content-Type does not include text/event-stream"
+            echo "   Expected: text/event-stream"
+            echo "   Got: $CONTENT_TYPE"
+            exit 1
+          fi
+

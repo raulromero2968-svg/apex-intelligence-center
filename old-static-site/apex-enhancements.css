@@ -1,0 +1,825 @@
+/* ============================================
+   APEX INTELLIGENCE - UI/UX ENHANCEMENTS
+   ============================================ */
+
+/* ========================================
+   1. ENHANCED CUSTOM CURSOR (Desktop Only)
+   ======================================== */
+@media (min-width: 769px) {
+    body {
+        cursor: none;
+    }
+
+    a, button, input, textarea, select, .search-filter-tag,
+    .tool-card, .intel-card, .market-card, .stat-card,
+    .analysis-card, .comparison-card, .use-case-card,
+    .testimonial-card, .btn-subscribe, .btn-tool,
+    .btn-primary, .btn-secondary {
+        cursor: none !important;
+    }
+
+    .custom-cursor {
+        width: 8px;
+        height: 8px;
+        background: var(--apex-cyan);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10001;
+        mix-blend-mode: screen;
+        transform: translate(-50%, -50%);
+        transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 0 10px var(--apex-cyan), 0 0 20px rgba(0, 217, 255, 0.5);
+    }
+
+    .cursor-follower {
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, rgba(147, 51, 234, 0.1) 70%);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10000;
+        filter: blur(15px);
+        transform: translate(-50%, -50%);
+        transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                    height 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                    background 0.3s ease;
+    }
+
+    .cursor-follower.hover {
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(0, 217, 255, 0.5) 0%, rgba(147, 51, 234, 0.2) 70%);
+    }
+
+    .custom-cursor.expand {
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+/* ========================================
+   2. PS5-STYLE CARD HOVER EFFECTS
+   ======================================== */
+
+/* Base card hover styles */
+.tool-card,
+.intel-card,
+.market-card,
+.stat-card,
+.analysis-card,
+.comparison-card,
+.use-case-card,
+.testimonial-card {
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform, box-shadow;
+}
+
+.tool-card:hover,
+.intel-card:hover,
+.market-card:hover,
+.stat-card:hover,
+.analysis-card:hover,
+.comparison-card:hover,
+.use-case-card:hover,
+.testimonial-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow:
+        0 8px 30px rgba(0, 217, 255, 0.3),
+        0 4px 15px rgba(0, 217, 255, 0.2),
+        0 0 40px rgba(0, 217, 255, 0.15),
+        inset 0 1px 0 rgba(0, 217, 255, 0.3);
+    border-color: var(--apex-cyan);
+}
+
+/* Button hover effects */
+.btn-subscribe,
+.btn-tool,
+.btn-primary,
+.btn-secondary,
+.btn-export,
+.analyze-btn,
+.add-card-btn {
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform, box-shadow;
+}
+
+.btn-subscribe:hover,
+.btn-tool:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-export:hover,
+.analyze-btn:hover,
+.add-card-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 8px 25px rgba(0, 217, 255, 0.4),
+        0 4px 12px rgba(0, 217, 255, 0.3);
+}
+
+/* ========================================
+   3. PAGE TRANSITIONS
+   ======================================== */
+
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+.page-transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.page-content {
+    animation: pageSlideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes pageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.stagger-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: staggerReveal 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes staggerReveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply stagger delays dynamically via JavaScript */
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+.stagger-item:nth-child(7) { animation-delay: 300ms; }
+.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(9) { animation-delay: 400ms; }
+.stagger-item:nth-child(10) { animation-delay: 450ms; }
+
+/* ========================================
+   4. SKELETON SCREENS
+   ======================================== */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(30, 30, 40, 0.8) 0%,
+        rgba(40, 40, 50, 0.9) 50%,
+        rgba(30, 30, 40, 0.8) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 217, 255, 0.08) 50%,
+        transparent 100%
+    );
+    animation: shimmerGlow 1.5s infinite;
+}
+
+@keyframes shimmerGlow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Skeleton variations */
+.skeleton-card {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    width: 100%;
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-title {
+    width: 80%;
+    height: 24px;
+    margin-bottom: 12px;
+}
+
+.skeleton-button {
+    width: 120px;
+    height: 40px;
+}
+
+.skeleton-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+/* Fade in when content loads */
+.skeleton-container {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.skeleton-container.loaded {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.content-loaded {
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   5. ACHIEVEMENT-STYLE NOTIFICATIONS
+   ======================================== */
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10002;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.achievement-notification {
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    border: 1px solid var(--apex-cyan);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow:
+        0 8px 32px rgba(0, 217, 255, 0.3),
+        0 4px 16px rgba(0, 217, 255, 0.2),
+        0 0 60px rgba(0, 217, 255, 0.15),
+        inset 0 1px 0 rgba(0, 217, 255, 0.4);
+    transform: translateX(450px);
+    opacity: 0;
+    pointer-events: all;
+    animation: slideInNotification 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 217, 255, 0.1) 50%,
+        transparent 100%
+    );
+    animation: notificationGlow 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes slideInNotification {
+    0% {
+        transform: translateX(450px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notificationGlow {
+    0%, 100% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+.achievement-notification.dismissing {
+    animation: slideOutNotification 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes slideOutNotification {
+    0% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(450px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--apex-cyan) 0%, var(--apex-purple) 100%);
+    flex-shrink: 0;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.8), 0 0 40px rgba(147, 51, 234, 0.4);
+    }
+}
+
+.notification-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.notification-title {
+    color: var(--apex-cyan);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.notification-message {
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.notification-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary);
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+/* Progress bar */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--apex-cyan) 0%, var(--apex-purple) 100%);
+    width: 100%;
+    transform-origin: left;
+    animation: progressShrink 3s linear forwards;
+}
+
+@keyframes progressShrink {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .achievement-notification {
+        padding: 12px 16px;
+    }
+
+    .notification-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .notification-title,
+    .notification-message {
+        font-size: 13px;
+    }
+}
+
+/* ========================================
+   6. LOADING STATE IMPROVEMENTS
+   ======================================== */
+
+/* Hide default spinners when skeleton is active */
+.loading.skeleton-active .spinner {
+    display: none;
+}
+
+/* Enhanced loading container */
+.loading-container {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-container.with-skeleton {
+    min-height: auto;
+}
+
+/* ========================================
+   7. CONTENT FILTERING WITH ANIMATIONS
+   ======================================== */
+
+/* Filter bar styling */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+}
+
+.filter-tag {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    cursor: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.filter-tag:hover {
+    background: rgba(0, 217, 255, 0.1);
+    border-color: rgba(0, 217, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.filter-tag.active {
+    background: linear-gradient(to right, rgba(0, 217, 255, 0.2), rgba(147, 51, 234, 0.2));
+    border-color: var(--apex-cyan);
+    color: var(--apex-cyan);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+/* Filter result count */
+.filter-results-count {
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1rem;
+}
+
+/* Animated grid items */
+.filterable-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    position: relative;
+}
+
+.filterable-item {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filterable-item.hidden {
+    opacity: 0;
+    transform: scale(0.98) translateY(12px);
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+}
+
+.filterable-item.entering {
+    animation: filterEnter 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes filterEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.98) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========================================
+   8. PS5-STYLE TOOLS CAROUSEL
+   ======================================== */
+
+.tools-carousel {
+    position: relative;
+    margin: 2rem 0;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+}
+
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-card {
+    flex: 0 0 auto;
+    width: min(80%, 420px);
+    scroll-snap-align: center;
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 217, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-card:hover {
+    transform: translateY(-4px) scale(1.05);
+    border-color: var(--apex-cyan);
+    box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
+}
+
+.carousel-card:focus {
+    outline: 2px solid var(--apex-cyan);
+    outline-offset: 4px;
+}
+
+/* Carousel controls */
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 217, 255, 0.1);
+    border-color: var(--apex-cyan);
+    transform: scale(1.1);
+}
+
+.carousel-dots {
+    display: flex;
+    gap: 0.375rem;
+}
+
+.carousel-dot {
+    width: 1rem;
+    height: 0.375rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: var(--apex-cyan);
+    width: 2rem;
+}
+
+/* ========================================
+   9. ENHANCED HOLOGRAPHIC ICONS
+   ======================================== */
+
+.holo-icon-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    perspective: 1000px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.holo-icon-container:hover {
+    transform: scale(1.06) rotateX(6deg) rotateY(-6deg);
+}
+
+.holo-icon-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background: conic-gradient(from 180deg, var(--apex-cyan), var(--apex-purple), var(--apex-cyan));
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.holo-icon-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background: var(--apex-cyan);
+    opacity: 0.4;
+    filter: blur(12px);
+    z-index: -1;
+}
+
+.holo-icon-content {
+    position: relative;
+    z-index: 10;
+    color: #000;
+    font-size: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .holo-icon-container:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* ========================================
+   10. SEARCH BAR ENHANCEMENTS
+   ======================================== */
+
+.search-shortcut-kbd {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    font-size: 0.625rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-box {
+    font-size: 16px !important; /* Prevent iOS zoom */
+}
+
+/* ========================================
+   11. MOBILE NAVIGATION REFINEMENTS
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .mobile-menu {
+        padding-top: calc(env(safe-area-inset-top) + 4rem);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .mobile-menu ul li a {
+        padding: 0.75rem 1rem;
+        min-height: 44px; /* Touch target size */
+        display: flex;
+        align-items: center;
+        border-radius: 0.5rem;
+    }
+
+    .mobile-menu ul li a:focus {
+        outline: 2px solid var(--apex-cyan);
+        outline-offset: 2px;
+    }
+}
+
+/* ========================================
+   12. REDUCED MOTION SUPPORT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .carousel-track {
+        scroll-behavior: auto;
+    }
+
+    .filterable-item {
+        transition: opacity 0.1s ease;
+    }
+
+    /* Keep essential transforms but remove excessive animations */
+    .tool-card:hover,
+    .intel-card:hover {
+        animation: none;
+    }
+}

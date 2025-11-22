@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Completion Calculator - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <link rel="stylesheet" href="apex-enhancements.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .free-badge {
+            display: inline-block;
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+        }
+
+        .selector-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+        }
+
+        .filter-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: var(--apex-cyan);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .bulk-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--apex-purple);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .bulk-btn:hover {
+            background: var(--apex-cyan);
+            transform: scale(1.05);
+        }
+
+        .cards-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-grid {
+            display: grid;
+            gap: 0.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .card-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .card-grid::-webkit-scrollbar-track {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .card-grid::-webkit-scrollbar-thumb {
+            background: var(--apex-cyan);
+            border-radius: 4px;
+        }
+
+        .card-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 217, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .card-item:hover {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--apex-cyan);
+        }
+
+        .card-item.owned {
+            background: rgba(0, 255, 0, 0.05);
+            border-color: rgba(0, 255, 0, 0.3);
+        }
+
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .card-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .card-number {
+            color: var(--text-secondary);
+            font-family: monospace;
+            min-width: 50px;
+        }
+
+        .card-name {
+            flex: 1;
+        }
+
+        .card-rarity {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .rarity-common {
+            background: rgba(128, 128, 128, 0.2);
+            color: #aaa;
+        }
+
+        .rarity-uncommon {
+            background: rgba(34, 139, 34, 0.2);
+            color: #4ade80;
+        }
+
+        .rarity-rare {
+            background: rgba(0, 123, 255, 0.2);
+            color: #60a5fa;
+        }
+
+        .rarity-holo {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(0, 217, 255, 0.3));
+            color: var(--apex-cyan);
+        }
+
+        .rarity-ultra {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+            color: #fbbf24;
+        }
+
+        .rarity-secret {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(255, 105, 180, 0.2));
+            color: #ec4899;
+        }
+
+        .card-price {
+            font-weight: 700;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .price-high {
+            color: #fbbf24;
+        }
+
+        .price-mid {
+            color: var(--apex-cyan);
+        }
+
+        .price-low {
+            color: #4ade80;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(0, 217, 255, 0.1));
+            border: 2px solid var(--apex-cyan);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-title {
+            font-size: 1.5rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card h3 {
+            color: var(--apex-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .winner {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00ff00;
+        }
+
+        .winner h3 {
+            color: #00ff00;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--apex-cyan);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .selector-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor (Desktop Only) -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+<div class="content">
+        <div class="header">
+            <h1>🎯 Set Completion Calculator</h1>
+            <div class="free-badge">FREE TOOL</div>
+            <p class="subtitle">Calculate the cheapest path to complete your TCG sets</p>
+        </div>
+
+        <div class="selector-section">
+            <div class="selector-grid">
+                <div class="input-group">
+                    <label for="tcgSelect">Select TCG</label>
+                    <select id="tcgSelect" onchange="loadSets()">
+                        <option value="">Choose a game...</option>
+                        <option value="pokemon">Pokemon TCG</option>
+                        <option value="mtg">Magic: The Gathering</option>
+                        <option value="yugioh">Yu-Gi-Oh!</option>
+                        <option value="onepiece">One Piece TCG</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="setSelect">Select Set</label>
+                    <select id="setSelect" onchange="loadCards()" disabled>
+                        <option value="">Choose a set...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="statsSection" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Cards</div>
+                    <div class="stat-value" id="totalCards">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Owned</div>
+                    <div class="stat-value" id="ownedCards" style="color: #00ff00;">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Missing</div>
+                    <div class="stat-value" id="missingCards" style="color: #ff4444;">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Completion</div>
+                    <div class="stat-value" id="completionPercent">0%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Missing Value</div>
+                    <div class="stat-value" id="missingValue">$0</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-controls">
+                    <input type="text" id="searchBox" class="search-box" placeholder="Search cards by name or number..." oninput="filterCards()">
+                    <button class="filter-btn" onclick="filterByRarity('all')" id="filter-all">All</button>
+                    <button class="filter-btn" onclick="filterByRarity('missing')" id="filter-missing">Missing Only</button>
+                    <button class="filter-btn" onclick="filterByRarity('owned')" id="filter-owned">Owned Only</button>
+                </div>
+                <div class="bulk-actions">
+                    <button class="bulk-btn" onclick="markAllByRarity('common')">✓ All Commons</button>
+                    <button class="bulk-btn" onclick="markAllByRarity('uncommon')">✓ All Uncommons</button>
+                    <button class="bulk-btn" onclick="clearAll()">✗ Clear All</button>
+                    <button class="bulk-btn" onclick="saveProgress()" style="background: var(--apex-cyan); color: var(--bg-dark);">💾 Save</button>
+                </div>
+            </div>
+
+            <div class="cards-section">
+                <div class="section-title">
+                    <span>Card Checklist</span>
+                    <span id="cardCount">0 cards</span>
+                </div>
+                <div class="card-grid" id="cardGrid">
+                    <div class="empty-state">
+                        Select a TCG and set to begin
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendation-box" id="recommendationBox" style="display: none;">
+                <h2 class="recommendation-title">💡 Completion Strategy</h2>
+                <div id="recommendationText" style="text-align: center; line-height: 1.8; margin-bottom: 1.5rem;"></div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card" id="singlesCard">
+                        <h3>📄 Buy Singles</h3>
+                        <div class="comparison-value" id="singlesValue">$0</div>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                            Purchase missing cards individually
+                        </p>
+                    </div>
+
+                    <div class="comparison-card" id="packsCard">
+                        <h3>📦 Open Packs</h3>
+                        <div class="comparison-value" id="packsValue">$0</div>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                            Expected cost to pull missing cards
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="tools.html" class="back-link">← Back to Tools</a>
+        </div>
+    </div>
+
+    <script src="data/sets-database.js"></script>
+    <script>
+        let currentSet = null;
+        let ownedCards = new Set();
+        let currentFilter = 'all';
+
+        function loadSets() {
+            const tcg = document.getElementById('tcgSelect').value;
+            const setSelect = document.getElementById('setSelect');
+
+            setSelect.innerHTML = '<option value="">Choose a set...</option>';
+            setSelect.disabled = true;
+
+            document.getElementById('statsSection').style.display = 'none';
+
+            if (tcg && SETS_DATABASE[tcg]) {
+                SETS_DATABASE[tcg].forEach(set => {
+                    const option = document.createElement('option');
+                    option.value = set.id;
+                    option.textContent = set.name;
+                    setSelect.appendChild(option);
+                });
+                setSelect.disabled = false;
+            }
+        }
+
+        function loadCards() {
+            const tcg = document.getElementById('tcgSelect').value;
+            const setId = document.getElementById('setSelect').value;
+
+            if (!tcg || !setId) return;
+
+            currentSet = SETS_DATABASE[tcg].find(s => s.id === setId);
+            if (!currentSet) return;
+
+            // Load saved progress
+            loadProgress();
+
+            document.getElementById('statsSection').style.display = 'block';
+            currentFilter = 'all';
+            document.getElementById('filter-all').classList.add('active');
+
+            updateStats();
+            renderCards();
+        }
+
+        function renderCards() {
+            const cardGrid = document.getElementById('cardGrid');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+            let filteredCards = currentSet.cards;
+
+            // Apply search filter
+            if (searchTerm) {
+                filteredCards = filteredCards.filter(card =>
+                    card.name.toLowerCase().includes(searchTerm) ||
+                    card.number.toString().includes(searchTerm)
+                );
+            }
+
+            // Apply ownership filter
+            if (currentFilter === 'missing') {
+                filteredCards = filteredCards.filter(card => !ownedCards.has(card.number));
+            } else if (currentFilter === 'owned') {
+                filteredCards = filteredCards.filter(card => ownedCards.has(card.number));
+            }
+
+            if (filteredCards.length === 0) {
+                cardGrid.innerHTML = '<div class="empty-state">No cards match your filter</div>';
+                document.getElementById('cardCount').textContent = '0 cards';
+                return;
+            }
+
+            cardGrid.innerHTML = filteredCards.map(card => {
+                const isOwned = ownedCards.has(card.number);
+                const priceClass = card.price > 50 ? 'price-high' : card.price > 10 ? 'price-mid' : 'price-low';
+
+                return `
+                    <div class="card-item ${isOwned ? 'owned' : ''}" data-number="${card.number}">
+                        <div class="card-info">
+                            <input type="checkbox"
+                                   class="card-checkbox"
+                                   ${isOwned ? 'checked' : ''}
+                                   onchange="toggleCard('${card.number}')">
+                            <span class="card-number">#${card.number}</span>
+                            <span class="card-name">${card.name}</span>
+                            <span class="card-rarity rarity-${card.rarity.toLowerCase().replace(' ', '-')}">${card.rarity}</span>
+                        </div>
+                        <div class="card-price ${priceClass}">$${card.price.toFixed(2)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cardCount').textContent = `${filteredCards.length} cards`;
+        }
+
+        function toggleCard(cardNumber) {
+            if (ownedCards.has(cardNumber)) {
+                ownedCards.delete(cardNumber);
+            } else {
+                ownedCards.add(cardNumber);
+            }
+            updateStats();
+            renderCards();
+        }
+
+        function updateStats() {
+            if (!currentSet) return;
+
+            const total = currentSet.cards.length;
+            const owned = ownedCards.size;
+            const missing = total - owned;
+            const completion = total > 0 ? ((owned / total) * 100).toFixed(1) : 0;
+
+            // Calculate missing value
+            const missingValue = currentSet.cards
+                .filter(card => !ownedCards.has(card.number))
+                .reduce((sum, card) => sum + card.price, 0);
+
+            document.getElementById('totalCards').textContent = total;
+            document.getElementById('ownedCards').textContent = owned;
+            document.getElementById('missingCards').textContent = missing;
+            document.getElementById('completionPercent').textContent = completion + '%';
+            document.getElementById('missingValue').textContent = '$' + missingValue.toFixed(2);
+
+            // Calculate completion strategy
+            calculateCompletionStrategy(missingValue, missing);
+        }
+
+        function calculateCompletionStrategy(singlesValue, missingCount) {
+            if (missingCount === 0) {
+                document.getElementById('recommendationBox').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('recommendationBox').style.display = 'block';
+
+            // Estimate pack cost (assumes $4 per pack, 10 cards per pack, various pull rates)
+            const avgPacksNeeded = estimatePacksNeeded(missingCount);
+            const packPrice = currentSet.packPrice || 4.0;
+            const packsValue = avgPacksNeeded * packPrice;
+
+            document.getElementById('singlesValue').textContent = '$' + singlesValue.toFixed(2);
+            document.getElementById('packsValue').textContent = '$' + packsValue.toFixed(2);
+
+            // Determine winner
+            const singlesCard = document.getElementById('singlesCard');
+            const packsCard = document.getElementById('packsCard');
+
+            singlesCard.classList.remove('winner');
+            packsCard.classList.remove('winner');
+
+            let recommendation = '';
+
+            if (singlesValue < packsValue) {
+                singlesCard.classList.add('winner');
+                const savings = ((1 - singlesValue / packsValue) * 100).toFixed(0);
+                recommendation = `<strong style="color: #00ff00;">✅ BUY SINGLES</strong><br><br>
+                    Purchasing singles is ${savings}% cheaper than opening packs.
+                    You'll save approximately $${(packsValue - singlesValue).toFixed(2)} by buying the exact cards you need.`;
+            } else {
+                packsCard.classList.add('winner');
+                const diff = ((packsValue / singlesValue - 1) * 100).toFixed(0);
+                recommendation = `<strong style="color: var(--apex-cyan);">📦 OPEN PACKS</strong><br><br>
+                    Opening packs may be more fun and only costs ${diff}% more.
+                    Plus, you might pull valuable cards to trade or sell!`;
+            }
+
+            document.getElementById('recommendationText').innerHTML = recommendation;
+        }
+
+        function estimatePacksNeeded(missingCount) {
+            if (!currentSet) return 0;
+
+            // Count missing by rarity
+            const missingByRarity = {};
+            currentSet.cards.filter(card => !ownedCards.has(card.number)).forEach(card => {
+                missingByRarity[card.rarity] = (missingByRarity[card.rarity] || 0) + 1;
+            });
+
+            // Estimate packs needed (conservative estimate)
+            const pullRates = {
+                'Common': 3,
+                'Uncommon': 2,
+                'Rare': 1,
+                'Holo Rare': 0.33,
+                'Ultra Rare': 0.12,
+                'Secret Rare': 0.04
+            };
+
+            let packsNeeded = 0;
+            Object.entries(missingByRarity).forEach(([rarity, count]) => {
+                const rate = pullRates[rarity] || 1;
+                packsNeeded += count / rate;
+            });
+
+            return Math.ceil(packsNeeded * 1.5); // Add 50% buffer for duplicates
+        }
+
+        function filterByRarity(filter) {
+            currentFilter = filter;
+
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('filter-' + filter).classList.add('active');
+
+            renderCards();
+        }
+
+        function filterCards() {
+            renderCards();
+        }
+
+        function markAllByRarity(rarity) {
+            if (!currentSet) return;
+
+            currentSet.cards
+                .filter(card => card.rarity.toLowerCase() === rarity)
+                .forEach(card => ownedCards.add(card.number));
+
+            updateStats();
+            renderCards();
+        }
+
+        function clearAll() {
+            if (confirm('Clear all owned cards? This cannot be undone.')) {
+                ownedCards.clear();
+                updateStats();
+                renderCards();
+            }
+        }
+
+        function saveProgress() {
+            if (!currentSet) return;
+
+            const saveKey = `set_progress_${currentSet.id}`;
+            localStorage.setItem(saveKey, JSON.stringify(Array.from(ownedCards)));
+
+            alert('✅ Progress saved! Your collection will be restored when you return.');
+        }
+
+        function loadProgress() {
+            if (!currentSet) return;
+
+            const saveKey = `set_progress_${currentSet.id}`;
+            const saved = localStorage.getItem(saveKey);
+
+            if (saved) {
+                ownedCards = new Set(JSON.parse(saved));
+            } else {
+                ownedCards = new Set();
+            }
+        }
+    </script>
+    <!-- Apex Enhancements -->
+    <script src="apex-enhancements.js"></script>
+
+</body>
+</html>

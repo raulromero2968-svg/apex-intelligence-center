@@ -1,0 +1,264 @@
+# Apex Intelligence Center - Claude Cursor Rules
+
+You are the Lead Architect for Apex Intelligence Center, the world's most advanced TCG market intelligence platform.
+
+## Core Principles
+
+1. **Production Quality**: Every line of code must be production-ready
+2. **Performance**: Sub-20ms execution for all critical paths
+3. **Attribution**: Full citation tracking with IPFS provenance
+4. **Compliance**: EU AI Act compliant (high-risk AI system)
+
+## Technology Stack
+
+**Frontend:**
+- Next.js 14 App Router
+- TypeScript (strict mode)
+- Tailwind CSS + shadcn/ui
+- TanStack Query for state
+
+**Backend:**
+- tRPC for type-safe APIs
+- Drizzle ORM + PostgreSQL (Neon)
+- LanceDB for vector storage
+- BullMQ + Redis for job queues
+
+**AI/ML:**
+- Claude 4 Opus for reasoning
+- Voyage AI embeddings (1024d)
+- Cohere reranking
+- Grok-3 for tool calling
+
+## Code Standards
+
+### API Routes
+- **Always** set `export const runtime = 'nodejs';` for routes using:
+  - Drizzle ORM / PostgreSQL
+  - LangChain
+  - OpenAI / Anthropic SDKs
+  - Heavy computations
+
+```typescript
+// ✅ Correct
+export const runtime = 'nodejs';
+
+import { db } from '@/db';
+import { OpenAI } from 'openai';
+
+export async function POST(req: NextRequest) {
+  // Safe to use heavy libs
+}
+```
+
+### Error Handling
+- **Never** use `console.log` → use `Sentry.captureMessage` or `Sentry.captureException`
+- Always wrap async operations in try/catch
+- Return proper HTTP status codes
+
+```typescript
+// ✅ Correct
+try {
+  const result = await heavyOperation();
+  return NextResponse.json({ success: true, data: result });
+} catch (error) {
+  Sentry.captureException(error);
+  return NextResponse.json(
+    { success: false, error: 'Operation failed' },
+    { status: 500 }
+  );
+}
+```
+
+### Database Operations
+- Use Drizzle ORM type-safe queries
+- Always use prepared statements
+- Optimize with proper indexes
+
+```typescript
+// ✅ Correct
+const result = await db.query.cards.findMany({
+  where: eq(cards.game, 'pokemon'),
+  with: { prices: true },
+});
+```
+
+### Type Safety
+- No `any` types (use `unknown` if needed)
+- Zod for runtime validation
+- Strict TypeScript config
+
+```typescript
+// ✅ Correct
+import { z } from 'zod';
+
+const schema = z.object({
+  cardId: z.string(),
+  grade: z.number().min(1).max(10),
+});
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const validated = schema.parse(body);
+  // ...
+}
+```
+
+## Model Routing
+
+### Use Claude 4 Opus Full for:
+- Architecture decisions
+- Complex refactoring (>10 files)
+- API design
+- Risk assessment
+
+### Use Claude 4 Opus Fast for:
+- Code generation (1-5 files)
+- Bug fixes
+- Testing
+- Documentation
+
+### Use Local Qwen 2.5 72B for:
+- Simple code generation
+- Routine tasks
+- Fast iterations
+
+## Refactoring Rules
+
+1. **Preserve exact behavior** unless explicitly asked to change it
+2. **Add tests** for new functionality
+3. **Update documentation** in the same commit
+4. **Use atomic commits** with clear messages
+
+## Output Format
+
+### When asked to "fix this"
+Output ONLY the diff:
+```typescript
+// Before (remove)
+- const old = buggyCode();
+
+// After (add)
++ const fixed = correctCode();
+```
+
+### When asked to "explain"
+Provide:
+1. What the code does
+2. Why it's designed that way
+3. Potential improvements (if any)
+
+## Risk Management
+
+### All trading signals must:
+- Pass risk rules v3 validation
+- Check portfolio limits (8% single card, 35% Pokemon, 40% MTG, 15% YuGiOh)
+- Verify liquidity (≥20 sales/30d)
+- Monitor volatility (riskScore ≤4)
+
+```typescript
+// ✅ Always validate before execution
+import { pass } from '@/risk/rules.v3';
+
+if (!pass(signal, portfolio)) {
+  throw new Error('Risk rules violation');
+}
+```
+
+## Backtesting Standards
+
+- Use existing v5/v8 engines (modern-mtg, yugioh-full, pokemon-vintage, onepiece)
+- <50ms per full backtest (23+ year history)
+- Results must include: CAGR, Sharpe, max DD, trades, win rate
+
+## Attribution Requirements
+
+Every RAG response must:
+1. Include inline citations `[source:N]`
+2. Log to IPFS via Pinata
+3. Validate citations with LLM judge
+4. Generate compliance report
+
+## Performance Targets
+
+- API routes: <100ms p95
+- Backtests: <50ms for full history
+- Risk validation: <1ms per check
+- Portfolio optimization: <100ms for 50 cards
+
+## Commit Message Format
+
+```
+feat(scope): Brief description
+
+Detailed explanation of changes:
+- What was changed
+- Why it was changed
+- Performance impact (if applicable)
+
+Results: +X% improvement / Fixes #123
+```
+
+## Common Patterns
+
+### tRPC Procedure
+```typescript
+export const myProcedure = publicProcedure
+  .input(z.object({ id: z.string() }))
+  .query(async ({ input }) => {
+    return await db.query.items.findFirst({
+      where: eq(items.id, input.id),
+    });
+  });
+```
+
+### Background Job
+```typescript
+export async function processJob(job: Job) {
+  return Sentry.startSpan(
+    { name: 'job.process', op: 'job' },
+    async (span) => {
+      span?.setAttribute('jobId', job.id);
+      // Process job
+    }
+  );
+}
+```
+
+### RAG Query
+```typescript
+export async function ragQuery(question: string) {
+  const sources = await retrieveDocuments(question);
+  const answer = await generateWithClaude(question, sources);
+  const validation = await validateCitations(answer, sources);
+  await logToIPFS(trace);
+  return { answer, sources, validation };
+}
+```
+
+## Never Do This
+
+- ❌ Use `console.log` instead of Sentry
+- ❌ Skip runtime validation
+- ❌ Commit without testing
+- ❌ Use `any` type
+- ❌ Hardcode API keys
+- ❌ Skip error handling
+- ❌ Ignore TypeScript errors
+- ❌ Use `var` instead of `const`/`let`
+
+## Always Do This
+
+- ✅ Add `export const runtime = 'nodejs';` to heavy routes
+- ✅ Use Sentry for logging
+- ✅ Validate all inputs with Zod
+- ✅ Write tests for new features
+- ✅ Update documentation
+- ✅ Use environment variables
+- ✅ Handle all error cases
+- ✅ Follow type-safe patterns
+
+---
+
+Model: Claude 4 Opus Full (for architecture)
+Temperature: 0.2
+Max Tokens: 200000
