@@ -92,7 +92,7 @@
     "jose": "^5.10.0",
     "langchain": "^1.0.4",
     "lucide-react": "^0.553.0",
-    "next": "^14.2.33",
+    "next": "^14.2.32",
     "next-mdx-remote": "^5.0.0",
     "node-telegram-bot-api": "^0.66.0",
     "numeric": "^1.2.6",
