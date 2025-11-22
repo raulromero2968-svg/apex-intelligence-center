@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capital Gains Tax Estimator - Apex Intelligence</title>
+    <link rel="icon" type="image/png" href="apex-intelligence-wolf-logo-transparent.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apex-cyan: #00D9FF;
+            --apex-purple: #9333EA;
+            --bg-dark: #0a0e1a;
+            --bg-card: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --gain-green: #22c55e;
+            --warning-yellow: #fbbf24;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--apex-cyan);
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--apex-cyan), var(--apex-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .disclaimer {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--warning-yellow);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .disclaimer-title {
+            color: var(--warning-yellow);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--apex-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--apex-cyan);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--apex-cyan);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: white;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--apex-cyan);
+            color: var(--apex-cyan);
+        }
+
+        .results-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--apex-cyan);
+        }
+
+        .result-value.highlight {
+            color: var(--gain-green);
+            font-size: 2.5rem;
+        }
+
+        .result-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .comparison-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid var(--apex-purple);
+            border-radius: 8px;
+        }
+
+        .comparison-title {
+            color: var(--apex-purple);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .comparison-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+
+        .comparison-card.recommended {
+            border-color: var(--gain-green);
+        }
+
+        .comparison-card-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .comparison-card.recommended .comparison-card-title {
+            color: var(--gain-green);
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-item:last-child {
+            border-bottom: none;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .recommendation-badge {
+            display: inline-block;
+            background: var(--gain-green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .hold-until-banner {
+            background: linear-gradient(135deg, var(--apex-purple), var(--apex-cyan));
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .hold-until-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hold-until-date {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .hold-until-savings {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .batch-section {
+            margin-top: 2rem;
+        }
+
+        .cards-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .cards-table th {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            color: var(--apex-cyan);
+            font-weight: 600;
+            border-bottom: 2px solid var(--apex-cyan);
+        }
+
+        .cards-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .educational-section {
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid var(--apex-purple);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .educational-title {
+            color: var(--apex-purple);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">
+                <img src="apex-intelligence-wolf-logo-transparent.png" alt="Apex Intelligence">
+                <span class="logo-text">APEX INTELLIGENCE</span>
+            </a>
+            <div class="nav-links">
+                <a href="tools.html">Tools</a>
+                <a href="insights.html">Insights</a>
+                <a href="subscribe.html">Subscribe</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="header">
+            <div class="pro-badge">PRO TIER EXCLUSIVE</div>
+            <h1>Capital Gains Tax Estimator</h1>
+            <p class="subtitle">Calculate your tax liability before selling</p>
+        </div>
+
+        <div class="disclaimer">
+            <div class="disclaimer-title">⚠️ Tax Disclaimer</div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                This tool provides estimates only. Consult a tax professional before making financial decisions.
+            </div>
+        </div>
+
+        <!-- Single Card Calculator -->
+        <div class="section">
+            <h2 class="section-title">Calculate Capital Gains Tax</h2>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="cardName">Card Name (optional)</label>
+                    <input type="text" id="cardName" placeholder="Charizard, Black Lotus, etc.">
+                </div>
+                <div class="input-group">
+                    <label for="purchasePrice">Purchase Price ($)</label>
+                    <input type="number" id="purchasePrice" placeholder="1000" min="0" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label for="salePrice">Expected Sale Price ($)</label>
+                    <input type="number" id="salePrice" placeholder="1500" min="0" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label for="purchaseDate">Purchase Date</label>
+                    <input type="date" id="purchaseDate" required>
+                </div>
+                <div class="input-group">
+                    <label for="taxBracket">Your Tax Bracket</label>
+                    <select id="taxBracket">
+                        <option value="0.10">10%</option>
+                        <option value="0.12">12%</option>
+                        <option value="0.22" selected>22%</option>
+                        <option value="0.24">24%</option>
+                        <option value="0.32">32%</option>
+                        <option value="0.35">35%</option>
+                        <option value="0.37">37%</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="stateTax">State Tax Rate (%)</label>
+                    <input type="number" id="stateTax" placeholder="5.0" min="0" max="15" step="0.1" value="0">
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <button class="btn btn-primary" onclick="calculateTax()">Calculate Tax</button>
+            </div>
+
+            <!-- Results -->
+            <div id="results" style="display:none;">
+                <div class="results-section">
+                    <h3 class="section-title">Tax Calculation Results</h3>
+
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-label">Gross Profit</div>
+                            <div class="result-value" id="grossProfit">$0</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Tax Type</div>
+                            <div class="result-value" id="taxType" style="font-size: 1.3rem;">-</div>
+                            <div class="result-detail" id="taxTypeDetail"></div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Tax Rate</div>
+                            <div class="result-value" id="taxRate">0%</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Tax Owed</div>
+                            <div class="result-value" id="taxOwed">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="results-grid" style="margin-top: 1rem;">
+                        <div class="result-card" style="grid-column: 1 / -1;">
+                            <div class="result-label">Net Profit (After Taxes)</div>
+                            <div class="result-value highlight" id="netProfit">$0</div>
+                            <div class="result-detail">This is what you actually keep</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hold vs Sell Comparison -->
+                <div id="comparisonSection" style="display:none;">
+                    <div class="comparison-section">
+                        <div class="comparison-title">💡 Should You Wait? Short-term vs Long-term</div>
+                        <div class="comparison-grid">
+                            <div class="comparison-card" id="sellNowCard">
+                                <div class="comparison-card-title">Sell Now (Short-term)</div>
+                                <div class="comparison-item">
+                                    <span>Holding Period:</span>
+                                    <strong id="shortTermDays">-</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Tax Rate:</span>
+                                    <strong id="shortTermRate">-</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Tax Owed:</span>
+                                    <strong id="shortTermTax">-</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Net Profit:</span>
+                                    <strong id="shortTermNet">-</strong>
+                                </div>
+                            </div>
+                            <div class="comparison-card" id="waitCard">
+                                <div class="comparison-card-title">
+                                    Wait for Long-term
+                                    <span class="recommendation-badge" id="recommendedBadge">SAVES $XXX</span>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Holding Period:</span>
+                                    <strong>366+ days</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Tax Rate:</span>
+                                    <strong id="longTermRate">15%</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Tax Owed:</span>
+                                    <strong id="longTermTax">-</strong>
+                                </div>
+                                <div class="comparison-item">
+                                    <span>Net Profit:</span>
+                                    <strong id="longTermNet">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hold-until-banner" id="holdUntilBanner" style="display:none;">
+                        <div class="hold-until-title">⏰ Hold Until Long-term</div>
+                        <div class="hold-until-date" id="holdUntilDate">-</div>
+                        <div class="hold-until-savings" id="holdUntilSavings">Save $XXX in taxes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Calculator -->
+        <div class="section">
+            <h2 class="section-title">Batch Calculator</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Planning to sell multiple cards? Add them here to calculate total tax liability.
+            </p>
+
+            <div id="batchCards">
+                <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    Use the calculator above to add cards to your batch calculation
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="addToBatch()" id="addToBatchBtn" disabled>Add Current Card to Batch</button>
+                <button class="btn btn-secondary" onclick="clearBatch()" id="clearBatchBtn" disabled>Clear Batch</button>
+            </div>
+
+            <div id="batchResults" style="display:none;">
+                <div class="results-section">
+                    <h3 class="section-title">Batch Summary</h3>
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-label">Total Cards</div>
+                            <div class="result-value" id="batchCount">0</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Total Gross Profit</div>
+                            <div class="result-value" id="batchGrossProfit">$0</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Total Tax Owed</div>
+                            <div class="result-value" id="batchTaxOwed">$0</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Total Net Profit</div>
+                            <div class="result-value highlight" id="batchNetProfit">$0</div>
+                        </div>
+                    </div>
+
+                    <table class="cards-table">
+                        <thead>
+                            <tr>
+                                <th>Card</th>
+                                <th>Profit</th>
+                                <th>Tax Type</th>
+                                <th>Tax Owed</th>
+                                <th>Net Profit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batchTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Content -->
+        <div class="educational-section">
+            <h2 class="educational-title">📚 Understanding Capital Gains Tax</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p style="margin-bottom: 1rem;">
+                    When you sell a trading card for more than you paid, the profit is a <strong>capital gain</strong> and is taxable.
+                    The tax rate depends on how long you held the card.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Short-term vs Long-term:</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>Short-term (held ≤ 1 year):</strong> Taxed as ordinary income at your tax bracket rate (10%-37%)</li>
+                    <li><strong>Long-term (held > 1 year):</strong> Taxed at preferential capital gains rates (0%, 15%, or 20%)</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Long-term Capital Gains Rates (2024-2025):</h3>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>0%:</strong> Income up to $44,625 (single) or $89,250 (married)</li>
+                    <li><strong>15%:</strong> Income $44,626 - $492,300 (single) or $89,251 - $553,850 (married)</li>
+                    <li><strong>20%:</strong> Income over $492,300 (single) or $553,850 (married)</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">The Power of Patience:</h3>
+                <p style="margin-bottom: 1rem;">
+                    Waiting just one day past the 1-year mark can save you thousands. If you're in the 24% tax bracket and sell a card
+                    with a $10,000 gain:
+                </p>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>Short-term:</strong> $2,400 in taxes (24%)</li>
+                    <li><strong>Long-term:</strong> $1,500 in taxes (15%)</li>
+                    <li><strong>Savings:</strong> $900 by waiting 366+ days!</li>
+                </ul>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">State Taxes:</h3>
+                <p style="margin-bottom: 1rem;">
+                    Most states also tax capital gains. Rates vary from 0% (no state income tax states like Florida, Texas, Nevada)
+                    to 13.3% (California). Always factor in your state tax rate for accurate calculations.
+                </p>
+
+                <h3 style="color: var(--apex-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem;">Pro Tips:</h3>
+                <ul style="margin-left: 1.5rem;">
+                    <li>Track purchase dates meticulously - they determine short vs long-term treatment</li>
+                    <li>If selling at year-end, consider timing to optimize your tax year</li>
+                    <li>Large gains? Consider selling over multiple years to avoid bracket creep</li>
+                    <li>Offset gains with losses using tax loss harvesting</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let batchCards = [];
+        let currentCalculation = null;
+
+        // Calculate tax
+        function calculateTax() {
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const salePrice = parseFloat(document.getElementById('salePrice').value);
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const taxBracket = parseFloat(document.getElementById('taxBracket').value);
+            const stateTax = parseFloat(document.getElementById('stateTax').value) / 100;
+
+            if (isNaN(purchasePrice) || isNaN(salePrice) || !purchaseDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Calculate holding period
+            const purchase = new Date(purchaseDate);
+            const today = new Date();
+            const daysHeld = Math.floor((today - purchase) / (1000 * 60 * 60 * 24));
+            const isLongTerm = daysHeld > 365;
+
+            // Calculate gains
+            const grossProfit = salePrice - purchasePrice;
+
+            if (grossProfit <= 0) {
+                alert('No capital gains tax on losses. Use the Tax Loss Harvesting Calculator instead.');
+                return;
+            }
+
+            // Determine tax rate
+            let federalRate;
+            if (isLongTerm) {
+                // Most people fall into 15% long-term capital gains bracket
+                federalRate = 0.15;
+            } else {
+                federalRate = taxBracket;
+            }
+
+            const totalRate = federalRate + stateTax;
+            const taxOwed = grossProfit * totalRate;
+            const netProfit = grossProfit - taxOwed;
+
+            // Store calculation
+            currentCalculation = {
+                cardName: document.getElementById('cardName').value || 'Unnamed Card',
+                purchasePrice,
+                salePrice,
+                purchaseDate,
+                daysHeld,
+                isLongTerm,
+                grossProfit,
+                federalRate,
+                stateTax,
+                totalRate,
+                taxOwed,
+                netProfit
+            };
+
+            // Display results
+            document.getElementById('grossProfit').textContent = '$' + grossProfit.toFixed(2);
+            document.getElementById('taxType').textContent = isLongTerm ? 'Long-term' : 'Short-term';
+            document.getElementById('taxTypeDetail').textContent = `Held for ${daysHeld} days`;
+            document.getElementById('taxRate').textContent = (totalRate * 100).toFixed(1) + '%';
+            document.getElementById('taxOwed').textContent = '$' + taxOwed.toFixed(2);
+            document.getElementById('netProfit').textContent = '$' + netProfit.toFixed(2);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('addToBatchBtn').disabled = false;
+
+            // Show comparison if short-term
+            if (!isLongTerm) {
+                showComparison(currentCalculation);
+            } else {
+                document.getElementById('comparisonSection').style.display = 'none';
+            }
+        }
+
+        // Show short-term vs long-term comparison
+        function showComparison(calc) {
+            const longTermRate = 0.15 + calc.stateTax;
+            const longTermTax = calc.grossProfit * longTermRate;
+            const longTermNet = calc.grossProfit - longTermTax;
+            const savings = calc.taxOwed - longTermTax;
+
+            // Calculate hold until date
+            const purchaseDate = new Date(calc.purchaseDate);
+            const holdUntilDate = new Date(purchaseDate);
+            holdUntilDate.setDate(holdUntilDate.getDate() + 366);
+
+            // Populate comparison
+            document.getElementById('shortTermDays').textContent = calc.daysHeld + ' days';
+            document.getElementById('shortTermRate').textContent = (calc.totalRate * 100).toFixed(1) + '%';
+            document.getElementById('shortTermTax').textContent = '$' + calc.taxOwed.toFixed(2);
+            document.getElementById('shortTermNet').textContent = '$' + calc.netProfit.toFixed(2);
+
+            document.getElementById('longTermRate').textContent = (longTermRate * 100).toFixed(1) + '%';
+            document.getElementById('longTermTax').textContent = '$' + longTermTax.toFixed(2);
+            document.getElementById('longTermNet').textContent = '$' + longTermNet.toFixed(2);
+
+            if (savings > 0) {
+                document.getElementById('waitCard').classList.add('recommended');
+                document.getElementById('recommendedBadge').textContent = 'SAVES $' + savings.toFixed(0);
+                document.getElementById('recommendedBadge').style.display = 'inline-block';
+
+                // Show hold until banner
+                document.getElementById('holdUntilDate').textContent = holdUntilDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('holdUntilSavings').textContent = `Save $${savings.toFixed(2)} in taxes by waiting`;
+                document.getElementById('holdUntilBanner').style.display = 'block';
+            } else {
+                document.getElementById('waitCard').classList.remove('recommended');
+                document.getElementById('recommendedBadge').style.display = 'none';
+                document.getElementById('holdUntilBanner').style.display = 'none';
+            }
+
+            document.getElementById('comparisonSection').style.display = 'block';
+        }
+
+        // Add to batch
+        function addToBatch() {
+            if (!currentCalculation) return;
+
+            batchCards.push({...currentCalculation});
+            updateBatch();
+        }
+
+        // Remove from batch
+        function removeFromBatch(index) {
+            batchCards.splice(index, 1);
+            updateBatch();
+        }
+
+        // Clear batch
+        function clearBatch() {
+            if (confirm('Clear all cards from batch?')) {
+                batchCards = [];
+                updateBatch();
+            }
+        }
+
+        // Update batch display
+        function updateBatch() {
+            if (batchCards.length === 0) {
+                document.getElementById('batchResults').style.display = 'none';
+                document.getElementById('clearBatchBtn').disabled = true;
+                return;
+            }
+
+            document.getElementById('batchResults').style.display = 'block';
+            document.getElementById('clearBatchBtn').disabled = false;
+
+            const totalGrossProfit = batchCards.reduce((sum, card) => sum + card.grossProfit, 0);
+            const totalTaxOwed = batchCards.reduce((sum, card) => sum + card.taxOwed, 0);
+            const totalNetProfit = batchCards.reduce((sum, card) => sum + card.netProfit, 0);
+
+            document.getElementById('batchCount').textContent = batchCards.length;
+            document.getElementById('batchGrossProfit').textContent = '$' + totalGrossProfit.toFixed(2);
+            document.getElementById('batchTaxOwed').textContent = '$' + totalTaxOwed.toFixed(2);
+            document.getElementById('batchNetProfit').textContent = '$' + totalNetProfit.toFixed(2);
+
+            // Update table
+            const tbody = document.getElementById('batchTableBody');
+            tbody.innerHTML = '';
+
+            batchCards.forEach((card, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.cardName}</td>
+                    <td>$${card.grossProfit.toFixed(2)}</td>
+                    <td>${card.isLongTerm ? 'Long-term' : 'Short-term'}</td>
+                    <td>$${card.taxOwed.toFixed(2)}</td>
+                    <td><strong>$${card.netProfit.toFixed(2)}</strong></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeFromBatch(${index})">Remove</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Enter key handlers
+        document.getElementById('salePrice').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateTax();
+        });
+    </script>
+</body>
+</html>

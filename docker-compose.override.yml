@@ -1,0 +1,136 @@
+#
+# Docker Compose Override for Local Development
+#
+# This file provides local Redis for development without needing Upstash.
+# Automatically merged with docker-compose.yml when running docker-compose.
+#
+# Usage:
+#   docker-compose up -d          # Start Redis in background
+#   docker-compose logs -f redis  # View Redis logs
+#   docker-compose down           # Stop and remove containers
+#
+# Environment Setup:
+#   Create .env.local with:
+#   REDIS_URL=redis://localhost:6379
+#
+
+version: '3.8'
+
+services:
+  #
+  # Redis 7.x with persistence and pub/sub support
+  # Compatible with both BullMQ and real-time streaming
+  #
+  redis:
+    image: redis:7.4-alpine
+    container_name: apex-redis-dev
+    restart: unless-stopped
+
+    # Ports
+    ports:
+      - '6379:6379'
+
+    # Configuration
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --loglevel notice
+
+    # Persistence
+    volumes:
+      - redis-data:/data
+      - redis-config:/usr/local/etc/redis
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # Health check
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    # Network
+    networks:
+      - apex-network
+
+  #
+  # BullBoard - Queue Monitoring UI
+  # Access at http://localhost:3001
+  #
+  bullboard:
+    image: deadly0/bull-board:latest
+    container_name: apex-bullboard
+    restart: unless-stopped
+
+    # Ports
+    ports:
+      - '3001:3000'
+
+    # Environment
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_USE_TLS: 'false'
+      BULL_PREFIX: bull
+
+    # Dependencies
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    # Network
+    networks:
+      - apex-network
+
+  #
+  # Redis Commander - Redis GUI
+  # Access at http://localhost:8081
+  #
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: apex-redis-commander
+    restart: unless-stopped
+
+    # Ports
+    ports:
+      - '8081:8081'
+
+    # Environment
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=apex2025
+
+    # Dependencies
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    # Network
+    networks:
+      - apex-network
+
+volumes:
+  redis-data:
+    driver: local
+  redis-config:
+    driver: local
+
+networks:
+  apex-network:
+    driver: bridge

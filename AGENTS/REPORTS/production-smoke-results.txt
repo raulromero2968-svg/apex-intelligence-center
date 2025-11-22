@@ -1,0 +1,177 @@
+PRODUCTION SMOKE TEST RESULTS
+=============================
+Date: January 2025
+URL: https://apexintelligence.io
+Test Performed By: Cursor Agent 4
+
+EXECUTIVE SUMMARY
+-----------------
+✅ Homepage loads successfully with all critical UI elements visible
+✅ Performance target met: First Contentful Paint (188ms) well under 2 seconds
+✅ Navigation functional across tested pages
+⚠️  Console errors detected (React hydration issues)
+⚠️  404 errors for some blog/research content
+⚠️  RAG search functionality requires further investigation
+
+HOMEPAGE LOAD VERIFICATION
+---------------------------
+Status: ✅ PASS
+- Page URL: https://www.apexintelligence.io/
+- Page Title: "TCG Intelligence Center - Market Intelligence Platform"
+- Critical UI Elements Verified:
+  * Hero section visible: "Underground Intel For Serious Collectors"
+  * Navigation menu present and functional
+  * Primary CTA visible: "Ask Research" button
+  * Search input field present
+  * Latest Intelligence section displayed
+  * Free Collector Tools section visible
+  * Footer content loaded
+
+PERFORMANCE METRICS
+-------------------
+Status: ✅ PASS (All metrics under target)
+- First Contentful Paint (FCP): 188ms (Target: <2000ms) ✅
+- Load Time: 110.7ms ✅
+- DOM Content Loaded: 70.3ms ✅
+- Time to Interactive: 70.3ms ✅
+- Total Resources Loaded: 60
+
+Performance Assessment: EXCELLENT
+All performance metrics significantly exceed the <2 second target.
+
+JAVASCRIPT CONSOLE ERRORS
+--------------------------
+Status: ⚠️  WARNINGS DETECTED
+
+Errors Found:
+1. React Error #425 (Multiple occurrences)
+   - Minified React hydration error
+   - Location: fd9d1056-17ce1eb79d6b0ab3.js
+   - Impact: Non-critical, page still functional
+
+2. React Error #418
+   - Minified React error
+   - Impact: Non-critical
+
+3. React Error #423
+   - Minified React error
+   - Impact: Non-critical
+
+4. 404 Errors (Resource failures):
+   - /blog/grading-timing-strategy?_rsc=19zvn:0
+   - /blog/pokemon-market-shift-2025?_rsc=19zvn:0
+   - /blog/sealed-vs-singles-2025?_rsc=19zvn:0
+   - /blog/avoiding-fake-cards?_rsc=19zvn:0
+   - /blog/one-piece-phenomenon?_rsc=19zvn:0
+   - /research/psa-vs-bgs-2025-roi?_rsc=19jlf:0
+   - /research/cross-border-arbitrage?_rsc=19jlf:0
+   - /research/sealed-10year-backtest?_rsc=19jlf:0
+   - /research/condition-pricing-model?_rsc=19jlf:0
+   - /apex-omnis-studios?_rsc=12v1r:0
+   - /privacy?_rsc=12v1r:0
+   - /terms?_rsc=12v1r:0
+   - /disclaimer?_rsc=12v1r:0
+   - /security?_rsc=12v1r:0
+
+Note: No 5xx server errors detected. All errors are client-side React hydration issues or missing content pages.
+
+RAG SEARCH FUNCTIONALITY TEST
+------------------------------
+Status: ⚠️  INCOMPLETE - REQUIRES FURTHER INVESTIGATION
+
+Test Query: "Pokemon vintage set risk profile"
+- Search input field located and accessible
+- Query entered successfully
+- Search submitted (Enter key pressed)
+- Notification displayed: "Searching for: Pokemon vintage set risk profile"
+- Results notification: "Results will appear below"
+
+Observations:
+- No API calls to /api/search or /api/rag endpoints detected
+- No search results rendered on page after submission
+- Search may require:
+  * Authentication/login
+  * Different access method (Ctrl+K shortcut or "Ask Research" button)
+  * Backend service not fully configured
+
+Recommendation: Investigate RAG search implementation and access method.
+
+NAVIGATION TEST
+---------------
+Status: ✅ PASS
+
+Pages Tested:
+1. Homepage (/)
+   - Load: ✅ Success
+   - Routing: ✅ Fast and error-free
+
+2. About Page (/about)
+   - Load: ✅ Success
+   - Content: ✅ "Underground About" heading visible
+   - Routing: ✅ Fast and error-free
+   - No 404 errors
+
+3. Tools Page (/tools)
+   - Load: ✅ Success
+   - Content: ✅ "Intelligence Tools" heading visible
+   - All tool cards displayed correctly
+   - Routing: ✅ Fast and error-free
+
+4. Research Page (/research)
+   - Load: ✅ Success
+   - Content: ✅ Research articles displayed
+   - Interactive chart component visible
+   - Routing: ✅ Fast and error-free
+
+Navigation Assessment: All tested routes function correctly with fast client-side routing.
+
+SCREENSHOTS CAPTURED
+--------------------
+1. homepage-initial-load.png - Homepage with all critical UI elements
+2. research-page.png - Research page showing content and interactive elements
+
+Note: Screenshots saved to browser extension temp directory.
+
+OVERALL ASSESSMENT
+------------------
+Production Status: ✅ OPERATIONAL with WARNINGS
+
+Strengths:
+- Excellent performance (well under 2s target)
+- All critical UI elements render correctly
+- Navigation works flawlessly
+- No server-side errors (5xx)
+- Fast page loads and routing
+
+Issues Requiring Attention:
+1. React hydration errors (non-critical but should be addressed)
+2. Missing content pages (404s for some blog/research articles)
+3. RAG search functionality needs verification/configuration
+
+RECOMMENDATIONS
+---------------
+1. HIGH PRIORITY: Investigate and fix React hydration errors (#425, #418, #423)
+   - These may cause issues in certain browser environments
+   - Consider enabling non-minified React in development to get full error messages
+
+2. MEDIUM PRIORITY: Fix missing content pages
+   - Verify blog post routes: pokemon-market-shift-2025, one-piece-phenomenon, etc.
+   - Verify research article routes: psa-vs-bgs-2025-roi, cross-border-arbitrage, etc.
+   - Verify legal pages: privacy, terms, disclaimer, security
+
+3. MEDIUM PRIORITY: Verify RAG search functionality
+   - Test with authenticated user if required
+   - Verify backend API endpoints are configured
+   - Test alternative access methods (Ctrl+K, "Ask Research" button)
+
+4. LOW PRIORITY: Performance optimization
+   - Current performance is excellent, but consider:
+     * Code splitting for further optimization
+     * Image optimization if not already implemented
+
+CONCLUSION
+----------
+The production site is LIVE and FUNCTIONAL. Core functionality works correctly, and performance exceeds targets. However, console errors and missing content pages should be addressed to ensure optimal user experience. The RAG search feature requires further investigation to confirm full functionality.
+
+Test completed successfully with actionable findings documented.
+

@@ -1,0 +1,377 @@
+# 3-Second Fix Cheat Sheet
+
+Ultra-concise solutions to common issues. Maximum 3 seconds to execute.
+
+## Deployment Issues
+
+### 1. Lockfile Drift Error
+```bash
+ERR_PNPM_OUTDATED_LOCKFILE
+```
+**Fix:**
+```bash
+pnpm i && git add pnpm-lock.yaml && git commit -m "chore: update lockfile" && git push -f
+```
+**Time:** 3s
+
+---
+
+### 2. Node.js in Edge Functions
+```
+Error: Can't use Node.js APIs in Edge Runtime
+```
+**Fix:**
+```bash
+# Remove the offending file or wrap in runtime check
+git rm src/lib/mdx.ts && git push -f
+```
+**Time:** 2s
+
+---
+
+### 3. Build Cache Stuck
+```
+Build succeeds locally but fails in Vercel
+```
+**Fix:**
+1. Vercel Dashboard → Deployments
+2. Click "Redeploy" → Check "Clear Cache"
+3. Deploy
+
+**Time:** 3s
+
+---
+
+### 4. Sentry Noise (ResizeObserver errors)
+```
+Sentry flooded with ResizeObserver loop errors
+```
+**Fix:**
+```ts
+// sentry.config.ts
+beforeSend(event) {
+  if (event.exception?.values?.[0]?.value?.includes('ResizeObserver')) return null;
+  return event;
+}
+```
+Then deploy. **Time:** 3s
+
+---
+
+### 5. Turbo Cache Miss
+```
+Turborepo not using cache / cache hit rate = 0%
+```
+**Fix:**
+```bash
+rm -rf .turbo node_modules/.cache/turbo && git push
+```
+**Time:** 2s
+
+---
+
+## Database Issues
+
+### 6. Migration Not Applied
+```
+Column "subscription_tier" does not exist
+```
+**Fix:**
+```bash
+pnpm db:migrate && git push
+```
+**Time:** 2s
+
+---
+
+### 7. Drizzle Type Errors
+```
+Type error: Property 'watchlistItems' does not exist
+```
+**Fix:**
+```bash
+pnpm drizzle-kit generate && pnpm db:migrate
+```
+**Time:** 3s
+
+---
+
+## Mobile Issues
+
+### 8. Expo Build Fails
+```
+Build failed: Metro bundler error
+```
+**Fix:**
+```bash
+cd apps/mobile && rm -rf node_modules .expo && pnpm i && expo start -c
+```
+**Time:** 3s
+
+---
+
+### 9. SQLite Database Locked
+```
+Error: database is locked
+```
+**Fix:**
+```ts
+// Close all connections first
+import { db } from './lib/db';
+await db.$client.close();
+```
+**Time:** 2s
+
+---
+
+### 10. Biometric Auth Not Working (iOS Simulator)
+```
+Face ID not available in simulator
+```
+**Fix:**
+1. Simulator → Features → Face ID → Enrolled
+2. Restart app
+
+**Time:** 3s
+
+---
+
+### 11. EAS Build Credentials Error
+```
+Error: No credentials configured for this project
+```
+**Fix:**
+```bash
+cd apps/mobile && eas credentials
+```
+**Time:** 2s
+
+---
+
+### 12. EAS Build Failed - Cache Issues
+```
+Build failed: Unable to resolve dependencies
+```
+**Fix:**
+```bash
+eas build --profile preview --clear-cache
+```
+**Time:** 2s
+
+---
+
+### 13. Biometric Enrollment Not Showing
+```
+First-launch enrollment prompt doesn't appear
+```
+**Fix:**
+```bash
+# Delete app, clear secure storage, reinstall
+# iOS: Long press app → Delete → Reinstall
+# Android: Settings → Apps → Apex → Storage → Clear Data
+```
+**Time:** 3s
+
+---
+
+### 14. Environment Variables Not Loading
+```
+process.env.EXPO_PUBLIC_API_URL is undefined
+```
+**Fix:**
+```bash
+# Check eas.json env section, rebuild with correct profile
+eas build --profile production
+```
+**Time:** 2s
+
+---
+
+## API Issues
+
+### 15. Stripe Webhook 403
+```
+Stripe webhook verification failed
+```
+**Fix:**
+```bash
+# Update webhook secret in Vercel
+vercel env add STRIPE_WEBHOOK_SECRET
+# Get from: https://dashboard.stripe.com/webhooks
+```
+**Time:** 3s
+
+---
+
+### 16. Rate Limit Not Working
+```
+Redis rate limiting always returns success
+```
+**Fix:**
+```bash
+# Check Redis connection
+vercel env pull && grep UPSTASH .env.local
+```
+**Time:** 2s
+
+---
+
+### 17. CORS Error on API Route
+```
+Access-Control-Allow-Origin missing
+```
+**Fix:**
+```ts
+// Add to route.ts
+export async function OPTIONS() {
+  return new Response(null, {
+    headers: { 'Access-Control-Allow-Origin': '*' }
+  });
+}
+```
+**Time:** 3s
+
+---
+
+## Performance Issues
+
+### 18. Sentry 100% Trace Sample Rate in Prod
+```
+Sentry bill = $$$, performance degraded
+```
+**Fix:**
+```ts
+// sentry.config.ts
+tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0
+```
+**Time:** 2s
+
+---
+
+### 19. Bundle Size Explosion
+```
+Initial JS size > 500KB
+```
+**Fix:**
+```bash
+npx @next/bundle-analyzer && remove unused deps
+```
+**Time:** 3s
+
+---
+
+## Push Notification Issues
+
+### 20. Push Notifications Not Sending
+```
+Expo push notifications not arriving on device
+```
+**Fix:**
+```bash
+# Check EAS credentials and rebuild
+cd apps/mobile && eas credentials && eas build --profile preview
+```
+**Time:** 2s
+
+---
+
+### 21. Push Token Registration Failed
+```
+Error: Invalid Expo push token
+```
+**Fix:**
+```ts
+// Verify token format starts with ExponentPushToken[...]
+// Re-register on physical device (not simulator)
+await registerForPushNotificationsAsync();
+```
+**Time:** 2s
+
+---
+
+### 22. Push Permissions Not Granted
+```
+User denied push notification permissions
+```
+**Fix:**
+```bash
+# iOS: Settings → Apex Intelligence → Notifications → Allow
+# Android: Settings → Apps → Apex → Notifications → Allow
+# Then restart app
+```
+**Time:** 3s
+
+---
+
+### 23. Background Notifications Not Working
+```
+Notifications only work when app is open
+```
+**Fix:**
+```json
+// Ensure app.json has background mode enabled
+{
+  "android": {
+    "permissions": ["RECEIVE_BOOT_COMPLETED"]
+  }
+}
+```
+**Time:** 2s
+
+---
+
+## Quick Diagnostics
+
+### Check Build Locally (Exactly Like Vercel)
+```bash
+NODE_ENV=production pnpm build
+```
+
+### Check Lockfile Validity
+```bash
+pnpm install --frozen-lockfile || echo "LOCKFILE OUT OF DATE"
+```
+
+### Check Turbo Cache Status
+```bash
+pnpm build --dry-run=json | jq '.tasks[] | select(.cache.status != "HIT")'
+```
+
+### Check Sentry Error Count
+```bash
+curl "https://sentry.io/api/0/projects/ORG/PROJECT/issues/" \
+  -H "Authorization: Bearer $SENTRY_TOKEN" | jq '.[].count'
+```
+
+---
+
+## Emergency Rollback (1 Second)
+
+```bash
+pnpm rollback
+```
+
+Or in Vercel dashboard:
+1. Deployments → Select previous
+2. "Promote to Production"
+
+**Time:** 1s
+
+---
+
+## Notes
+
+- All fixes assume you're in the repository root
+- `git push -f` is safe on feature branches only
+- Always test locally before force-pushing to main
+- For Vercel issues, check deployment logs first
+- For mobile issues, always test on real device before blaming code
+
+---
+
+**Last Updated:** November 19, 2025
+**Session:** CLAUDE_SESSION_15
+
+Total Fixes: 23 (Deployment: 5, Database: 2, Mobile: 13, API: 3, Performance: 2, Push: 4)
+
+We fix issues faster than they occur. 🚀

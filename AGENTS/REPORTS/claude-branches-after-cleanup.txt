@@ -1,0 +1,9 @@
+﻿  origin/HEAD -> origin/main
+  origin/chore/blog-seo-hotfix
+  origin/chore/research-api-unblock
+  origin/ci/perf-budget-gate
+  origin/claude/final-build-deploy-012ufv9mkwBAqwfWEwvWQzbh
+  origin/fix/merge-research-stack
+  origin/fix/research-api-no-generics
+  origin/main
+  origin/wip/local-edits-20251119-034927
