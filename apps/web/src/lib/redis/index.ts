@@ -11,6 +11,9 @@
 
 import { Redis as UpstashRedis } from '@upstash/redis';
 
+// Re-export the Redis type for consumers
+export type { Redis } from '@upstash/redis';
+
 /**
  * Global Redis client instance
  * Uses Upstash REST API for serverless compatibility
