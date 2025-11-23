@@ -31,25 +31,28 @@ export default function Home() {
 
   const featuredIntel = [
     {
-      title: 'Q4 2024 Market Analysis',
-      excerpt: 'Deep dive into TCG market trends, top movers, and investment opportunities for serious collectors...',
-      date: 'Oct 25, 2024',
-      readTime: '8 min read',
-      category: 'Market Analysis'
-    },
-    {
-      title: 'Pokemon 151: Value Trajectory',
-      excerpt: 'Comprehensive analysis of Pokemon 151 set performance, chase cards, and long-term investment potential...',
-      date: 'Oct 20, 2024',
-      readTime: '6 min read',
+      slug: 'pokemon-151-set-analysis',
+      title: 'Pokémon 151: Nostalgia Premium',
+      excerpt: 'Economic analysis of the 2023 mega-set celebrating Kanto. Pull rates, chase card valuations, and why Hyper Rare Charizard ex is the most important modern card...',
+      date: 'Jan 15, 2025',
+      readTime: '9 min read',
       category: 'Set Analysis'
     },
     {
-      title: 'Graded vs Raw: 2024 Edition',
-      excerpt: 'Updated analysis on graded vs raw card values, grading costs, and ROI calculations for modern sets...',
-      date: 'Oct 15, 2024',
+      slug: 'vintage-wotc-investment-guide',
+      title: 'Vintage WOTC: Blue-Chip Thesis',
+      excerpt: 'Deep analysis of 1999-2003 Wizards of the Coast era cards, print run scarcity, PSA population dynamics, and why Base Set Charizard remains the S&P 500 of TCG investing...',
+      date: 'Jan 10, 2025',
       readTime: '10 min read',
-      category: 'Investment Guide'
+      category: 'Vintage Analysis'
+    },
+    {
+      slug: 'modern-set-rotation-strategy',
+      title: 'The Rotation Window Strategy',
+      excerpt: 'Strategic analysis of TCG set rotation mechanics, price volatility patterns, and optimal entry/exit points for Standard-to-Modern transitions...',
+      date: 'Jan 5, 2025',
+      readTime: '7 min read',
+      category: 'Strategy'
     }
   ]
 
@@ -163,32 +166,33 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredIntel.map((intel, index) => (
-              <motion.article
-                key={intel.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card-cyber group cursor-pointer"
-              >
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs font-semibold text-neon-pink">{intel.category}</span>
-                  <span className="text-xs text-gray-500">•</span>
-                  <span className="text-xs text-gray-400">{intel.readTime}</span>
-                </div>
-                
-                <h3 className="text-xl font-bold font-[family-name:var(--font-orbitron)] mb-3 group-hover:text-neon-cyan transition-colors">
-                  {intel.title}
-                </h3>
-                
-                <p className="text-gray-400 text-sm mb-4">
-                  {intel.excerpt}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">{intel.date}</span>
-                  <ArrowRight className="text-neon-cyan group-hover:translate-x-2 transition-transform" size={16} />
-                </div>
-              </motion.article>
+              <Link key={intel.slug} href={`/intel/${intel.slug}`}>
+                <motion.article
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="card-cyber group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs font-semibold text-neon-pink">{intel.category}</span>
+                    <span className="text-xs text-gray-500">•</span>
+                    <span className="text-xs text-gray-400">{intel.readTime}</span>
+                  </div>
+
+                  <h3 className="text-xl font-bold font-[family-name:var(--font-orbitron)] mb-3 group-hover:text-neon-cyan transition-colors">
+                    {intel.title}
+                  </h3>
+
+                  <p className="text-gray-400 text-sm mb-4">
+                    {intel.excerpt}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">{intel.date}</span>
+                    <ArrowRight className="text-neon-cyan group-hover:translate-x-2 transition-transform" size={16} />
+                  </div>
+                </motion.article>
+              </Link>
             ))}
           </div>
         </div>
