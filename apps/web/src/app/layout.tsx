@@ -14,6 +14,8 @@ import { TopBanner } from '@/components/nav/TopBanner';
 
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
+import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
+
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 import { Footer } from '@/components/footer/Footer';
@@ -274,6 +276,12 @@ export default function RootLayout({
         {/* Top Banner */}
 
         <TopBanner />
+
+
+
+        {/* Starfield Galaxy Background */}
+
+        <StarfieldBackground />
 
 
 
