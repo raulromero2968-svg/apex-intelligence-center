@@ -24,7 +24,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <img 
-              src="/images/apex-wolf-black-bg-final.png" 
+              src="/images/apex-wolf-transparent.png" 
               alt="Apex Intelligence Logo" 
               className="w-10 h-10 object-contain"
             />

@@ -11,57 +11,63 @@ export default function IntelPage() {
   const articles = [
     {
       slug: 'q4-2024-market-analysis',
-      title: 'Q4 2024 TCG Market Analysis',
-      excerpt: 'Comprehensive breakdown of TCG market performance, top-performing sets, and investment opportunities heading into Q4 2024.',
-      date: 'Oct 25, 2024',
+      title: 'Q4 2025 TCG Market Analysis',
+      excerpt: 'Comprehensive breakdown of TCG market performance, top-performing sets, and investment opportunities heading into Q4 2025.',
+      date: 'Nov 15, 2025',
       readTime: '8 min read',
       category: 'Market Analysis',
-      isPremium: false
+      isPremium: false,
+      image: '/images/articles/market-analysis-chart.png'
     },
     {
       slug: 'pokemon-151-value-trajectory',
       title: 'Pokemon 151: Value Trajectory Analysis',
       excerpt: 'Deep dive into Pokemon 151 market performance, chase card analysis, and long-term investment potential for serious collectors.',
-      date: 'Oct 20, 2024',
+      date: 'Nov 10, 2025',
       readTime: '6 min read',
       category: 'Set Analysis',
-      isPremium: false
+      isPremium: false,
+      image: '/images/articles/pokemon-151-cards.png'
     },
     {
       slug: 'graded-vs-raw-2024',
-      title: 'Graded vs Raw: 2024 Edition',
+      title: 'Graded vs Raw: 2025 Edition',
       excerpt: 'Updated ROI analysis on graded vs raw cards, grading service comparison, and when it makes sense to grade your collection.',
-      date: 'Oct 15, 2024',
+      date: 'Nov 5, 2025',
       readTime: '10 min read',
       category: 'Investment Guide',
-      isPremium: true
+      isPremium: true,
+      image: '/images/articles/graded-cards-comparison.png'
     },
     {
       slug: 'japanese-vs-english-market',
       title: 'Japanese vs English: Market Comparison',
       excerpt: 'Price analysis comparing Japanese and English TCG markets, arbitrage opportunities, and investment considerations.',
-      date: 'Oct 10, 2024',
+      date: 'Oct 28, 2025',
       readTime: '7 min read',
       category: 'Market Analysis',
-      isPremium: true
+      isPremium: true,
+      image: '/images/articles/japan-vs-english.png'
     },
     {
       slug: 'modern-set-rotation-strategy',
       title: 'Modern Set Rotation Investment Strategy',
       excerpt: 'How to capitalize on set rotations, which cards to target, and timing your buys for maximum returns.',
-      date: 'Oct 5, 2024',
+      date: 'Oct 20, 2025',
       readTime: '9 min read',
       category: 'Strategy',
-      isPremium: false
+      isPremium: false,
+      image: '/images/articles/set-rotation-strategy.png'
     },
     {
       slug: 'vintage-wotc-market-report',
-      title: 'Vintage WOTC Market Report Q3 2024',
+      title: 'Vintage WOTC Market Report Q3 2025',
       excerpt: 'Quarterly analysis of Wizards of the Coast vintage card performance, including Base Set, Jungle, and Fossil.',
-      date: 'Sep 30, 2024',
+      date: 'Oct 15, 2025',
       readTime: '12 min read',
       category: 'Vintage Analysis',
-      isPremium: true
+      isPremium: true,
+      image: '/images/articles/vintage-wotc.png'
     }
   ]
 
@@ -131,13 +137,24 @@ export default function IntelPage() {
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayedArticles.map((article, index) => (
-            <motion.article
-              key={article.slug}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card-cyber group cursor-pointer h-full flex flex-col"
-            >
+            <Link key={article.slug} href={`/intel/${article.slug}`}>
+              <motion.article
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="card-cyber group cursor-pointer h-full flex flex-col overflow-hidden"
+              >
+              {/* Featured Image */}
+              {article.image && (
+                <div className="w-full h-48 mb-4 -mx-6 -mt-6 overflow-hidden">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
+              
               {article.isPremium && (
                 <div className="inline-block mb-3 px-3 py-1 rounded-full bg-neon-pink/20 border border-neon-pink/50 w-fit">
                   <span className="text-xs font-semibold text-neon-pink">PREMIUM</span>
@@ -165,7 +182,8 @@ export default function IntelPage() {
                   <ArrowRight className="ml-2" size={16} />
                 </div>
               </div>
-            </motion.article>
+              </motion.article>
+            </Link>
           ))}
         </div>
 

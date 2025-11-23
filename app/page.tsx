@@ -99,23 +99,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Social Proof */}
-              <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-sm text-gray-400">
-                <div>
-                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">1.2K+</span>
-                  <br />Collectors
-                </div>
-                <div className="h-8 w-px bg-neon-cyan/30" />
-                <div>
-                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">50+</span>
-                  <br />Intel Drops
-                </div>
-                <div className="h-8 w-px bg-neon-cyan/30" />
-                <div>
-                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">$2M+</span>
-                  <br />Cards Tracked
-                </div>
-              </div>
+
             </motion.div>
 
             {/* Right Column - Wolf Logo */}
