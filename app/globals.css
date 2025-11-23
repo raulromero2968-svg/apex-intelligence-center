@@ -78,8 +78,8 @@
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-neon-pink/10 border border-neon-pink text-neon-pink rounded-lg
-           hover:bg-neon-pink/20 hover:shadow-neon-pink transition-all duration-300
+    @apply px-6 py-3 bg-purple-500/10 border border-purple-500 text-purple-400 rounded-lg
+           hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300
            font-semibold;
   }
 

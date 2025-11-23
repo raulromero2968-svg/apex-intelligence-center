@@ -72,7 +72,7 @@ export default function Home() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
                   </span>
-                  TCG INTELLIGENCE NETWORK ONLINE
+                  TCG INTELLIGENCE CENTER
                 </span>
               </div>
 
@@ -118,14 +118,21 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right Column - Wolf Constellation */}
+            {/* Right Column - Wolf Logo */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
               className="flex items-center justify-center"
             >
-              <WolfConstellation />
+              <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
+                <img 
+                  src="/images/apex-wolf-black-bg-final.png" 
+                  alt="Apex Intelligence Wolf Logo" 
+                  className="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(34,211,238,0.5)] animate-pulse"
+                  style={{ animationDuration: '3s' }}
+                />
+              </div>
             </motion.div>
           </div>
         </div>
