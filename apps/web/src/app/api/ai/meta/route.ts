@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import facts from '@/../../data/facts.json';
 
 /**

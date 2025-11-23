@@ -5,6 +5,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { db } from '@/db';
 import { videoGenerationRequests } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';

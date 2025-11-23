@@ -13,6 +13,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { z } from 'zod';
 import { db } from '@/db';
 import { multiModalEmbeddings } from '@/db/schema';

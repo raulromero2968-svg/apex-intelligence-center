@@ -1,4 +1,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
