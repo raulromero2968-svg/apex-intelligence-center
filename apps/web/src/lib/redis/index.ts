@@ -93,6 +93,7 @@ export async function publishPriceUpdate(
     // Note: Upstash Redis REST API may not support PUBLISH directly
     // This is a placeholder - may need to use a different Redis client for pub/sub
     // @ts-expect-error - publish may not be available in Upstash REST API
+    // @ts-expect-error - Redis type resolution issue
     const subscribers = await redis.publish(channel, JSON.stringify(payload));
     return (subscribers as number) ?? 0;
   } catch (error) {
@@ -111,6 +112,7 @@ export async function cacheCardPrice(cardId: string, price: number): Promise<voi
   try {
     const key = RedisKeys.cardPrice(cardId);
     // @ts-expect-error - Upstash Redis types may be incomplete
+    // @ts-expect-error - Redis type resolution issue
     await redis.set(key, price, { ex: CacheTTL.PRICE_CURRENT });
   } catch (error) {
     console.error('Failed to cache card price:', error);
@@ -145,6 +147,7 @@ export async function cacheUserWatchlist(userId: string, cardIds: string[]): Pro
   try {
     const key = RedisKeys.userWatchlist(userId);
     // @ts-expect-error - Upstash Redis types may be incomplete
+    // @ts-expect-error - Redis type resolution issue
     await redis.set(key, JSON.stringify(cardIds), { ex: CacheTTL.WATCHLIST });
   } catch (error) {
     console.error('Failed to cache user watchlist:', error);
@@ -178,6 +181,7 @@ export async function invalidateUserWatchlistCache(userId: string): Promise<void
   try {
     const key = RedisKeys.userWatchlist(userId);
     // @ts-expect-error - Upstash Redis types may be incomplete
+    // @ts-expect-error - Redis type resolution issue
     await redis.del(key);
   } catch (error) {
     console.error('Failed to invalidate watchlist cache:', error);

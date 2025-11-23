@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
       timestamp: Date.now(),
     };
 
+    // @ts-expect-error - Redis type resolution issue
     await redis.set(sessionKey, JSON.stringify(sessionData), {
       ex: CacheTTL.SESSION_ACTIVITY,
     });

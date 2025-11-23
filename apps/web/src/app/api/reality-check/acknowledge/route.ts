@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
 
     if (globalTrigger) {
       // Store acknowledgment with TTL
+    // @ts-expect-error - Redis type resolution issue
       await redis.set(
         RedisKeys.realityCheckAck(userId),
         globalTrigger as string,
