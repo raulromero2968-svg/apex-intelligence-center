@@ -126,7 +126,7 @@ export default async function ResearchArticlePage({ params }: ResearchPageProps)
         <ArticleHeader article={article} />
 
         {/* MDX Content - streamed with Suspense */}
-    // @ts-ignore - React types conflict
+    {/* @ts-ignore - React types conflict */}
         <Suspense fallback={
           <div className="prose prose-invert max-w-none">
             <div className="animate-pulse space-y-4">
@@ -142,7 +142,7 @@ export default async function ResearchArticlePage({ params }: ResearchPageProps)
         </Suspense>
 
         {/* Sources Section - streamed separately */}
-    // @ts-ignore - React types conflict
+    {/* @ts-ignore - React types conflict */}
         <Suspense fallback={null}>
           {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
             <section className="mt-12 pt-8 border-t border-cyan-500/20">
