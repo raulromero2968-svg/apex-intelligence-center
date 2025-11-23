@@ -17,7 +17,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/db';
 import { videoGenerationRequests } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import { multiModalRateLimiters } from '@/lib/rate-limit';
 import { getUserEmbeddings } from '@/rag/multi-modal';
@@ -217,7 +217,7 @@ export async function GET(req: NextRequest) {
     const [request] = await db
       .select()
       .from(videoGenerationRequests)
-      .where((r) => r.id === requestId && r.userId === user.id)
+      .where(and(eq(videoGenerationRequests.id, requestId), eq(videoGenerationRequests.userId, user.id)))
       .limit(1);
 
     if (!request) {
