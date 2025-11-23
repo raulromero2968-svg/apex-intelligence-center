@@ -23,7 +23,7 @@ if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN
  * Global Redis client instance
  * Uses Upstash REST API for serverless compatibility
  */
-export const redis = new Redis({
+export const redis: Redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
