@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Terminal, Activity, Layers, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { WolfConstellation } from '@/components/hero/WolfConstellation';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,20 +38,10 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
 
-          {/* LOGO SECTION - UPDATED TO 3D WOLF */}
+          {/* LOGO SECTION - 2D CONSTELLATION WOLF */}
           <Link href="/" className="flex-shrink-0 flex items-center group">
-            <div className="relative w-12 h-12 mr-3 transition-transform duration-300 group-hover:scale-105">
-               {/* APEX ARCHITECT NOTE:
-                  Using the new 3D Head.
-                  Added 'drop-shadow' to simulate the holographic glow from your reference image.
-               */}
-              <Image
-                src="/images/holo-wolf-head.png"
-                alt="Apex Intelligence"
-                fill
-                className="object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]"
-                priority
-              />
+            <div className="w-12 h-12 mr-3 transition-transform duration-300 group-hover:scale-105">
+              <WolfConstellation />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold font-orbitron tracking-wider text-white">
