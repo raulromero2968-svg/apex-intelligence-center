@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight, TrendingUp, BarChart3, Users, Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { WolfConstellation } from '@/components/hero/WolfConstellation'
 
 export default function Home() {
   const features = [
@@ -55,59 +56,78 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center py-20 overflow-hidden">
         <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <div className="inline-block mb-6 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/30">
-              <span className="text-neon-cyan text-sm font-semibold">TCG INTELLIGENCE NETWORK</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-orbitron)] mb-6">
-              <span className="text-glow-cyan">Underground Intel</span>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan">
-                For Serious Collectors
-              </span>
-            </h1>
-            
-            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Premium TCG market analysis, data-driven insights, and exclusive intelligence. 
-              Morning Brew meets the underground—delivered to your inbox.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/subscribe" className="btn-primary inline-flex items-center">
-                Get Free Intel
-                <ArrowRight className="ml-2" size={20} />
-              </Link>
-              <Link href="/intel" className="btn-secondary inline-flex items-center">
-                Browse Archives
-              </Link>
-            </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <div className="inline-block mb-6 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/30">
+                <span className="text-neon-cyan text-sm font-semibold flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
+                  </span>
+                  TCG INTELLIGENCE NETWORK ONLINE
+                </span>
+              </div>
 
-            {/* Social Proof */}
-            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-gray-400">
-              <div>
-                <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">1.2K+</span>
-                <br />Collectors
+              <h1 className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-orbitron)] mb-6">
+                <span className="text-glow-cyan">Underground Intel</span>
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
+                  For Serious Collectors
+                </span>
+              </h1>
+
+              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+                Premium TCG market analysis, data-driven insights, and exclusive intelligence.
+                Morning Brew meets the underground—delivered to your inbox.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center gap-4">
+                <Link href="/subscribe" className="btn-primary inline-flex items-center">
+                  Get Free Intel
+                  <ArrowRight className="ml-2" size={20} />
+                </Link>
+                <Link href="/intel" className="btn-secondary inline-flex items-center">
+                  Browse Archives
+                </Link>
               </div>
-              <div className="h-8 w-px bg-neon-cyan/30" />
-              <div>
-                <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">50+</span>
-                <br />Intel Drops
+
+              {/* Social Proof */}
+              <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-sm text-gray-400">
+                <div>
+                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">1.2K+</span>
+                  <br />Collectors
+                </div>
+                <div className="h-8 w-px bg-neon-cyan/30" />
+                <div>
+                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">50+</span>
+                  <br />Intel Drops
+                </div>
+                <div className="h-8 w-px bg-neon-cyan/30" />
+                <div>
+                  <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">$2M+</span>
+                  <br />Cards Tracked
+                </div>
               </div>
-              <div className="h-8 w-px bg-neon-cyan/30" />
-              <div>
-                <span className="text-2xl font-bold text-neon-cyan text-glow-cyan">$2M+</span>
-                <br />Cards Tracked
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Right Column - Wolf Constellation */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <WolfConstellation />
+            </motion.div>
+          </div>
         </div>
       </section>
 
