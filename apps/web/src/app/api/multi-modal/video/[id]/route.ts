@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { videoGenerationRequests } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import { readFile } from 'fs/promises';
 import * as Sentry from '@sentry/nextjs';
@@ -31,7 +32,7 @@ export async function GET(
     const [request] = await db
       .select()
       .from(videoGenerationRequests)
-      .where((r) => r.id === params.id && r.userId === user.id)
+      .where(and(eq(videoGenerationRequests.id, params.id), eq(videoGenerationRequests.userId, user.id)))
       .limit(1);
 
     if (!request) {
