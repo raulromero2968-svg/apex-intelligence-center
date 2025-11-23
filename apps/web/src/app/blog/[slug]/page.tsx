@@ -165,6 +165,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
         <ArticleHeader article={article} />
 
         {/* MDX Content - streamed with Suspense */}
+        {/* @ts-ignore - React types conflict */}
         <Suspense fallback={
           <div className="prose prose-invert max-w-none">
             <div className="animate-pulse space-y-4">
