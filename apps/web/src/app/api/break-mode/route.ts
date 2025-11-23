@@ -9,9 +9,6 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { NextRequest } from 'next/server';
-import { db } from '@/db';
-import { users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import {
   AuthenticationError,
@@ -63,6 +60,10 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
+    const { db } = await import('@/db');
+    const { users } = await import('@/db/schema');
+    const { eq } = await import('drizzle-orm');
+
     const user = await getUserFromRequest(req);
     if (!user) {
       throw new AuthenticationError();
@@ -113,6 +114,10 @@ export async function POST(req: NextRequest) {
  */
 export async function DELETE(req: NextRequest) {
   try {
+    const { db } = await import('@/db');
+    const { users } = await import('@/db/schema');
+    const { eq } = await import('drizzle-orm');
+
     const user = await getUserFromRequest(req);
     if (!user) {
       throw new AuthenticationError();
