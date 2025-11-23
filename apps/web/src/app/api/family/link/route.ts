@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       .where(eq(users.id, childId));
 
     // Update parent account type if needed
-    if (parent.subscriptionTier !== 'parent') {
+    if (parent.accountType !== 'parent') {
       await db
         .update(users)
         .set({ accountType: 'parent' })
