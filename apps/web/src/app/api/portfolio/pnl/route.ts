@@ -10,13 +10,15 @@
  * - Game exposure breakdown
  */
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePortfolioPnL } from '@/portfolio/pnl.service';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
+
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   return Sentry.startSpan(

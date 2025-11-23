@@ -1,7 +1,9 @@
-export const dynamic = 'force-dynamic';
-
 import { ingestBatch, type Provider } from '@/jobs/ingest';
 import * as Sentry from '@sentry/nextjs';
+
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 
 /**
  * Ingest API endpoint

@@ -5,9 +5,6 @@
  * Once activated, cannot be undone until the 24-hour period expires.
  */
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { users } from '@/db/schema';
@@ -19,6 +16,11 @@ import {
   handleApiError,
 } from '@/lib/errors';
 import { z } from 'zod';
+
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const activateBreakModeSchema = z.object({
   activatedBy: z.enum(['child', 'parent']),
