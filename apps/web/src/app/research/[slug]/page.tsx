@@ -119,6 +119,7 @@ export default async function ResearchArticlePage({ params }: ResearchPageProps)
     return notFound();
   }
 
+  // @ts-ignore - React types conflict with Suspense
   return (
     <SectionShell title={article.frontmatter.title} kicker="Research">
       <article className="max-w-4xl mx-auto">
