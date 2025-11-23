@@ -13,7 +13,7 @@ import { db } from '@/db';
 import { sales, cards, market_knowledge, manipulationAlerts, watchlistItems } from '@/db/schema';
 import { eq, and, gte, sql, desc } from 'drizzle-orm';
 import { contrarianSearch, classifySentiment } from '@/../../../lib/rag/contrarian-rag';
-import { cuid } from '@paralleldrive/cuid2';
+import { createId as cuid } from '@paralleldrive/cuid2';
 
 export interface ManipulationAlert {
   cardId: string;
