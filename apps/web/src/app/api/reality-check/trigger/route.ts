@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Publish to pub/sub channel (if available)
     // This would notify all connected SSE clients immediately
     try {
-      // @ts-expect-error - publish may not be available in Upstash REST API
+      // @ts-ignore - publish may not be available in Upstash REST API
     // @ts-ignore - Redis type resolution issue
       await redis.publish(RedisKeys.realityCheckChannel(), triggerId);
     } catch {
