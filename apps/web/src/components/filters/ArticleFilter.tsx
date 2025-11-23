@@ -157,8 +157,8 @@ function ArticleFilterContent({ articles }: ArticleFilterProps) {
 }
 
 export default function ArticleFilter({ articles }: ArticleFilterProps) {
+  // @ts-ignore - React types conflict
   return (
-    {/* @ts-ignore - React types conflict */}
     <Suspense fallback={<div className="w-full">Loading filters...</div>}>
       <ArticleFilterContent articles={articles} />
     </Suspense>
