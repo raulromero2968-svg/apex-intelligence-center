@@ -10,64 +10,54 @@ export default function IntelPage() {
 
   const articles = [
     {
-      slug: 'q4-2024-market-analysis',
-      title: 'Q4 2025 TCG Market Analysis',
-      excerpt: 'Comprehensive breakdown of TCG market performance, top-performing sets, and investment opportunities heading into Q4 2025.',
-      date: 'Nov 15, 2025',
-      readTime: '8 min read',
-      category: 'Market Analysis',
-      isPremium: false,
-      image: '/images/articles/market-analysis-chart.png'
-    },
-    {
-      slug: 'pokemon-151-value-trajectory',
-      title: 'Pokemon 151: Value Trajectory Analysis',
-      excerpt: 'Deep dive into Pokemon 151 market performance, chase card analysis, and long-term investment potential for serious collectors.',
-      date: 'Nov 10, 2025',
-      readTime: '6 min read',
+      slug: 'pokemon-151-set-analysis',
+      title: 'Pokémon 151: Dissecting the Nostalgia Premium',
+      excerpt: 'Economic analysis of the 2023 mega-set celebrating Kanto. Pull rates, chase card valuations, and why Hyper Rare Charizard ex is the most important modern card.',
+      date: 'Jan 15, 2025',
+      readTime: '9 min read',
       category: 'Set Analysis',
       isPremium: false,
       image: '/images/articles/pokemon-151-cards.png'
     },
     {
-      slug: 'graded-vs-raw-2024',
-      title: 'Graded vs Raw: 2025 Edition',
-      excerpt: 'Updated ROI analysis on graded vs raw cards, grading service comparison, and when it makes sense to grade your collection.',
-      date: 'Nov 5, 2025',
+      slug: 'vintage-wotc-investment-guide',
+      title: 'Vintage WOTC Cards: The Blue-Chip Investment Thesis',
+      excerpt: 'Deep analysis of 1999-2003 Wizards of the Coast era cards, print run scarcity, PSA population dynamics, and why Base Set Charizard remains the S&P 500 of TCG investing.',
+      date: 'Jan 10, 2025',
       readTime: '10 min read',
-      category: 'Investment Guide',
-      isPremium: true,
-      image: '/images/articles/graded-cards-comparison.png'
-    },
-    {
-      slug: 'japanese-vs-english-market',
-      title: 'Japanese vs English: Market Comparison',
-      excerpt: 'Price analysis comparing Japanese and English TCG markets, arbitrage opportunities, and investment considerations.',
-      date: 'Oct 28, 2025',
-      readTime: '7 min read',
-      category: 'Market Analysis',
-      isPremium: true,
-      image: '/images/articles/japan-vs-english.png'
+      category: 'Vintage Analysis',
+      isPremium: false,
+      image: '/images/articles/vintage-wotc.png'
     },
     {
       slug: 'modern-set-rotation-strategy',
-      title: 'Modern Set Rotation Investment Strategy',
-      excerpt: 'How to capitalize on set rotations, which cards to target, and timing your buys for maximum returns.',
-      date: 'Oct 20, 2025',
-      readTime: '9 min read',
+      title: 'The Rotation Window: Timing Modern Format Transitions',
+      excerpt: 'Strategic analysis of TCG set rotation mechanics, price volatility patterns, and optimal entry/exit points for Standard-to-Modern transitions.',
+      date: 'Jan 5, 2025',
+      readTime: '7 min read',
       category: 'Strategy',
       isPremium: false,
       image: '/images/articles/set-rotation-strategy.png'
     },
     {
-      slug: 'vintage-wotc-market-report',
-      title: 'Vintage WOTC Market Report Q3 2025',
-      excerpt: 'Quarterly analysis of Wizards of the Coast vintage card performance, including Base Set, Jungle, and Fossil.',
-      date: 'Oct 15, 2025',
-      readTime: '12 min read',
-      category: 'Vintage Analysis',
-      isPremium: true,
-      image: '/images/articles/vintage-wotc.png'
+      slug: 'japanese-vs-english-market-comparison',
+      title: 'East vs. West: The 2025 Market Arbitrage Report',
+      excerpt: 'Data-driven analysis of price disparity, print quality, and investment liquidity between Japanese and English Pokémon card markets.',
+      date: 'Dec 28, 2024',
+      readTime: '8 min read',
+      category: 'Market Analysis',
+      isPremium: false,
+      image: '/images/articles/japan-vs-english.png'
+    },
+    {
+      slug: 'psa-grading-roi-analysis',
+      title: 'PSA Grading ROI: The Complete 2025 Analysis',
+      excerpt: 'Comprehensive breakdown of PSA grading costs, turnaround times, and ROI calculations. When grading makes sense and when it destroys value.',
+      date: 'Dec 20, 2024',
+      readTime: '11 min read',
+      category: 'Investment Guide',
+      isPremium: false,
+      image: '/images/articles/graded-cards-comparison.png'
     }
   ]
 
