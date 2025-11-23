@@ -1,0 +1,26 @@
+{
+  "name": "Apex Intelligence - TCG Market Intel",
+  "short_name": "Apex Intel",
+  "description": "Premium TCG market intelligence and analysis platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#22d3ee",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/apex-wolf-transparent.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/apex-wolf-transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "business", "trading"],
+  "screenshots": []
+}
