@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/db';
 import { videoGenerationRequests } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import { multiModalRateLimiters } from '@/lib/rate-limit';
 import { getUserEmbeddings } from '@/rag/multi-modal';
@@ -115,7 +116,7 @@ export async function POST(req: NextRequest) {
           status: 'processing',
           processingStartedAt: new Date(),
         })
-        .where((r) => r.id === genRequest.id);
+        .where(eq(videoGenerationRequests.id, genRequest.id));
 
       // Generate video (this is a placeholder implementation)
       const outputDir = '/tmp/videos';
@@ -136,7 +137,7 @@ export async function POST(req: NextRequest) {
           processingCompletedAt: new Date(),
           outputUrl: videoPath, // In production, upload to S3 and store URL
         })
-        .where((r) => r.id === genRequest.id);
+        .where(eq(videoGenerationRequests.id, genRequest.id));
 
       // Track success
       Sentry.captureMessage('Video generation successful', {
@@ -161,7 +162,7 @@ export async function POST(req: NextRequest) {
           errorMessage:
             genError instanceof Error ? genError.message : 'Unknown error',
         })
-        .where((r) => r.id === genRequest.id);
+        .where(eq(videoGenerationRequests.id, genRequest.id));
 
       throw genError;
     }
