@@ -1,7 +1,8 @@
 import React from 'react';
+import Link from 'next/link';
 import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
 import Navigation from '@/components/Navigation';
-import { Crown, History, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Crown, History, TrendingUp, ShieldCheck, ArrowLeft, Home } from 'lucide-react';
 import IntelChart from '@/components/intel/IntelChart';
 
 // META:
@@ -15,6 +16,29 @@ export default function VintageWOTCArticle() {
       <Navigation />
 
       <article className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+          <Link href="/" className="hover:text-cyan-400 transition-colors flex items-center">
+            <Home size={14} className="mr-1" />
+            Home
+          </Link>
+          <span>/</span>
+          <Link href="/intel" className="hover:text-cyan-400 transition-colors">
+            Intelligence
+          </Link>
+          <span>/</span>
+          <span className="text-yellow-400">Vintage WOTC Report Q3 2025</span>
+        </nav>
+
+        {/* Back Button */}
+        <Link
+          href="/intel"
+          className="inline-flex items-center text-yellow-500 hover:text-yellow-300 mb-8 transition-colors font-mono text-sm"
+        >
+          <ArrowLeft className="mr-2" size={16} />
+          Back to Archive
+        </Link>
+
         {/* HEADER */}
         <header className="mb-12 border-b border-gray-800 pb-8">
           <div className="flex items-center space-x-2 text-yellow-500 mb-4 font-mono text-sm tracking-wider">

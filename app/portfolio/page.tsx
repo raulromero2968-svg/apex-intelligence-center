@@ -160,28 +160,49 @@ export default function PortfolioPage() {
               <h3 className="font-bold text-white font-orbitron">Holdings</h3>
               <span className="text-xs text-gray-500 font-mono">4 ASSETS</span>
            </div>
-           <table className="w-full text-left border-collapse">
-              <thead>
-                 <tr className="text-xs text-gray-500 font-mono border-b border-gray-800">
-                    <th className="px-6 py-3 font-medium">ASSET</th>
-                    <th className="px-6 py-3 font-medium">TYPE</th>
-                    <th className="px-6 py-3 font-medium text-right">PRICE</th>
-                    <th className="px-6 py-3 font-medium text-right">24H</th>
-                 </tr>
-              </thead>
-              <tbody className="text-sm">
-                 {assets.map((asset, index) => (
-                    <tr key={index} className="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                       <td className="px-6 py-4 font-medium text-white">{asset.name}</td>
-                       <td className="px-6 py-4 text-gray-400">{asset.type}</td>
-                       <td className="px-6 py-4 text-right text-white font-mono">{asset.price}</td>
-                       <td className={`px-6 py-4 text-right font-mono ${asset.trend === 'up' ? 'text-green-400' : asset.trend === 'down' ? 'text-red-400' : 'text-gray-400'}`}>
-                          {asset.change}
-                       </td>
+           {/* Desktop Table */}
+           <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                 <thead>
+                    <tr className="text-xs text-gray-500 font-mono border-b border-gray-800">
+                       <th className="px-6 py-3 font-medium">ASSET</th>
+                       <th className="px-6 py-3 font-medium">TYPE</th>
+                       <th className="px-6 py-3 font-medium text-right">PRICE</th>
+                       <th className="px-6 py-3 font-medium text-right">24H</th>
                     </tr>
-                 ))}
-              </tbody>
-           </table>
+                 </thead>
+                 <tbody className="text-sm">
+                    {assets.map((asset, index) => (
+                       <tr key={index} className="border-b border-gray-800 hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium text-white">{asset.name}</td>
+                          <td className="px-6 py-4 text-gray-400">{asset.type}</td>
+                          <td className="px-6 py-4 text-right text-white font-mono">{asset.price}</td>
+                          <td className={`px-6 py-4 text-right font-mono ${asset.trend === 'up' ? 'text-green-400' : asset.trend === 'down' ? 'text-red-400' : 'text-gray-400'}`}>
+                             {asset.change}
+                          </td>
+                       </tr>
+                    ))}
+                 </tbody>
+              </table>
+           </div>
+
+           {/* Mobile Card View */}
+           <div className="md:hidden space-y-4 p-4">
+              {assets.map((asset, index) => (
+                 <div key={index} className="bg-gray-800/30 rounded-lg p-4 border border-gray-700">
+                    <div className="flex justify-between items-start mb-2">
+                       <div>
+                          <h4 className="text-white font-medium text-sm">{asset.name}</h4>
+                          <p className="text-gray-500 text-xs mt-1">{asset.type}</p>
+                       </div>
+                       <span className={`text-sm font-mono ${asset.trend === 'up' ? 'text-green-400' : asset.trend === 'down' ? 'text-red-400' : 'text-gray-400'}`}>
+                          {asset.change}
+                       </span>
+                    </div>
+                    <div className="text-white font-mono text-lg">{asset.price}</div>
+                 </div>
+              ))}
+           </div>
         </div>
 
       </div>

@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, TrendingDown } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { IntelChart } from '@/components/intel/IntelChart'
 
@@ -416,13 +416,27 @@ export default function ArticlePage() {
   return (
     <div className="min-h-screen py-20">
       <div className="container-custom max-w-4xl">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+          <Link href="/" className="hover:text-cyan-400 transition-colors flex items-center">
+            <Home size={14} className="mr-1" />
+            Home
+          </Link>
+          <span>/</span>
+          <Link href="/intel" className="hover:text-cyan-400 transition-colors">
+            Intelligence
+          </Link>
+          <span>/</span>
+          <span className="text-cyan-400">{article.title}</span>
+        </nav>
+
         {/* Back Button */}
-        <Link 
-          href="/intel" 
-          className="inline-flex items-center text-neon-cyan hover:text-cyan-300 mb-8 transition-colors"
+        <Link
+          href="/intel"
+          className="inline-flex items-center text-cyan-500 hover:text-cyan-300 mb-8 transition-colors font-mono text-sm"
         >
-          <ArrowLeft className="mr-2" size={20} />
-          Back to Intelligence Archive
+          <ArrowLeft className="mr-2" size={16} />
+          Back to Archive
         </Link>
 
         {/* Article Header */}
@@ -525,25 +539,64 @@ export default function ArticlePage() {
           </motion.div>
         )}
 
-        {/* Subscribe CTA */}
+        {/* Related Articles */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="relative rounded-2xl p-12 overflow-hidden"
+          className="mb-12"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
-          <div className="absolute inset-0 neon-border" />
-          
+          <h2 className="text-2xl font-bold font-orbitron mb-6 text-white">Related Intelligence</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.entries(articles)
+              .filter(([key]) => key !== slug)
+              .slice(0, 2)
+              .map(([key, relatedArticle]) => (
+                <Link
+                  key={key}
+                  href={`/intel/${key}`}
+                  className="group bg-gray-900/40 border border-gray-800 rounded-xl p-6 hover:border-cyan-500/30 transition-all backdrop-blur-sm"
+                >
+                  <span className="text-xs text-cyan-400 font-mono mb-2 block">{relatedArticle.category}</span>
+                  <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">
+                    {relatedArticle.title}
+                  </h3>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={14} />
+                      {relatedArticle.date}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} />
+                      {relatedArticle.readTime}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </motion.div>
+
+        {/* Subscribe CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="relative rounded-xl p-12 overflow-hidden bg-gray-900/40 border border-gray-800 backdrop-blur-md"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5" />
+
           <div className="relative text-center">
-            <h2 className="text-3xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+            <h2 className="text-3xl font-bold font-orbitron mb-4 text-white glow-text-cyan">
               Get More Intel Like This
             </h2>
-            <p className="text-gray-300 mb-8">
-              Subscribe to receive exclusive market analysis, investment guides, and premium research delivered to your inbox.
+            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+              Join collectors making data-driven decisions. Get exclusive market analysis and investment intelligence.
             </p>
-            <Link href="/subscribe" className="btn-primary inline-flex items-center">
-              Subscribe Now
+            <Link
+              href="/intel"
+              className="inline-flex items-center px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-black font-bold rounded-lg transition-colors shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+            >
+              Browse More Reports
               <ArrowLeft className="ml-2 rotate-180" size={20} />
             </Link>
           </div>
