@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
 import { PortfolioDashboard } from '@/components/portfolio/PortfolioDashboard';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+import { PriceAlerts } from '@/components/portfolio/PriceAlerts';
 
 export default function PortfolioPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -36,6 +37,18 @@ export default function PortfolioPage() {
         </header>
 
         <PortfolioDashboard />
+
+        {/* Price Alerts Section */}
+        <div className="mt-8">
+          <PriceAlerts
+            availableCards={[
+              'Charizard Base Set',
+              'Black Lotus',
+              'The One Ring',
+              'Umbreon VMAX'
+            ]}
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { ArrowUpRight, ArrowDownRight, MoreHorizontal, Filter, AlertTriangle, TrendingUp, Layers, Shield, FileText, Download, Share2 } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, MoreHorizontal, Filter, AlertTriangle, TrendingUp, Layers, Shield, FileText, Download, Share2, Check, Copy } from 'lucide-react';
+import { exportToCSV, generateShareLink } from '@/lib/portfolio-utils';
 
 const portfolioData = [
   { date: 'Mon', value: 12500 },
@@ -54,6 +55,29 @@ const intelMatches = [
 ];
 
 export const PortfolioDashboard = () => {
+  const [shareLink, setShareLink] = useState<string>('');
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const totalValue = 31530;
+
+  const handleExportCSV = () => {
+    exportToCSV(assets, totalValue);
+  };
+
+  const handleShare = () => {
+    const link = generateShareLink(assets);
+    setShareLink(link);
+    setShowShareModal(true);
+    setLinkCopied(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
   return (
     <div className="space-y-6">
 
@@ -64,10 +88,16 @@ export const PortfolioDashboard = () => {
           <span className="text-sm text-slate-300 font-medium">VARC Risk Score: <span className="text-green-400 font-bold">A-</span></span>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
+          >
             <Download className="w-3 h-3" /> Export CSV
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors">
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
+          >
             <Share2 className="w-3 h-3" /> Share Portfolio
           </button>
         </div>
@@ -334,6 +364,53 @@ export const PortfolioDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-bold text-white">Share Portfolio</h3>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-sm text-slate-400 mb-4">
+              Anyone with this link can view a read-only snapshot of your portfolio.
+            </p>
+            <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 mb-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={shareLink}
+                  readOnly
+                  className="flex-1 bg-transparent text-cyan-400 text-sm font-mono outline-none"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition-colors"
+                >
+                  {linkCopied ? (
+                    <>
+                      <Check className="w-3 h-3" /> Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3" /> Copy
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="bg-blue-950/30 border border-blue-900/50 rounded-lg p-3 text-xs text-slate-300">
+              <strong className="text-blue-400">Note:</strong> This demo stores links locally. In production, links would be stored server-side with expiration dates and access controls.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

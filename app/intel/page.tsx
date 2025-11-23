@@ -10,6 +10,36 @@ export default function IntelPage() {
 
   const articles = [
     {
+      slug: 'grading-roi-analysis',
+      title: 'The Grading Paradox: When PSA 10 Destroys Value',
+      excerpt: 'Mathematical analysis of grading ROI with break-even calculations and optimal submission strategies. Learn when grading adds value and when it destroys it.',
+      date: 'Nov 20, 2025',
+      readTime: '12 min read',
+      category: 'Investment Guide',
+      isPremium: false,
+      image: '/images/articles/grading-roi.png'
+    },
+    {
+      slug: 'japanese-sets-analysis',
+      title: 'Japanese Set Premiums: The Quality Arbitrage',
+      excerpt: 'Why Japanese Pokemon cards command 15-30% premiums and how to exploit print quality differences for profit.',
+      date: 'Nov 18, 2025',
+      readTime: '10 min read',
+      category: 'Market Analysis',
+      isPremium: false,
+      image: '/images/articles/japanese-quality.png'
+    },
+    {
+      slug: 'japanese-arbitrage-guide',
+      title: 'Japanese Arbitrage Playbook: The Buyee-to-TCGPlayer Loop',
+      excerpt: 'Step-by-step guide to profiting from US-Japan price spreads with detailed sourcing and logistics strategies.',
+      date: 'Nov 17, 2025',
+      readTime: '15 min read',
+      category: 'Strategy',
+      isPremium: true,
+      image: '/images/articles/arbitrage-guide.png'
+    },
+    {
       slug: 'q4-2024-market-analysis',
       title: 'Q4 2025 TCG Market Analysis',
       excerpt: 'Comprehensive breakdown of TCG market performance, top-performing sets, and investment opportunities heading into Q4 2025.',
@@ -51,8 +81,8 @@ export default function IntelPage() {
     },
     {
       slug: 'modern-set-rotation-strategy',
-      title: 'Modern Set Rotation Investment Strategy',
-      excerpt: 'How to capitalize on set rotations, which cards to target, and timing your buys for maximum returns.',
+      title: 'The Clockwork Alpha: Profiting from Set Rotation',
+      excerpt: 'Mastering the cyclical nature of TCG formats to predict price floors and breakout ceilings. The rotation V-curve explained.',
       date: 'Oct 20, 2025',
       readTime: '9 min read',
       category: 'Strategy',
@@ -60,9 +90,9 @@ export default function IntelPage() {
       image: '/images/articles/set-rotation-strategy.png'
     },
     {
-      slug: 'vintage-wotc-market-report',
+      slug: 'vintage-wotc-market-report-q3-2025',
       title: 'Vintage WOTC Market Report Q3 2025',
-      excerpt: 'Quarterly analysis of Wizards of the Coast vintage card performance, including Base Set, Jungle, and Fossil.',
+      excerpt: 'Quarterly intelligence on the Pokemon/MTG vintage market with PSA population analysis and investment-grade asset tracking.',
       date: 'Oct 15, 2025',
       readTime: '12 min read',
       category: 'Vintage Analysis',
