@@ -21,6 +21,8 @@ export interface UserWithTier {
   email: string;
   name?: string;
   subscriptionTier: SubscriptionTier;
+  breakModeUntil?: string | null;
+  breakModeActivatedBy?: string | null;
 }
 
 interface JWTPayload {
