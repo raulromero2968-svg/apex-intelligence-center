@@ -12,6 +12,7 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/intel', label: 'Intel' },
+    { href: '/portfolio', label: 'Portfolio' },
     { href: '/about', label: 'About' },
     { href: '/subscribe', label: 'Subscribe' },
   ]
