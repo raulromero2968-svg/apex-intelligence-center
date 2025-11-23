@@ -31,7 +31,7 @@ export interface CachedEbaySales {
 export async function getCachedEbaySales(cardSlug: string): Promise<EbaySalePoint[] | null> {
   try {
     const key = `${CACHE_PREFIX}${cardSlug}`;
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     const cached = await redis.get(key);
 
     if (!cached) {
@@ -42,7 +42,7 @@ export async function getCachedEbaySales(cardSlug: string): Promise<EbaySalePoin
 
     // Check if expired (defense in depth)
     if (Date.now() > data.expiresAt) {
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
       await redis.del(key);
       return null;
     }
@@ -87,7 +87,7 @@ export async function cacheEbaySales(cardSlug: string, sales: EbaySalePoint[]): 
 export async function invalidateEbayCache(cardSlug: string): Promise<void> {
   try {
     const key = `${CACHE_PREFIX}${cardSlug}`;
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     await redis.del(key);
   } catch (error) {
     console.error('[EbayCache] Error invalidating cache:', error);

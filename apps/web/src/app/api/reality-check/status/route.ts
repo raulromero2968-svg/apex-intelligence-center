@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Check if there's a global trigger active
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {
       // Check if user has already acknowledged this trigger
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
       const userAck = await redis.get(RedisKeys.realityCheckAck(userId));
 
       if (!userAck || userAck !== globalTrigger) {

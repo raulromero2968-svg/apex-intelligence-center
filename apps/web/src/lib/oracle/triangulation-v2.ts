@@ -214,7 +214,7 @@ function calculateMedian(values: number[]): number {
 async function cacheApexPrice(cardId: string, price: ApexPrice): Promise<void> {
   try {
     const key = `price:${cardId}`;
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     await redis.set(key, JSON.stringify(price));
   } catch (error) {
     console.error('[Oracle] Failed to cache price:', error);
@@ -227,7 +227,7 @@ async function cacheApexPrice(cardId: string, price: ApexPrice): Promise<void> {
 export async function getCachedApexPrice(cardId: string): Promise<ApexPrice | null> {
   try {
     const key = `price:${cardId}`;
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     const cached = await redis.get(key);
 
     if (!cached) {
@@ -247,7 +247,7 @@ export async function getCachedApexPrice(cardId: string): Promise<ApexPrice | nu
 export async function invalidateApexPrice(cardId: string): Promise<void> {
   try {
     const key = `price:${cardId}`;
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     await redis.del(key);
   } catch (error) {
     console.error('[Oracle] Failed to invalidate price:', error);

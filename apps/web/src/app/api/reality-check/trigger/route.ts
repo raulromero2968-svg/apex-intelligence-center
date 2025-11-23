@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const triggerId = `trigger-${Date.now()}`;
 
     // Set global trigger flag with TTL
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     await redis.set(
       RedisKeys.realityCheckTrigger(),
       triggerId,
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // This would notify all connected SSE clients immediately
     try {
       // @ts-expect-error - publish may not be available in Upstash REST API
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
       await redis.publish(RedisKeys.realityCheckChannel(), triggerId);
     } catch {
       // Pub/sub not available, clients will pick up via SSE polling
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Clear global trigger
-    // @ts-expect-error - Redis type resolution issue
+    // @ts-ignore - Redis type resolution issue
     await redis.del(RedisKeys.realityCheckTrigger());
 
     return NextResponse.json({
