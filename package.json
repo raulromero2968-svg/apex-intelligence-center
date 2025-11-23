@@ -2,20 +2,17 @@
   "name": "apex-intelligence",
   "version": "1.0.0",
   "private": true,
+  "description": "Apex Intelligence - Monorepo Root",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "chart.js": "^4.5.1",
-    "framer-motion": "^11.11.7",
-    "lucide-react": "^0.453.0",
-    "next": "14.2.32",
-    "react": "^18.3.1",
-    "react-chartjs-2": "^5.3.1",
-    "react-dom": "^18.3.1"
+    "dev": "turbo run dev --filter=@apex/web...",
+    "dev:mobile": "turbo run dev --filter=@apex/mobile...",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@apex/web...",
+    "build:mobile": "turbo run build --filter=@apex/mobile...",
+    "start": "turbo run start --filter=@apex/web...",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -25,6 +22,12 @@
     "eslint-plugin-rulesdir": "^0.2.2",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
+    "turbo": "^2.3.3",
     "typescript": "^5"
+  },
+  "packageManager": "pnpm@10.21.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
   }
 }

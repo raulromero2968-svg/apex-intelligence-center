@@ -1,12 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
-  "outputDirectory": ".next",
+  "buildCommand": "cd apps/web && pnpm build",
+  "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
   "regions": ["iad1"],
+  "ignoreCommand": "bash scripts/vercel-ignore.sh",
   "functions": {
-    "app/api/**/*.ts": {
+    "apps/web/app/api/**/*.ts": {
       "memory": 4096,
       "maxDuration": 300
     }

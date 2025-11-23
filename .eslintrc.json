@@ -2,9 +2,7 @@
   "extends": ["next/core-web-vitals", "plugin:mdx/recommended"],
   "plugins": ["@typescript-eslint", "rulesdir", "mdx"],
   "settings": {
-    "rulesdir": {
-      "files": [".eslint/custom-rules/**/*.js"]
-    }
+    "mdx/code-blocks": true
   },
   "rules": {
     "no-restricted-imports": [
