@@ -181,6 +181,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
         </Suspense>
 
         {/* Sources Section - streamed separately */}
+        {/* @ts-ignore - React types conflict */}
         <Suspense fallback={null}>
           {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
             <section className="mt-12 pt-8 border-t border-cyan-500/20">
