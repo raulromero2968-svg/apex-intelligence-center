@@ -39,6 +39,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'lorcana-investment-thesis-2025',
     'japanese-vs-english-tcg-markets',
     'pokemon-151-vs-evolving-skies',
+    'vintage-wotc-market-report-q3-2025',
+    'one-piece-tcg-2025-outlook',
+    'tcg-market-timing-guide',
   ]
 
   const articlePages = articles.map((slug) => ({
@@ -48,13 +51,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  // Vintage WOTC report
-  const vintageReport = {
-    url: `${baseUrl}/intel/vintage-wotc-market-report-q3-2025`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }
-
-  return [...staticPages, ...articlePages, vintageReport]
+  return [...staticPages, ...articlePages]
 }
