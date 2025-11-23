@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Get current global trigger ID
+    // @ts-expect-error - Redis type resolution issue with ioredis conflict
     const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {

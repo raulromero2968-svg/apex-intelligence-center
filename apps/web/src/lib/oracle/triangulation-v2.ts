@@ -226,6 +226,7 @@ async function cacheApexPrice(cardId: string, price: ApexPrice): Promise<void> {
 export async function getCachedApexPrice(cardId: string): Promise<ApexPrice | null> {
   try {
     const key = `price:${cardId}`;
+    // @ts-expect-error - Redis type resolution issue
     const cached = await redis.get(key);
 
     if (!cached) {

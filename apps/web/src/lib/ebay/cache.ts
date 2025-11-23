@@ -31,6 +31,7 @@ export interface CachedEbaySales {
 export async function getCachedEbaySales(cardSlug: string): Promise<EbaySalePoint[] | null> {
   try {
     const key = `${CACHE_PREFIX}${cardSlug}`;
+    // @ts-expect-error - Redis type resolution issue
     const cached = await redis.get(key);
 
     if (!cached) {
