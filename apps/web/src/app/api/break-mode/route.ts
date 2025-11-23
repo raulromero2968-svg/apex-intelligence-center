@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 
     const response: BreakModeResponse = {
       isActive,
-      expiresAt: isActive ? user.breakModeUntil : null,
+      expiresAt: isActive ? (user.breakModeUntil ?? null) : null,
       activatedBy: isActive ? (user.breakModeActivatedBy as 'child' | 'parent') : null,
     };
 
