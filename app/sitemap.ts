@@ -29,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily' as const,
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/pricing`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
   ]
 
   // Blog articles
@@ -42,6 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'vintage-wotc-market-report-q3-2025',
     'one-piece-tcg-2025-outlook',
     'tcg-market-timing-guide',
+    'premium-deep-dive-psa-10-blueprint',
   ]
 
   const articlePages = articles.map((slug) => ({
