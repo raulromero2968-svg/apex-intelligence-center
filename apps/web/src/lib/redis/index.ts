@@ -11,21 +11,13 @@
 
 import { Redis } from '@upstash/redis';
 
-// Environment validation
-if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-  console.warn(
-    'UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set. ' +
-    'Redis features will be disabled.'
-  );
-}
-
 /**
  * Global Redis client instance
  * Uses Upstash REST API for serverless compatibility
  */
 export const redis: Redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  url: process.env.UPSTASH_REDIS_REST_URL || '',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
 });
 
 /**
