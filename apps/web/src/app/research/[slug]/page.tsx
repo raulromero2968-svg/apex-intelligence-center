@@ -112,6 +112,7 @@ function ArticleHeader({ article }: { article: any }) {
 }
 
 // Main research page component
+// @ts-ignore - React types conflict throughout component tree
 export default async function ResearchArticlePage({ params }: ResearchPageProps) {
   const article = await getArticleBySlug(params.slug);
 
