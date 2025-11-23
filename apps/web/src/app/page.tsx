@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Search, Sparkles } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Terminal } from 'lucide-react';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
@@ -14,6 +14,7 @@ import RouteTransition from '@/layout/RouteTransition';
 import ResearchDialog from '@/components/research/ResearchDialog';
 import { blogPosts, researchReports, intelNotes } from '@/content/seed';
 import { ContentKind } from '@/lib/routeMap';
+import { WolfConstellation } from '@/components/hero/WolfConstellation';
 
 // Sample data
 const navLinks = [
@@ -153,48 +154,61 @@ export default function HomePage() {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section */}
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center py-12 lg:py-24">
-            {/* Left side: Content */}
-            <div className="text-left space-y-6">
-              <div className="border border-cyan-500/50 rounded-full px-4 py-2 text-cyan-400 text-sm font-medium">
-                TCG INTELLIGENCE CENTER
-              </div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-                  Underground
-                </span>{' '}
-                <span className="text-white">Intel</span>
-                <br />
-                <span className="text-white">For Serious Collectors</span>
-              </h1>
-              <p className="text-xl text-white/70 max-w-xl">
-                Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                <button
-                  onClick={handleOpenResearch}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-400/20 hover:bg-cyan-400/30 border border-cyan-400/50 rounded-lg text-cyan-400 font-medium transition-colors group"
-                >
-                  <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                  Ask Research
-                  <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-white/10 text-white/70 border border-white/20">
-                    <span>Ctrl</span>
-                    <span>K</span>
-                  </kbd>
-                </button>
-              </div>
-            </div>
+          <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center">
+              {/* Left Column: Copy */}
+              <div className="space-y-8 z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                  </span>
+                  TCG Intelligence Network Online
+                </div>
 
-            {/* Right side: Wolf Logo */}
-            <div className="flex items-center justify-center">
-              <div className="relative w-full max-w-md aspect-square">
-                <Image
-                  src="/wolf-logo.png"
-                  alt="Apex Intelligence Wolf"
-                  fill
-                  className="object-contain mix-blend-screen"
-                  priority
-                />
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
+                  Underground Intel <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
+                    For Serious Collectors
+                  </span>
+                </h1>
+
+                <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
+                  Premium TCG market analysis, data-driven insights, and exclusive intelligence.
+                  Morning Brew meets the underground—delivered to your inbox.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link href="/intel" className="group inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-3 rounded-lg transition-all">
+                    Get Free Intel
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <button className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-medium px-8 py-3 rounded-lg transition-all">
+                    <Terminal className="w-4 h-4 text-slate-400" />
+                    Browse Archives
+                  </button>
+                </div>
+
+                {/* Social Proof / Data Stats */}
+                <div className="flex gap-8 pt-8 border-t border-slate-800/50">
+                  <div>
+                    <div className="text-2xl font-bold text-white">1.2K+</div>
+                    <div className="text-sm text-slate-500">Collectors</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-white">50+</div>
+                    <div className="text-sm text-slate-500">Intel Drops</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-white">$2M+</div>
+                    <div className="text-sm text-slate-500">Cards Tracked</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Visual */}
+              <div className="flex justify-center lg:justify-end z-10">
+                <WolfConstellation />
               </div>
             </div>
           </section>
