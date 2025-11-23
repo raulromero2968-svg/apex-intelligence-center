@@ -4,6 +4,9 @@ import Link from 'next/link';
 import AreaChartViz from '@/components/mdx/AreaChartViz';
 import BarChartViz from '@/components/mdx/BarChartViz';
 import AskFollowUp from '@/components/mdx/AskFollowUp';
+import DataCallout from '@/components/mdx/DataCallout';
+import VARCInsight from '@/components/mdx/VARCInsight';
+import TerminalSection from '@/components/mdx/TerminalSection';
 
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -12,6 +15,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     AreaChartViz,
     BarChartViz,
     AskFollowUp,
+    // VARC-style components
+    DataCallout,
+    VARCInsight,
+    TerminalSection,
     // Override default HTML elements
     h1: ({ children }) => (
       <h1 className="text-4xl font-bold text-white mb-6 mt-8 first:mt-0">
