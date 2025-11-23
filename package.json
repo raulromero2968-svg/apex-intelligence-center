@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "assets:process": "pip install rembg colorama pillow && python3 tools/process_assets.py"
+    "assets:process": "pip install rembg colorama pillow onnxruntime && python3 tools/process_assets.py"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
