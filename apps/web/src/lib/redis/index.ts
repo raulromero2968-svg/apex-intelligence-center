@@ -9,13 +9,13 @@
  * Production patterns from knowledge-10-api-realtime.md
  */
 
-import { Redis } from '@upstash/redis';
+import { Redis as UpstashRedis } from '@upstash/redis';
 
 /**
  * Global Redis client instance
  * Uses Upstash REST API for serverless compatibility
  */
-export const redis: Redis = new Redis({
+export const redis: UpstashRedis = new UpstashRedis({
   url: process.env.UPSTASH_REDIS_REST_URL || '',
   token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
 });
