@@ -162,12 +162,12 @@ class PubSubPool {
     const promises: Promise<void>[] = [];
 
     if (this.publisher) {
-      promises.push(this.publisher.quit() as Promise<void>);
+      promises.push(this.publisher.quit().then(() => {}));
       this.publisher = null;
     }
 
     if (this.subscriber) {
-      promises.push(this.subscriber.quit() as Promise<void>);
+      promises.push(this.subscriber.quit().then(() => {}));
       this.subscriber = null;
     }
 
