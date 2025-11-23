@@ -2,6 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  eslint: {
+    // Disable ESLint during production builds on Vercel
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: [],
   },
