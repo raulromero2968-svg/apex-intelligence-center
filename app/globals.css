@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-cyber-darker text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-image: 
+    background-image:
       radial-gradient(ellipse at top, rgba(176, 38, 255, 0.15), transparent 50%),
       radial-gradient(ellipse at bottom, rgba(0, 102, 255, 0.15), transparent 50%);
     background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .cyber-grid {
@@ -37,15 +43,37 @@
   }
 
   .text-glow-pink {
-    text-shadow: 0 0 10px rgba(255, 0, 110, 0.8);
+    text-shadow:
+      0 0 10px rgba(255, 0, 110, 0.8),
+      0 0 20px rgba(255, 0, 110, 0.4),
+      0 0 30px rgba(255, 0, 110, 0.2);
   }
 
   .text-glow-cyan {
-    text-shadow: 0 0 10px rgba(0, 245, 255, 0.8);
+    text-shadow:
+      0 0 10px rgba(0, 245, 255, 0.8),
+      0 0 20px rgba(0, 245, 255, 0.4),
+      0 0 30px rgba(0, 245, 255, 0.2);
   }
 
   .text-glow-purple {
-    text-shadow: 0 0 10px rgba(176, 38, 255, 0.8);
+    text-shadow:
+      0 0 10px rgba(176, 38, 255, 0.8),
+      0 0 20px rgba(176, 38, 255, 0.4),
+      0 0 30px rgba(176, 38, 255, 0.2);
+  }
+
+  .text-glow-yellow {
+    text-shadow:
+      0 0 10px rgba(234, 179, 8, 0.8),
+      0 0 20px rgba(234, 179, 8, 0.4),
+      0 0 30px rgba(234, 179, 8, 0.2);
+  }
+
+  .glow-text-yellow {
+    text-shadow:
+      0 0 10px rgba(234, 179, 8, 0.6),
+      0 0 20px rgba(234, 179, 8, 0.3);
   }
 
   .holographic {

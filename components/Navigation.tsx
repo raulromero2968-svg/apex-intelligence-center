@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import { IntelSearch } from './search/IntelSearch'
 
 export default function Navigation() {
   const pathname = usePathname()
@@ -34,7 +35,7 @@ export default function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -50,6 +51,7 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            <IntelSearch />
             <Link href="/subscribe" className="btn-primary">
               Get Intel
             </Link>

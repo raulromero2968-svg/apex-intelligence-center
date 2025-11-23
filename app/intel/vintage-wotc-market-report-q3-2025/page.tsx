@@ -1,19 +1,38 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
 import Navigation from '@/components/Navigation';
 import { Crown, History, TrendingUp, ShieldCheck, ArrowLeft, Home } from 'lucide-react';
 import IntelChart from '@/components/intel/IntelChart';
+import { ArticleStructuredData } from '@/components/seo/ArticleStructuredData';
 
-// META:
-// Title: Vintage WOTC Report: The Flight to Quality
-// Description: Q3 2025 analysis of the Wizards of the Coast era. Why 'Base Set' remains the gold standard in a volatile economy.
+export const metadata: Metadata = {
+  title: 'Vintage WOTC Report Q3 2025: The Flight to Quality',
+  description: 'Q3 2025 analysis of the Wizards of the Coast era. Why Base Set remains the gold standard in a volatile TCG economy.',
+  keywords: ['Vintage Pokemon', 'WOTC', 'Base Set', 'PSA Grading', 'Neo Destiny', 'TCG Investment', 'Pokemon Cards'],
+  openGraph: {
+    title: 'Vintage WOTC Report Q3 2025: The Flight to Quality',
+    description: 'Analysis of vintage Wizards of the Coast Pokemon cards and their performance in Q3 2025',
+    type: 'article',
+    publishedTime: '2025-09-15T00:00:00.000Z',
+    authors: ['Apex Intelligence Research Team'],
+  },
+};
 
 export default function VintageWOTCArticle() {
   return (
-    <main className="min-h-screen bg-[#030712] text-gray-300 font-sans selection:bg-yellow-500/30">
-      <StarfieldBackground />
-      <Navigation />
+    <>
+      <ArticleStructuredData
+        title="Vintage WOTC Report Q3 2025: The Flight to Quality"
+        description="Q3 2025 analysis of the Wizards of the Coast era. Why Base Set remains the gold standard in a volatile economy."
+        datePublished="2025-09-15T00:00:00.000Z"
+        author="Apex Intelligence Research Team"
+        url="https://apex-intelligence.io/intel/vintage-wotc-market-report-q3-2025"
+      />
+      <main className="min-h-screen bg-[#030712] text-gray-300 font-sans selection:bg-yellow-500/30">
+        <StarfieldBackground />
+        <Navigation />
 
       <article className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         {/* Breadcrumb Navigation */}
@@ -132,5 +151,6 @@ export default function VintageWOTCArticle() {
 
       </article>
     </main>
+    </>
   );
 }
