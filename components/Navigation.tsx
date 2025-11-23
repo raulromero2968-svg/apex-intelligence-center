@@ -18,14 +18,16 @@ export default function Navigation() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-cyber-dark/80 border-b border-neon-cyan/20">
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/90 border-b border-neon-cyan/20">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center">
-              <span className="text-2xl font-bold font-[family-name:var(--font-orbitron)]">A</span>
-            </div>
+            <img 
+              src="/images/apex-wolf-black-bg-final.png" 
+              alt="Apex Intelligence Logo" 
+              className="w-10 h-10 object-contain"
+            />
             <span className="text-xl font-bold font-[family-name:var(--font-orbitron)] text-glow-cyan">
               APEX<span className="text-neon-pink">_</span>INTELLIGENCE
             </span>
