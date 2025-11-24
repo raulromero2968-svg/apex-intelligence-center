@@ -264,21 +264,37 @@ canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   RESTORED TYPOGRAPHY - CLEAN & NEON
+   RESTORED CLEAN TYPOGRAPHY (Inter) - INSTITUTIONAL TECH
    ═══════════════════════════════════════════════════════════ */
 
-/* Main hierarchy - Revert to clean Inter font */
+/* Main hierarchy - Clean Inter font with professional styling */
 h1, h2, h3, h4, h5, h6 {
-  /* Revert to the default clean font, but keep uppercase for impact */
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 900;
+  font-family: var(--font-inter), system-ui, sans-serif; /* Back to clean */
+  font-weight: 800; /* Bold but not blocky */
   text-transform: uppercase;
-  letter-spacing: -0.04em; /* Tight & Clean */
+  letter-spacing: -0.03em; /* Tight, modern spacing */
+  color: #fff;
 }
 
 /* Readable body font but technical */
 p, li, div {
   font-family: var(--font-inter), sans-serif;
+}
+
+/* SUBTLE PREMIUM GLOW (Replaces jagged circuit effect) */
+.neon-circuit-text {
+  color: #fff;
+  position: relative;
+  display: inline-block;
+  /* Clean white text with a soft cyan aura */
+  text-shadow:
+    0 0 20px rgba(34, 211, 238, 0.5),
+    0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+/* Remove the jarring "stroke" and "glitch" animations from before */
+.neon-circuit-text::before {
+  display: none;
 }
 
 /* TITAN HOLLOW GLITCH (The "Reference" Look) */
