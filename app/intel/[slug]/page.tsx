@@ -1,55 +1,67 @@
 import { notFound } from 'next/navigation';
-import { ArticleLayout } from '@/components/research/ArticleLayout';
-import { getArticleBySlug, getAllArticles } from '@/lib/articles';
+import { IntelHeader } from '@/components/intel/IntelHeader';
+import { IntelBody } from '@/components/intel/IntelBody';
+import { INTEL_ARCHIVE, getArticleBySlug } from '@/lib/data/intel-archive';
 
-interface ArticlePageProps {
+interface IntelPageProps {
   params: {
     slug: string;
   };
 }
 
-// Generate static params for all articles (optional, for static generation)
+// Generate static params for all intel reports
 export async function generateStaticParams() {
-  const articles = getAllArticles();
-  return articles.map((article) => ({
+  return INTEL_ARCHIVE.map((article) => ({
     slug: article.slug,
   }));
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: ArticlePageProps) {
+export async function generateMetadata({ params }: IntelPageProps) {
   const article = getArticleBySlug(params.slug);
 
   if (!article) {
     return {
-      title: 'Article Not Found',
+      title: 'Report Not Found',
     };
   }
 
   return {
     title: `${article.title} | Apex Intelligence`,
-    description: article.excerpt,
+    description: article.summary,
   };
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
+// Color mapping for Elite tier
+const colorMap: Record<string, "cyan" | "purple" | "amber"> = {
+  "Elite": "cyan", // Updated from "Whale" to "Elite"
+  "Pro": "purple",
+  "Free": "amber"
+};
+
+export default function IntelReportPage({ params }: IntelPageProps) {
   const article = getArticleBySlug(params.slug);
 
   if (!article) {
     notFound();
   }
 
+  const tier = article.tier || "Free";
+  const themeColor = colorMap[tier] || "amber";
+
   return (
-    <ArticleLayout
-      title={article.title}
-      excerpt={article.excerpt}
-      content={article.content}
-      author={article.author}
-      date={article.date}
-      readTime={article.readTime}
-      category={article.category}
-      citations={article.citations}
-      isPremium={article.isPremium}
-    />
+    <main className="min-h-screen pt-24 px-6 relative z-10">
+      <div className="max-w-4xl mx-auto">
+        {/* INTEL HEADER */}
+        <IntelHeader
+          slug={params.slug}
+          title={article.title}
+          tier={tier}
+        />
+
+        {/* INTEL BODY */}
+        <IntelBody slug={params.slug} />
+      </div>
+    </main>
   );
 }

@@ -1,53 +1,93 @@
 export const INTEL_ARCHIVE = [
+  // 🟡 YELLOW DIAMOND (FREE) - VINTAGE WOTC
   {
     id: "vintage-wotc",
     slug: "vintage-wotc-investment-guide",
-    tier: "Free", // 🟡 YELLOW DIAMOND
+    tier: "Free",
     title: "Vintage WOTC Cards: The Blue-Chip Investment Thesis",
     summary: "Deep analysis of 1999-2003 Wizards of the Coast era. Why Base Set Charizard remains the S&P 500 of TCG investing.",
     category: "Vintage Analysis",
     readTime: "15 min read",
     date: "Oct 10, 2025",
+    image: "/images/intel/charizard.jpg",
+    roi: "Steady",
     sources: [{ name: "PWCC Analytics", url: "#" }, { name: "PSA Pop Report", url: "#" }],
+    // SPECIFIC CHART DATA FOR VINTAGE
+    chartData: [
+      { label: '2015', value: 2000 },
+      { label: '2017', value: 3500 },
+      { label: '2019', value: 4200 },
+      { label: '2021', value: 18500 },
+      { label: '2023', value: 14000 },
+      { label: '2025', value: 16500 }
+    ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
-        In 1999, Wizards of the Coast printed the first English Pokémon cards. Twenty-six years later, a PSA 10 Base Set 1st Edition Charizard sells for <strong>$420,000</strong>. This isn't speculation—it's asset appreciation backed by fundamental scarcity.
+        In 1999, Wizards of the Coast printed the first English Pokémon cards in a Renton, Washington facility. Twenty-six years later, a PSA 10 Base Set 1st Edition Charizard sells for <strong>$420,000</strong>. This isn't speculation—it's asset appreciation backed by fundamental scarcity.
       </p>
+
       <h3 class="text-xl font-bold text-white mt-12 mb-4 border-l-4 border-amber-500 pl-4">The Foundation Layer</h3>
-      <p class="text-slate-400 mb-6">
+      <p class="text-slate-400 mb-6 leading-relaxed">
         The WOTC era (1999-2003) represents the <strong>foundation layer</strong> of TCG investing. Unlike modern sets with print runs in the tens of millions, vintage WOTC cards were produced in limited quantities.
       </p>
-      <div class="my-8 p-6 bg-slate-900/50 border border-slate-800 rounded-lg">
+
+      <div class="my-12 p-6 bg-slate-900/50 border border-slate-800 rounded-lg">
         <h4 class="text-amber-400 font-mono text-xs uppercase tracking-widest mb-4">/// MARKET_DATA: POPULATION REPORT</h4>
-        <ul class="space-y-2 text-sm text-slate-300 font-mono">
-          <li class="flex justify-between border-b border-slate-800 pb-2"><span>Base Set Charizard (PSA 10)</span><span class="text-white">124 Copies</span></li>
-          <li class="flex justify-between"><span>Neo Genesis Lugia (PSA 10)</span><span class="text-white">43 Copies</span></li>
+        <ul class="space-y-3 text-sm text-slate-300 font-mono">
+          <li class="flex justify-between border-b border-slate-800 pb-2">
+            <span>Base Set Charizard (PSA 10)</span>
+            <span class="text-white">124 Copies</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Neo Genesis Lugia (PSA 10)</span>
+            <span class="text-white">43 Copies</span>
+          </li>
         </ul>
       </div>
+
       <h3 class="text-xl font-bold text-white mt-12 mb-4 border-l-4 border-amber-500 pl-4">The Blue-Chip Hierarchy</h3>
-      <ul class="list-none space-y-4 mb-12">
-        <li class="bg-slate-900/30 p-4 border-l-2 border-amber-500"><strong class="text-amber-400 block text-xs uppercase">Tier 1: The Foundation</strong> Base Set, Jungle, Fossil.</li>
-        <li class="bg-slate-900/30 p-4 border-l-2 border-slate-600"><strong class="text-slate-300 block text-xs uppercase">Tier 2: The Neo Era</strong> Genesis, Discovery, Destiny.</li>
+      <ul class="list-none space-y-6 mb-12">
+        <li class="bg-slate-900/30 p-4 border-l-2 border-amber-500">
+          <strong class="text-amber-400 block text-sm uppercase mb-1">Tier 1: The Foundation</strong>
+          <span class="text-slate-400 text-sm">Base Set, Jungle, Fossil. The "Bitcoin" of Pokemon.</span>
+        </li>
+        <li class="bg-slate-900/30 p-4 border-l-2 border-slate-600">
+          <strong class="text-slate-400 block text-sm uppercase mb-1">Tier 2: The Neo Era</strong>
+          <span class="text-slate-400 text-sm">Genesis, Discovery, Destiny. The "Growth Stocks".</span>
+        </li>
       </ul>
     `
   },
+
+  // 🟣 PURPLE DIAMOND (PRO) - POKEMON 151
   {
     id: "pokemon-151",
     slug: "pokemon-151-set-analysis",
-    tier: "Pro", // 🟣 PURPLE DIAMOND
+    tier: "Pro",
     title: "Pokémon 151: Dissecting the Nostalgia Premium",
     summary: "Economic analysis of the 2023 mega-set. Pull rates, chase card valuations, and the 'K-shaped' recovery.",
     category: "Set Analysis",
     readTime: "12 min read",
     date: "Sep 15, 2025",
-    sources: [{ name: "PokeData", url: "#" }, { name: "TCGPlayer Pro", url: "#" }],
+    image: "/images/intel/151-box.jpg",
+    trend: "Volatile",
+    sources: [{ name: "PokeData", url: "#" }],
+    // CHART DATA FOR SET ANALYSIS
+    chartData: [
+      { label: 'Release', value: 100 },
+      { label: 'Wk 2', value: 140 },
+      { label: 'Wk 4', value: 90 },
+      { label: 'Wk 12', value: 65 },
+      { label: 'Wk 24', value: 85 },
+      { label: 'Now', value: 110 }
+    ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
         In June 2023, The Pokémon Company released the most culturally significant modern set since XY Evolutions. <strong>Pokémon 151</strong> drove singles prices to levels unseen since the 2021 boom.
       </p>
       <h3 class="text-xl font-bold text-white mt-12 mb-4 border-l-4 border-purple-500 pl-4">The "Premium Trap" Phenomenon</h3>
       <p class="text-slate-400 mb-6">
-        Set economics create a "burden of value". You'll pull an ex card every 3.4 packs, but 80% of ex cards are worth under $1. The EV (expected value) of a box hovers at $120, while boxes cost $140+. You are paying a <strong>nostalgia tax</strong>.
+        Set economics create a "burden of value". You'll pull an ex card every 3.4 packs, but 80% of ex cards are worth under $1. The EV (expected value) of a box hovers at $120, while boxes cost $140+.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
         <div class="p-4 border border-purple-500/30 bg-purple-900/10 rounded">
@@ -59,44 +99,58 @@ export const INTEL_ARCHIVE = [
            <div class="text-2xl font-bold text-white">$850 est.</div>
         </div>
       </div>
-      <h3 class="text-xl font-bold text-white mt-12 mb-4 border-l-4 border-purple-500 pl-4">Chase Card Hierarchy</h3>
-      <p class="text-slate-400">For investors, only specific Illustration Rares (IR) and Special Illustration Rares (SIR) matter. Bulk V/ex cards are dead weight.</p>
     `
   },
+
+  // 🔵 CYAN DIAMOND (ELITE) - ROTATION STRATEGY
   {
     id: "modern-rotation",
     slug: "modern-set-rotation-strategy",
-    tier: "Whale", // 🔵 CYAN DIAMOND
+    tier: "Elite", // CHANGED FROM WHALE
     title: "The Rotation Window: Timing Modern Format Transitions",
-    summary: "Strategic analysis of TCG set rotation mechanics. Price volatility patterns and optimal entry/exit points for maximum alpha.",
+    summary: "Strategic analysis of TCG set rotation mechanics. Price volatility patterns and optimal entry/exit points.",
     category: "Strategy",
     readTime: "7 min read",
     date: "Sep 28, 2025",
-    sources: [{ name: "TcgPlayer", url: "#" }, { name: "LimitlessTCG", url: "#" }],
+    image: "/images/intel/rotation.jpg",
+    spread: "High",
+    sources: [{ name: "TcgPlayer", url: "#" }],
+    // CHART DATA FOR STRATEGY
+    chartData: [
+      { label: 'Pre-Rot', value: 100 },
+      { label: 'Panic', value: 60 },
+      { label: 'Low', value: 55 },
+      { label: 'Recovery', value: 80 },
+      { label: 'Expanded', value: 150 }
+    ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
-        Every 12-18 months, the Pokémon TCG rotates older sets out of Standard format. For most players, this is an inconvenience. For the informed investor, it's a <strong>cyclical arbitrage opportunity</strong> worth millions.
+        Every 12-18 months, the Pokémon TCG rotates older sets out of Standard format. For the informed investor, it's a <strong>cyclical arbitrage opportunity</strong> worth millions.
       </p>
+
       <h3 class="text-xl font-bold text-white mt-12 mb-4 border-l-4 border-cyan-500 pl-4">The Six-Phase Rotation Cycle</h3>
-      <ul class="space-y-4 my-8">
-        <li class="flex gap-4">
-           <div class="w-8 h-8 rounded-full bg-cyan-500 text-black font-bold flex items-center justify-center shrink-0">1</div>
-           <div>
-             <strong class="text-cyan-400 block text-sm uppercase">Pre-Rotation Speculation (6-3 months out)</strong>
-             <span class="text-slate-400 text-sm">Smart money begins accumulating staples. Casual players start panic buying cards they "might need."</span>
-           </div>
-        </li>
-        <li class="flex gap-4">
-           <div class="w-8 h-8 rounded-full bg-cyan-900 text-cyan-400 font-bold flex items-center justify-center shrink-0">2</div>
-           <div>
-             <strong class="text-cyan-400 block text-sm uppercase">Peak Mania (1 month before)</strong>
-             <span class="text-slate-400 text-sm">Prices peak as players rush to complete decks. This is the absolute sell window.</span>
-           </div>
-        </li>
-      </ul>
-      <div class="p-6 border border-cyan-500 bg-cyan-950/20 rounded-lg">
-        <h4 class="text-white font-bold mb-2">ALPHA ALERT: 2026 Rotation Watchlist</h4>
-        <p class="text-slate-400 text-sm">Our models indicate <strong>Lugia VSTAR</strong> and <strong>Gardevoir ex</strong> will see 40% volatility in Q1 2026. Accumulate alternate arts during the Q4 dip.</p>
+
+      <div class="my-12 p-6 bg-slate-900/50 border border-slate-800 rounded-lg">
+        <h4 class="text-cyan-400 font-mono text-xs uppercase tracking-widest mb-4">/// MARKET_DATA: VOLATILITY INDEX</h4>
+        <ul class="space-y-4 text-sm text-slate-300 font-mono">
+          <li class="flex items-center gap-4">
+             <div class="w-8 h-8 rounded bg-cyan-500 text-black font-bold flex items-center justify-center">1</div>
+             <div class="flex-1"><strong class="text-white block">Pre-Rotation</strong><span class="text-xs text-slate-500">6-3 Months Out. Smart money accumulates.</span></div>
+          </li>
+          <li class="flex items-center gap-4">
+             <div class="w-8 h-8 rounded bg-slate-700 text-cyan-400 font-bold flex items-center justify-center">2</div>
+             <div class="flex-1"><strong class="text-white block">The "Panic Dump"</strong><span class="text-xs text-slate-500">2 Weeks Post-Rotation. Absolute low.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-12 p-8 bg-gradient-to-br from-cyan-950/40 to-slate-950 border border-cyan-500/30 rounded-xl">
+        <h3 class="text-xl font-bold text-white mb-2">ELITE EXECUTION STRATEGY</h3>
+        <p class="text-cyan-400 text-xs font-mono mb-6">CAPITAL DEPLOYMENT PLAN</p>
+        <ul class="list-disc list-inside text-slate-300 text-sm space-y-2">
+          <li><strong>Entry Point:</strong> April 15-30 (Post-Rotation Dip)</li>
+          <li><strong>Target Asset:</strong> High-Rarity Staples</li>
+        </ul>
       </div>
     `
   },
@@ -115,6 +169,12 @@ export const INTEL_ARCHIVE = [
     sources: [
       { id: 1, name: "eBay Terapeak", url: "https://www.ebay.com/sh/research", publisher: "eBay", accessed: "Nov 2025" },
       { id: 2, name: "TCGPlayer Pro", url: "https://www.tcgplayer.com/", publisher: "TCGPlayer", accessed: "Nov 2025" }
+    ],
+    chartData: [
+      { label: 'Q1', value: 220 },
+      { label: 'Q2', value: 245 },
+      { label: 'Q3', value: 280 },
+      { label: 'Q4', value: 250 }
     ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
@@ -150,6 +210,14 @@ export const INTEL_ARCHIVE = [
       { id: 1, name: "CardLadder", url: "https://www.cardladder.com/", publisher: "CardLadder", accessed: "Nov 2025" },
       { id: 2, name: "PWCC Archive", url: "https://www.pwccmarketplace.com/", publisher: "PWCC", accessed: "Nov 2025" }
     ],
+    chartData: [
+      { label: '2020', value: 100 },
+      { label: '2021', value: 182 },
+      { label: '2022', value: 155 },
+      { label: '2023', value: 168 },
+      { label: '2024', value: 190 },
+      { label: '2025', value: 215 }
+    ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
         We analyzed 500 matched pairs of PSA and BGS graded cards across three years to determine which service delivers better ROI. The results challenge conventional wisdom about grading service selection.
@@ -176,7 +244,7 @@ export const INTEL_ARCHIVE = [
   {
     id: "cross-border",
     slug: "cross-border-tcg-arbitrage",
-    tier: "Whale",
+    tier: "Elite", // CHANGED FROM WHALE
     title: "Cross Border TCG Arbitrage: Where Spreads Hide",
     summary: "We use price gaps up to 40% across 12 currencies. We map fees, friction, and safe lanes to move cardboard like a pro.",
     category: "Research",
@@ -188,6 +256,12 @@ export const INTEL_ARCHIVE = [
       { id: 1, name: "Mercari JP", url: "https://www.mercari.com/jp/", publisher: "Mercari", accessed: "Nov 2025" },
       { id: 2, name: "eBay US", url: "https://www.ebay.com/", publisher: "eBay", accessed: "Nov 2025" },
       { id: 3, name: "Cardmarket EU", url: "https://www.cardmarket.com/", publisher: "Cardmarket", accessed: "Nov 2025" }
+    ],
+    chartData: [
+      { label: 'JP→US', value: 38 },
+      { label: 'US→EU', value: 22 },
+      { label: 'EU→AS', value: 27 },
+      { label: 'AS→US', value: 31 }
     ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
@@ -228,6 +302,14 @@ export const INTEL_ARCHIVE = [
     sources: [
       { id: 1, name: "TCGFish", url: "https://www.tcgfish.com/", publisher: "TCGFish", accessed: "Nov 2025" },
       { id: 2, name: "Pokedata", url: "https://www.pokedata.io/", publisher: "Pokedata", accessed: "Nov 2025" }
+    ],
+    chartData: [
+      { label: '2013', value: 100 },
+      { label: '2015', value: 132 },
+      { label: '2017', value: 178 },
+      { label: '2019', value: 241 },
+      { label: '2021', value: 386 },
+      { label: '2023', value: 425 }
     ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
@@ -270,6 +352,14 @@ export const INTEL_ARCHIVE = [
     sources: [
       { id: 1, name: "Bandai Official", url: "https://world.bandai.com/", publisher: "Bandai", accessed: "Nov 2025" }
     ],
+    chartData: [
+      { label: 'Q1 23', value: 100 },
+      { label: 'Q2 23', value: 165 },
+      { label: 'Q3 23', value: 220 },
+      { label: 'Q4 23', value: 245 },
+      { label: 'Q1 24', value: 310 },
+      { label: 'Q2 24', value: 280 }
+    ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
         One Piece TCG has experienced explosive growth since its 2022 launch. Understanding how to navigate this rapidly expanding market requires strategic discipline and historical context.
@@ -306,6 +396,12 @@ export const INTEL_ARCHIVE = [
     sources: [
       { id: 1, name: "PSA Tech Blog", url: "https://www.psacard.com/", publisher: "PSA", accessed: "Oct 2025" },
       { id: 2, name: "CGC Announcements", url: "https://www.cgccards.com/", publisher: "CGC", accessed: "Oct 2025" }
+    ],
+    chartData: [
+      { label: 'AI Scan', value: 95 },
+      { label: 'Blockchain', value: 75 },
+      { label: 'Expert', value: 92 },
+      { label: 'Combined', value: 98 }
     ],
     content: `
       <p class="lead text-lg text-slate-300 mb-8 leading-relaxed">
