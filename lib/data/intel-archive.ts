@@ -10,17 +10,47 @@ export const INTEL_ARCHIVE = [
     readTime: "15 min read",
     date: "Oct 10, 2025",
     image: "/images/intel/charizard.jpg",
-    chartData: [{label: '2015', value: 2000}, {label: '2025', value: 16500}],
+
+    // CHART DATA
+    chartData: [
+      { label: '2015', value: 2000 }, { label: '2017', value: 3500 },
+      { label: '2019', value: 4200 }, { label: '2021', value: 18500 },
+      { label: '2023', value: 12000 }, { label: '2025', value: 16500 }
+    ],
+
+    // *** FULL CONTENT ***
     content: `
-      <p class="lead text-lg text-slate-300 mb-8">In 1999, Wizards of the Coast printed the first English Pokémon cards. Today, a PSA 10 Base Set 1st Edition Charizard sells for <strong>$420,000</strong>. This is asset appreciation backed by fundamental scarcity.</p>
-      <h3 class="text-xl font-bold text-white mt-8 mb-4 border-l-4 border-amber-500 pl-4">The Foundation Layer</h3>
-      <p class="text-slate-400 mb-6">The WOTC era (1999-2003) represents the foundation layer of TCG investing. Unlike modern sets with print runs in the tens of millions, vintage WOTC cards were produced in limited quantities.</p>
-      <div class="my-8 p-6 bg-slate-900/50 border border-slate-800 rounded-lg">
-        <h4 class="text-amber-400 font-mono text-xs uppercase tracking-widest mb-4">/// MARKET_DATA: POPULATION REPORT</h4>
-        <ul class="space-y-2 text-sm text-slate-300 font-mono">
-          <li class="flex justify-between border-b border-slate-800 pb-2"><span>Base Set Charizard (PSA 10)</span><span class="text-white">124 Copies</span></li>
+      <p class="text-xl text-slate-200 mb-8 leading-relaxed font-light">
+        In 1999, Wizards of the Coast printed the first English Pokémon cards in a Renton, Washington facility. Twenty-six years later, a PSA 10 Base Set 1st Edition Charizard sells for <strong>$420,000</strong>. This isn't speculation—it's asset appreciation backed by fundamental scarcity.
+      </p>
+
+      <h3 class="text-2xl font-bold text-white mt-12 mb-6 border-l-4 border-amber-500 pl-4">1. The Foundation Layer</h3>
+      <p class="text-slate-400 mb-6 leading-relaxed">
+        The WOTC era (1999-2003) represents the <strong>foundation layer</strong> of TCG investing. Unlike modern sets with print runs in the tens of millions, vintage WOTC cards were produced in limited quantities, distributed regionally, and stored by children who treated them as toys. The result: structural supply constraints that only tighten with time.
+      </p>
+
+      <div class="my-12 p-8 bg-slate-900/50 border border-slate-800 rounded-xl">
+        <h4 class="text-amber-400 font-mono text-sm uppercase tracking-widest mb-6">/// MARKET_DATA: POPULATION REPORT</h4>
+        <ul class="space-y-4 text-sm text-slate-300 font-mono">
+          <li class="flex justify-between border-b border-slate-800 pb-2">
+            <span>Base Set Charizard (PSA 10)</span>
+            <span class="text-white font-bold">124 Copies</span>
+          </li>
+          <li class="flex justify-between border-b border-slate-800 pb-2">
+            <span>Jungle Pikachu (PSA 10)</span>
+            <span class="text-white font-bold">842 Copies</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Neo Genesis Lugia (PSA 10)</span>
+            <span class="text-white font-bold">43 Copies</span>
+          </li>
         </ul>
       </div>
+
+      <h3 class="text-2xl font-bold text-white mt-12 mb-6 border-l-4 border-amber-500 pl-4">2. The Blue-Chip Hierarchy</h3>
+      <p class="text-slate-400 mb-6 leading-relaxed">
+        Just as the S&P 500 has sectors, Vintage Pokemon has tiers. Capital flows typically move from Tier 1 downwards during bull runs, and retract to Tier 1 during bears.
+      </p>
     `
   },
   // 2. STRATEGY (Elite/Cyan)
