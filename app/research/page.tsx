@@ -1,149 +1,163 @@
 'use client';
 
-import React from 'react';
-import { ResearchArticle, ResearchReport } from '@/components/research/ResearchArticle';
-import { CitationTooltip } from '@/components/research/CitationTooltip';
-
-// MOCK CONTENT: Represents the output of our "Gemini" Research Agent
-const MOCK_REPORT: ResearchReport = {
-  id: 'R-2025-001',
-  title: 'The "Waifu" Effect: Analysis of Female Trainer Cards in 2025',
-  summary: 'An in-depth look at the market performance of Full Art Supporter cards.',
-  author: 'Gemini (Chief Research Agent)',
-  date: 'Nov 22, 2025',
-  tags: ['Market Trends', 'Pokemon', 'Behavioral Economics'],
-  sources: {
-    '1': { title: 'TCGPlayer Market Report Q3 2025', url: '#', domain: 'tcgplayer.com', date: 'Oct 15, 2025' },
-    '2': { title: 'eBay Auction Data: Lillie (UP) PSA 10', url: '#', domain: 'ebay.com', date: 'Nov 01, 2025' },
-    '3': { title: 'Psychology of Collecting: Anime Aesthetics', url: '#', domain: 'journal.psych.org', date: '2024' }
-  },
-  content: `
-The "Waifu Tax" is a colloquial term used in the TCG community to describe the premium price attached to cards featuring popular female characters. Our analysis indicates this is not a temporary bubble, but a structural shift in collector demographics.
-
-## Market Velocity vs. Standard Sets
-
-While the broader Pokémon market has seen a correction of **-12%** since the 2021 peak, Full Art Supporter cards have outperformed the index by **+34%** year-over-year.
-
-> "The aesthetic appeal of these cards transcends the game mechanics, effectively turning them into digital-analog art pieces."
-
-This decoupling from playability suggests these assets behave more like fine art than game pieces. Data from TCGPlayer confirms that 65% of high-value transactions for these cards are from accounts classified as "Pure Collectors" rather than competitive players.
-
-## The Lillie Anomaly
-
-The case study of *Lillie (Ultra Prism)* provides the clearest evidence. Despite three reprint cycles in Japan, the international version has maintained a price floor of $400 USD.
-
-Our predictive model suggests a continued upward trend for "Generation 7" supporters due to nostalgia cycles hitting the 20-25 age demographic.
-  `
-};
+import Link from 'next/link';
+import { ArrowRight, Search, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { getAllArticles } from '@/lib/articles';
 
 export default function ResearchPage() {
-  // Enhanced Mock: In a real app, we would parse the markdown and replace [x] with the tooltip component.
-  // For this POC, we will manually render the interactive version of the content to demonstrate the UI.
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  const articles = getAllArticles();
+
+  const filteredArticles = articles.filter(article =>
+    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const categories = ['All', ...Array.from(new Set(articles.map(a => a.category)))];
+
+  const displayedArticles = activeCategory === 'All'
+    ? filteredArticles
+    : filteredArticles.filter(article => article.category === activeCategory);
 
   return (
-    <div className="min-h-screen pt-24 pb-20 relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-950/20 via-transparent to-transparent opacity-50" />
+    <div className="min-h-screen py-20 bg-gradient-to-b from-slate-950 to-slate-900">
+      <div className="container-custom">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-950/30 border border-cyan-400/30 rounded-full text-cyan-400 text-sm mb-6">
+            <Sparkles className="w-4 h-4" />
+            AI-Powered Research
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+            Intelligence Archive
+          </h1>
+          <p className="text-xl text-gray-400">
+            Deep market analysis, LAMARL insights, and data-driven research for serious TCG collectors and investors.
+          </p>
+        </motion.div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        {/* Navigation Breadcrumb */}
-        <div className="mb-8 max-w-3xl mx-auto flex items-center gap-2 text-sm text-slate-500">
-            <span className="hover:text-white cursor-pointer transition-colors">Intelligence</span>
-            <span>/</span>
-            <span className="text-cyan-400">Deep Dive</span>
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-12">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-cyan" size={20} />
+            <input
+              type="text"
+              placeholder="Search research papers, market analysis..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-cyber-dark/50 border border-neon-cyan/30 rounded-lg
+                       text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none
+                       focus:shadow-neon-cyan transition-all backdrop-blur-md"
+            />
+          </div>
         </div>
 
-        {/* The Article */}
-        <div className="bg-slate-950/50 border border-slate-800/50 rounded-2xl p-8 md:p-12 backdrop-blur-sm shadow-2xl">
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-3 justify-center mb-12">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300
+                ${activeCategory === category
+                  ? 'bg-neon-cyan/20 text-neon-cyan border border-neon-cyan shadow-neon-cyan'
+                  : 'bg-cyber-dark/30 text-gray-400 border border-gray-700 hover:border-neon-cyan/50'
+                }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
 
-           {/* We render the component but here we perform the "Injection" of the tooltips manually for the demo
-               In production this would be a rehype plugin
-           */}
-           <article className="max-w-3xl mx-auto">
-              <header className="mb-12 border-b border-slate-800 pb-8">
-                <div className="flex gap-2 mb-4">
-                  {MOCK_REPORT.tags.map(tag => (
-                    <span key={tag} className="px-2 py-0.5 rounded-full bg-cyan-950/50 border border-cyan-900 text-cyan-400 text-xs font-mono uppercase tracking-wider">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                  {MOCK_REPORT.title}
-                </h1>
-                <div className="flex items-center gap-6 text-slate-400 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
-                    <span className="text-slate-300">{MOCK_REPORT.author}</span>
+        {/* Articles Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayedArticles.map((article, index) => (
+            <motion.article
+              key={article.slug}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="card-cyber group cursor-pointer h-full flex flex-col"
+            >
+              <Link href={`/intel/${article.slug}`} className="flex flex-col h-full">
+                {article.isPremium && (
+                  <div className="inline-block mb-3 px-3 py-1 rounded-full bg-neon-pink/20 border border-neon-pink/50 w-fit">
+                    <span className="text-xs font-semibold text-neon-pink">PREMIUM</span>
                   </div>
-                  <span>{MOCK_REPORT.date}</span>
-                </div>
-              </header>
+                )}
 
-              <div className="prose prose-invert prose-cyan max-w-none text-lg text-slate-300 leading-relaxed">
-                <p className="mb-6">
-                  The "Waifu Tax" is a colloquial term used in the TCG community to describe the premium price attached to cards featuring popular female characters. Our analysis indicates this is not a temporary bubble, but a structural shift in collector demographics <CitationTooltip id="1" source={MOCK_REPORT.sources['1']} />.
-                </p>
-
-                <h2 className="text-2xl font-bold text-white mt-12 mb-4 flex items-center gap-2">
-                  <span className="w-1 h-8 bg-cyan-500 rounded-full inline-block"/>
-                  Market Velocity vs. Standard Sets
-                </h2>
-
-                <p className="mb-6">
-                  While the broader Pokémon market has seen a correction of <strong>-12%</strong> since the 2021 peak, Full Art Supporter cards have outperformed the index by <strong>+34%</strong> year-over-year <CitationTooltip id="2" source={MOCK_REPORT.sources['2']} />.
-                </p>
-
-                <blockquote className="border-l-4 border-purple-500 pl-6 py-2 my-8 bg-gradient-to-r from-purple-900/20 to-transparent italic text-slate-200 text-xl">
-                  "The aesthetic appeal of these cards transcends the game mechanics, effectively turning them into digital-analog art pieces."
-                </blockquote>
-
-                <p className="mb-6">
-                  This decoupling from playability suggests these assets behave more like fine art than game pieces <CitationTooltip id="3" source={MOCK_REPORT.sources['3']} />. Data from TCGPlayer confirms that 65% of high-value transactions for these cards are from accounts classified as "Pure Collectors" rather than competitive players.
-                </p>
-
-                {/* Visual Break / Chart Placeholder */}
-                <div className="my-10 p-1 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl">
-                   <div className="bg-slate-950 rounded-lg p-6 flex flex-col items-center justify-center min-h-[300px] border border-slate-800">
-                      <div className="text-slate-500 text-sm font-mono mb-2">FIG 1.1: PRICE PERFORMANCE DELTA</div>
-                      {/* We could reuse the IntelChart here */}
-                      <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden max-w-md">
-                        <div className="bg-cyan-500 h-full w-[75%] animate-[width_2s_ease-out]" style={{width: '75%'}}></div>
-                      </div>
-                      <div className="flex justify-between w-full max-w-md mt-2 text-xs text-slate-400">
-                         <span>Standard Market</span>
-                         <span className="text-cyan-400 font-bold">+34% (Target Segment)</span>
-                      </div>
-                   </div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-semibold text-neon-cyan">{article.category}</span>
+                  <span className="text-xs text-gray-500">•</span>
+                  <span className="text-xs text-gray-400">{article.readTime}</span>
                 </div>
 
-                <h2 className="text-2xl font-bold text-white mt-12 mb-4 flex items-center gap-2">
-                  <span className="w-1 h-8 bg-cyan-500 rounded-full inline-block"/>
-                  The Lillie Anomaly
-                </h2>
+                <h3 className="text-xl font-bold font-[family-name:var(--font-orbitron)] mb-3 group-hover:text-neon-cyan transition-colors">
+                  {article.title}
+                </h3>
 
-                <p className="mb-6">
-                  The case study of <em>Lillie (Ultra Prism)</em> provides the clearest evidence. Despite three reprint cycles in Japan, the international version has maintained a price floor of $400 USD.
+                <p className="text-gray-400 text-sm mb-4 flex-grow">
+                  {article.excerpt}
                 </p>
-              </div>
 
-              {/* Sources Section (Footer) */}
-              <div className="mt-16 pt-8 border-t border-slate-800">
-                <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">References & Methodology</h3>
-                <div className="grid gap-3">
-                  {Object.entries(MOCK_REPORT.sources).map(([id, source]) => (
-                    <div key={id} className="flex gap-4 text-sm text-slate-400">
-                      <span className="text-cyan-500 font-mono">[{id}]</span>
-                      <a href={source.url} className="hover:text-cyan-400 transition-colors underline decoration-slate-700 underline-offset-4">
-                        {source.title}
-                      </a>
-                    </div>
-                  ))}
+                {article.citations.length > 0 && (
+                  <div className="mb-4 flex items-center gap-2 text-xs text-slate-500">
+                    <Sparkles className="w-3 h-3" />
+                    <span>{article.citations.length} Sources Cited</span>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-4 border-t border-neon-cyan/20">
+                  <span className="text-xs text-gray-500">{article.date}</span>
+                  <div className="flex items-center text-neon-cyan group-hover:translate-x-2 transition-transform text-sm font-semibold">
+                    Read Research
+                    <ArrowRight className="ml-2" size={16} />
+                  </div>
                 </div>
-              </div>
-           </article>
-
+              </Link>
+            </motion.article>
+          ))}
         </div>
+
+        {/* No Results */}
+        {displayedArticles.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-gray-400 text-lg">No research found. Try adjusting your search or filters.</p>
+          </div>
+        )}
+
+        {/* Subscribe CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-20 relative rounded-2xl p-12 overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
+          <div className="absolute inset-0 neon-border" />
+
+          <div className="relative text-center max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+              Get Premium Research Access
+            </h2>
+            <p className="text-gray-300 mb-8">
+              Subscribe to unlock exclusive LAMARL-powered market analysis, early access to research, and premium investment guides.
+            </p>
+            <Link href="/subscribe" className="btn-primary inline-flex items-center">
+              Subscribe Now
+              <ArrowRight className="ml-2" size={20} />
+            </Link>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
