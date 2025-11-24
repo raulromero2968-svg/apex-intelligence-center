@@ -7,6 +7,7 @@ import AskFollowUp from '@/components/mdx/AskFollowUp';
 import DataCallout from '@/components/mdx/DataCallout';
 import VARCInsight from '@/components/mdx/VARCInsight';
 import TerminalSection from '@/components/mdx/TerminalSection';
+import { ShadowReflexTest } from '@/components/mdx/ShadowReflexTest';
 
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -15,6 +16,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     AreaChartViz,
     BarChartViz,
     AskFollowUp,
+    ShadowReflexTest,
     // VARC-style components
     DataCallout,
     VARCInsight,
