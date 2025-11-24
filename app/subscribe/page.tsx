@@ -1,6 +1,7 @@
 'use client';
 
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
+import { TitanHeader } from '@/components/ui/TitanHeader';
 import { useState } from 'react';
 
 export default function SubscribePage() {
@@ -16,64 +17,47 @@ export default function SubscribePage() {
       const data = await res.json();
       if (data.url) window.location.href = data.url;
     } catch (e) {
-      alert('Checkout Error');
+      alert('System Error');
       setLoading(null);
     }
   };
 
   return (
-    <main className="min-h-screen pt-24 px-6 relative z-10">
-      <div className="max-w-4xl mx-auto text-center mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Upgrade Your <span className="text-cyan-400">Intel</span></h1>
-        <p className="text-slate-400">Stop guessing. Start knowing. Unlock institutional-grade analytics.</p>
-      </div>
+    <main className="min-h-screen pt-24 px-6 relative z-10 pb-24">
 
-      <DigitalScrollWrapper>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Free Tier */}
-          <div className="p-6 border border-slate-800 rounded-lg text-center opacity-70 bg-slate-900/40">
-            <h3 className="text-white font-bold text-lg">Scout</h3>
-            <div className="text-3xl font-bold text-slate-500 my-4">$0<span className="text-sm font-normal">/mo</span></div>
-            <ul className="text-xs text-slate-400 space-y-2 mb-6 text-left pl-4">
-              <li>✓ Real-time Market Data</li>
-              <li>✓ Weekly Reports</li>
-            </ul>
-            <button disabled className="w-full py-2 border border-slate-700 text-slate-500 text-xs uppercase">Current Plan</button>
+      <TitanHeader
+        title="ACCESS TERMINAL"
+        subtitle="SELECT CLEARANCE LEVEL"
+      />
+
+      <DigitalScrollWrapper color="amber">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* SCOUT */}
+          <div className="p-8 border border-slate-800 bg-slate-900/30 rounded-xl text-center opacity-60 hover:opacity-100 transition-opacity">
+            <div className="text-slate-500 font-mono text-xs mb-4">TIER 1</div>
+            <h3 className="text-2xl font-black text-white mb-2">SCOUT</h3>
+            <div className="text-4xl font-bold text-slate-300 mb-6">$0</div>
+            <button disabled className="w-full py-3 border border-slate-700 text-slate-500 text-xs font-bold uppercase">Current Plan</button>
           </div>
 
-          {/* Pro Tier */}
-          <div className="p-6 border border-cyan-500/50 bg-cyan-950/20 rounded-lg text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-cyan-500 shadow-[0_0_10px_#22d3ee]" />
-            <h3 className="text-white font-bold text-lg">Operator</h3>
-            <div className="text-3xl font-bold text-white my-4">$29<span className="text-sm font-normal text-slate-400">/mo</span></div>
-            <ul className="text-xs text-slate-300 space-y-2 mb-6 text-left pl-4">
-              <li>✓ AI Predictive Analytics</li>
-              <li>✓ Unlimited Portfolio Tracking</li>
-              <li>✓ Market Arbitrage Tools</li>
-            </ul>
-            <button
-              onClick={() => handleCheckout('price_1SWvfeQPUcGNMBQFiEDv4IWZ')}
-              className="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs uppercase font-bold tracking-wider transition-all"
-            >
-              {loading === 'price_1SWvfeQPUcGNMBQFiEDv4IWZ' ? 'Processing...' : 'Upgrade Now'}
+          {/* OPERATOR */}
+          <div className="p-8 border border-purple-500 bg-purple-900/10 rounded-xl text-center relative transform scale-105 shadow-2xl shadow-purple-900/20">
+            <div className="absolute top-0 left-0 w-full h-1 bg-purple-500 animate-pulse" />
+            <div className="text-purple-400 font-mono text-xs mb-4">TIER 2 // POPULAR</div>
+            <h3 className="text-2xl font-black text-white mb-2">OPERATOR</h3>
+            <div className="text-4xl font-bold text-white mb-6">$29<span className="text-sm text-slate-400">/mo</span></div>
+            <button onClick={() => handleCheckout('price_1SWvfeQPUcGNMBQFiEDv4IWZ')} className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase tracking-widest transition-all">
+              {loading ? 'PROCESSING...' : 'UPGRADE NOW'}
             </button>
           </div>
 
-          {/* Whale Tier */}
-          <div className="p-6 border border-purple-500/50 bg-purple-950/20 rounded-lg text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-purple-500 shadow-[0_0_10px_#a855f7]" />
-            <h3 className="text-white font-bold text-lg">Whale</h3>
-            <div className="text-3xl font-bold text-white my-4">$99<span className="text-sm font-normal text-slate-400">/mo</span></div>
-            <ul className="text-xs text-slate-300 space-y-2 mb-6 text-left pl-4">
-              <li>✓ Institutional Access</li>
-              <li>✓ Unlimited VARC Scans</li>
-              <li>✓ API Access</li>
-            </ul>
-            <button
-              onClick={() => handleCheckout('price_1SWvfpQPUcGNMBQFb5JMtpxh')}
-              className="w-full py-2 border border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white text-xs uppercase font-bold tracking-wider transition-all"
-            >
-              {loading === 'price_1SWvfpQPUcGNMBQFb5JMtpxh' ? 'Processing...' : 'Get Alpha Access'}
+          {/* ELITE */}
+          <div className="p-8 border border-cyan-500 bg-cyan-900/10 rounded-xl text-center">
+            <div className="text-cyan-400 font-mono text-xs mb-4">TIER 3 // ALPHA</div>
+            <h3 className="text-2xl font-black text-white mb-2">ELITE</h3>
+            <div className="text-4xl font-bold text-white mb-6">$99<span className="text-sm text-slate-400">/mo</span></div>
+            <button onClick={() => handleCheckout('price_1SWvfpQPUcGNMBQFb5JMtpxh')} className="w-full py-3 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black text-xs font-bold uppercase tracking-widest transition-all">
+              {loading ? 'PROCESSING...' : 'GET ACCESS'}
             </button>
           </div>
         </div>

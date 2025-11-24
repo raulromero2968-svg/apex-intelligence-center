@@ -1,52 +1,38 @@
 'use client';
 
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
+import { TitanHeader } from '@/components/ui/TitanHeader';
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen pt-24 px-6 relative z-10">
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold text-white mb-4">Underground Intel, <span className="text-purple-400">Surface-Level Access</span></h1>
-      </div>
+    <main className="min-h-screen pt-24 px-6 relative z-10 pb-24">
+      {/* 1. UNIFIED HEADER */}
+      <TitanHeader
+        title="MISSION BRIEFING"
+        subtitle="OPERATIONAL OBJECTIVES // CLASSIFIED"
+      />
 
-      <DigitalScrollWrapper>
-        <div className="space-y-16">
-          {/* Mission */}
+      {/* 2. UNIFIED SCROLL CONTAINER */}
+      <DigitalScrollWrapper color="purple">
+        <div className="space-y-12">
           <section>
-            <h2 className="text-2xl font-bold text-white mb-6 border-b border-slate-800 pb-2">The Mission</h2>
-            <p className="text-slate-300 leading-relaxed text-lg">
+            <h3 className="text-2xl font-black text-white mb-6 border-l-4 border-purple-500 pl-4">THE OBJECTIVE</h3>
+            <p className="text-slate-300 text-lg leading-relaxed font-light">
               The TCG market is a multi-billion dollar industry, but most collectors are flying blind.
-              We are building the intel network that should have existed years ago: a place where serious collectors
-              can get <span className="text-cyan-400">data-driven insights</span> without the hype.
+              Price data is scattered. Analysis is shallow. Intelligence is locked behind Discord paywalls.
+              <br /><br />
+              <strong>Apex Intelligence</strong> is the solution: A decentralized network for serious collectors to access institutional-grade data without the noise.
             </p>
           </section>
 
-          {/* Values */}
-          <section>
-            <h2 className="text-xl font-bold text-white mb-6 text-center">What We Stand For</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-              {['Data-Driven', 'Transparent', 'Actionable', 'Community-First'].map((val) => (
-                <div key={val} className="p-4 border border-slate-800 bg-slate-900/30 rounded">
-                  <div className="text-cyan-500 font-bold mb-1">{val}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Coverage */}
-          <section>
-            <h2 className="text-xl font-bold text-white mb-6">Intelligence Coverage</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-4 border-l-2 border-purple-500 bg-purple-500/5">
-                <h3 className="text-white font-bold">Market Analysis</h3>
-                <p className="text-slate-400 text-sm mt-2">Price trends, set performance, and investment opportunities.</p>
-              </div>
-              <div className="p-4 border-l-2 border-cyan-500 bg-cyan-500/5">
-                <h3 className="text-white font-bold">Underground Intel</h3>
-                <p className="text-slate-400 text-sm mt-2">Collector insights, market predictions, and alpha opportunities.</p>
-              </div>
-            </div>
-          </section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             {['DATA-DRIVEN', 'TRANSPARENT', 'ACTIONABLE'].map((val) => (
+               <div key={val} className="p-6 border border-slate-700 bg-slate-900/50 text-center">
+                 <span className="text-purple-400 font-mono text-xs tracking-widest block mb-2">CORE VALUE</span>
+                 <span className="text-white font-bold tracking-tight">{val}</span>
+               </div>
+             ))}
+          </div>
         </div>
       </DigitalScrollWrapper>
     </main>
