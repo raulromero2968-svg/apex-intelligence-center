@@ -6,12 +6,12 @@ export function IntelHeader({ slug, title, tier = "Free" }: { slug: string; titl
 
   // Color logic
   const themeColor =
-    tier === "Whale" ? "text-cyan-400 border-cyan-500 bg-cyan-950" :
+    tier === "Elite" ? "text-cyan-400 border-cyan-500 bg-cyan-950" :
     tier === "Pro" ? "text-purple-400 border-purple-500 bg-purple-950" :
     "text-amber-400 border-amber-500 bg-amber-950";
 
   const badgeColor =
-    tier === "Whale" ? "bg-cyan-500" :
+    tier === "Elite" ? "bg-cyan-500" :
     tier === "Pro" ? "bg-purple-500" :
     "bg-amber-500";
 
