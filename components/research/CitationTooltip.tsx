@@ -1,74 +1,96 @@
 'use client';
 
 import React, { useState } from 'react';
+import { ExternalLink, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Database } from 'lucide-react';
 
-interface Source {
-  id: string;
+export interface Citation {
+  id: number;
   title: string;
-  url: string;
-  domain: string;
-  date: string;
+  source: string;
+  url?: string;
+  type: 'article' | 'report' | 'data' | 'research';
+  date?: string;
 }
 
-interface CitationProps {
-  id: string;
-  source: Source;
+interface CitationTooltipProps {
+  citationNumber: number;
+  citation: Citation;
 }
 
-export const CitationTooltip = ({ id, source }: CitationProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const CitationTooltip: React.FC<CitationTooltipProps> = ({ citationNumber, citation }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const typeColors = {
+    article: 'text-cyan-400 border-cyan-400/50 bg-cyan-950/50',
+    report: 'text-purple-400 border-purple-400/50 bg-purple-950/50',
+    data: 'text-green-400 border-green-400/50 bg-green-950/50',
+    research: 'text-pink-400 border-pink-400/50 bg-pink-950/50',
+  };
+
+  const typeIcons = {
+    article: FileText,
+    report: FileText,
+    data: ExternalLink,
+    research: FileText,
+  };
+
+  const Icon = typeIcons[citation.type];
 
   return (
     <span
       className="relative inline-block"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <sup
-        className="cursor-pointer text-cyan-400 font-bold hover:text-cyan-300 transition-colors ml-0.5 px-1 rounded hover:bg-cyan-900/30"
+        className={`mx-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-all ${typeColors[citation.type]} border hover:scale-110`}
       >
-        [{id}]
+        {citationNumber}
       </sup>
 
       <AnimatePresence>
-        {isOpen && (
+        {isHovered && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 z-50"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none"
           >
-            <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 backdrop-blur-md">
-              <div className="flex items-start gap-3">
-                <div className="mt-1 p-1.5 bg-slate-800 rounded-md">
-                  <Database className="w-3 h-3 text-cyan-400" />
-                </div>
+            <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-2xl p-4 min-w-[280px] max-w-[320px]">
+              {/* Citation header */}
+              <div className="flex items-start gap-2 mb-2">
+                <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${typeColors[citation.type].split(' ')[0]}`} />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-xs font-semibold text-white truncate leading-tight mb-1">
-                    {source.title}
-                  </h4>
-                  <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                    <span className="truncate max-w-[80px]">{source.domain}</span>
-                    <span>•</span>
-                    <span>{source.date}</span>
+                  <div className="text-xs font-semibold text-white mb-1 line-clamp-2">
+                    {citation.title}
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    {citation.source}
                   </div>
                 </div>
               </div>
 
-              <a
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 flex items-center justify-center gap-2 w-full py-1.5 bg-cyan-950/50 hover:bg-cyan-900/50 border border-cyan-900/50 rounded text-xs text-cyan-400 font-medium transition-colors"
-              >
-                Verify Source <ExternalLink className="w-3 h-3" />
-              </a>
+              {/* Citation metadata */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded ${typeColors[citation.type]}`}>
+                    {citation.type}
+                  </span>
+                  {citation.date && (
+                    <span className="text-[10px] text-slate-500">{citation.date}</span>
+                  )}
+                </div>
+                {citation.url && (
+                  <ExternalLink className="w-3 h-3 text-cyan-400" />
+                )}
+              </div>
 
-              {/* Decorative arrow */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-700" />
+              {/* Tooltip arrow */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                <div className="border-8 border-transparent border-t-slate-700" />
+              </div>
             </div>
           </motion.div>
         )}

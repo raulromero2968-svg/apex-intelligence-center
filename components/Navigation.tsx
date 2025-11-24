@@ -11,6 +11,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+<<<<<<< HEAD
   // Handle scroll effect for glassmorphism
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +28,15 @@ const Navigation = () => {
     { name: 'About', href: '/about', icon: <Layers size={18} /> },
     { name: 'Subscribe', href: '/subscribe', icon: <FileText size={18} /> },
   ];
+=======
+  const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/intel', label: 'Intel Center' },
+    { href: '/research', label: 'Research' },
+    { href: '/about', label: 'About' },
+    { href: '/subscribe', label: 'Subscribe' },
+  ]
+>>>>>>> origin/claude/realtime-intelligence-chat-014ot9GLRmGVQfCHcm5tagnN
 
   return (
     <nav
