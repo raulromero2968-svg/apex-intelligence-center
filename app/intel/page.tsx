@@ -17,24 +17,19 @@ export default function IntelPage() {
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
 
-      {/* 1. TITAN GLITCH HEADER */}
+      {/* CYBER-STREAM HEADER */}
       <div className="max-w-7xl mx-auto mb-12 text-center relative">
-        <div className="flex items-center justify-center gap-4 mb-6 opacity-60">
-           <div className="h-[1px] w-12 bg-cyan-500"></div>
-           <span className="text-[10px] font-mono text-cyan-400 tracking-[0.4em] uppercase">Secure_Link // Established</span>
-           <div className="h-[1px] w-12 bg-cyan-500"></div>
+        <div className="flex items-center justify-center gap-4 mb-4 opacity-60">
+            <div className="h-[1px] w-12 bg-cyan-500"></div>
+            <span className="text-[10px] font-mono text-cyan-400 tracking-[0.4em] uppercase">Secure_Link // Established</span>
+            <div className="h-[1px] w-12 bg-cyan-500"></div>
         </div>
 
-        {/* The Glitch Title */}
-        <h1 className="text-6xl md:text-8xl font-black text-white mb-2 tracking-tighter uppercase glitch-wrapper">
-          <span className="glitch-text" data-text="LATEST INTELLIGENCE">
+        <h1 className="text-4xl md:text-6xl tracking-tighter uppercase mb-2">
+          <span className="glitch-gradient" data-text="LATEST INTELLIGENCE">
             LATEST INTELLIGENCE
           </span>
         </h1>
-
-        <p className="text-slate-400 max-w-2xl mx-auto font-mono text-xs tracking-wide mt-4">
-          [ DECRYPTING MARKET DATA... ] verified_by_varc_system
-        </p>
       </div>
 
       {/* 2. FILTERS */}

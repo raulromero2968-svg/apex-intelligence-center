@@ -194,56 +194,55 @@ canvas {
   animation: holo-sweep 2s infinite linear;
 }
 
-/* TITAN GLITCH EFFECT */
-.glitch-wrapper {
+/* TITAN GLITCH GRADIENT (Smaller, Colored, Aggressive) */
+.glitch-gradient {
+  font-weight: 900;
+  background: linear-gradient(to right, #22d3ee, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   position: relative;
   display: inline-block;
 }
 
-.glitch-text {
-  position: relative;
-  z-index: 1;
-}
-
-.glitch-text::before,
-.glitch-text::after {
+.glitch-gradient::before,
+.glitch-gradient::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #020617; /* Hides the main text slightly */
-  opacity: 0.8;
+  background: #020617; /* Match bg to hide parts */
+  color: #fff;
+  overflow: hidden;
+  opacity: 0;
 }
 
-.glitch-text::before {
+/* The "Ghost" Glitch Layers */
+.glitch-gradient::before {
   left: 2px;
-  text-shadow: -2px 0 #a855f7; /* Purple */
+  text-shadow: -1px 0 #22d3ee;
   clip-path: inset(24% 0 29% 0);
-  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+  animation: glitch-gradient-anim 3s infinite linear alternate-reverse;
+  opacity: 0.5; /* Make visible */
 }
 
-.glitch-text::after {
+.glitch-gradient::after {
   left: -2px;
-  text-shadow: -2px 0 #22d3ee; /* Cyan */
+  text-shadow: -1px 0 #a855f7;
   clip-path: inset(85% 0 13% 0);
-  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+  animation: glitch-gradient-anim 2s infinite linear alternate-reverse;
+  opacity: 0.5;
 }
 
-@keyframes glitch-anim-1 {
-  0% { clip-path: inset(40% 0 61% 0); }
-  20% { clip-path: inset(92% 0 1% 0); }
-  40% { clip-path: inset(43% 0 1% 0); }
-  60% { clip-path: inset(25% 0 58% 0); }
-  100% { clip-path: inset(58% 0 43% 0); }
-}
-
-@keyframes glitch-anim-2 {
-  0% { clip-path: inset(24% 0 29% 0); }
-  20% { clip-path: inset(54% 0 21% 0); }
-  40% { clip-path: inset(23% 0 39% 0); }
-  100% { clip-path: inset(1% 0 98% 0); }
+@keyframes glitch-gradient-anim {
+  0% { clip-path: inset(40% 0 61% 0); transform: skew(0.3deg); }
+  20% { clip-path: inset(92% 0 1% 0); transform: skew(0.1deg); }
+  40% { clip-path: inset(43% 0 1% 0); transform: skew(0.3deg); }
+  60% { clip-path: inset(25% 0 58% 0); transform: skew(0.1deg); }
+  80% { clip-path: inset(54% 0 7% 0); transform: skew(0.3deg); }
+  100% { clip-path: inset(58% 0 43% 0); transform: skew(0.1deg); }
 }
 
 /* HOLOGRAPHIC FOLDER TABS */

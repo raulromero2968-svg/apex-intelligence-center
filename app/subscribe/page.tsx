@@ -23,9 +23,12 @@ export default function SubscribePage() {
 
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
-      <div className="max-w-4xl mx-auto text-center mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2">Upgrade Your <span className="text-cyan-400">Intel</span></h1>
-        <p className="text-slate-400">Stop guessing. Start knowing. Unlock institutional-grade analytics.</p>
+      <div className="max-w-4xl mx-auto text-center mb-12">
+        <h1 className="text-4xl md:text-6xl tracking-tighter uppercase mb-2">
+          <span className="glitch-gradient" data-text="ACCESS TERMINAL">
+            ACCESS TERMINAL
+          </span>
+        </h1>
       </div>
 
       <DigitalScrollWrapper>
