@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
 import { IntelGridCard } from '@/components/intel/IntelGridCard';
 import { HoloFolderWrapper } from '@/components/intel/HoloFolderWrapper';
+import { TitanHeader } from '@/components/ui/TitanHeader';
 
 const categories = ['All', 'Research', 'Blog', 'Intel', 'Vintage Analysis', 'Set Analysis', 'Strategy'];
 
@@ -17,20 +18,11 @@ export default function IntelPage() {
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
 
-      {/* CYBER-STREAM HEADER */}
-      <div className="max-w-7xl mx-auto mb-12 text-center relative">
-        <div className="flex items-center justify-center gap-4 mb-4 opacity-60">
-            <div className="h-[1px] w-12 bg-cyan-500"></div>
-            <span className="text-[10px] font-mono text-cyan-400 tracking-[0.4em] uppercase">Secure_Link // Established</span>
-            <div className="h-[1px] w-12 bg-cyan-500"></div>
-        </div>
-
-        <h1 className="text-4xl md:text-6xl tracking-tighter uppercase mb-2">
-          <span className="glitch-gradient" data-text="LATEST INTELLIGENCE">
-            LATEST INTELLIGENCE
-          </span>
-        </h1>
-      </div>
+      {/* TITAN HUD HEADER */}
+      <TitanHeader
+        title="LATEST INTELLIGENCE"
+        subtitle="DECRYPTING MARKET DATA... // VERIFIED"
+      />
 
       {/* 2. FILTERS */}
       <div className="flex flex-wrap justify-center gap-2 mb-4">
