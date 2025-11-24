@@ -4,42 +4,58 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../packages/ui/src/**/*.{tsx,ts}'
   ],
   theme: {
     extend: {
       colors: {
-        ink: '#0A0E1A',
         slate: {
           950: '#020617', // Titan Deep Space
-        },
-        magenta: {
-          500: '#FF00FF',
         },
         cyan: {
           400: '#22d3ee', // Titan Neon
           500: '#06b6d4',
+          // New High-Intensity Neon for Cyberpunk F1
+          high: '#00eaff',
         },
         purple: {
-          500: '#9333EA',
+          // New High-Intensity Purple
+          high: '#d946ef',
+        }
+      },
+      keyframes: {
+        'holo-glitch': {
+          '0%': {
+            boxShadow: '0 0 15px #00eaff, 0 0 30px #00eaff, inset 0 0 15px #00eaff',
+            transform: 'translate(0, 0)',
+          },
+          '25%': {
+            boxShadow: '0 0 20px #00eaff, 0 0 40px #00eaff, inset 0 0 20px #00eaff',
+            transform: 'translate(2px, -2px)', // Intensified glitch shift
+          },
+          '50%': {
+            boxShadow: '0 0 15px #d946ef, 0 0 30px #d946ef, inset 0 0 15px #d946ef',
+            transform: 'translate(-2px, 2px)', // Glitch reverse
+          },
+          '75%': {
+            boxShadow: '0 0 20px #d946ef, 0 0 40px #d946ef, inset 0 0 20px #d946ef',
+            transform: 'translate(2px, 2px)', // Another shift
+          },
+          '100%': {
+            boxShadow: '0 0 15px #00eaff, 0 0 30px #00eaff, inset 0 0 15px #00eaff',
+            transform: 'translate(0, 0)',
+          },
+        },
+        'scanlines': {
+          '0%, 100%': { opacity: '0.1' },
+          '50%': { opacity: '0.3' }, // Pulse opacity for scanline glitch
         },
       },
       animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'holo-glitch': 'holo-glitch 2s ease-in-out infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
-        },
-        'holo-glitch': {
-          '0%, 100%': { boxShadow: '0 0 10px #06b6d4, 0 0 20px #06b6d4', transform: 'translate(0, 0)' },
-          '25%': { boxShadow: '0 0 15px #06b6d4, 0 0 25px #06b6d4', transform: 'translate(1px, -1px)' },
-          '50%': { boxShadow: '0 0 10px #a855f7, 0 0 20px #a855f7', transform: 'translate(-1px, 1px)' },
-          '75%': { boxShadow: '0 0 15px #a855f7, 0 0 25px #a855f7', transform: 'translate(1px, 1px)' },
-        },
+        'holo-glitch': 'holo-glitch 1.5s ease-in-out infinite',
+        'scanlines': 'scanlines 2s ease-in-out infinite',
       },
     },
   },
   plugins: [],
-}
+};
