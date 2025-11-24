@@ -4,16 +4,14 @@
 
 @layer base {
   body {
-    @apply bg-cyber-darker text-white;
+    @apply text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background-image: 
-      radial-gradient(ellipse at top, rgba(176, 38, 255, 0.15), transparent 50%),
-      radial-gradient(ellipse at bottom, rgba(0, 102, 255, 0.15), transparent 50%);
-    background-attachment: fixed;
+    /* Background is now handled by ApexVisualEngine canvas */
   }
 
   .cyber-grid {
-    background-image: 
+    /* Legacy grid class - now rendered by ApexVisualEngine */
+    background-image:
       linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
