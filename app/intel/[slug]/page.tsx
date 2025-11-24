@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, TrendingDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import IntelChart from '@/components/intel/IntelChart'
+import { SourceRail } from '@/components/intel/SourceRail'
 
 // Article data (in a real app, this would come from a CMS or database)
 const articles: Record<string, any> = {
@@ -171,7 +172,13 @@ The TCG market remains healthy with strong fundamentals. Smart collectors and in
       { month: 'Sep', value: 128 },
       { month: 'Oct', value: 132 },
     ],
-    tags: ['Market Analysis', 'Pokemon', 'MTG', 'Investment', 'Q4 2024']
+    tags: ['Market Analysis', 'Pokemon', 'MTG', 'Investment', 'Q4 2024'],
+    sources: [
+      { id: 1, name: "TCGPlayer Market Report Q4 2024", url: "#", publisher: "TCGPlayer", accessed: "Oct 2024" },
+      { id: 2, name: "eBay Auction Data Analysis", url: "#", publisher: "eBay", accessed: "Oct 2024" },
+      { id: 3, name: "PSA Population Report", url: "#", publisher: "PSA", accessed: "Oct 2024" },
+      { id: 4, name: "Magic: The Gathering Reserved List Tracker", url: "#", publisher: "MTGGoldfish", accessed: "Oct 2024" },
+    ]
   },
   'pokemon-151-value-trajectory': {
     title: 'Pokemon 151: Value Trajectory Analysis',
@@ -415,70 +422,74 @@ export default function ArticlePage() {
 
   return (
     <div className="min-h-screen py-20">
-      <div className="container-custom max-w-4xl">
+      <div className="container-custom max-w-7xl">
         {/* Back Button */}
-        <Link 
-          href="/intel" 
+        <Link
+          href="/intel"
           className="inline-flex items-center text-neon-cyan hover:text-cyan-300 mb-8 transition-colors"
         >
           <ArrowLeft className="mr-2" size={20} />
           Back to Intelligence Archive
         </Link>
 
-        {/* Article Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <span className="px-3 py-1 rounded-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan text-sm font-semibold">
-              {article.category}
-            </span>
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <Calendar size={16} />
-              {article.date}
-            </div>
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <Clock size={16} />
-              {article.readTime}
-            </div>
-          </div>
+        {/* Two Column Layout - Perplexity Style */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Main Content Column (8 cols) */}
+          <div className="lg:col-span-8">
+            {/* Article Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-12"
+            >
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <span className="px-3 py-1 rounded-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan text-sm font-semibold">
+                  {article.category}
+                </span>
+                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                  <Calendar size={16} />
+                  {article.date}
+                </div>
+                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                  <Clock size={16} />
+                  {article.readTime}
+                </div>
+              </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-            {article.title}
-          </h1>
+              <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+                {article.title}
+              </h1>
 
-          <p className="text-gray-400">
-            By {article.author}
-          </p>
-        </motion.div>
+              <p className="text-gray-400">
+                By {article.author}
+              </p>
+            </motion.div>
 
-        {/* Market Performance Chart */}
-        {article.chartData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-12"
-          >
-            <div className="card-cyber p-6">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <TrendingUp className="text-neon-cyan" size={24} />
-                Market Performance
-              </h3>
-              <IntelChart data={article.chartData} />
-            </div>
-          </motion.div>
-        )}
+            {/* Market Performance Chart */}
+            {article.chartData && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-12"
+              >
+                <div className="card-cyber p-6">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <TrendingUp className="text-neon-cyan" size={24} />
+                    Market Performance
+                  </h3>
+                  <IntelChart data={article.chartData} />
+                </div>
+              </motion.div>
+            )}
 
-        {/* Article Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="prose prose-invert prose-cyan max-w-none mb-12"
-        >
+            {/* Article Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="prose prose-invert prose-cyan max-w-none mb-12"
+            >
           <div 
             className="article-content text-gray-300 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: article.content.split('\n').map((line: string) => {
@@ -525,29 +536,46 @@ export default function ArticlePage() {
           </motion.div>
         )}
 
-        {/* Subscribe CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="relative rounded-2xl p-12 overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
-          <div className="absolute inset-0 neon-border" />
-          
-          <div className="relative text-center">
-            <h2 className="text-3xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-              Get More Intel Like This
-            </h2>
-            <p className="text-gray-300 mb-8">
-              Subscribe to receive exclusive market analysis, investment guides, and premium research delivered to your inbox.
-            </p>
-            <Link href="/subscribe" className="btn-primary inline-flex items-center">
-              Subscribe Now
-              <ArrowLeft className="ml-2 rotate-180" size={20} />
-            </Link>
+            {/* Subscribe CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="relative rounded-2xl p-12 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
+              <div className="absolute inset-0 neon-border" />
+
+              <div className="relative text-center">
+                <h2 className="text-3xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+                  Get More Intel Like This
+                </h2>
+                <p className="text-gray-300 mb-8">
+                  Subscribe to receive exclusive market analysis, investment guides, and premium research delivered to your inbox.
+                </p>
+                <Link href="/subscribe" className="btn-primary inline-flex items-center">
+                  Subscribe Now
+                  <ArrowLeft className="ml-2 rotate-180" size={20} />
+                </Link>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+
+          {/* Source Rail Column (4 cols) - Perplexity Style */}
+          {article.sources && article.sources.length > 0 && (
+            <div className="lg:col-span-4 hidden lg:block">
+              <div className="sticky top-32">
+                <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 backdrop-blur-sm">
+                  <h3 className="text-cyan-400 font-mono text-sm mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                    VERIFIED SOURCES
+                  </h3>
+                  <SourceRail sources={article.sources} />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

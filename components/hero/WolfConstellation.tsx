@@ -88,7 +88,7 @@ export const WolfConstellation = () => {
   if (!mounted) return null
 
   return (
-    <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
+    <div className="relative w-full h-full">
       <svg
         viewBox="0 0 500 500"
         className="w-full h-full"
