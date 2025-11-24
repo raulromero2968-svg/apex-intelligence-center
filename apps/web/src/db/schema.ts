@@ -34,17 +34,6 @@ export const collection_items = pgTable('collection_items', {
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Intel items for general market data
-export const intel_items = pgTable('intel_items', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  source: text('source').notNull(),
-  data: jsonb('data').notNull(),
-  observed_at: timestamp('observed_at').notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
-});
-
 /**
  * TCG Documents table for RAG system
  *
@@ -1201,8 +1190,6 @@ export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;
 export type CollectionItem = typeof collection_items.$inferSelect;
 export type NewCollectionItem = typeof collection_items.$inferInsert;
-export type IntelItem = typeof intel_items.$inferSelect;
-export type NewIntelItem = typeof intel_items.$inferInsert;
 export type TcgDocument = typeof tcg_documents.$inferSelect;
 export type NewTcgDocument = typeof tcg_documents.$inferInsert;
 
