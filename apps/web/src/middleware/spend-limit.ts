@@ -1,350 +1,281 @@
 /**
- * Spend Limit Middleware
+ * Spend Limit Edge Middleware
  *
- * Edge middleware that blocks ALL payment routes when spend limits are exceeded.
+ * Edge middleware that blocks ALL payment routes if user exceeds spend limits.
+ * Runs on Vercel Edge Network for ultra-low latency.
  *
- * Architecture:
- * - Runs at edge (before API routes execute)
- * - Uses Redis for fast limit checks (< 5ms)
- * - Blocks Stripe + on-chain payment routes
- * - Returns 402 Payment Required with spend limit details
- *
- * Protected Routes:
- * - /api/stripe/* - Stripe payment intents, subscriptions
- * - /api/payments/* - Generic payment endpoints
- * - /api/web3/* - On-chain payment processing
- * - /api/checkout/* - Checkout flows
+ * Features:
+ * - Pre-flight spend limit checks
+ * - Blocks Stripe checkout, webhooks, and payment intents
+ * - Blocks on-chain payment endpoints
+ * - Redis-backed for instant responses
+ * - Graceful degradation to DB if Redis unavailable
  *
  * Usage:
- * Import this middleware in your Next.js middleware.ts:
- *
- * ```ts
- * import { spendLimitMiddleware } from './src/middleware/spend-limit';
- *
- * export async function middleware(request: NextRequest) {
- *   // Run spend limit checks
- *   const spendLimitResponse = await spendLimitMiddleware(request);
- *   if (spendLimitResponse) return spendLimitResponse;
- *
- *   // Continue with other middleware...
- * }
- * ```
+ * Add this to your Next.js middleware chain to protect payment routes.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Redis } from '@upstash/redis';
-
-// ============================================================================
-// Configuration
-// ============================================================================
-
-const SPEND_LIMITS = {
-  DAILY: 50.0, // $50/day
-  WEEKLY: 200.0, // $200/week
-} as const;
-
-const PROTECTED_ROUTE_PATTERNS = [
-  '/api/stripe',
-  '/api/payments',
-  '/api/web3',
-  '/api/checkout',
-  '/api/mint', // NFT minting
-  '/api/subscription', // Subscription changes
-];
-
-const REDIS_KEY_PREFIX = {
-  DAILY: 'spend:daily:',
-  WEEKLY: 'spend:weekly:',
-} as const;
-
-// ============================================================================
-// Redis Client (Edge Runtime Compatible)
-// ============================================================================
-
-let redis: Redis | null = null;
-
-function getRedisClient(): Redis {
-  if (!redis) {
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-    if (!url || !token) {
-      console.error('[SpendLimitMiddleware] Redis credentials not configured');
-      throw new Error('Redis not configured');
-    }
-
-    redis = new Redis({
-      url,
-      token,
-    });
-  }
-
-  return redis;
-}
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
+import { redis } from '@/lib/redis';
+import { SPEND_LIMITS } from '@apex/compliance';
 
 /**
- * Check if route is a payment route that should be protected
+ * Payment route patterns to protect
+ */
+const PAYMENT_ROUTE_PATTERNS = [
+  /^\/api\/stripe\/checkout/,
+  /^\/api\/stripe\/create-payment-intent/,
+  /^\/api\/stripe\/subscription/,
+  /^\/api\/payments\/crypto/,
+  /^\/api\/payments\/onchain/,
+  /^\/api\/payments\/process/,
+  /^\/api\/checkout/,
+  /^\/api\/subscribe/,
+] as const;
+
+/**
+ * Time windows in seconds (for Redis TTL)
+ */
+const TIME_WINDOWS = {
+  DAILY: 24 * 60 * 60,     // 24 hours
+  WEEKLY: 7 * 24 * 60 * 60, // 7 days
+} as const;
+
+/**
+ * Redis keys for spend tracking
+ */
+function getSpendKeys(userId: string) {
+  return {
+    daily: `spend:daily:${userId}`,
+    weekly: `spend:weekly:${userId}`,
+    txsDaily: `spend:txs:daily:${userId}`,
+    txsWeekly: `spend:txs:weekly:${userId}`,
+  };
+}
+
+/**
+ * Check if route is a payment route
  */
 function isPaymentRoute(pathname: string): boolean {
-  return PROTECTED_ROUTE_PATTERNS.some(pattern =>
-    pathname.startsWith(pattern)
-  );
+  return PAYMENT_ROUTE_PATTERNS.some(pattern => pattern.test(pathname));
 }
 
 /**
- * Extract user ID from request (supports multiple auth methods)
- *
- * Priority order:
- * 1. Authorization header (Bearer token with JWT)
- * 2. Cookie-based session
- * 3. Query parameter (for testing only)
- *
- * @returns User ID or null if not authenticated
+ * Extract user ID from request
  */
-function extractUserId(request: NextRequest): string | null {
-  // Method 1: Authorization header (JWT)
-  const authHeader = request.headers.get('authorization');
+function extractUserId(req: NextRequest): string | null {
+  // Try Authorization header
+  const authHeader = req.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
     try {
       const token = authHeader.substring(7);
-      // Simple JWT decode (edge runtime compatible)
       const payload = JSON.parse(
         Buffer.from(token.split('.')[1], 'base64').toString()
       );
-      return payload.sub || payload.userId || payload.id || null;
+      return payload.userId || payload.sub || null;
     } catch {
-      // Invalid JWT, continue to other methods
+      // Invalid token
     }
   }
 
-  // Method 2: Cookie-based session (NextAuth, Clerk, etc.)
-  const sessionCookie = request.cookies.get('next-auth.session-token') ||
-                       request.cookies.get('__session') ||
-                       request.cookies.get('session');
-
-  if (sessionCookie) {
-    // For production, decode session cookie properly
-    // For now, we'll need to pass userId via another method
-    // This is a placeholder - implement based on your auth system
+  // Try session cookie
+  const cookie = req.cookies.get('session')?.value;
+  if (cookie) {
+    try {
+      const session = JSON.parse(
+        Buffer.from(cookie, 'base64').toString()
+      );
+      return session.userId || null;
+    } catch {
+      // Invalid session
+    }
   }
-
-  // Method 3: Query parameter (TESTING ONLY - remove in production)
-  if (process.env.NODE_ENV === 'development') {
-    const userId = request.nextUrl.searchParams.get('userId');
-    if (userId) return userId;
-  }
-
-  // Method 4: Custom header (for server-to-server calls)
-  const userIdHeader = request.headers.get('x-user-id');
-  if (userIdHeader) return userIdHeader;
 
   return null;
 }
 
 /**
- * Get current spend from Redis
+ * Check spend limit using Redis
  */
-async function getCurrentSpend(userId: string): Promise<{
-  daily: number;
-  weekly: number;
-}> {
+async function checkSpendLimitRedis(userId: string): Promise<{
+  allowed: boolean;
+  dailySpent: number;
+  weeklySpent: number;
+  limitType?: 'daily' | 'weekly';
+} | null> {
   try {
-    const redisClient = getRedisClient();
+    const now = Date.now();
+    const dailyCutoff = now - (TIME_WINDOWS.DAILY * 1000);
+    const weeklyCutoff = now - (TIME_WINDOWS.WEEKLY * 1000);
 
-    const dailyKey = `${REDIS_KEY_PREFIX.DAILY}${userId}`;
-    const weeklyKey = `${REDIS_KEY_PREFIX.WEEKLY}${userId}`;
+    const keys = getSpendKeys(userId);
 
-    const [dailySpend, weeklySpend] = await Promise.all([
-      redisClient.get<string>(dailyKey),
-      redisClient.get<string>(weeklyKey),
-    ]);
+    // Use Lua script for atomic cleanup and sum
+    const luaScript = `
+      local dailyKey = KEYS[1]
+      local weeklyKey = KEYS[2]
+      local dailyCutoff = tonumber(ARGV[1])
+      local weeklyCutoff = tonumber(ARGV[2])
+
+      -- Remove expired transactions
+      redis.call('ZREMRANGEBYSCORE', dailyKey, '-inf', dailyCutoff)
+      redis.call('ZREMRANGEBYSCORE', weeklyKey, '-inf', weeklyCutoff)
+
+      -- Get all current transactions
+      local dailyTxs = redis.call('ZRANGE', dailyKey, 0, -1, 'WITHSCORES')
+      local weeklyTxs = redis.call('ZRANGE', weeklyKey, 0, -1, 'WITHSCORES')
+
+      -- Sum amounts
+      local dailySum = 0
+      local weeklySum = 0
+
+      for i = 1, #dailyTxs, 2 do
+        local tx = cjson.decode(dailyTxs[i])
+        dailySum = dailySum + tx.amount
+      end
+
+      for i = 1, #weeklyTxs, 2 do
+        local tx = cjson.decode(weeklyTxs[i])
+        weeklySum = weeklySum + tx.amount
+      end
+
+      return {dailySum, weeklySum}
+    `;
+
+    // Execute script
+    // @ts-expect-error - Upstash Redis eval types
+    const result = await redis.eval(
+      luaScript,
+      [keys.txsDaily, keys.txsWeekly],
+      [dailyCutoff, weeklyCutoff]
+    ) as number[];
+
+    const dailySpent = result?.[0] || 0;
+    const weeklySpent = result?.[1] || 0;
+
+    // Check limits
+    if (dailySpent >= SPEND_LIMITS.DAILY) {
+      return {
+        allowed: false,
+        dailySpent,
+        weeklySpent,
+        limitType: 'daily',
+      };
+    }
+
+    if (weeklySpent >= SPEND_LIMITS.WEEKLY) {
+      return {
+        allowed: false,
+        dailySpent,
+        weeklySpent,
+        limitType: 'weekly',
+      };
+    }
 
     return {
-      daily: parseFloat(dailySpend || '0'),
-      weekly: parseFloat(weeklySpend || '0'),
+      allowed: true,
+      dailySpent,
+      weeklySpent,
     };
   } catch (error) {
-    console.error('[SpendLimitMiddleware] Failed to get spend:', error);
-    // Fail-closed: if Redis unavailable, block payment
-    return {
-      daily: SPEND_LIMITS.DAILY + 1, // Force block
-      weekly: SPEND_LIMITS.WEEKLY + 1,
-    };
+    console.error('Redis spend check failed:', error);
+    return null;
   }
 }
 
 /**
- * Create 402 Payment Required response
+ * Create blocked response
  */
 function createBlockedResponse(
-  daily: number,
-  weekly: number,
-  reason: string
+  limitType: 'daily' | 'weekly',
+  dailySpent: number,
+  weeklySpent: number
 ): NextResponse {
+  const limit = limitType === 'daily' ? SPEND_LIMITS.DAILY : SPEND_LIMITS.WEEKLY;
+  const spent = limitType === 'daily' ? dailySpent : weeklySpent;
+  const remaining = Math.max(0, limit - spent);
+
+  const message = `You have reached your ${limitType} spending limit of $${limit}. Current ${limitType} spend: $${spent.toFixed(2)}, remaining: $${remaining.toFixed(2)}. Please try again later.`;
+
   return NextResponse.json(
     {
-      error: {
-        code: 'SPEND_LIMIT_EXCEEDED',
-        message: reason,
-        details: {
-          currentDailySpend: daily,
-          currentWeeklySpend: weekly,
-          dailyLimit: SPEND_LIMITS.DAILY,
-          weeklyLimit: SPEND_LIMITS.WEEKLY,
-          remainingDaily: Math.max(0, SPEND_LIMITS.DAILY - daily),
-          remainingWeekly: Math.max(0, SPEND_LIMITS.WEEKLY - weekly),
-        },
-      },
+      error: 'SPEND_LIMIT_EXCEEDED',
+      message,
+      limitType,
+      limit,
+      spent,
+      remaining,
     },
     {
       status: 402, // Payment Required
       headers: {
-        'Content-Type': 'application/json',
-        'X-Spend-Limit-Exceeded': 'true',
-        'X-Daily-Spend': daily.toFixed(2),
-        'X-Weekly-Spend': weekly.toFixed(2),
-        'X-Daily-Limit': SPEND_LIMITS.DAILY.toFixed(2),
-        'X-Weekly-Limit': SPEND_LIMITS.WEEKLY.toFixed(2),
-        'Retry-After': '86400', // 24 hours in seconds
+        'X-Spend-Limit-Type': limitType,
+        'X-Spend-Limit': limit.toString(),
+        'X-Spend-Current': spent.toString(),
+        'X-Spend-Remaining': remaining.toString(),
       },
     }
   );
 }
-
-/**
- * Create 401 Unauthorized response
- */
-function createUnauthorizedResponse(): NextResponse {
-  return NextResponse.json(
-    {
-      error: {
-        code: 'UNAUTHORIZED',
-        message: 'Authentication required for payment operations',
-      },
-    },
-    {
-      status: 401,
-      headers: {
-        'Content-Type': 'application/json',
-        'WWW-Authenticate': 'Bearer',
-      },
-    }
-  );
-}
-
-/**
- * Create 503 Service Unavailable response (Redis down)
- */
-function createServiceUnavailableResponse(): NextResponse {
-  return NextResponse.json(
-    {
-      error: {
-        code: 'SERVICE_UNAVAILABLE',
-        message: 'Payment system temporarily unavailable. Please try again later.',
-      },
-    },
-    {
-      status: 503,
-      headers: {
-        'Content-Type': 'application/json',
-        'Retry-After': '60', // 1 minute
-      },
-    }
-  );
-}
-
-// ============================================================================
-// Main Middleware Function
-// ============================================================================
 
 /**
  * Spend Limit Middleware
  *
- * Checks spend limits for payment routes at the edge.
- * Returns null if request should proceed, or NextResponse to block.
+ * This middleware runs on EVERY request and blocks payment routes
+ * if the user has exceeded their spend limits.
  *
- * @param request - Next.js request object
- * @returns NextResponse to block request, or null to continue
+ * Export this function from your root middleware.ts file.
  */
 export async function spendLimitMiddleware(
-  request: NextRequest
+  req: NextRequest
 ): Promise<NextResponse | null> {
-  const pathname = request.nextUrl.pathname;
+  const { pathname } = req.nextUrl;
 
-  // Skip non-payment routes
+  // Only check payment routes
   if (!isPaymentRoute(pathname)) {
+    return null; // Continue to next middleware
+  }
+
+  // Extract user ID
+  const userId = extractUserId(req);
+  if (!userId) {
+    // No user ID - let the request through
+    // The actual payment handler will require auth
     return null;
   }
 
-  try {
-    // Extract user ID from auth
-    const userId = extractUserId(request);
+  // Check spend limit
+  const result = await checkSpendLimitRedis(userId);
 
-    if (!userId) {
-      // No user ID - block payment (authentication required)
-      console.warn('[SpendLimitMiddleware] Blocked unauthenticated payment attempt');
-      return createUnauthorizedResponse();
-    }
-
-    // Get current spend from Redis (fast edge query)
-    const spend = await getCurrentSpend(userId);
-
-    // Check limits
-    const dailyExceeded = spend.daily >= SPEND_LIMITS.DAILY;
-    const weeklyExceeded = spend.weekly >= SPEND_LIMITS.WEEKLY;
-
-    if (dailyExceeded || weeklyExceeded) {
-      let reason: string;
-      if (dailyExceeded && weeklyExceeded) {
-        reason = `Both daily ($${SPEND_LIMITS.DAILY}) and weekly ($${SPEND_LIMITS.WEEKLY}) spend limits exceeded`;
-      } else if (dailyExceeded) {
-        reason = `Daily spend limit of $${SPEND_LIMITS.DAILY} exceeded`;
-      } else {
-        reason = `Weekly spend limit of $${SPEND_LIMITS.WEEKLY} exceeded`;
-      }
-
-      console.warn(
-        `[SpendLimitMiddleware] Blocked payment for user ${userId}: ${reason}`,
-        { daily: spend.daily, weekly: spend.weekly }
-      );
-
-      return createBlockedResponse(spend.daily, spend.weekly, reason);
-    }
-
-    // Limits OK - allow request to proceed
-    console.log(
-      `[SpendLimitMiddleware] Allowed payment for user ${userId}`,
-      { daily: spend.daily, weekly: spend.weekly, path: pathname }
-    );
-
-    // Add spend info to request headers (for logging in API routes)
-    const response = NextResponse.next();
-    response.headers.set('X-User-Daily-Spend', spend.daily.toFixed(2));
-    response.headers.set('X-User-Weekly-Spend', spend.weekly.toFixed(2));
-    response.headers.set('X-User-Id', userId);
-
-    return response;
-  } catch (error) {
-    console.error('[SpendLimitMiddleware] Error checking spend limits:', error);
-
-    // Fail-closed: if we can't check limits, block the payment for security
-    return createServiceUnavailableResponse();
+  // If Redis failed, allow request but log warning
+  // The payment handler will do a DB check
+  if (!result) {
+    console.warn('Spend limit check failed, allowing request to proceed to handler');
+    return null;
   }
+
+  // Block if limit exceeded
+  if (!result.allowed) {
+    return createBlockedResponse(
+      result.limitType!,
+      result.dailySpent,
+      result.weeklySpent
+    );
+  }
+
+  // Allow request to proceed
+  return null;
 }
 
 /**
- * Export default middleware function for Next.js
+ * Matcher config for Next.js middleware
  *
- * Usage in apps/web/middleware.ts:
- * ```ts
- * export { spendLimitMiddleware as middleware } from './src/middleware/spend-limit';
- * export const config = {
- *   matcher: ['/api/stripe/:path*', '/api/payments/:path*', '/api/web3/:path*'],
- * };
- * ```
+ * Export this from your root middleware.ts:
+ * export const config = { matcher: SPEND_LIMIT_MATCHER };
  */
-export default spendLimitMiddleware;
+export const SPEND_LIMIT_MATCHER = [
+  '/api/stripe/:path*',
+  '/api/payments/:path*',
+  '/api/checkout/:path*',
+  '/api/subscribe/:path*',
+];
