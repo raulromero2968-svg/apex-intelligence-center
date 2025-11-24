@@ -53,28 +53,34 @@ export function ApexVisualEngine() {
     // SHOOTING CARDS (Ballistic Arcs)
     const activeCards: ShootingCard[] = [];
     const spawnCard = () => {
-        // Spawn from left or right edge
+        // 1. Start far off-screen (Left or Right)
         const startLeft = Math.random() > 0.5;
-        const startX = startLeft ? -50 : width + 50;
-        const startY = Math.random() * (height * 0.8); // Top 80%
+        const startX = startLeft ? -100 : width + 100;
 
-        // Velocity: Aim towards the other side with an upward arc
-        const speed = 4 + Math.random() * 3;
-        const angle = startLeft ? -Math.PI / 4 : -Math.PI * 0.75; // 45 degrees up
+        // 2. Start lower down (60% - 90% of screen height) so they shoot UP
+        const startY = height * (0.6 + (Math.random() * 0.3));
+
+        // 3. Velocity Calculation for "Bell Curve"
+        // Horizontal speed (constant)
+        const speedX = (3 + Math.random() * 2) * (startLeft ? 1 : -1);
+
+        // Vertical speed (High initial upward force)
+        // This creates the "Up and Over" arc
+        const speedY = -(6 + Math.random() * 4);
 
         activeCards.push({
             x: startX,
             y: startY,
-            vx: Math.cos(angle) * speed * (startLeft ? 1 : -1) + (Math.random() * 2),
-            vy: Math.sin(angle) * speed - 2, // Initial upward pop
-            gravity: 0.05, // Gentle gravity for arc
+            vx: speedX,
+            vy: speedY,
+            gravity: 0.08, // Low gravity for "floaty" feel
             color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7', // Cyan/Purple
             w: 40,
-            h: 56, // Pokemon Card Ratio (2.5 x 3.5 roughly)
+            h: 56, // Pokemon Card Ratio
             life: 0,
-            maxLife: 300,
+            maxLife: 400, // Live longer to complete the arc
             angle: 0,
-            spin: (Math.random() - 0.5) * 0.05
+            spin: (Math.random() - 0.5) * 0.02 // Gentle rotation
         });
     };
 

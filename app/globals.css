@@ -100,6 +100,43 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* HOLOGRAPHIC CARD CONTAINER EFFECT (Enhanced) */
+  .holo-card-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .holo-card-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: none;
+    pointer-events: none;
+  }
+
+  .holo-card-container:hover::after {
+    left: 200%;
+    transition: left 0.8s ease-in-out;
+  }
+
+  .holo-card-container:hover {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    transform: translateY(-5px);
+    border-color: #22d3ee;
+  }
 }
 
 @layer components {
