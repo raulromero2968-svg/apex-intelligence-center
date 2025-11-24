@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, TrendingDown } from 'lucid
 import { motion } from 'framer-motion'
 import IntelChart from '@/components/intel/IntelChart'
 import { SourceRail } from '@/components/intel/SourceRail'
+import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper'
 import { getArticleBySlug } from '@/lib/data/intel-archive'
 
 // Legacy article data for backwards compatibility
@@ -440,105 +441,107 @@ export default function ArticlePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Main Content Column (8 cols) */}
           <div className="lg:col-span-8">
-            {/* Article Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-12"
-            >
-              <div className="flex flex-wrap items-center gap-4 mb-6">
-                <span className="px-3 py-1 rounded-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan text-sm font-semibold">
-                  {article.category}
-                </span>
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
-                  <Calendar size={16} />
-                  {article.date}
-                </div>
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
-                  <Clock size={16} />
-                  {article.readTime}
-                </div>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-                {article.title}
-              </h1>
-
-              <p className="text-gray-400">
-                By {article.author}
-              </p>
-            </motion.div>
-
-            {/* Market Performance Chart */}
-            {article.chartData && (
+            <DigitalScrollWrapper>
+              {/* Article Header */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
                 className="mb-12"
               >
-                <div className="card-cyber p-6">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <TrendingUp className="text-neon-cyan" size={24} />
-                    Market Performance
-                  </h3>
-                  <IntelChart data={article.chartData} />
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <span className="px-3 py-1 rounded-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan text-sm font-semibold">
+                    {article.category}
+                  </span>
+                  <div className="flex items-center gap-2 text-gray-400 text-sm">
+                    <Calendar size={16} />
+                    {article.date}
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400 text-sm">
+                    <Clock size={16} />
+                    {article.readTime}
+                  </div>
                 </div>
+
+                <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
+                  {article.title}
+                </h1>
+
+                <p className="text-gray-400">
+                  By {article.author}
+                </p>
               </motion.div>
-            )}
 
-            {/* Article Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="prose prose-invert prose-cyan max-w-none mb-12"
-            >
-          <div 
-            className="article-content text-gray-300 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: article.content.split('\n').map((line: string) => {
-              if (line.startsWith('## ')) {
-                return `<h2 class="text-3xl font-bold font-orbitron mt-12 mb-6 text-neon-cyan text-glow-cyan">${line.slice(3)}</h2>`
-              } else if (line.startsWith('### ')) {
-                return `<h3 class="text-2xl font-bold font-orbitron mt-8 mb-4 text-cyan-300">${line.slice(4)}</h3>`
-              } else if (line.startsWith('**') && line.endsWith('**')) {
-                return `<p class="font-bold text-white my-4">${line.slice(2, -2)}</p>`
-              } else if (line.startsWith('- ')) {
-                return `<li class="ml-6 my-2">${line.slice(2)}</li>`
-              } else if (line.startsWith('1. ') || line.match(/^\d+\. /)) {
-                return `<li class="ml-6 my-2">${line.replace(/^\d+\. /, '')}</li>`
-              } else if (line.trim() === '---') {
-                return `<hr class="my-8 border-neon-cyan/30" />`
-              } else if (line.trim() === '') {
-                return '<br />'
-              } else if (line.startsWith('*') && line.endsWith('*')) {
-                return `<p class="text-gray-500 italic my-4">${line.slice(1, -1)}</p>`
-              } else {
-                return `<p class="my-4">${line}</p>`
-              }
-            }).join('') }}
-          />
-        </motion.div>
+              {/* Market Performance Chart */}
+              {article.chartData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-12"
+                >
+                  <div className="card-cyber p-6">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                      <TrendingUp className="text-neon-cyan" size={24} />
+                      Market Performance
+                    </h3>
+                    <IntelChart data={article.chartData} />
+                  </div>
+                </motion.div>
+              )}
 
-        {/* Tags */}
-        {article.tags && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-wrap gap-2 mb-12"
-          >
-            {article.tags.map((tag: string) => (
-              <span
-                key={tag}
-                className="px-3 py-1 rounded-full bg-cyber-dark/50 border border-neon-cyan/30 text-gray-400 text-sm"
+              {/* Article Content */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="prose prose-invert prose-cyan max-w-none mb-12 border-t border-slate-800 pt-8"
               >
-                <Tag size={14} className="inline mr-1" />
-                {tag}
-              </span>
-            ))}
-          </motion.div>
-        )}
+                <div
+                  className="article-content text-gray-300 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: article.content.split('\n').map((line: string) => {
+                    if (line.startsWith('## ')) {
+                      return `<h2 class="text-3xl font-bold font-orbitron mt-12 mb-6 text-neon-cyan text-glow-cyan">${line.slice(3)}</h2>`
+                    } else if (line.startsWith('### ')) {
+                      return `<h3 class="text-2xl font-bold font-orbitron mt-8 mb-4 text-cyan-300">${line.slice(4)}</h3>`
+                    } else if (line.startsWith('**') && line.endsWith('**')) {
+                      return `<p class="font-bold text-white my-4">${line.slice(2, -2)}</p>`
+                    } else if (line.startsWith('- ')) {
+                      return `<li class="ml-6 my-2">${line.slice(2)}</li>`
+                    } else if (line.startsWith('1. ') || line.match(/^\d+\. /)) {
+                      return `<li class="ml-6 my-2">${line.replace(/^\d+\. /, '')}</li>`
+                    } else if (line.trim() === '---') {
+                      return `<hr class="my-8 border-neon-cyan/30" />`
+                    } else if (line.trim() === '') {
+                      return '<br />'
+                    } else if (line.startsWith('*') && line.endsWith('*')) {
+                      return `<p class="text-gray-500 italic my-4">${line.slice(1, -1)}</p>`
+                    } else {
+                      return `<p class="my-4">${line}</p>`
+                    }
+                  }).join('') }}
+                />
+              </motion.div>
+
+              {/* Tags */}
+              {article.tags && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex flex-wrap gap-2 mb-12"
+                >
+                  {article.tags.map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 rounded-full bg-cyber-dark/50 border border-neon-cyan/30 text-gray-400 text-sm"
+                    >
+                      <Tag size={14} className="inline mr-1" />
+                      {tag}
+                    </span>
+                  ))}
+                </motion.div>
+              )}
+            </DigitalScrollWrapper>
 
             {/* Subscribe CTA */}
             <motion.div

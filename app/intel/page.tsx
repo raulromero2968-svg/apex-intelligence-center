@@ -56,19 +56,20 @@ export default function IntelPage() {
           </div>
         </div>
 
-        {/* Category Filter */}
-        <div className="flex justify-center gap-2 mb-12 flex-wrap">
+        {/* TITAN FILTER BAR - Masculine & Technical */}
+        <div className="flex flex-wrap justify-center gap-2 mt-8 mb-12">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeCategory === category
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-[0_0_15px_rgba(148,163,184,0.1)]'
-                  : 'text-slate-500 hover:text-white'
-              }`}
+              className={`
+                px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all skew-x-[-10deg]
+                ${activeCategory === category
+                  ? 'bg-cyan-950/50 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                  : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:border-slate-600 hover:text-slate-300'}
+              `}
             >
-              {category}
+              <span className="skew-x-[10deg] block">{category}</span>
             </button>
           ))}
         </div>

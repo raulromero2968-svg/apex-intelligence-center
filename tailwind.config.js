@@ -26,6 +26,7 @@ module.exports = {
         'glow-pulse': 'glow 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
         'slide-up': 'slideUp 0.5s ease-out',
+        'scan-slow': 'scan 8s linear infinite',
       },
       keyframes: {
         glow: {
@@ -39,6 +40,12 @@ module.exports = {
         slideUp: {
           '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scan: {
+          '0%': { top: '0%', opacity: '0' },
+          '10%': { opacity: '1' },
+          '90%': { opacity: '1' },
+          '100%': { top: '100%', opacity: '0' },
         },
       },
       boxShadow: {
