@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Chakra_Petch, Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
-import { ApexVisualEngine } from '@/components/layout/ApexVisualEngine'
+import { TitanVideoEngine } from '@/components/layout/TitanVideoEngine'
 
 // TITAN TYPOGRAPHY PROTOCOL
 const chakra = Chakra_Petch({
@@ -46,8 +46,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${chakra.variable} ${space.variable} ${inter.variable} ${mono.variable} font-sans antialiased bg-transparent text-slate-100`}>
-        {/* The Apex Visual Engine - unified canvas rendering layer */}
-        <ApexVisualEngine />
+        {/* The Titan Video Engine - hybrid video + code rendering layer */}
+        <TitanVideoEngine />
 
         {/* Gradient orbs for additional depth */}
         <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl animate-float pointer-events-none" />
