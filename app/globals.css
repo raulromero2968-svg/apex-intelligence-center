@@ -303,3 +303,46 @@ h2, h3 {
 button, a {
   letter-spacing: 0.05em;
 }
+
+/* HIGH VOLTAGE CIRCUIT TEXT */
+.neon-circuit-text {
+  color: #fff;
+  text-transform: uppercase;
+  position: relative;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px #22d3ee,
+    0 0 40px #22d3ee,
+    0 0 80px #22d3ee;
+  animation: neon-pulse 3s infinite alternate;
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #22d3ee,
+      0 0 40px #22d3ee;
+  }
+  50% {
+    text-shadow:
+      0 0 2px #fff,
+      0 0 5px #fff,
+      0 0 15px #a855f7, /* Purple shift */
+      0 0 30px #a855f7;
+  }
+}
+
+/* SOFT LOOP ANIMATION FOR VIDEO */
+@keyframes fade-loop {
+  0% { opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.animate-fade-loop {
+  animation: fade-loop 8s linear infinite; /* Matches typical loop length */
+}
