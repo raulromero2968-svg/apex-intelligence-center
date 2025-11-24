@@ -1,27 +1,18 @@
 /**
- * Compliance Package
+ * @apex/compliance
  *
- * Export all compliance-related functionality.
+ * Compliance and enforcement utilities for Apex Intelligence Center
  */
 
 export {
-  // Core functions
-  initializeRedis,
-  getCurrentSpend,
-  checkSpendLimit,
-  reserveSpend,
-  refundSpend,
-  resetSpend,
-
-  // Types
-  type SpendCheckResult,
-  type ReserveSpendResult,
-  type SpendLimitError,
-
-  // Constants
   SPEND_LIMITS,
-
-  // Helpers
-  createSpendLimitError,
-  formatSpendLimitError,
+  SpendLimitError,
+  validatePayment,
+  createSpendLimitErrorResponse,
+  createSpendLimitMiddleware,
+  extractUserIdFromRequest,
+  convertToUSD,
+  createPaymentMetadata,
+  type PaymentValidation,
+  type PaymentMetadata,
 } from './spendLimits';

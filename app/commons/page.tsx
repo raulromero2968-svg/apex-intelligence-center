@@ -1,15 +1,14 @@
 'use client';
 
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
-import { TitanHeader } from '@/components/ui/TitanHeader';
 
 export default function CommonsPage() {
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
-      <TitanHeader
-        title="APEX COMMONS"
-        subtitle="COMMUNITY PROTOCOLS // ACTIVE"
-      />
+      <div className="max-w-4xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold text-white mb-4">Apex <span className="text-cyan-400">Commons</span></h1>
+        <p className="text-slate-400">The community standard for TCG intelligence.</p>
+      </div>
 
       <DigitalScrollWrapper>
         <div className="space-y-12">

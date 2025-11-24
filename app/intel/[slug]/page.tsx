@@ -1,54 +1,55 @@
-'use client';
+import { notFound } from 'next/navigation';
+import { ArticleLayout } from '@/components/research/ArticleLayout';
+import { getArticleBySlug, getAllArticles } from '@/lib/articles';
 
-import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
-import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
-import { IntelHeader } from '@/components/intel/IntelHeader';
-import { IntelBody } from '@/components/intel/IntelBody';
-import { SourceRail } from '@/components/intel/SourceRail';
-
-export default function IntelReportPage({ params }: { params: { slug: string } }) {
-  const article = INTEL_ARCHIVE.find(a => a.slug === params.slug);
-
-  const title = article?.title || "ENCRYPTED PACKET";
-  const sources = article?.sources || [];
-  // Default to Free/Amber if undefined
-  const tier = article?.tier || "Free";
-
-  // Map tier string to color string for Wrapper
-  const colorMap: Record<string, "cyan" | "purple" | "amber"> = {
-    "Whale": "cyan",
-    "Pro": "purple",
-    "Free": "amber"
+interface ArticlePageProps {
+  params: {
+    slug: string;
   };
-  const color = colorMap[tier] || "amber";
+}
+
+// Generate static params for all articles (optional, for static generation)
+export async function generateStaticParams() {
+  const articles = getAllArticles();
+  return articles.map((article) => ({
+    slug: article.slug,
+  }));
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: ArticlePageProps) {
+  const article = getArticleBySlug(params.slug);
+
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    };
+  }
+
+  return {
+    title: `${article.title} | Apex Intelligence`,
+    description: article.excerpt,
+  };
+}
+
+export default function ArticlePage({ params }: ArticlePageProps) {
+  const article = getArticleBySlug(params.slug);
+
+  if (!article) {
+    notFound();
+  }
 
   return (
-    <main className="min-h-screen pt-24 px-6 relative z-10 pb-24">
-       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-          <div className="lg:col-span-8">
-             {/* Pass dynamic color to scroll */}
-             <DigitalScrollWrapper color={color}>
-
-                <IntelHeader
-                  slug={params.slug}
-                  title={title}
-                  tier={tier}
-                />
-
-                <div className={`mt-8 border-t pt-8 ${color === 'cyan' ? 'border-cyan-900' : color === 'purple' ? 'border-purple-900' : 'border-amber-900'}`}>
-                   <IntelBody slug={params.slug} />
-                </div>
-
-             </DigitalScrollWrapper>
-          </div>
-
-          <div className="lg:col-span-4 hidden lg:block sticky top-32 h-fit">
-             <div className="backdrop-blur-md bg-slate-950/30 border border-slate-800/50 rounded-xl p-1">
-               <SourceRail sources={sources} />
-             </div>
-          </div>
-       </div>
-    </main>
+    <ArticleLayout
+      title={article.title}
+      excerpt={article.excerpt}
+      content={article.content}
+      author={article.author}
+      date={article.date}
+      readTime={article.readTime}
+      category={article.category}
+      citations={article.citations}
+      isPremium={article.isPremium}
+    />
   );
 }
