@@ -1,11 +1,30 @@
 import type { Metadata } from 'next'
-import { Inter, Orbitron } from 'next/font/google'
+import { Chakra_Petch, Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import { ApexVisualEngine } from '@/components/layout/ApexVisualEngine'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
+// TITAN TYPOGRAPHY PROTOCOL
+const chakra = Chakra_Petch({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-chakra',
+})
+
+const space = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+})
 
 export const metadata: Metadata = {
   title: 'Apex Intelligence | TCG Market Intel & Analysis',
@@ -26,7 +45,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased bg-transparent text-slate-100`}>
+      <body className={`${chakra.variable} ${space.variable} ${inter.variable} ${mono.variable} font-sans antialiased bg-transparent text-slate-100`}>
         {/* The Apex Visual Engine - unified canvas rendering layer */}
         <ApexVisualEngine />
 

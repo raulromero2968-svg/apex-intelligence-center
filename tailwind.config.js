@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'], // Default Body
+        display: ['var(--font-chakra)', 'sans-serif'], // Titan Headers (Racecar Look)
+        tech: ['var(--font-space)', 'sans-serif'], // Sub-headers (NASA Look)
+        mono: ['var(--font-mono)', 'monospace'], // Terminal Stream
+      },
       colors: {
         // Cyberpunk neon palette
         'neon-pink': '#FF006E',
