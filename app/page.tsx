@@ -114,7 +114,7 @@ export default function Home() {
             >
               <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
                 <img 
-                  src="/images/apex-wolf-black-bg-final.png" 
+                  src="/images/apex-wolf-transparent.png" 
                   alt="Apex Intelligence Wolf Logo" 
                   className="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(34,211,238,0.5)] animate-pulse"
                   style={{ animationDuration: '3s' }}
