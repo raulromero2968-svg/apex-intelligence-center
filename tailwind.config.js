@@ -22,6 +22,9 @@ module.exports = {
         'cyber-dark': '#0A0E27',
         'cyber-darker': '#050814',
         'cyber-gray': '#1A1F3A',
+        // Titan Visual Engine: Intensified Cyberpunk F1 Palette
+        'cyan-high': '#06FFF0',
+        'purple-high': '#D946EF',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -33,6 +36,8 @@ module.exports = {
         'float': 'float 3s ease-in-out infinite',
         'slide-up': 'slideUp 0.5s ease-out',
         'scan-slow': 'scan 8s linear infinite',
+        'holo-glitch': 'holoGlitch 3s ease-in-out infinite',
+        'scanlines': 'scanlines 8s linear infinite',
       },
       keyframes: {
         glow: {
@@ -52,6 +57,24 @@ module.exports = {
           '10%': { opacity: '1' },
           '90%': { opacity: '1' },
           '100%': { top: '100%', opacity: '0' },
+        },
+        holoGlitch: {
+          '0%, 100%': {
+            filter: 'hue-rotate(0deg) brightness(1)',
+            boxShadow: '0 0 20px rgba(6, 255, 240, 0.3)'
+          },
+          '33%': {
+            filter: 'hue-rotate(90deg) brightness(1.1)',
+            boxShadow: '0 0 30px rgba(217, 70, 239, 0.5)'
+          },
+          '66%': {
+            filter: 'hue-rotate(180deg) brightness(0.9)',
+            boxShadow: '0 0 25px rgba(6, 255, 240, 0.4)'
+          },
+        },
+        scanlines: {
+          '0%': { backgroundPosition: '0 0' },
+          '100%': { backgroundPosition: '0 100%' },
         },
       },
       boxShadow: {
