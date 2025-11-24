@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Chakra_Petch, Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import Navigation from '@/components/Navigation'
+import { Navbar } from '@/components/Navigation'
 import { ApexVisualEngine } from '@/components/layout/ApexVisualEngine'
 
 // TITAN TYPOGRAPHY PROTOCOL
@@ -51,7 +51,7 @@ export default function RootLayout({
 
         {/* Content sits on top (z-10) */}
         <div className="relative z-10">
-          <Navigation />
+          <Navbar />
           <main>{children}</main>
         </div>
       </body>
