@@ -264,14 +264,16 @@ canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TITAN TYPOGRAPHY PROTOCOL
+   RESTORED TYPOGRAPHY - CLEAN & NEON
    ═══════════════════════════════════════════════════════════ */
 
-/* Main hierarchy - Tech Font for headers */
-h1, h2, h3 {
-  font-family: var(--font-chakra), sans-serif;
+/* Main hierarchy - Revert to clean Inter font */
+h1, h2, h3, h4, h5, h6 {
+  /* Revert to the default clean font, but keep uppercase for impact */
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.03em; /* Tight & Aggressive */
+  letter-spacing: -0.04em; /* Tight & Clean */
 }
 
 /* Readable body font but technical */
@@ -279,16 +281,17 @@ p, li, div {
   font-family: var(--font-inter), sans-serif;
 }
 
-/* HIGH VOLTAGE CIRCUIT TEXT - TITAN REFINED */
+/* HIGH VOLTAGE CIRCUIT TEXT - Keep the glow and gradient */
 .neon-circuit-text {
+  font-family: var(--font-inter), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #22d3ee 100%);
-  background-size: 200% auto;
+  /* Keep the glow and gradient */
+  background: linear-gradient(135deg, #fff 0%, #22d3ee 50%, #a855f7 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shine-sweep 3s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(34,211,238,0.5));
   position: relative;
   display: inline-block;
 }
