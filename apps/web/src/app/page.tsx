@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Search, Sparkles, ArrowRight, Terminal } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Terminal, Shield } from 'lucide-react';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
@@ -211,6 +211,42 @@ export default function HomePage() {
                 <WolfConstellation />
               </div>
             </div>
+          </section>
+
+          {/* Apex Commons CTA */}
+          <section className="max-w-5xl mx-auto">
+            <Link
+              href="/commons"
+              className="group relative block overflow-hidden rounded-2xl border border-slate-700/50 bg-gradient-to-br from-purple-950/30 via-slate-900/50 to-cyan-950/30 p-8 md:p-12 backdrop-blur-sm hover:border-purple-500/50 transition-all duration-300"
+            >
+              {/* Ambient glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-cyan-500/5 group-hover:from-purple-500/10 group-hover:to-cyan-500/10 transition-all duration-300" />
+
+              <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="space-y-3 flex-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-medium">
+                    <Shield className="w-4 h-4" />
+                    New: Apex Commons
+                  </div>
+
+                  <h2 className="text-2xl md:text-3xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-400 transition-all">
+                    A Public Commons for Better Systems
+                  </h2>
+
+                  <p className="text-slate-300 leading-relaxed max-w-2xl">
+                    Tools and frameworks for builders tired of tech savior narratives.
+                    No gurus, no worship—just honest resources for building ethical systems.
+                  </p>
+                </div>
+
+                <div className="flex-shrink-0">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 text-white font-medium group-hover:bg-gradient-to-r group-hover:from-purple-500/30 group-hover:to-cyan-500/30 group-hover:border-cyan-500/50 transition-all">
+                    Explore the Commons
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+            </Link>
           </section>
 
           {/* Search Bar */}
