@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Orbitron } from 'next/font/google'
 import './globals.css'
 import Navigation from '@/components/Navigation'
+import { StarfieldBackground } from '@/components/layout/StarfieldBackground'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
@@ -27,13 +28,16 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased`}>
         <div className="relative min-h-screen">
+          {/* Starfield Background - The Apex Atmosphere */}
+          <StarfieldBackground />
+
           {/* Background effects */}
           <div className="fixed inset-0 cyber-grid opacity-30 pointer-events-none" />
-          
+
           {/* Gradient orbs */}
-          <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl animate-float" />
-          <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-cyan/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-          
+          <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl animate-float pointer-events-none" />
+          <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-cyan/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '1s' }} />
+
           {/* Content */}
           <div className="relative z-10">
             <Navigation />
