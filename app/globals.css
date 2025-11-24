@@ -157,7 +157,24 @@
   }
 
   .card-cyber {
-    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20 
+    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20
            rounded-lg p-6 hover:border-neon-cyan/40 transition-all duration-300;
   }
+}
+
+/* FORCE TRANSPARENCY ON ALL PAGES */
+body, html {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Make the main page wrappers see-through glass */
+main {
+  background-color: rgba(2, 6, 23, 0.4) !important; /* slate-950 with 40% opacity */
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Ensure the Visual Engine canvas is always behind everything */
+canvas {
+  z-index: -1 !important;
 }
