@@ -7,13 +7,19 @@ import Navigation from '@/components/Navigation';
 import { Check, Zap, Crown, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// APEX SYSTEM: HARD LINK OVERRIDE
+// We use the Env Var if available, otherwise we fallback to the hardcoded ID.
+const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1SWpmsKqAPftaKAF1Hho292P';
+const WHALE_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1SWpp9KqAPftaKAFXd813uF9';
+
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null);
 
-  // THE CHECKOUT LOGIC
   const handleCheckout = async (priceId: string, tierName: string) => {
     try {
       setLoading(tierName);
+
+      console.log(`[APEX] Initiating checkout for ${tierName} with ID: ${priceId}`);
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -24,14 +30,15 @@ export default function SubscribePage() {
       const data = await response.json();
 
       if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe
+        window.location.href = data.url;
       } else {
         console.error('Checkout failed:', data.error);
-        alert('Checkout failed. Please try again.');
+        alert(`Checkout failed: ${data.error || 'Unknown system error'}`);
         setLoading(null);
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('System Error: Unable to connect to checkout gateway.');
       setLoading(null);
     }
   };
@@ -87,7 +94,7 @@ export default function SubscribePage() {
             </ul>
 
             <button
-              onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO!, 'pro')}
+              onClick={() => handleCheckout(PRO_PRICE_ID, 'pro')}
               disabled={loading === 'pro'}
               className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-black font-bold font-mono text-sm transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center"
             >
@@ -109,7 +116,7 @@ export default function SubscribePage() {
             </ul>
 
             <button
-              onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE!, 'whale')}
+              onClick={() => handleCheckout(WHALE_PRICE_ID, 'whale')}
               disabled={loading === 'whale'}
               className="w-full py-3 border border-purple-500/50 text-purple-400 hover:bg-purple-900/20 rounded-lg font-mono text-sm transition-colors flex items-center justify-center"
             >
