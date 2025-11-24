@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Terminal, Activity, Layers, FileText } from 'lucide-react';
+import { Menu, X, Terminal, Activity, Layers, FileText, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WolfConstellation } from '@/components/hero/WolfConstellation';
 
@@ -23,6 +23,7 @@ const Navigation = () => {
   const navLinks = [
     { name: 'Intel', href: '/intel', icon: <Terminal size={18} /> },
     { name: 'Portfolio', href: '/portfolio', icon: <Activity size={18} /> },
+    { name: 'Commons', href: '/commons', icon: <Users size={18} /> },
     { name: 'About', href: '/about', icon: <Layers size={18} /> },
     { name: 'Subscribe', href: '/subscribe', icon: <FileText size={18} /> },
   ];
