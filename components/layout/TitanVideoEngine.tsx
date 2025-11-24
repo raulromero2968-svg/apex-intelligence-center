@@ -23,110 +23,121 @@ export function TitanVideoEngine() {
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    // --- PHYSICS CONFIGURATION ---
-    // Note: We removed the Stars and Matrix because the VIDEO handles that now.
-    // We only keep the Grid (for structure) and Cards (for 3D pop).
+    // --- SHOOTING STAR CARD PHYSICS (Overlaid on Video) ---
+    const activeCards: any[] = [];
 
-    const cards = Array(15).fill(0).map(() => ({
-      x: Math.random() * width,
-      y: height + 100, // Start below screen
-      vx: (Math.random() - 0.5) * 2, // Horizontal drift
-      vy: -(4 + Math.random() * 4), // Upward velocity
-      gravity: 0.05,
-      color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7', // Cyan/Purple
-      w: 40,
-      h: 56,
-      life: 0,
-      maxLife: 400,
-      angle: 0,
-      spin: (Math.random() - 0.5) * 0.05
-    }));
+    const spawnCard = () => {
+        const startLeft = Math.random() > 0.5;
+        const startX = startLeft ? -100 : width + 100;
+        const startY = height * (0.6 + (Math.random() * 0.3));
+
+        const speedX = (3 + Math.random() * 2) * (startLeft ? 1 : -1);
+        const speedY = -(6 + Math.random() * 4);
+
+        activeCards.push({
+            x: startX,
+            y: startY,
+            vx: speedX,
+            vy: speedY,
+            gravity: 0.08,
+            color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7', // Cyan/Purple
+            w: 40,
+            h: 56,
+            life: 0,
+            maxLife: 400,
+            angle: 0,
+            spin: (Math.random() - 0.5) * 0.02
+        });
+    };
+
+    // Spawn a new card every 1.5 seconds
+    const spawner = setInterval(spawnCard, 1500);
 
     const render = () => {
       // 1. CLEAR (Transparent - lets video show through)
       ctx.clearRect(0, 0, width, height);
 
-      // 2. GRID (Subtle Overlay)
-      ctx.strokeStyle = 'rgba(34, 211, 238, 0.05)';
+      // 2. GRID (Subtle Overlay to unify Video with UI)
+      ctx.strokeStyle = 'rgba(34, 211, 238, 0.05)'; // Very faint cyan
       ctx.lineWidth = 1;
-      const gridSize = 80; // Wider grid for "Open Road" feel
+      const gridSize = 80;
 
       ctx.beginPath();
-      // Vertical Perspective Lines (Road effect)
+      // Perspective Grid Lines (Floor)
       for (let x = -width; x <= width * 2; x += gridSize) {
-         // Simple vertical lines for now, keeping it clean over the video
          ctx.moveTo(x, 0);
          ctx.lineTo(x, height);
       }
+      // Horizontal Horizon Lines
+      for (let y = 0; y <= height; y += gridSize) {
+         ctx.moveTo(0, y);
+         ctx.lineTo(width, y);
+      }
       ctx.stroke();
 
-      // 3. SHOOTING CARDS (Ballistic Arcs)
-      for (let i = cards.length - 1; i >= 0; i--) {
-        const c = cards[i];
-
-        // Physics
+      // 3. SHOOTING CARDS
+      for (let i = activeCards.length - 1; i >= 0; i--) {
+        const c = activeCards[i];
         c.x += c.vx;
         c.y += c.vy;
-        c.vy += c.gravity; // Gravity makes them arc
+        c.vy += c.gravity;
         c.angle += c.spin;
         c.life++;
 
-        // Reset if off screen
-        if (c.y > height + 200 || c.life > c.maxLife) {
-            c.y = height + 100;
-            c.x = Math.random() * width;
-            c.vy = -(5 + Math.random() * 5); // Relaunch up
-            c.vx = (Math.random() - 0.5) * 3;
-            c.life = 0;
-        }
-
-        // Draw Card
         ctx.save();
         ctx.translate(c.x + c.w/2, c.y + c.h/2);
         ctx.rotate(c.angle);
 
+        // Hollow Neon Look
         ctx.strokeStyle = c.color;
         ctx.lineWidth = 2;
         ctx.shadowColor = c.color;
-        ctx.shadowBlur = 15; // Neon Glow
+        ctx.shadowBlur = 20;
 
         ctx.beginPath();
         ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 4);
         ctx.stroke();
 
         ctx.restore();
+
+        if (c.y > height + 100 || c.life > c.maxLife) {
+            activeCards.splice(i, 1);
+        }
       }
 
       requestAnimationFrame(render);
     };
 
     render();
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+        window.removeEventListener('resize', handleResize);
+        clearInterval(spawner);
+    };
   }, []);
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none -z-50 overflow-hidden bg-slate-950">
 
-      {/* 1. THE VIDEO LAYER (The "Canon" Environment) */}
-      {/* Ensure you name your generated file 'titan-loop.mp4' and put it in public/images/ */}
+      {/* 1. THE VIDEO (Background Layer) */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
+        className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-screen"
       >
+        {/* IMPORTANT: Make sure this file exists in public/images/ */}
         <source src="/images/titan-loop.mp4" type="video/mp4" />
       </video>
 
-      {/* 2. THE CANVAS LAYER (The Physics Overlay) */}
+      {/* 2. THE CANVAS (Physics Layer) */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
       />
 
-      {/* 3. VIGNETTE OVERLAY (Focuses eyes on center content) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020617_90%)]" />
+      {/* 3. VIGNETTE (Cinematic Edge Darkening) */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#020617_95%)]" />
     </div>
   );
 }
