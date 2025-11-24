@@ -262,3 +262,14 @@ canvas {
     background-position: 0% 50%;
   }
 }
+
+/* TITAN TYPOGRAPHY OVERRIDE */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em; /* Tighter, more aggressive */
+  text-transform: uppercase; /* Always shouting (Tech style) */
+}
+
+/* Make buttons look sharp */
+button, a {
+  letter-spacing: 0.05em;
+}
