@@ -6,7 +6,11 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
       <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold text-white mb-4">Underground Intel, <span className="text-purple-400">Surface-Level Access</span></h1>
+        <h1 className="text-4xl md:text-6xl tracking-tighter uppercase mb-2">
+          <span className="glitch-gradient" data-text="MISSION BRIEF">
+            MISSION BRIEF
+          </span>
+        </h1>
       </div>
 
       <DigitalScrollWrapper>
