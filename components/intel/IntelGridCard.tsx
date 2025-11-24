@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { HoloThumbnail } from './HoloThumbnail';
 
 interface IntelCardProps {
   item: any;
@@ -19,21 +20,9 @@ export function IntelGridCard({ item }: IntelCardProps) {
       {/* 1. HOLOGRAPHIC OVERLAY (The Shine) */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20 holo-sweep" />
 
-      {/* 2. IMAGE BACKGROUND */}
-      <div className="absolute inset-0 z-0">
-        {/* Gradient fallback */}
-        <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 group-hover:scale-110 transition-transform duration-700" />
-
-        {/* Tech grid pattern overlay */}
-        <div className="absolute inset-0 opacity-20"
-             style={{
-               backgroundImage: 'radial-gradient(circle at 50% 50%, #22d3ee 1px, transparent 1px)',
-               backgroundSize: '20px 20px'
-             }}
-        />
-
-        {/* Gradient overlay for better text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/90" />
+      {/* 2. GENERATIVE HOLOGRAPHIC THUMBNAIL */}
+      <div className="absolute inset-0 z-0 group-hover:scale-110 transition-transform duration-700">
+        <HoloThumbnail category={item.category} />
       </div>
 
       {/* 3. TOP TAGS */}

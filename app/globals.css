@@ -249,3 +249,16 @@ canvas {
 .folder-tab {
   clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
 }
+
+/* HOLOGRAPHIC FOIL SHIFT ANIMATION */
+@keyframes holo-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
