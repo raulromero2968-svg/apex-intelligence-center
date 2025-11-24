@@ -7,44 +7,47 @@ import { IntelBody } from '@/components/intel/IntelBody';
 import { SourceRail } from '@/components/intel/SourceRail';
 
 export default function IntelReportPage({ params }: { params: { slug: string } }) {
-  // 1. Find Data
   const article = INTEL_ARCHIVE.find(a => a.slug === params.slug);
 
-  // 2. Safe defaults
   const title = article?.title || "ENCRYPTED PACKET";
   const sources = article?.sources || [];
+  // Default to Free/Amber if undefined
+  const tier = article?.tier || "Free";
+
+  // Map tier string to color string for Wrapper
+  const colorMap: Record<string, "cyan" | "purple" | "amber"> = {
+    "Whale": "cyan",
+    "Pro": "purple",
+    "Free": "amber"
+  };
+  const color = colorMap[tier] || "amber";
 
   return (
-    // relative z-10 ensures it sits above the Starfield Canvas
     <main className="min-h-screen pt-24 px-6 relative z-10 pb-24">
-
        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-          {/* LEFT COLUMN: MAIN CONTENT WRAPPED IN SCROLL */}
           <div className="lg:col-span-8">
-             <DigitalScrollWrapper>
+             {/* Pass dynamic color to scroll */}
+             <DigitalScrollWrapper color={color}>
 
-                {/* HEADER */}
                 <IntelHeader
                   slug={params.slug}
                   title={title}
+                  tier={tier}
                 />
 
-                {/* BODY (Streams text) */}
-                <div className="mt-8 border-t border-slate-800 pt-8">
+                <div className={`mt-8 border-t pt-8 ${color === 'cyan' ? 'border-cyan-900' : color === 'purple' ? 'border-purple-900' : 'border-amber-900'}`}>
                    <IntelBody slug={params.slug} />
                 </div>
 
              </DigitalScrollWrapper>
           </div>
 
-          {/* RIGHT COLUMN: SOURCES */}
           <div className="lg:col-span-4 hidden lg:block sticky top-32 h-fit">
              <div className="backdrop-blur-md bg-slate-950/30 border border-slate-800/50 rounded-xl p-1">
                <SourceRail sources={sources} />
              </div>
           </div>
-
        </div>
     </main>
   );
