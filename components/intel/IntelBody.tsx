@@ -5,52 +5,46 @@ import IntelChart from '@/components/intel/IntelChart';
 import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
 
 export function IntelBody({ slug }: { slug: string }) {
-  // 1. Fetch the real content from the archive
+  // 1. Fetch Data
   const article = INTEL_ARCHIVE.find(a => a.slug === slug);
   const hasRealContent = !!article?.content;
 
-  // IF REAL CONTENT EXISTS (Vintage Report)
-  if (hasRealContent) {
+  // 2. FALLBACK: If no content exists, run the Simulation Stream
+  if (!hasRealContent) {
+    const briefing = `/// ENCRYPTED PACKET: ${slug.toUpperCase()}... \n\n ACCESS DENIED: FULL REPORT PENDING DECLASSIFICATION.`;
     return (
-      <div className="space-y-10 font-sans text-slate-300 leading-relaxed">
-
-        {/* 1. Executive Summary Stream (Always keep the stream for the intro) */}
-        <div className="p-6 border-l-2 border-yellow-500 bg-yellow-950/10 rounded-r-lg font-mono text-sm">
-          <h3 className="text-yellow-500 font-bold mb-3 uppercase text-xs tracking-[0.2em]">
-            /// EXECUTIVE_BRIEFING
-          </h3>
-          <div className="min-h-[80px]">
-             <TerminalStream content={article?.summary || "Loading data..."} speed={3} />
-          </div>
+        <div className="p-6 border-l-2 border-red-500 bg-red-950/10 rounded-r-lg font-mono text-sm min-h-[200px]">
+            <TerminalStream content={briefing} speed={5} />
         </div>
-
-        {/* 2. The Chart Engine (Real) - Only show for vintage article */}
-        {slug === "vintage-wotc-investment-guide" && (
-          <IntelChart title="WOTC Holo Value Appreciation (2015-2025)" />
-        )}
-
-        {/* 3. The Main Content (HTML Injection) */}
-        <div
-          className="prose prose-invert prose-cyan max-w-none"
-          dangerouslySetInnerHTML={{ __html: article?.content || "" }}
-        />
-
-      </div>
     );
   }
 
-  // FALLBACK (For articles without content yet)
-  const briefing = `/// ENCRYPTED PACKET: ${slug.toUpperCase()}...`;
-
+  // 3. RENDER REAL CONTENT (Vintage Report)
   return (
-    <div className="space-y-10 font-mono text-sm md:text-base">
-        <div className="p-6 border-l-2 border-cyan-500 bg-cyan-950/10 rounded-r-lg">
-            <TerminalStream content={briefing} speed={3} />
+    <div className="font-sans text-slate-300 leading-relaxed">
+
+      {/* A. EXECUTIVE SUMMARY (Always Streams for the "Cool Factor") */}
+      <div className="mb-10 p-6 border-l-2 border-cyan-500 bg-cyan-950/10 rounded-r-lg font-mono text-sm shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+        <h3 className="text-cyan-400 font-bold mb-3 uppercase text-xs tracking-[0.2em]">
+          /// EXECUTIVE_BRIEFING
+        </h3>
+        <div className="min-h-[60px]">
+           <TerminalStream content={article?.summary || "Loading intel..."} speed={10} />
         </div>
-        {/* Placeholder Chart */}
-        <div className="w-full h-64 bg-slate-950 border border-slate-800 flex items-center justify-center">
-            <p className="text-cyan-500 font-mono text-xs animate-pulse">[ DATA_PENDING ]</p>
-        </div>
+      </div>
+
+      {/* B. THE CHART ENGINE (Top of the Fold) */}
+      <div className="mb-12">
+         <IntelChart title="Market Performance // 10-Year Alpha" />
+      </div>
+
+      {/* C. THE MAIN BODY (Static HTML) */}
+      {/* We use 'prose' classes to ensure the injected HTML looks good */}
+      <div
+        className="prose prose-invert prose-cyan max-w-none prose-headings:font-display prose-headings:uppercase prose-p:text-slate-400 prose-strong:text-white prose-li:text-slate-400"
+        dangerouslySetInnerHTML={{ __html: article?.content || "" }}
+      />
+
     </div>
   );
 }
