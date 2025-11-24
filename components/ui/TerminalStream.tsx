@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 
-export function TerminalStream({ content, speed = 15 }: { content: string, speed?: number }) {
+export function TerminalStream({ content, speed = 5 }: { content: string, speed?: number }) {
   const [displayedContent, setDisplayedContent] = useState('');
 
   useEffect(() => {
+    setDisplayedContent(''); // Reset on content change
     let i = 0;
     const timer = setInterval(() => {
       if (i < content.length) {
