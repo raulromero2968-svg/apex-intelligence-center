@@ -4,90 +4,39 @@ import Link from 'next/link'
 import { ArrowRight, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { INTEL_ARCHIVE, getAllCategories, getArticlesByCategory } from '@/lib/data/intel-archive'
+import { IntelGridCard } from '@/components/intel/IntelGridCard'
 
 export default function IntelPage() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeCategory, setActiveCategory] = useState('All')
 
-  const articles = [
-    {
-      slug: 'pokemon-151-set-analysis',
-      title: 'Pokémon 151: Dissecting the Nostalgia Premium',
-      excerpt: 'Economic analysis of the 2023 mega-set celebrating Kanto. Pull rates, chase card valuations, and why Hyper Rare Charizard ex is the most important modern card.',
-      date: 'Jan 15, 2025',
-      readTime: '9 min read',
-      category: 'Set Analysis',
-      isPremium: false,
-      image: '/images/articles/pokemon-151-cards.png'
-    },
-    {
-      slug: 'vintage-wotc-investment-guide',
-      title: 'Vintage WOTC Cards: The Blue-Chip Investment Thesis',
-      excerpt: 'Deep analysis of 1999-2003 Wizards of the Coast era cards, print run scarcity, PSA population dynamics, and why Base Set Charizard remains the S&P 500 of TCG investing.',
-      date: 'Jan 10, 2025',
-      readTime: '10 min read',
-      category: 'Vintage Analysis',
-      isPremium: false,
-      image: '/images/articles/vintage-wotc.png'
-    },
-    {
-      slug: 'modern-set-rotation-strategy',
-      title: 'The Rotation Window: Timing Modern Format Transitions',
-      excerpt: 'Strategic analysis of TCG set rotation mechanics, price volatility patterns, and optimal entry/exit points for Standard-to-Modern transitions.',
-      date: 'Jan 5, 2025',
-      readTime: '7 min read',
-      category: 'Strategy',
-      isPremium: false,
-      image: '/images/articles/set-rotation-strategy.png'
-    },
-    {
-      slug: 'japanese-vs-english-market-comparison',
-      title: 'East vs. West: The 2025 Market Arbitrage Report',
-      excerpt: 'Data-driven analysis of price disparity, print quality, and investment liquidity between Japanese and English Pokémon card markets.',
-      date: 'Dec 28, 2024',
-      readTime: '8 min read',
-      category: 'Market Analysis',
-      isPremium: false,
-      image: '/images/articles/japan-vs-english.png'
-    },
-    {
-      slug: 'psa-grading-roi-analysis',
-      title: 'PSA Grading ROI: The Complete 2025 Analysis',
-      excerpt: 'Comprehensive breakdown of PSA grading costs, turnaround times, and ROI calculations. When grading makes sense and when it destroys value.',
-      date: 'Dec 20, 2024',
-      readTime: '11 min read',
-      category: 'Investment Guide',
-      isPremium: false,
-      image: '/images/articles/graded-cards-comparison.png'
-    }
-  ]
+  const categories = getAllCategories()
 
-  const filteredArticles = articles.filter(article =>
+  // Filter by category first
+  const categoryFiltered = getArticlesByCategory(activeCategory)
+
+  // Then filter by search query
+  const displayedArticles = categoryFiltered.filter(article =>
     article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
     article.category.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const categories = ['All', 'Market Analysis', 'Set Analysis', 'Investment Guide', 'Strategy', 'Vintage Analysis']
-  const [activeCategory, setActiveCategory] = useState('All')
-
-  const displayedArticles = activeCategory === 'All'
-    ? filteredArticles
-    : filteredArticles.filter(article => article.category === activeCategory)
-
   return (
-    <div className="min-h-screen py-20">
-      <div className="container-custom">
+    <main className="min-h-screen pt-24 px-6 relative z-10">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-            Intelligence Archive
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+            Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Intelligence</span>
           </h1>
-          <p className="text-xl text-gray-400">
-            Deep market analysis, data-driven insights, and exclusive intelligence for serious TCG collectors.
+          <p className="text-slate-400">
+            Market insights, research, and analysis across all TCG markets. Verified by data.
           </p>
         </motion.div>
 
@@ -108,72 +57,26 @@ export default function IntelPage() {
         </div>
 
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-3 justify-center mb-12">
+        <div className="flex justify-center gap-2 mb-12 flex-wrap">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300
-                ${activeCategory === category
-                  ? 'bg-neon-cyan/20 text-neon-cyan border border-neon-cyan shadow-neon-cyan'
-                  : 'bg-cyber-dark/30 text-gray-400 border border-gray-700 hover:border-neon-cyan/50'
-                }`}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeCategory === category
+                  ? 'bg-slate-800 text-white border border-slate-700 shadow-[0_0_15px_rgba(148,163,184,0.1)]'
+                  : 'text-slate-500 hover:text-white'
+              }`}
             >
               {category}
             </button>
           ))}
         </div>
 
-        {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayedArticles.map((article, index) => (
-            <Link key={article.slug} href={`/intel/${article.slug}`}>
-              <motion.article
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card-cyber group cursor-pointer h-full flex flex-col overflow-hidden"
-              >
-              {/* Featured Image */}
-              {article.image && (
-                <div className="w-full h-48 mb-4 -mx-6 -mt-6 overflow-hidden">
-                  <img 
-                    src={article.image} 
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              )}
-              
-              {article.isPremium && (
-                <div className="inline-block mb-3 px-3 py-1 rounded-full bg-neon-pink/20 border border-neon-pink/50 w-fit">
-                  <span className="text-xs font-semibold text-neon-pink">PREMIUM</span>
-                </div>
-              )}
-              
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs font-semibold text-neon-cyan">{article.category}</span>
-                <span className="text-xs text-gray-500">•</span>
-                <span className="text-xs text-gray-400">{article.readTime}</span>
-              </div>
-              
-              <h3 className="text-xl font-bold font-[family-name:var(--font-orbitron)] mb-3 group-hover:text-neon-cyan transition-colors">
-                {article.title}
-              </h3>
-              
-              <p className="text-gray-400 text-sm mb-4 flex-grow">
-                {article.excerpt}
-              </p>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-neon-cyan/20">
-                <span className="text-xs text-gray-500">{article.date}</span>
-                <div className="flex items-center text-neon-cyan group-hover:translate-x-2 transition-transform text-sm font-semibold">
-                  Read More
-                  <ArrowRight className="ml-2" size={16} />
-                </div>
-              </div>
-              </motion.article>
-            </Link>
+        {/* Intelligence Archive Grid - Restored Alpha Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+          {displayedArticles.map((article) => (
+            <IntelGridCard key={article.id} item={article} />
           ))}
         </div>
 
@@ -208,6 +111,6 @@ export default function IntelPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </main>
   )
 }
