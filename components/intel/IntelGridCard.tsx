@@ -27,7 +27,7 @@ export function IntelGridCard({ item }: IntelCardProps) {
 
       {/* 3. TOP TAGS */}
       <div className="absolute top-4 left-4 z-10 flex gap-2 flex-wrap">
-        <span className={`${tagColor} text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg`}>
+        <span className={`${tagColor} text-white font-tech text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg`}>
           {item.category}
         </span>
         {/* Decorative Data Badges from Screenshot */}
@@ -65,7 +65,7 @@ export function IntelGridCard({ item }: IntelCardProps) {
 
       {/* 4. CONTENT OVERLAY (Bottom Glass) */}
       <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent pt-12 pb-6 px-6 z-10">
-        <h3 className="text-lg font-bold text-white mb-2 leading-tight group-hover:text-cyan-400 transition-colors">
+        <h3 className="font-tech text-lg font-bold text-white mb-2 leading-tight group-hover:text-cyan-400 transition-colors">
           {item.title}
         </h3>
         <p className="text-slate-400 text-xs line-clamp-2 mb-4">
