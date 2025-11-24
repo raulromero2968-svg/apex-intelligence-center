@@ -135,7 +135,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card-cyber group hover:scale-105 transition-transform duration-300"
+                className="card-cyber holo-card group hover:scale-105 transition-transform duration-300"
               >
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 flex items-center justify-center mb-4 group-hover:shadow-neon-cyan transition-shadow">
                   <feature.icon className="text-neon-cyan" size={24} />
@@ -171,7 +171,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="card-cyber group cursor-pointer"
+                  className="card-cyber holo-card group cursor-pointer"
                 >
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-xs font-semibold text-neon-pink">{intel.category}</span>
