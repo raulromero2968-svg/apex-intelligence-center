@@ -1,117 +1,71 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { ArrowRight, Search } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
-import { INTEL_ARCHIVE, getAllCategories, getArticlesByCategory } from '@/lib/data/intel-archive'
-import { IntelGridCard } from '@/components/intel/IntelGridCard'
+import { useState } from 'react';
+import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
+import { IntelGridCard } from '@/components/intel/IntelGridCard';
+import { HoloFolderWrapper } from '@/components/intel/HoloFolderWrapper';
+
+const categories = ['All', 'Research', 'Blog', 'Intel', 'Vintage Analysis', 'Set Analysis', 'Strategy'];
 
 export default function IntelPage() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('All')
+  const [activeTab, setActiveTab] = useState('All');
 
-  const categories = getAllCategories()
-
-  // Filter by category first
-  const categoryFiltered = getArticlesByCategory(activeCategory)
-
-  // Then filter by search query
-  const displayedArticles = categoryFiltered.filter(article =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredArchive = activeTab === 'All'
+    ? INTEL_ARCHIVE
+    : INTEL_ARCHIVE.filter(item => item.category === activeTab);
 
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-3xl mx-auto mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Intelligence</span>
-          </h1>
-          <p className="text-slate-400">
-            Market insights, research, and analysis across all TCG markets. Verified by data.
-          </p>
-        </motion.div>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-cyan" size={20} />
-            <input
-              type="text"
-              placeholder="Search intel drops..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-cyber-dark/50 border border-neon-cyan/30 rounded-lg
-                       text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none
-                       focus:shadow-neon-cyan transition-all backdrop-blur-md"
-            />
-          </div>
+      {/* 1. TITAN GLITCH HEADER */}
+      <div className="max-w-7xl mx-auto mb-12 text-center relative">
+        <div className="flex items-center justify-center gap-4 mb-6 opacity-60">
+           <div className="h-[1px] w-12 bg-cyan-500"></div>
+           <span className="text-[10px] font-mono text-cyan-400 tracking-[0.4em] uppercase">Secure_Link // Established</span>
+           <div className="h-[1px] w-12 bg-cyan-500"></div>
         </div>
 
-        {/* TITAN FILTER BAR - Masculine & Technical */}
-        <div className="flex flex-wrap justify-center gap-2 mt-8 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`
-                px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all skew-x-[-10deg]
-                ${activeCategory === category
-                  ? 'bg-cyan-950/50 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
-                  : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:border-slate-600 hover:text-slate-300'}
-              `}
-            >
-              <span className="skew-x-[10deg] block">{category}</span>
-            </button>
-          ))}
-        </div>
+        {/* The Glitch Title */}
+        <h1 className="text-6xl md:text-8xl font-black text-white mb-2 tracking-tighter uppercase glitch-wrapper">
+          <span className="glitch-text" data-text="LATEST INTELLIGENCE">
+            LATEST INTELLIGENCE
+          </span>
+        </h1>
 
-        {/* Intelligence Archive Grid - Restored Alpha Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-          {displayedArticles.map((article) => (
-            <IntelGridCard key={article.id} item={article} />
-          ))}
-        </div>
-
-        {/* No Results */}
-        {displayedArticles.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">No intel drops found. Try adjusting your search or filters.</p>
-          </div>
-        )}
-
-        {/* Subscribe CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-20 relative rounded-2xl p-12 overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
-          <div className="absolute inset-0 neon-border" />
-          
-          <div className="relative text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-              Want Premium Intel?
-            </h2>
-            <p className="text-gray-300 mb-8">
-              Subscribe to get exclusive market analysis, early access to research, and premium investment guides.
-            </p>
-            <Link href="/subscribe" className="btn-primary inline-flex items-center">
-              Subscribe Now
-              <ArrowRight className="ml-2" size={20} />
-            </Link>
-          </div>
-        </motion.div>
+        <p className="text-slate-400 max-w-2xl mx-auto font-mono text-xs tracking-wide mt-4">
+          [ DECRYPTING MARKET DATA... ] verified_by_varc_system
+        </p>
       </div>
+
+      {/* 2. FILTERS */}
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
+        {categories.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`
+              px-4 py-2 text-[10px] font-mono uppercase tracking-wider border transition-all skew-x-[-10deg]
+              ${activeTab === tab
+                ? 'bg-cyan-950/60 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                : 'bg-slate-900/40 border-slate-800 text-slate-500 hover:border-slate-600 hover:text-slate-300'}
+            `}
+          >
+            <span className="skew-x-[10deg] block">{tab}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* 3. HOLOGRAPHIC FOLDER GRID */}
+      <div className="max-w-7xl mx-auto pb-24">
+        <HoloFolderWrapper>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredArchive.map((item) => (
+              <IntelGridCard key={item.id} item={item} />
+            ))}
+          </div>
+        </HoloFolderWrapper>
+      </div>
+
     </main>
-  )
+  );
 }
