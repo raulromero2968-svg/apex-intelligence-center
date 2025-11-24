@@ -44,7 +44,7 @@ export default function SubscribePage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950/40 backdrop-blur-sm text-gray-300 font-sans">
+    <main className="min-h-screen text-gray-300 font-sans relative z-10">
       <StarfieldBackground />
       <Navigation />
 

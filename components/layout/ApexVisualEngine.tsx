@@ -39,33 +39,27 @@ export function ApexVisualEngine() {
     handleResize();
 
     // --- CONFIGURATION ---
-    const stars = Array(80).fill(0).map(() => ({
+
+    // 1. STARS: Increased count and brightness
+    const stars = Array(150).fill(0).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 1.5,
-      speed: (Math.random() * 0.2) + 0.05
+      size: Math.random() * 2, // Bigger stars
+      speed: (Math.random() * 0.3) + 0.1
     }));
 
-    // MATRIX RAIN (Meditative)
+    // 2. MATRIX RAIN: "Meditative River"
     const cols = Math.floor(width / 25);
     const ypos = Array(cols).fill(0).map(() => Math.random() * height);
 
-    // SHOOTING CARDS (Ballistic Arcs)
+    // 3. SHOOTING CARDS
     const activeCards: ShootingCard[] = [];
     const spawnCard = () => {
-        // 1. Start far off-screen (Left or Right)
         const startLeft = Math.random() > 0.5;
         const startX = startLeft ? -100 : width + 100;
-
-        // 2. Start lower down (60% - 90% of screen height) so they shoot UP
         const startY = height * (0.6 + (Math.random() * 0.3));
 
-        // 3. Velocity Calculation for "Bell Curve"
-        // Horizontal speed (constant)
         const speedX = (3 + Math.random() * 2) * (startLeft ? 1 : -1);
-
-        // Vertical speed (High initial upward force)
-        // This creates the "Up and Over" arc
         const speedY = -(6 + Math.random() * 4);
 
         activeCards.push({
@@ -73,27 +67,25 @@ export function ApexVisualEngine() {
             y: startY,
             vx: speedX,
             vy: speedY,
-            gravity: 0.08, // Low gravity for "floaty" feel
-            color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7', // Cyan/Purple
+            gravity: 0.08,
+            color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7',
             w: 40,
-            h: 56, // Pokemon Card Ratio
+            h: 56,
             life: 0,
-            maxLife: 400, // Live longer to complete the arc
+            maxLife: 400,
             angle: 0,
-            spin: (Math.random() - 0.5) * 0.02 // Gentle rotation
+            spin: (Math.random() - 0.5) * 0.02
         });
     };
-
-    // Spawn loop
-    setInterval(spawnCard, 2000); // New card every 2 seconds
+    setInterval(spawnCard, 1500); // Faster spawn rate
 
     const render = () => {
-      // 1. CLEAR (Transparent Trail)
-      ctx.fillStyle = 'rgba(2, 6, 23, 0.3)'; // Slightly clearer to see background
+      // CLEAR: Use a lighter clear to let trails show, but keep background dark
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.25)';
       ctx.fillRect(0, 0, width, height);
 
-      // 2. GRID
-      ctx.strokeStyle = 'rgba(34, 211, 238, 0.05)';
+      // A. GRID: High visibility cyan
+      ctx.strokeStyle = 'rgba(34, 211, 238, 0.08)'; // Increased opacity
       ctx.lineWidth = 1;
       const gridSize = 60;
       ctx.beginPath();
@@ -107,61 +99,61 @@ export function ApexVisualEngine() {
       }
       ctx.stroke();
 
-      // 3. STARS
-      ctx.fillStyle = '#fff';
+      // B. STARS: Brighter White
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // 80% Opacity (High)
       stars.forEach(star => {
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
         star.y += star.speed;
+
+        // Reset logic: If it hits bottom, move to top
         if (star.y > height) {
             star.y = 0;
             star.x = Math.random() * width;
         }
       });
 
-      // 4. MEDITATIVE MATRIX
-      ctx.fillStyle = 'rgba(168, 85, 247, 0.2)';
-      ctx.font = '14px monospace';
+      // C. MEDITATIVE MATRIX: Much Brighter Purple
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.6)'; // 60% Opacity (Was 25%)
+      ctx.font = '16px monospace'; // Larger Font
       ypos.forEach((y, index) => {
-        if (Math.random() > 0.98) {
+        // Draw characters
+        if (Math.random() > 0.96) {
              const text = String.fromCharCode(0x30A0 + Math.random() * 96);
              const x = index * 25;
              ctx.fillText(text, x, y);
         }
-        ypos[index] = y + 1.5;
-        if (y > height) ypos[index] = 0;
+
+        // Flow logic
+        ypos[index] = y + 1.0; // Slow, meditative speed
+        if (y > height + 50) ypos[index] = -50; // Reset slightly above screen
       });
 
-      // 5. SHOOTING CARDS
+      // D. SHOOTING CARDS
       for (let i = activeCards.length - 1; i >= 0; i--) {
         const c = activeCards[i];
-
-        // Physics
         c.x += c.vx;
         c.y += c.vy;
-        c.vy += c.gravity; // Gravity creates the arc/bell curve
+        c.vy += c.gravity;
         c.angle += c.spin;
         c.life++;
 
-        // Draw
         ctx.save();
         ctx.translate(c.x + c.w/2, c.y + c.h/2);
         ctx.rotate(c.angle);
 
-        // Card Body (Hollow, Rounded)
         ctx.strokeStyle = c.color;
         ctx.lineWidth = 2;
         ctx.shadowColor = c.color;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 20; // Strong glow
 
         ctx.beginPath();
-        ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 4); // 4px Radius for Pokemon look
+        ctx.roundRect(-c.w/2, -c.h/2, c.w, c.h, 4);
         ctx.stroke();
 
         ctx.restore();
 
-        // Remove if off screen or dead
         if (c.y > height + 100 || c.life > c.maxLife) {
             activeCards.splice(i, 1);
         }
