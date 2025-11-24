@@ -21,6 +21,24 @@ export default function AboutPage() {
           </p>
         </div>
 
+        <div className="space-y-4 py-8 border-t border-b border-cyan-500/20">
+          <h2 className="text-2xl font-serif font-bold text-white">Human Impulse & System Safety</h2>
+          <div className="space-y-4 text-white/80 leading-relaxed">
+            <p>
+              At Apex Intelligence, we assume people arrive with all kinds of impulses—toward themselves and toward others,
+              generous and destructive, hopeful and furious. Our job is not to judge you for having those thoughts, but to
+              ensure our tools never turn a passing urge into a permanent wound.
+            </p>
+            <p>
+              We design our systems so they never encourage or instruct self-harm or harm to others. Wherever we brush up
+              against crisis, we aim to redirect that energy toward support, reflection, and creation.
+            </p>
+            <p>
+              In everything we build, we aim to be a lens and a guide, never a weapon.
+            </p>
+          </div>
+        </div>
+
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-cyan-400">Connect With Us</h2>
           <p className="text-white/60 text-sm mb-4">
