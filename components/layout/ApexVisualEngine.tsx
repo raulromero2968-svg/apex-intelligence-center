@@ -14,7 +14,6 @@ export function ApexVisualEngine() {
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    // RESIZE HANDLER (Fixes Zoom Issues)
     const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -22,89 +21,99 @@ export function ApexVisualEngine() {
       canvas.height = height;
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // Init
+    handleResize();
 
-    // CONFIGURATION
+    // 1. CONFIGURATION
     const cols = Math.floor(width / 20);
-    const ypos = Array(cols).fill(0);
-    const stars = Array(50).fill(0).map(() => ({
+    const ypos = Array(cols).fill(0).map(() => Math.random() * height); // Random start positions
+
+    // More stars, spread everywhere
+    const stars = Array(100).fill(0).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2,
-      speed: Math.random() * 0.5
+      size: Math.random() * 1.5,
+      speed: (Math.random() * 0.2) + 0.1 // Slower, meditative speed
     }));
 
-    // NEON CARDS (The "Shooting" Effect)
-    const cards = Array(5).fill(0).map(() => ({
+    // HOLLOW NEON CARDS (More of them, border only)
+    const cards = Array(15).fill(0).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      w: 30,
-      h: 42, // Aspect ratio of a TCG card
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random() - 0.5) * 2,
-      color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7' // Cyan or Purple
+      w: 40,
+      h: 56, // TCG Aspect Ratio
+      speedX: (Math.random() - 0.5) * 1.5,
+      speedY: (Math.random() - 0.5) * 1.5,
+      color: Math.random() > 0.5 ? '#22d3ee' : '#a855f7' // Cyan/Purple
     }));
 
-    // RENDER LOOP
     const render = () => {
-      // 1. CLEAR (with semi-transparent black for trails)
-      ctx.fillStyle = '#020617'; // Slate-950 base
+      // CLEAR with transparency trail (creates the smooth motion blur)
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.2)'; // Very subtle clear
       ctx.fillRect(0, 0, width, height);
 
-      // 2. DRAW GRID (Optimized for Zoom)
-      // We draw this manually so it never "disappears" on browser zoom
-      ctx.strokeStyle = 'rgba(34, 211, 238, 0.1)'; // Cyan low opacity
+      // A. DRAW GRID (Fixed visual anchor)
+      ctx.strokeStyle = 'rgba(34, 211, 238, 0.05)'; // Very faint cyan
       ctx.lineWidth = 1;
-      const gridSize = 50;
-
+      const gridSize = 60;
       ctx.beginPath();
-      // Vertical Lines
       for (let x = 0; x <= width; x += gridSize) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
       }
-      // Horizontal Lines
       for (let y = 0; y <= height; y += gridSize) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
       ctx.stroke();
 
-      // 3. DRAW STARFIELD
+      // B. DRAW STARS (Everywhere)
       ctx.fillStyle = '#fff';
       stars.forEach(star => {
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
         star.y += star.speed;
-        if (star.y > height) star.y = 0;
+        if (star.y > height) {
+          star.y = 0;
+          star.x = Math.random() * width; // Reset to random X
+        }
       });
 
-      // 4. DRAW MATRIX RAIN (The "River")
-      ctx.fillStyle = 'rgba(168, 85, 247, 0.15)'; // Purple text
-      ctx.font = '15px monospace';
+      // C. DRAW MEDITATIVE MATRIX RIVER
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.25)'; // Increased visibility slightly
+      ctx.font = '14px monospace';
       ypos.forEach((y, index) => {
-        const text = String.fromCharCode(Math.random() * 128);
-        const x = index * 20;
-        ctx.fillText(text, x, y);
-        if (y > 100 + Math.random() * 10000) ypos[index] = 0;
-        else ypos[index] = y + 20;
+        // Only draw randomly to create "droplets" not solid lines
+        if (Math.random() > 0.97) {
+            const text = String.fromCharCode(0x30A0 + Math.random() * 96); // Katakana
+            const x = index * 20;
+            ctx.fillText(text, x, y);
+        }
+
+        // Flow logic
+        ypos[index] = y + 2; // Slow flow
+        if (y > height) ypos[index] = 0;
       });
 
-      // 5. DRAW NEON CARDS
+      // D. DRAW HOLLOW CARDS (Border Only)
+      ctx.lineWidth = 1.5;
       cards.forEach(card => {
-        // Glow Effect
-        ctx.shadowBlur = 15;
+        // Glow
+        ctx.shadowBlur = 10;
         ctx.shadowColor = card.color;
-        ctx.fillStyle = card.color;
-        ctx.fillRect(card.x, card.y, card.w, card.h);
-        ctx.shadowBlur = 0; // Reset
+        ctx.strokeStyle = card.color;
 
-        // Movement
+        // DRAW BORDER ONLY (strokeRect)
+        ctx.strokeRect(card.x, card.y, card.w, card.h);
+
+        // Reset Shadow
+        ctx.shadowBlur = 0;
+
+        // Move
         card.x += card.speedX;
         card.y += card.speedY;
 
-        // Bounce off walls
+        // Bounce gently
         if (card.x < 0 || card.x > width) card.speedX *= -1;
         if (card.y < 0 || card.y > height) card.speedY *= -1;
       });

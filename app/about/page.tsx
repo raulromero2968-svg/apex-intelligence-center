@@ -54,7 +54,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#030712] text-gray-300 font-sans">
+    <main className="min-h-screen bg-slate-950/30 backdrop-blur-sm text-gray-300 font-sans">
       <StarfieldBackground />
       <Navigation />
 
