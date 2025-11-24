@@ -263,13 +263,43 @@ canvas {
   }
 }
 
-/* TITAN TYPOGRAPHY OVERRIDE */
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.02em; /* Tighter, more aggressive */
-  text-transform: uppercase; /* Always shouting (Tech style) */
+/* ═══════════════════════════════════════════════════════════
+   TITAN TYPOGRAPHY PROTOCOL
+   Hierarchy: Chakra Petch → Space Grotesk → Inter → JetBrains Mono
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1. Main Page Titles (TitanHeader) - The "Racecar" Look */
+h1 {
+  font-family: var(--font-chakra);
+  letter-spacing: -0.02em; /* Tight for aggression */
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
-/* Make buttons look sharp */
+/* 2. Section Headers (Latest Intel, etc) - The "NASA" Look */
+h2, h3 {
+  font-family: var(--font-space);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* 3. The "NASA" Data Labels (Tiny caps) */
+.hud-text {
+  font-family: var(--font-mono);
+  font-size: 0.65rem; /* Tiny */
+  text-transform: uppercase;
+  letter-spacing: 0.15em; /* WIDE spacing for expensive look */
+  color: #22d3ee; /* Cyan */
+}
+
+/* 4. The "Terminal" Stream Text */
+.terminal-text {
+  font-family: var(--font-mono);
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.6;
+}
+
+/* Make buttons look sharp with tactical spacing */
 button, a {
   letter-spacing: 0.05em;
 }
