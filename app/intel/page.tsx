@@ -17,14 +17,11 @@ export default function IntelPage() {
 
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10 pb-24">
-
-      {/* TITAN HEADER */}
       <TitanHeader
         title="INTELLIGENCE ARCHIVE"
         subtitle="CLASSIFIED MARKET DATA // LEVEL 5 CLEARANCE"
       />
 
-      {/* FILTERS */}
       <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-4xl mx-auto">
         {categories.map((tab) => (
           <button
@@ -42,7 +39,6 @@ export default function IntelPage() {
         ))}
       </div>
 
-      {/* GRID */}
       <div className="max-w-7xl mx-auto">
         <HoloFolderWrapper>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,7 +48,6 @@ export default function IntelPage() {
           </div>
         </HoloFolderWrapper>
       </div>
-
     </main>
   );
 }
