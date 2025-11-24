@@ -1,182 +1,148 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { ArrowRight, TrendingUp, BarChart3, Users, Shield } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { WolfConstellation } from '@/components/hero/WolfConstellation'
-import { INTEL_ARCHIVE } from '@/lib/data/intel-archive'
-import { IntelGridCard } from '@/components/intel/IntelGridCard'
-import { TitanHeader } from '@/components/ui/TitanHeader'
+import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
+import { IntelGridCard } from '@/components/intel/IntelGridCard';
+import { TitanHeader } from '@/components/ui/TitanHeader';
+import { HoloFolderWrapper } from '@/components/intel/HoloFolderWrapper';
+import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
+import { TerminalStream } from '@/components/ui/TerminalStream';
+import Link from 'next/link';
 
 export default function Home() {
-  // Get the first 3 articles for the home page
+  // Get latest 3 articles
   const recentIntel = INTEL_ARCHIVE.slice(0, 3);
 
-  const features = [
-    {
-      icon: TrendingUp,
-      title: 'Market Intelligence',
-      description: 'Real-time TCG market data and trend analysis'
-    },
-    {
-      icon: BarChart3,
-      title: 'Price Tracking',
-      description: 'Track card values and identify investment opportunities'
-    },
-    {
-      icon: Users,
-      title: 'Community Intel',
-      description: 'Insights from serious collectors and investors'
-    },
-    {
-      icon: Shield,
-      title: 'Alpha Access',
-      description: 'Get the edge with exclusive market intelligence'
-    }
-  ]
-
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center py-20 overflow-hidden">
-        <div className="container-custom">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column - Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center lg:text-left"
-            >
-              <div className="inline-block mb-6 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/30">
-                <span className="text-neon-cyan text-sm font-semibold flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
-                  </span>
-                  TCG INTELLIGENCE CENTER
-                </span>
-              </div>
+    <main className="min-h-screen relative z-10 overflow-x-hidden">
 
-              <h1 className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-orbitron)] mb-6">
-                <span className="text-glow-cyan">Underground Intel</span>
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
-                  For Serious Collectors
-                </span>
-              </h1>
+      {/* 1. HERO SECTION (Aggressive & Tech) */}
+      <section className="min-h-[80vh] flex flex-col justify-center items-center text-center px-6 relative">
+        <div className="max-w-5xl mx-auto">
+          {/* Top Tag */}
+          <div className="inline-block mb-6">
+            <div className="flex items-center gap-2 border border-cyan-500/30 bg-cyan-950/30 px-4 py-1 rounded-none skew-x-[-10deg] backdrop-blur-md">
+              <div className="w-2 h-2 bg-cyan-400 animate-pulse rounded-full skew-x-[10deg]" />
+              <span className="text-cyan-400 font-mono text-xs tracking-[0.2em] uppercase skew-x-[10deg]">
+                TCG Intelligence Center // Live
+              </span>
+            </div>
+          </div>
 
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
-                Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-                Morning Brew meets the underground—delivered to your inbox.
-              </p>
+          {/* Main Title (Glitch & Massive) */}
+          <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase leading-[0.9]">
+            Underground <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Intel</span> <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Surface</span> Access
+          </h1>
 
-              <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center gap-4">
-                <Link href="/subscribe" className="btn-primary inline-flex items-center">
-                  Get Free Intel
-                  <ArrowRight className="ml-2" size={20} />
-                </Link>
-                <Link href="/intel" className="btn-secondary inline-flex items-center">
-                  Browse Archives
-                </Link>
-              </div>
+          {/* Subtext (Streaming) */}
+          <div className="max-w-2xl mx-auto text-slate-400 text-lg mb-10 h-16">
+            <TerminalStream
+              content="Premium TCG market analysis, data-driven insights, and exclusive intelligence. Morning Brew meets the underground—delivered to your inbox."
+              speed={15}
+            />
+          </div>
 
-
-            </motion.div>
-
-            {/* Right Column - Wolf Logo */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="flex items-center justify-center"
-            >
-              <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
-                <img 
-                  src="/images/apex-wolf-transparent.png" 
-                  alt="Apex Intelligence Wolf Logo" 
-                  className="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(34,211,238,0.5)] animate-pulse"
-                  style={{ animationDuration: '3s' }}
-                />
-              </div>
-            </motion.div>
+          {/* Buttons (NASCAR Style) */}
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Link href="/subscribe" className="group relative px-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-sm uppercase tracking-[0.2em] skew-x-[-10deg] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(34,211,238,0.6)]">
+              <span className="block skew-x-[10deg] group-hover:animate-pulse">Get Alpha Access →</span>
+            </Link>
+            <Link href="/intel" className="group px-8 py-4 border border-slate-700 hover:border-purple-500 text-slate-300 hover:text-purple-400 font-bold text-sm uppercase tracking-[0.2em] skew-x-[-10deg] transition-all hover:bg-purple-950/30">
+              <span className="block skew-x-[10deg]">Browse Archive</span>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-20 border-y border-neon-cyan/20">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card-cyber holo-card group hover:scale-105 transition-transform duration-300"
-              >
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 flex items-center justify-center mb-4 group-hover:shadow-neon-cyan transition-shadow">
-                  <feature.icon className="text-neon-cyan" size={24} />
-                </div>
-                <h3 className="text-lg font-bold font-[family-name:var(--font-orbitron)] mb-2">{feature.title}</h3>
-                <p className="text-gray-400 text-sm">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LATEST INTELLIGENCE SECTION */}
+      {/* 2. LATEST INTEL (Wrapped in FOLDER) */}
       <section className="py-24 px-6">
-        {/* 1. TITAN HEADER (Glitch + Gradient) */}
         <TitanHeader
           title="LATEST INTELLIGENCE"
           subtitle="MARKET INSIGHTS // VERIFIED BY DATA"
         />
 
-        {/* 2. HOLOGRAPHIC GRID (Same as /intel) */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recentIntel.map((item) => (
-            <IntelGridCard key={item.id} item={item} />
-          ))}
-        </div>
-
-        {/* 3. View All Button */}
-        <div className="text-center mt-12">
-          <a href="/intel" className="inline-block px-8 py-3 border border-cyan-500 text-cyan-400 font-mono text-xs uppercase tracking-[0.2em] hover:bg-cyan-500 hover:text-black transition-all skew-x-[-10deg]">
-            <span className="skew-x-[10deg] block">Access Full Archive →</span>
-          </a>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 border-t border-neon-cyan/20">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative rounded-2xl p-12 overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-neon-purple/10 to-neon-pink/10 backdrop-blur-xl" />
-            <div className="absolute inset-0 neon-border" />
-            
-            <div className="relative text-center max-w-2xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-orbitron)] mb-4 text-glow-cyan">
-                Ready for Alpha?
-              </h2>
-              <p className="text-gray-300 mb-8">
-                Join 1,200+ serious collectors getting exclusive TCG market intelligence delivered weekly.
-              </p>
-              <Link href="/subscribe" className="btn-primary inline-flex items-center">
-                Subscribe Now
-                <ArrowRight className="ml-2" size={20} />
-              </Link>
+        <div className="max-w-7xl mx-auto">
+          {/* THE FOLDER WRAPPER */}
+          <HoloFolderWrapper>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentIntel.map((item) => (
+                <IntelGridCard key={item.id} item={item} />
+              ))}
             </div>
-          </motion.div>
+
+            <div className="mt-8 text-right">
+               <Link href="/intel" className="text-xs font-mono text-cyan-500 hover:text-white tracking-widest uppercase border-b border-cyan-500/50 pb-1 hover:border-white transition-colors">
+                 Access Full Database &gt;&gt;
+               </Link>
+            </div>
+          </HoloFolderWrapper>
         </div>
       </section>
-    </div>
-  )
+
+      {/* 3. CORE SYSTEMS (Wrapped in SCROLL) */}
+      <section className="py-24 px-6 relative">
+        <div className="max-w-5xl mx-auto">
+          <TitanHeader
+            title="CORE SYSTEMS"
+            subtitle="OPERATIONAL CAPABILITIES"
+          />
+
+          {/* THE SCROLL WRAPPER */}
+          <DigitalScrollWrapper>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+              {/* Left: Description */}
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-white border-l-4 border-purple-500 pl-4 uppercase tracking-wider">
+                  The Mission
+                </h3>
+                <div className="text-slate-400 leading-relaxed font-mono text-sm">
+                  <TerminalStream
+                    content="The TCG market is a multi-billion dollar industry, but most collectors are flying blind. We are building the intel network that should have existed years ago: a place where serious collectors can get data-driven insights without the noise."
+                    speed={5}
+                  />
+                </div>
+              </div>
+
+              {/* Right: Grid Features */}
+              <div className="grid grid-cols-1 gap-4">
+                {[
+                  { label: "DATA-DRIVEN", desc: "Every insight backed by real market data." },
+                  { label: "TRANSPARENT", desc: "No hidden agendas, just honest intelligence." },
+                  { label: "ACTIONABLE", desc: "Intelligence you can actually use to execute." }
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 border border-slate-800 bg-slate-900/50 hover:border-cyan-500/50 transition-all group">
+                    <div className="w-10 h-10 flex items-center justify-center bg-slate-800 group-hover:bg-cyan-900/50 text-cyan-400 font-bold">
+                      0{i+1}
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-sm uppercase tracking-wider group-hover:text-cyan-400">{feat.label}</div>
+                      <div className="text-slate-500 text-xs">{feat.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </DigitalScrollWrapper>
+        </div>
+      </section>
+
+      {/* 4. CTA SECTION (Aggressive) */}
+      <section className="py-24 text-center">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter">
+            Ready for <span className="text-purple-500">Alpha</span>?
+          </h2>
+          <p className="text-slate-400 mb-8">
+            Join 1,200+ serious collectors getting exclusive market intelligence delivered weekly.
+          </p>
+          <Link href="/subscribe" className="inline-block px-12 py-5 bg-white text-black font-black text-lg uppercase tracking-[0.2em] skew-x-[-10deg] hover:bg-cyan-400 hover:scale-105 transition-all">
+            <span className="block skew-x-[10deg]">Initiate Sequence</span>
+          </Link>
+        </div>
+      </section>
+
+    </main>
+  );
 }
