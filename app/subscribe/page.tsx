@@ -9,8 +9,8 @@ import { motion } from 'framer-motion';
 
 // APEX SYSTEM: HARD LINK OVERRIDE
 // We use the Env Var if available, otherwise we fallback to the hardcoded ID.
-const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1SWpmsKqAPftaKAF1Hho292P';
-const WHALE_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1SWpp9KqAPftaKAFXd813uF9';
+const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1SWvfeQPUcGNMBQFiEDv4IWZ';
+const WHALE_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1SWvfpQPUcGNMBQFb5JMtpxh';
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null);
