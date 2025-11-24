@@ -295,7 +295,7 @@ export const INTEL_ARCHIVE = [
   {
     id: "auth-tech",
     slug: "authentication-tech-in-tcgs",
-    tier: "Whale",
+    tier: "Free",
     title: "Authentication Tech in TCGs: What Actually Helps",
     summary: "AI scans, chain provenance, and old school handlers. What cuts fraud risk, what's fluff, and how to keep trades safe.",
     category: "Intel",
