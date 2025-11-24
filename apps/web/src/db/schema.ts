@@ -656,6 +656,62 @@ export const marketSubmissions = pgTable('market_submissions', {
 }));
 
 /**
+ * Spend Tracking - Tracks all payment transactions for spend limit enforcement
+ *
+ * Implements unbreakable daily ($50) and weekly ($200) spend limits across:
+ * - Stripe payments (subscriptions, one-time)
+ * - On-chain payments (crypto)
+ *
+ * Uses rolling windows: 24h for daily, 7d for weekly
+ */
+export const spendTracking = pgTable('spend_tracking', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Transaction details
+  amountUsd: real('amount_usd').notNull(), // Normalized to USD
+  paymentType: text('payment_type', {
+    enum: ['stripe', 'onchain']
+  }).notNull(),
+
+  // Payment-specific identifiers
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  stripeChargeId: text('stripe_charge_id'),
+  onchainTxHash: text('onchain_tx_hash'),
+  onchainNetwork: text('onchain_network'), // 'ethereum', 'polygon', etc.
+
+  // Status tracking
+  status: text('status', {
+    enum: ['pending', 'completed', 'failed', 'refunded']
+  }).notNull().default('pending'),
+
+  // Metadata
+  metadata: jsonb('metadata').$type<{
+    currency?: string;
+    originalAmount?: number;
+    usdRate?: number;
+    productId?: string;
+    description?: string;
+    [key: string]: any;
+  }>().default({}),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+
+}, (table) => ({
+  // Critical indexes for spend limit queries
+  userCreatedIdx: index('idx_spend_tracking_user_created').on(table.userId, table.createdAt),
+  userStatusIdx: index('idx_spend_tracking_user_status').on(table.userId, table.status),
+  stripePaymentIntentIdx: index('idx_spend_tracking_stripe_pi').on(table.stripePaymentIntentId),
+  onchainTxIdx: index('idx_spend_tracking_onchain_tx').on(table.onchainTxHash),
+  createdAtIdx: index('idx_spend_tracking_created').on(table.createdAt),
+  // Unique constraints to prevent double-counting
+  uniqueStripePayment: uniqueIndex('idx_spend_tracking_stripe_unique').on(table.stripePaymentIntentId),
+  uniqueOnchainTx: uniqueIndex('idx_spend_tracking_onchain_unique').on(table.onchainTxHash, table.onchainNetwork),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -838,6 +894,9 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   sessionHistory: many(sessionHistory),
   multiModalEmbeddings: many(multiModalEmbeddings),
   videoGenerationRequests: many(videoGenerationRequests),
+  parentLinks: many(familyLinks, { relationName: 'parent' }),
+  childLinks: many(familyLinks, { relationName: 'child' }),
+  spendTracking: many(spendTracking),
   parent: one(users, {
     fields: [users.parentId],
     references: [users.id],
@@ -942,6 +1001,16 @@ export const marketSubmissionsRelations = relations(marketSubmissions, ({ one })
 }));
 
 /**
+ * Spend Tracking relations
+ */
+export const spendTrackingRelations = relations(spendTracking, ({ one }) => ({
+  user: one(users, {
+    fields: [spendTracking.userId],
+    references: [users.id],
+  }),
+}));
+
+/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -978,6 +1047,148 @@ export const multiModalEmbeddingsRelations = relations(multiModalEmbeddings, ({ 
 export const videoGenerationRequestsRelations = relations(videoGenerationRequests, ({ one }) => ({
   user: one(users, {
     fields: [videoGenerationRequests.userId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
+// PARENT DASHBOARD TABLES
+// ============================================================================
+
+/**
+ * Family Links - OAuth-based parent-child account linking
+ *
+ * Allows parents to link child accounts for supervision and monitoring.
+ * Uses OAuth flow for secure authorization.
+ */
+export const familyLinks = pgTable('family_links', {
+  id: text('id').primaryKey(),
+  parentId: text('parent_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status', {
+    enum: ['pending', 'active', 'revoked']
+  }).default('pending').notNull(),
+  // OAuth tokens for accessing child's data
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  tokenExpiresAt: timestamp('token_expires_at'),
+  // Child cannot revoke this link
+  childCannotRevoke: boolean('child_cannot_revoke').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  parentIdx: index('idx_family_links_parent').on(table.parentId),
+  childIdx: index('idx_family_links_child').on(table.childId),
+  statusIdx: index('idx_family_links_status').on(table.status),
+  uniqueParentChild: uniqueIndex('idx_family_links_parent_child_unique').on(table.parentId, table.childId),
+}));
+
+/**
+ * Parental Controls - Per-child control settings
+ *
+ * Stores all parental control configurations including:
+ * - Bedtime mode (disables trading during specified hours)
+ * - Cool down mode (enforces waiting periods between trades)
+ * - Notification controls (parent can disable child's notifications)
+ */
+export const parentalControls = pgTable('parental_controls', {
+  id: text('id').primaryKey(),
+  familyLinkId: text('family_link_id').notNull().references(() => familyLinks.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Bedtime mode
+  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
+  bedtimeStart: text('bedtime_start'), // e.g., "21:00"
+  bedtimeEnd: text('bedtime_end'), // e.g., "07:00"
+  bedtimeTimezone: text('bedtime_timezone').default('America/New_York'),
+
+  // Cool down mode
+  coolDownEnabled: boolean('cool_down_enabled').default(false).notNull(),
+  coolDownMinutes: integer('cool_down_minutes').default(30), // Minutes between actions
+
+  // Notification controls
+  notificationsDisabled: boolean('notifications_disabled').default(false).notNull(),
+  disabledChannels: jsonb('disabled_channels').$type<string[]>().default([]), // ["email", "push", "discord"]
+
+  // Activity limits
+  dailyTradingLimit: integer('daily_trading_limit'), // Max trades per day
+  maxPortfolioValue: real('max_portfolio_value'), // Max USD value
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  childIdx: index('idx_parental_controls_child').on(table.childId),
+  familyLinkIdx: index('idx_parental_controls_family_link').on(table.familyLinkId),
+  uniqueChild: uniqueIndex('idx_parental_controls_child_unique').on(table.childId),
+}));
+
+/**
+ * Session History - Tracks child activity for parent monitoring
+ *
+ * Records all significant child activities for real-time monitoring and history review.
+ */
+export const sessionHistory = pgTable('session_history', {
+  id: text('id').primaryKey(),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Activity details
+  activityType: text('activity_type').notNull(), // "login" | "trade" | "watchlist_add" | "alert_set" | "portfolio_update"
+  activityData: jsonb('activity_data').$type<Record<string, any>>().notNull(),
+
+  // Context
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  deviceInfo: jsonb('device_info'),
+
+  // Timestamps
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+
+  // Parental control enforcement
+  blockedByBedtime: boolean('blocked_by_bedtime').default(false).notNull(),
+  blockedByCoolDown: boolean('blocked_by_cool_down').default(false).notNull(),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  childTimestampIdx: index('idx_session_history_child_timestamp').on(table.childId, table.timestamp.desc()),
+  activityTypeIdx: index('idx_session_history_activity_type').on(table.activityType),
+  timestampIdx: index('idx_session_history_timestamp').on(table.timestamp.desc()),
+}));
+
+/**
+ * Family Links relations
+ */
+export const familyLinksRelations = relations(familyLinks, ({ one, many }) => ({
+  parent: one(users, {
+    fields: [familyLinks.parentId],
+    references: [users.id],
+  }),
+  child: one(users, {
+    fields: [familyLinks.childId],
+    references: [users.id],
+  }),
+  parentalControls: many(parentalControls),
+}));
+
+/**
+ * Parental Controls relations
+ */
+export const parentalControlsRelations = relations(parentalControls, ({ one }) => ({
+  familyLink: one(familyLinks, {
+    fields: [parentalControls.familyLinkId],
+    references: [familyLinks.id],
+  }),
+  child: one(users, {
+    fields: [parentalControls.childId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * Session History relations
+ */
+export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
+  child: one(users, {
+    fields: [sessionHistory.childId],
     references: [users.id],
   }),
 }));
@@ -1043,6 +1254,14 @@ export type MultiModalEmbedding = typeof multiModalEmbeddings.$inferSelect;
 export type NewMultiModalEmbedding = typeof multiModalEmbeddings.$inferInsert;
 export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
 export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
+export type FamilyLink = typeof familyLinks.$inferSelect;
+export type NewFamilyLink = typeof familyLinks.$inferInsert;
+export type ParentalControl = typeof parentalControls.$inferSelect;
+export type NewParentalControl = typeof parentalControls.$inferInsert;
+export type SessionHistory = typeof sessionHistory.$inferSelect;
+export type NewSessionHistory = typeof sessionHistory.$inferInsert;
+export type SpendTracking = typeof spendTracking.$inferSelect;
+export type NewSpendTracking = typeof spendTracking.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:

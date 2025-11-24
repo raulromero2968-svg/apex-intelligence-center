@@ -1,15 +1,13 @@
 'use client';
 
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
-import { TitanHeader } from '@/components/ui/TitanHeader';
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
-      <TitanHeader
-        title="MISSION BRIEF"
-        subtitle="OPERATIONAL DIRECTIVES // CLASSIFIED"
-      />
+      <div className="max-w-4xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold text-white mb-4">Underground Intel, <span className="text-purple-400">Surface-Level Access</span></h1>
+      </div>
 
       <DigitalScrollWrapper>
         <div className="space-y-16">

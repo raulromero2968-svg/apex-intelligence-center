@@ -1,7 +1,6 @@
 'use client';
 
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
-import { TitanHeader } from '@/components/ui/TitanHeader';
 import { useState } from 'react';
 
 export default function SubscribePage() {
@@ -24,15 +23,15 @@ export default function SubscribePage() {
 
   return (
     <main className="min-h-screen pt-24 px-6 relative z-10">
-      <TitanHeader
-        title="ACCESS TERMINAL"
-        subtitle="SUBSCRIPTION TIERS // AVAILABLE"
-      />
+      <div className="max-w-4xl mx-auto text-center mb-8">
+        <h1 className="text-4xl font-bold text-white mb-2">Upgrade Your <span className="text-cyan-400">Intel</span></h1>
+        <p className="text-slate-400">Stop guessing. Start knowing. Unlock institutional-grade analytics.</p>
+      </div>
 
       <DigitalScrollWrapper>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Free Tier */}
-          <div className="p-6 border border-slate-800 rounded-lg text-center opacity-70">
+          <div className="p-6 border border-slate-800 rounded-lg text-center opacity-70 bg-slate-900/40">
             <h3 className="text-white font-bold text-lg">Scout</h3>
             <div className="text-3xl font-bold text-slate-500 my-4">$0<span className="text-sm font-normal">/mo</span></div>
             <ul className="text-xs text-slate-400 space-y-2 mb-6 text-left pl-4">
