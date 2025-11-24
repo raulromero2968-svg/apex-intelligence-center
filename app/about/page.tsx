@@ -181,6 +181,35 @@ export default function AboutPage() {
           </div>
         </motion.div>
 
+        {/* Human Impulse & System Safety */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-20 max-w-3xl mx-auto"
+        >
+          <h2 className="text-3xl font-bold font-orbitron text-center mb-8 text-white glow-text-cyan">
+            Our Approach
+          </h2>
+          <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-8 backdrop-blur-sm">
+            <h3 className="text-xl font-bold font-orbitron mb-4 text-cyan-400">
+              Human Impulse & System Safety
+            </h3>
+            <p className="text-gray-300 leading-relaxed mb-4">
+              At Apex Intelligence, we assume people arrive with all kinds of impulses—toward themselves and toward others,
+              generous and destructive, hopeful and furious. Our job is not to judge you for having those thoughts, but to
+              ensure our tools never turn a passing urge into a permanent wound.
+            </p>
+            <p className="text-gray-300 leading-relaxed mb-4">
+              We design our systems so they never encourage or instruct self-harm or harm to others. Wherever we brush up
+              against crisis, we aim to redirect that energy toward support, reflection, and creation.
+            </p>
+            <p className="text-gray-300 leading-relaxed">
+              In everything we build, we aim to be a lens and a guide, never a weapon.
+            </p>
+          </div>
+        </motion.div>
+
         {/* Origin Story */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
