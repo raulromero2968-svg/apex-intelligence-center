@@ -5,8 +5,8 @@ import { IntelGridCard } from '@/components/intel/IntelGridCard';
 import { TitanHeader } from '@/components/ui/TitanHeader';
 import { HoloFolderWrapper } from '@/components/intel/HoloFolderWrapper';
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
-import { TerminalStream } from '@/components/ui/TerminalStream'; // CYBER STREAM IMPORT
-import { HeroVideoBanner } from '@/components/hero/HeroVideoBanner'; // VIDEO BANNER IMPORT
+import { TerminalStream } from '@/components/ui/TerminalStream';
+import { HeroVideoBanner } from '@/components/hero/HeroVideoBanner';
 import Link from 'next/link';
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <main className="min-h-screen relative z-10 overflow-x-hidden">
 
-      {/* 1. HERO VIDEO BANNER (Sits behind content) */}
+      {/* 1. HERO VIDEO BANNER */}
       <HeroVideoBanner />
 
       {/* 2. HERO CONTENT */}
@@ -32,16 +32,16 @@ export default function Home() {
             </div>
           </div>
 
-          {/* MAIN TITLE (Neon Circuit) */}
+          {/* MAIN TITLE */}
           <h1 className="text-6xl md:text-9xl font-black mb-8 tracking-tighter uppercase leading-[0.9]">
             <span className="neon-circuit-text block" data-text="UNDERGROUND">UNDERGROUND</span>
             <span className="text-white block opacity-90">INTEL</span>
           </h1>
 
-          {/* SUBTEXT (Cyber Stream) */}
+          {/* SUBTEXT (Fixed Typos) */}
           <div className="max-w-2xl mx-auto text-slate-300 text-lg mb-12 h-20 font-mono">
             <TerminalStream
-              content="Premium TCG market analysis, data-driven insights, and exclusive intelligence. Morning Brew meets the Cyberpunk Underground."
+              content="Premium TCG market analysis, data-driven insights, and exclusive intelligence. Morning Brew meets the underground—delivered to your inbox."
               speed={20}
             />
           </div>
@@ -94,6 +94,28 @@ export default function Home() {
               </div>
             </div>
           </DigitalScrollWrapper>
+        </div>
+      </section>
+
+      {/* 5. READY FOR ALPHA (Restored & Neon) */}
+      <section className="py-32 text-center relative z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/20 to-transparent pointer-events-none" />
+        <div className="max-w-3xl mx-auto px-6 relative">
+
+          {/* NEON HEADER */}
+          <h2 className="text-5xl md:text-7xl font-black mb-8 uppercase tracking-tighter">
+            <span className="neon-circuit-text" data-text="READY FOR ALPHA?">
+              READY FOR ALPHA?
+            </span>
+          </h2>
+
+          <p className="text-slate-400 mb-10 font-mono text-sm tracking-wide">
+            Join 1,200+ serious collectors getting exclusive market intelligence delivered weekly.
+          </p>
+
+          <Link href="/subscribe" className="inline-block px-12 py-5 bg-white text-black font-black text-lg uppercase tracking-[0.2em] skew-x-[-10deg] hover:bg-cyan-400 hover:scale-105 transition-all hover:shadow-[0_0_40px_rgba(34,211,238,0.5)]">
+            <span className="block skew-x-[10deg]">Initiate Sequence</span>
+          </Link>
         </div>
       </section>
 
