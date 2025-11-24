@@ -4,8 +4,14 @@ import Link from 'next/link'
 import { ArrowRight, TrendingUp, BarChart3, Users, Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { WolfConstellation } from '@/components/hero/WolfConstellation'
+import { INTEL_ARCHIVE } from '@/lib/data/intel-archive'
+import { IntelGridCard } from '@/components/intel/IntelGridCard'
+import { TitanHeader } from '@/components/ui/TitanHeader'
 
 export default function Home() {
+  // Get the first 3 articles for the home page
+  const recentIntel = INTEL_ARCHIVE.slice(0, 3);
+
   const features = [
     {
       icon: TrendingUp,
@@ -26,33 +32,6 @@ export default function Home() {
       icon: Shield,
       title: 'Alpha Access',
       description: 'Get the edge with exclusive market intelligence'
-    }
-  ]
-
-  const featuredIntel = [
-    {
-      slug: 'pokemon-151-set-analysis',
-      title: 'Pokémon 151: Nostalgia Premium',
-      excerpt: 'Economic analysis of the 2023 mega-set celebrating Kanto. Pull rates, chase card valuations, and why Hyper Rare Charizard ex is the most important modern card...',
-      date: 'Jan 15, 2025',
-      readTime: '9 min read',
-      category: 'Set Analysis'
-    },
-    {
-      slug: 'vintage-wotc-investment-guide',
-      title: 'Vintage WOTC: Blue-Chip Thesis',
-      excerpt: 'Deep analysis of 1999-2003 Wizards of the Coast era cards, print run scarcity, PSA population dynamics, and why Base Set Charizard remains the S&P 500 of TCG investing...',
-      date: 'Jan 10, 2025',
-      readTime: '10 min read',
-      category: 'Vintage Analysis'
-    },
-    {
-      slug: 'modern-set-rotation-strategy',
-      title: 'The Rotation Window Strategy',
-      excerpt: 'Strategic analysis of TCG set rotation mechanics, price volatility patterns, and optimal entry/exit points for Standard-to-Modern transitions...',
-      date: 'Jan 5, 2025',
-      readTime: '7 min read',
-      category: 'Strategy'
     }
   ]
 
@@ -148,53 +127,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Intel Drops */}
-      <section className="py-20">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-orbitron)] text-glow-cyan mb-2">
-                Latest Intel
-              </h2>
-              <p className="text-gray-400">Free samples from the vault</p>
-            </div>
-            <Link href="/intel" className="text-neon-cyan hover:text-neon-pink transition-colors flex items-center">
-              View All
-              <ArrowRight className="ml-2" size={20} />
-            </Link>
-          </div>
+      {/* LATEST INTELLIGENCE SECTION */}
+      <section className="py-24 px-6">
+        {/* 1. TITAN HEADER (Glitch + Gradient) */}
+        <TitanHeader
+          title="LATEST INTELLIGENCE"
+          subtitle="MARKET INSIGHTS // VERIFIED BY DATA"
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredIntel.map((intel, index) => (
-              <Link key={intel.slug} href={`/intel/${intel.slug}`}>
-                <motion.article
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="card-cyber holo-card group cursor-pointer"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs font-semibold text-neon-pink">{intel.category}</span>
-                    <span className="text-xs text-gray-500">•</span>
-                    <span className="text-xs text-gray-400">{intel.readTime}</span>
-                  </div>
+        {/* 2. HOLOGRAPHIC GRID (Same as /intel) */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recentIntel.map((item) => (
+            <IntelGridCard key={item.id} item={item} />
+          ))}
+        </div>
 
-                  <h3 className="text-xl font-bold font-[family-name:var(--font-orbitron)] mb-3 group-hover:text-neon-cyan transition-colors">
-                    {intel.title}
-                  </h3>
-
-                  <p className="text-gray-400 text-sm mb-4">
-                    {intel.excerpt}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{intel.date}</span>
-                    <ArrowRight className="text-neon-cyan group-hover:translate-x-2 transition-transform" size={16} />
-                  </div>
-                </motion.article>
-              </Link>
-            ))}
-          </div>
+        {/* 3. View All Button */}
+        <div className="text-center mt-12">
+          <a href="/intel" className="inline-block px-8 py-3 border border-cyan-500 text-cyan-400 font-mono text-xs uppercase tracking-[0.2em] hover:bg-cyan-500 hover:text-black transition-all skew-x-[-10deg]">
+            <span className="skew-x-[10deg] block">Access Full Archive →</span>
+          </a>
         </div>
       </section>
 
