@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, TrendingDown } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { IntelChart } from '@/components/intel/IntelChart'
+import IntelChart from '@/components/intel/IntelChart'
 
 // Article data (in a real app, this would come from a CMS or database)
 const articles: Record<string, any> = {
