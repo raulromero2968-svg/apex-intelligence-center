@@ -281,20 +281,30 @@ p, li, div {
   font-family: var(--font-inter), sans-serif;
 }
 
-/* SUBTLE PREMIUM GLOW (Replaces jagged circuit effect) */
+/* TITAN HOLLOW GLITCH (The Final Look) */
 .neon-circuit-text {
-  color: #fff;
+  /* 1. Hollow Text (Stroke Only) */
+  color: transparent;
+  -webkit-text-stroke: 2px #ffffff;
+
+  /* 2. Font Settings (Clean & Aggressive) */
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
   position: relative;
   display: inline-block;
-  /* Clean white text with a soft cyan aura */
-  text-shadow:
-    0 0 20px rgba(34, 211, 238, 0.5),
-    0 0 40px rgba(34, 211, 238, 0.2);
+
+  /* 3. The Glow (Cyan & Purple) */
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.8)) drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
+
+  /* 4. The Pulse Animation */
+  animation: hollow-pulse 3s infinite alternate;
 }
 
-/* Remove the jarring "stroke" and "glitch" animations from before */
-.neon-circuit-text::before {
-  display: none;
+@keyframes hollow-pulse {
+  0% { filter: drop-shadow(0 0 5px #22d3ee); }
+  100% { filter: drop-shadow(0 0 20px #22d3ee) drop-shadow(0 0 40px #a855f7); }
 }
 
 /* TITAN HOLLOW GLITCH (The "Reference" Look) */
