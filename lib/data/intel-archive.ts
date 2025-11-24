@@ -1,5 +1,219 @@
 export const INTEL_ARCHIVE = [
   {
+    id: "vintage-wotc",
+    slug: "vintage-wotc-investment-guide",
+    title: "Vintage WOTC Cards: The Blue-Chip Investment Thesis",
+    summary: "Deep analysis of 1999-2003 Wizards of the Coast era. Why Base Set Charizard remains the S&P 500 of TCG investing.",
+    category: "Vintage Analysis",
+    readTime: "15 min read",
+    date: "Oct 10, 2025",
+    image: "/images/intel/charizard-base.jpg",
+    roi: "Steady",
+    sources: [
+      { id: 1, name: "PWCC Market Data", url: "https://www.pwccmarketplace.com/", publisher: "PWCC", accessed: "Oct 2025" },
+      { id: 2, name: "PSA Population Report", url: "https://www.psacard.com/pop", publisher: "PSA", accessed: "Oct 2025" }
+    ],
+    content: `
+## The Blue-Chip Thesis
+
+Vintage Wizards of the Coast era Pokémon cards (1999-2003) represent the blue-chip stocks of TCG investing. Base Set Charizard, in particular, has demonstrated consistent appreciation comparable to the S&P 500, with significantly lower correlation to traditional markets.
+
+## Historical Performance
+
+**Base Set Charizard PSA 10:**
+- 2015: $5,000
+- 2020: $25,000
+- 2025: $85,000+
+- CAGR: 32.7%
+
+**Market Characteristics:**
+- Low supply (PSA 10 pop: ~122)
+- High liquidity (sells in hours, not days)
+- Institutional interest (alternative asset class)
+- Cultural significance (nostalgia premium)
+
+## Investment Fundamentals
+
+**Why WOTC Vintage Holds:**
+1. **Fixed supply** - No more printing
+2. **Demographic tailwinds** - Millennials entering peak earning years
+3. **Brand permanence** - Pokémon remains #1 media franchise
+4. **Proven track record** - 25+ years of data
+
+## Risk-Adjusted Returns
+
+Unlike modern sets subject to reprint risk, vintage WOTC cards offer:
+- Lower volatility than crypto
+- Higher returns than bonds
+- Portfolio diversification benefits
+- Tangible asset with utility (display/enjoyment)
+
+## Strategic Positioning
+
+**Entry Points:**
+- PSA 9: More affordable, still strong appreciation
+- 1st Edition Jungle/Fossil: Undervalued vs Base Set
+- Shadowless cards: Rarity premium
+
+**Hold Strategy:**
+- 10+ year horizon optimal
+- Patience through market cycles
+- Insurance and proper storage essential
+
+**Investment Grade: A+**
+    `
+  },
+  {
+    id: "modern-rotation",
+    slug: "modern-set-rotation-strategy",
+    title: "The Rotation Window: Timing Modern Format Transitions",
+    summary: "Strategic analysis of TCG set rotation mechanics. Price volatility patterns and optimal entry/exit points.",
+    category: "Strategy",
+    readTime: "7 min read",
+    date: "Sep 28, 2025",
+    image: "/images/intel/rotation-graph.jpg",
+    spread: "High",
+    sources: [
+      { id: 1, name: "TcgPlayer Market Data", url: "https://www.tcgplayer.com/", publisher: "TCGPlayer", accessed: "Sep 2025" },
+      { id: 2, name: "Pokémon Organized Play", url: "https://www.pokemon.com/us/play-pokemon/", publisher: "The Pokémon Company", accessed: "Sep 2025" }
+    ],
+    content: `
+## Understanding Rotation
+
+Modern Pokémon TCG follows annual rotation cycles. When sets rotate out of Standard format, card prices experience predictable volatility patterns.
+
+## The Rotation Window
+
+**Pre-Rotation (3-6 months before):**
+- Peak competitive demand
+- Highest prices for playable cards
+- Optimal exit for traders
+
+**Rotation Event:**
+- 40-60% price correction typical
+- Panic selling creates opportunities
+- Collector demand sustains chase cards
+
+**Post-Rotation (3-6 months after):**
+- Price stabilization
+- Bottom fishing opportunities
+- Long-term collector entry point
+
+## Strategic Timing
+
+**For Traders:**
+- Sell 3-6 months before rotation
+- Avoid holding through rotation
+- Re-enter post-correction for long holds
+
+**For Collectors:**
+- Wait for post-rotation dip
+- Target cards with nostalgia potential
+- Focus on full arts and alternate arts
+
+## Historical Examples
+
+**Evolving Skies Umbreon VMAX:**
+- Pre-rotation peak: $340
+- Post-rotation low: $185
+- Current (18mo later): $290
+- Opportunity: 57% discount at bottom
+
+## Risk Management
+
+- Track rotation schedule religiously
+- Set price alerts
+- Don't marry positions
+- Diversify across rotation years
+
+**Strategy Grade: A**
+    `
+  },
+  {
+    id: "pokemon-151",
+    slug: "pokemon-151-set-analysis",
+    title: "Pokémon 151: Dissecting the Nostalgia Premium",
+    summary: "Economic analysis of the 2023 mega-set. Pull rates, chase card valuations, and the 'K-shaped' recovery.",
+    category: "Set Analysis",
+    readTime: "12 min read",
+    date: "Sep 15, 2025",
+    image: "/images/intel/151-box.jpg",
+    trend: "Volatile",
+    sources: [
+      { id: 1, name: "PokeData Analytics", url: "https://www.pokedata.io/", publisher: "PokeData", accessed: "Sep 2025" },
+      { id: 2, name: "TCGPlayer Price Guide", url: "https://www.tcgplayer.com/", publisher: "TCGPlayer", accessed: "Sep 2025" }
+    ],
+    content: `
+## The K-Shaped Recovery
+
+Pokémon 151 exhibits a textbook "K-shaped recovery" - chase cards soaring while bulk plummets. Understanding this divergence is critical for ROI optimization.
+
+## Pull Rate Economics
+
+**Ultra Rare Distribution:**
+- 1:3 booster packs (high hit rate)
+- Creates abundance in common URs
+- Concentrates value in top 5 cards
+
+**The Top 5:**
+1. Charizard ex (165/165) - $285
+2. Mew ex (151/165) - $165
+3. Erika's Invitation FA - $85
+4. Alakazam ex - $42
+5. Zapdos ex - $38
+
+**Everything else:** <$20
+
+## Nostalgia Tax Analysis
+
+151 commands a premium vs comparable modern sets:
+- 18% higher sealed product prices
+- 3.2x multiplier on original 151 Pokémon
+- Millennial collector base driving sustained demand
+
+## Investment Segmentation
+
+**Chase Cards (Top 5):**
+- Strong appreciation curve
+- High liquidity
+- Grade-worthy at PSA 10
+- **Outlook:** Bullish
+
+**Mid-Tier ($10-30):**
+- Weak performance
+- Low liquidity
+- Avoid unless personal collection
+- **Outlook:** Neutral
+
+**Bulk (<$10):**
+- Declining value
+- High supply
+- Exit recommended
+- **Outlook:** Bearish
+
+## The Sealed vs Singles Debate
+
+**Sealed Booster Box:**
+- Current: $180
+- Hit rate makes cracking negative EV
+- Hold for 5+ years for appreciation
+
+**Singles Strategy:**
+- Target top 5 chase cards only
+- Better ROI than cracking
+- Faster liquidity
+
+## Strategic Recommendations
+
+1. **Buy PSA 10 Charizard ex** - Blue chip of the set
+2. **Avoid mid-tier singles** - Value traps
+3. **Hold sealed long-term** - Nostalgia premium grows
+4. **Grade selectively** - Only perfect centering chase cards
+
+**Set Grade: A-**
+    `
+  },
+  {
     id: "pokemon-2025",
     slug: "pokemon-market-shift-2025",
     title: "2025 Pokémon Market Shift: What the Data Actually Says",
