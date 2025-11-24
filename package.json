@@ -10,6 +10,9 @@
     "assets:process": "pip install rembg colorama pillow onnxruntime && python3 tools/process_assets.py"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.0",
+    "@types/three": "^0.181.0",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
@@ -20,7 +23,8 @@
     "react-dom": "^18.3.1",
     "recharts": "^3.4.1",
     "stripe": "^20.0.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.181.2"
   },
   "devDependencies": {
     "@types/node": "^20",
