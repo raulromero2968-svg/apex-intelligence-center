@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { IntelHeader } from '@/components/intel/IntelHeader';
 import { IntelBody } from '@/components/intel/IntelBody';
-import { INTEL_ARCHIVE, getArticleBySlug } from '@/lib/data/intel-archive';
+import { INTEL_ARCHIVE } from '@/lib/data/intel-archive';
 
 interface IntelPageProps {
   params: {
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: IntelPageProps) {
-  const article = getArticleBySlug(params.slug);
+  const article = INTEL_ARCHIVE.find((a) => a.slug === params.slug);
 
   if (!article) {
     return {
@@ -40,7 +40,7 @@ const colorMap: Record<string, "cyan" | "purple" | "amber"> = {
 };
 
 export default function IntelReportPage({ params }: IntelPageProps) {
-  const article = getArticleBySlug(params.slug);
+  const article = INTEL_ARCHIVE.find((a) => a.slug === params.slug);
 
   if (!article) {
     notFound();
