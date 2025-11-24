@@ -6,9 +6,10 @@ import { ArrowLeft, Calendar, Clock, Tag, TrendingUp, TrendingDown } from 'lucid
 import { motion } from 'framer-motion'
 import IntelChart from '@/components/intel/IntelChart'
 import { SourceRail } from '@/components/intel/SourceRail'
+import { getArticleBySlug } from '@/lib/data/intel-archive'
 
-// Article data (in a real app, this would come from a CMS or database)
-const articles: Record<string, any> = {
+// Legacy article data for backwards compatibility
+const legacyArticles: Record<string, any> = {
   'q4-2024-market-analysis': {
     title: 'Q4 2024 TCG Market Analysis',
     date: 'Oct 25, 2024',
@@ -405,7 +406,10 @@ Grading remains a powerful tool for collectors and investors, but it requires ca
 export default function ArticlePage() {
   const params = useParams()
   const slug = params?.slug as string
-  const article = articles[slug]
+
+  // Try to get article from new archive first, then fall back to legacy
+  const archiveArticle = getArticleBySlug(slug)
+  const article = archiveArticle || legacyArticles[slug]
 
   if (!article) {
     return (

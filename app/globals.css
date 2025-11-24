@@ -178,3 +178,18 @@ main {
 canvas {
   z-index: -1 !important;
 }
+
+/* Holographic card animation for Intelligence Archive */
+@keyframes holo-sweep {
+  0% {
+    transform: skewX(-20deg) translateX(-150%);
+  }
+  100% {
+    transform: skewX(-20deg) translateX(250%);
+  }
+}
+
+.holo-sweep {
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.1) 50%, transparent 80%);
+  animation: holo-sweep 2s infinite linear;
+}
