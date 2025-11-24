@@ -6,6 +6,7 @@ import { TitanHeader } from '@/components/ui/TitanHeader';
 import { HoloFolderWrapper } from '@/components/intel/HoloFolderWrapper';
 import { DigitalScrollWrapper } from '@/components/intel/DigitalScrollWrapper';
 import { TerminalStream } from '@/components/ui/TerminalStream';
+import { HeroVideoBanner } from '@/components/hero/HeroVideoBanner';
 import Link from 'next/link';
 
 export default function Home() {
@@ -15,7 +16,10 @@ export default function Home() {
   return (
     <main className="min-h-screen relative z-10 overflow-x-hidden">
 
-      {/* 1. HERO SECTION (Aggressive & Tech) */}
+      {/* 1. HERO VIDEO BANNER (Sits behind the hero text) */}
+      <HeroVideoBanner />
+
+      {/* 2. HERO SECTION (Aggressive & Tech) */}
       <section className="min-h-[80vh] flex flex-col justify-center items-center text-center px-6 relative">
         <div className="max-w-5xl mx-auto">
           {/* Top Tag */}
@@ -28,10 +32,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Main Title (Glitch & Massive) */}
-          <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter uppercase leading-[0.9]">
-            Underground <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Intel</span> <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Surface</span> Access
+          {/* Main Title (Neon Circuit Effect) */}
+          <h1 className="neon-circuit-text text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-[0.9]">
+            Underground Intel <br />
+            Surface Access
           </h1>
 
           {/* Subtext (Streaming) */}

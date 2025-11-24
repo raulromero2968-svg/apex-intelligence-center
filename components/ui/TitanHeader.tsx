@@ -15,12 +15,15 @@ export function TitanHeader({ title, subtitle }: { title: string; subtitle?: str
         <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" />
       </div>
 
-      {/* MAIN TITLE (Glitch Gradient, but controlled size) */}
-      <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tighter uppercase mb-4 relative inline-block">
-        <span className="absolute -inset-1 blur-md bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-slate-400 relative z-10">
+      {/* MAIN TITLE (NEON CIRCUIT EFFECT) */}
+      <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-4 relative inline-block">
+        <span className="neon-circuit-text relative z-10">
           {title}
         </span>
+
+        {/* Circuit Line Decoration */}
+        <div className="absolute -bottom-2 left-0 w-full h-[2px] bg-cyan-500 shadow-[0_0_10px_#22d3ee]" />
+        <div className="absolute -bottom-2 left-0 w-2 h-[2px] bg-white animate-[scan_2s_linear_infinite]" />
       </h1>
 
       {/* SUBTITLE / DATA STREAM */}
