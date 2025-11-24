@@ -15,15 +15,14 @@ export function TitanHeader({ title, subtitle }: { title: string; subtitle?: str
         <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" />
       </div>
 
-      {/* MAIN TITLE (NEON CIRCUIT EFFECT) */}
-      <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-4 relative inline-block">
-        <span className="neon-circuit-text relative z-10">
+      {/* NEW HOLLOW GLITCH HEADER */}
+      <h1 className="text-5xl md:text-7xl mb-6 tracking-tighter relative inline-block">
+        <span
+          className="titan-hollow-glitch"
+          data-text={title}
+        >
           {title}
         </span>
-
-        {/* Circuit Line Decoration */}
-        <div className="absolute -bottom-2 left-0 w-full h-[2px] bg-cyan-500 shadow-[0_0_10px_#22d3ee]" />
-        <div className="absolute -bottom-2 left-0 w-2 h-[2px] bg-white animate-[scan_2s_linear_infinite]" />
       </h1>
 
       {/* SUBTITLE / DATA STREAM */}
