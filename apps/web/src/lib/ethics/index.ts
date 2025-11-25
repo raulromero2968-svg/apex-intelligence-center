@@ -5,3 +5,4 @@
  */
 
 export * from './iso42001-auditor';
+export * from './merge-audit';
