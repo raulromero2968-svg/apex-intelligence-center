@@ -1,11 +1,26 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
   "installCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm install --ignore-scripts && cd apps/web && NODE_OPTIONS='--max-old-space-size=2048' pnpm exec prisma generate || echo 'Prisma generate skipped'",
   "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["iad1", "sfo1", "fra1"],
+  "functions": {
+    "apps/web/app/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -14,12 +29,6 @@
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    },
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, max-age=0" }
       ]
     },
     {
@@ -35,7 +44,7 @@
   "crons": [
     {
       "path": "/api/cron/update-prices",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 */6 * * *"
     },
     {
       "path": "/api/cron/push-receipts",
