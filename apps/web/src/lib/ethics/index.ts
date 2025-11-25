@@ -88,3 +88,30 @@ export {
   hasRequiredApprovals,
   getPendingApprovals,
 } from './job-impact-assessor';
+
+// ISO 42001 Certification Auditor
+export {
+  // Types
+  type AuditStepStatus,
+  type AuditStep,
+  type AuditStepResult,
+  type SystemContext,
+  type AuditConfig,
+  type AuditReport,
+  type AuditSummary,
+
+  // Constants
+  ISO_42001_CHECKLIST,
+  CATEGORY_WEIGHTS,
+  STATUS_SCORES,
+  DEFAULT_AUDIT_CONFIG,
+
+  // Class
+  CertAuditor,
+
+  // Helper Functions
+  quickAuditCheck,
+  getAuditChecklist,
+  estimateAuditDuration,
+  generateRemediationPlan,
+} from './cert-auditor';
