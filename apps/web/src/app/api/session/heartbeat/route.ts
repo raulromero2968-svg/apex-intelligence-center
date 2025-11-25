@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
+import { redisSet, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       timestamp: Date.now(),
     };
 
-    await redis.set(sessionKey, JSON.stringify(sessionData), {
+    await redisSet(sessionKey, JSON.stringify(sessionData), {
       ex: CacheTTL.SESSION_ACTIVITY,
     });
 
