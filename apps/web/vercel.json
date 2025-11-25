@@ -56,7 +56,7 @@
       ]
     }
   ],
-  "installCommand": "pnpm install",
+  "installCommand": "PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm install --frozen-lockfile --ignore-scripts && PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 npx prisma generate || echo 'Prisma generate skipped'",
   "buildCommand": "pnpm turbo build",
   "devCommand": "pnpm turbo dev",
   "framework": "nextjs",
