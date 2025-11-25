@@ -57,7 +57,7 @@ export {
   type AutomationLevel,
   type WorkforceImpact,
   type AssessmentContext,
-  type ImpactAssessment,
+  type ImpactAssessment as JobImpactAssessment,
   type FrameworkCompliance,
   type ReskillingRecommendation,
   type MitigationAction,
@@ -78,11 +78,11 @@ export {
 
   // Recommendations
   generateReskillingRecommendations,
-  generateMitigations,
+  generateMitigations as generateJobMitigations,
 
   // Main Assessment
   assessJobImpact,
-  batchAssessment,
+  batchAssessment as batchJobAssessment,
 
   // Approval Workflow
   hasRequiredApprovals,
