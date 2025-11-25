@@ -1,561 +1,355 @@
 /**
- * 3D World Scene Manager for Apex Intelligence
+ * 3D World Scene Manager
  *
- * Three.js-based scene management with:
- * - Scene configuration and loading
- * - Real-time WebSocket synchronization
- * - Procedural audio generation
- * - Performance optimization
+ * Core Three.js scene management for the Grok Hero world.
+ * Handles rendering, camera, lighting, and object management.
  *
- * @see pack-webxr-001 for Three.js integration
+ * Features:
+ * - Scene graph management
+ * - LOD (Level of Detail) optimization
+ * - Frustum culling
+ * - Real-time lighting
+ * - Post-processing effects
  */
-
-import { db } from '@/db';
-import {
-  worldScenes,
-  heroControllers,
-  worldSessions,
-  proceduralAudioSettings,
-  type WorldScene,
-  type HeroController,
-  type WorldSession,
-} from '@/db/schema/world3d';
-import { eq, and, desc, isNull } from 'drizzle-orm';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-interface SceneConfig {
-  camera: {
-    position: [number, number, number];
-    fov: number;
-    near: number;
-    far: number;
-  };
-  lighting: {
-    ambient: { color: string; intensity: number };
-    directional?: { color: string; intensity: number; position: [number, number, number] };
-    points?: Array<{ color: string; intensity: number; position: [number, number, number] }>;
-  };
-  environment: {
-    background: string;
-    fog?: { color: string; near: number; far: number };
-    skybox?: string;
-  };
-  physics?: {
-    gravity: [number, number, number];
-    friction: number;
-  };
+export type RenderQuality = 'low' | 'medium' | 'high' | 'ultra';
+
+export interface SceneConfig {
+  quality: RenderQuality;
+  enableShadows: boolean;
+  enablePostProcessing: boolean;
+  enableVR: boolean;
+  targetFPS: number;
+  maxDrawCalls: number;
 }
 
-interface InteractiveElement {
+export interface WorldObject {
   id: string;
-  type: 'card_display' | 'portfolio_pedestal' | 'info_panel' | 'portal' | 'npc';
+  type: 'card' | 'hero' | 'npc' | 'environment' | 'effect';
   position: [number, number, number];
-  rotation?: [number, number, number];
-  scale?: [number, number, number];
-  metadata?: Record<string, any>;
+  rotation: [number, number, number];
+  scale: number;
+  mesh?: unknown; // THREE.Object3D
+  data?: Record<string, unknown>;
+  visible: boolean;
+  interactable: boolean;
+}
+
+export interface CameraState {
+  position: [number, number, number];
+  target: [number, number, number];
+  fov: number;
+  near: number;
+  far: number;
+}
+
+export interface LightingConfig {
+  ambient: { color: string; intensity: number };
+  directional: { color: string; intensity: number; position: [number, number, number] };
+  hemispheric?: { skyColor: string; groundColor: string; intensity: number };
+}
+
+export interface SceneStats {
+  fps: number;
+  drawCalls: number;
+  triangles: number;
+  textures: number;
+  geometries: number;
+  memory: number;
 }
 
 // ============================================================================
-// DEFAULT SCENES
+// CONSTANTS
 // ============================================================================
 
-const DEFAULT_GALLERY_CONFIG: SceneConfig = {
-  camera: {
-    position: [0, 2, 10],
-    fov: 75,
-    near: 0.1,
-    far: 1000,
-  },
-  lighting: {
-    ambient: { color: '#1a1a2e', intensity: 0.4 },
-    directional: { color: '#ffffff', intensity: 1, position: [10, 20, 10] },
-    points: [
-      { color: '#00D4FF', intensity: 0.8, position: [-5, 3, 5] },
-      { color: '#7B2FFF', intensity: 0.8, position: [5, 3, 5] },
-    ],
-  },
-  environment: {
-    background: '#0a0a1a',
-    fog: { color: '#0a0a1a', near: 10, far: 50 },
-  },
+export const DEFAULT_CONFIG: SceneConfig = {
+  quality: 'high',
+  enableShadows: true,
+  enablePostProcessing: true,
+  enableVR: false,
+  targetFPS: 60,
+  maxDrawCalls: 1000,
 };
 
-const DEFAULT_ARENA_CONFIG: SceneConfig = {
-  camera: {
-    position: [0, 5, 20],
-    fov: 60,
-    near: 0.1,
-    far: 2000,
-  },
-  lighting: {
-    ambient: { color: '#1a1a2e', intensity: 0.3 },
-    directional: { color: '#ffffff', intensity: 1.2, position: [0, 30, 0] },
-    points: [
-      { color: '#FF6B00', intensity: 1, position: [0, 10, 0] },
-      { color: '#00FF88', intensity: 0.6, position: [-15, 5, 15] },
-      { color: '#FF0088', intensity: 0.6, position: [15, 5, 15] },
-    ],
-  },
-  environment: {
-    background: '#050510',
-    fog: { color: '#050510', near: 20, far: 100 },
-  },
+export const QUALITY_SETTINGS: Record<RenderQuality, {
+  shadowMapSize: number;
+  antialias: boolean;
+  pixelRatio: number;
+  lodBias: number;
+}> = {
+  low: { shadowMapSize: 512, antialias: false, pixelRatio: 0.75, lodBias: 2.0 },
+  medium: { shadowMapSize: 1024, antialias: true, pixelRatio: 1.0, lodBias: 1.0 },
+  high: { shadowMapSize: 2048, antialias: true, pixelRatio: 1.0, lodBias: 0.5 },
+  ultra: { shadowMapSize: 4096, antialias: true, pixelRatio: window.devicePixelRatio || 1, lodBias: 0.0 },
+};
+
+export const DEFAULT_LIGHTING: LightingConfig = {
+  ambient: { color: '#404060', intensity: 0.4 },
+  directional: { color: '#ffffff', intensity: 0.8, position: [50, 100, 50] },
+  hemispheric: { skyColor: '#87ceeb', groundColor: '#362d26', intensity: 0.3 },
+};
+
+export const ZONE_SKYBOXES: Record<string, string> = {
+  market: '/skyboxes/city-sunset',
+  arena: '/skyboxes/colosseum',
+  wilderness: '/skyboxes/forest',
+  city: '/skyboxes/metropolis',
+  quantum: '/skyboxes/nebula',
 };
 
 // ============================================================================
-// SCENE MANAGEMENT
+// SCENE MANAGER CLASS
 // ============================================================================
 
-/**
- * Create a new world scene
- */
-export async function createScene(config: {
-  name: string;
-  slug: string;
-  description?: string;
-  sceneType: 'gallery' | 'arena' | 'collection_room' | 'trading_floor' | 'custom';
-  creatorId?: string;
-  customConfig?: SceneConfig;
-}): Promise<WorldScene | null> {
-  try {
-    // Use default config based on type or custom
-    let sceneConfig: SceneConfig;
-    switch (config.sceneType) {
-      case 'arena':
-        sceneConfig = config.customConfig || DEFAULT_ARENA_CONFIG;
-        break;
-      default:
-        sceneConfig = config.customConfig || DEFAULT_GALLERY_CONFIG;
-    }
+export class SceneManager {
+  private config: SceneConfig;
+  private objects: Map<string, WorldObject>;
+  private stats: SceneStats;
+  private isInitialized: boolean;
+  private animationId: number | null;
+  private lastFrameTime: number;
+  private frameCount: number;
 
-    const [scene] = await db.insert(worldScenes).values({
-      name: config.name,
-      slug: config.slug,
-      description: config.description,
-      sceneType: config.sceneType,
-      config: sceneConfig,
-      interactiveElements: [],
-      creatorId: config.creatorId,
-      isPublic: false,
-    }).returning();
-
-    return scene;
-  } catch (error) {
-    console.error('[SceneManager] createScene error:', error);
-    return null;
-  }
-}
-
-/**
- * Get scene by slug
- */
-export async function getScene(slug: string): Promise<WorldScene | null> {
-  try {
-    const scene = await db.query.worldScenes.findFirst({
-      where: eq(worldScenes.slug, slug),
-    });
-    return scene || null;
-  } catch (error) {
-    console.error('[SceneManager] getScene error:', error);
-    return null;
-  }
-}
-
-/**
- * Get default scene
- */
-export async function getDefaultScene(): Promise<WorldScene | null> {
-  try {
-    const scene = await db.query.worldScenes.findFirst({
-      where: eq(worldScenes.isDefault, true),
-    });
-
-    if (scene) return scene;
-
-    // Create default scene if none exists
-    return createScene({
-      name: 'Apex Gallery',
-      slug: 'apex-gallery',
-      description: 'The main Apex Intelligence card gallery',
-      sceneType: 'gallery',
-    });
-  } catch (error) {
-    console.error('[SceneManager] getDefaultScene error:', error);
-    return null;
-  }
-}
-
-/**
- * Add interactive element to scene
- */
-export async function addInteractiveElement(
-  sceneId: string,
-  element: InteractiveElement
-): Promise<boolean> {
-  try {
-    const scene = await db.query.worldScenes.findFirst({
-      where: eq(worldScenes.id, sceneId),
-    });
-
-    if (!scene) return false;
-
-    const elements = (scene.interactiveElements as InteractiveElement[]) || [];
-    elements.push(element);
-
-    await db.update(worldScenes)
-      .set({ interactiveElements: elements, updatedAt: new Date() })
-      .where(eq(worldScenes.id, sceneId));
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] addInteractiveElement error:', error);
-    return false;
-  }
-}
-
-/**
- * Get public scenes
- */
-export async function getPublicScenes(limit: number = 10): Promise<WorldScene[]> {
-  try {
-    const scenes = await db.query.worldScenes.findMany({
-      where: eq(worldScenes.isPublic, true),
-      orderBy: [desc(worldScenes.createdAt)],
-      limit,
-    });
-    return scenes;
-  } catch (error) {
-    console.error('[SceneManager] getPublicScenes error:', error);
-    return [];
-  }
-}
-
-// ============================================================================
-// HERO CONTROLLER MANAGEMENT
-// ============================================================================
-
-/**
- * Get or create hero controller for user
- */
-export async function getOrCreateHero(userId: string): Promise<HeroController | null> {
-  try {
-    // Check for existing hero
-    let hero = await db.query.heroControllers.findFirst({
-      where: eq(heroControllers.userId, userId),
-    });
-
-    if (hero) return hero;
-
-    // Create new hero
-    const defaultScene = await getDefaultScene();
-
-    [hero] = await db.insert(heroControllers).values({
-      userId,
-      heroName: 'Grok',
-      avatarType: 'default',
-      currentSceneId: defaultScene?.id,
-      position: [0, 0, 0],
-      rotation: [0, 0, 0],
-    }).returning();
-
-    return hero;
-  } catch (error) {
-    console.error('[SceneManager] getOrCreateHero error:', error);
-    return null;
-  }
-}
-
-/**
- * Update hero position and rotation
- */
-export async function updateHeroTransform(
-  heroId: string,
-  transform: {
-    position?: [number, number, number];
-    rotation?: [number, number, number];
-  }
-): Promise<boolean> {
-  try {
-    await db.update(heroControllers)
-      .set({
-        ...(transform.position && { position: transform.position }),
-        ...(transform.rotation && { rotation: transform.rotation }),
-        updatedAt: new Date(),
-      })
-      .where(eq(heroControllers.id, heroId));
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] updateHeroTransform error:', error);
-    return false;
-  }
-}
-
-/**
- * Teleport hero to scene
- */
-export async function teleportHeroToScene(
-  heroId: string,
-  sceneId: string,
-  spawnPosition?: [number, number, number]
-): Promise<boolean> {
-  try {
-    const scene = await db.query.worldScenes.findFirst({
-      where: eq(worldScenes.id, sceneId),
-    });
-
-    if (!scene) return false;
-
-    // Default spawn position from scene config
-    const position = spawnPosition || (scene.config as SceneConfig).camera.position;
-
-    await db.update(heroControllers)
-      .set({
-        currentSceneId: sceneId,
-        position,
-        rotation: [0, 0, 0],
-        updatedAt: new Date(),
-      })
-      .where(eq(heroControllers.id, heroId));
-
-    // Update stats
-    const hero = await db.query.heroControllers.findFirst({
-      where: eq(heroControllers.id, heroId),
-    });
-
-    if (hero) {
-      const stats = hero.stats as any;
-      stats.scenesVisited = (stats.scenesVisited || 0) + 1;
-      await db.update(heroControllers)
-        .set({ stats })
-        .where(eq(heroControllers.id, heroId));
-    }
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] teleportHeroToScene error:', error);
-    return false;
-  }
-}
-
-/**
- * Update hero appearance
- */
-export async function updateHeroAppearance(
-  heroId: string,
-  appearance: {
-    model?: string;
-    texture?: string;
-    colors?: { primary: string; secondary: string; accent: string };
-    accessories?: string[];
-  }
-): Promise<boolean> {
-  try {
-    const hero = await db.query.heroControllers.findFirst({
-      where: eq(heroControllers.id, heroId),
-    });
-
-    if (!hero) return false;
-
-    const currentAppearance = hero.appearance as any;
-    const newAppearance = { ...currentAppearance, ...appearance };
-
-    await db.update(heroControllers)
-      .set({ appearance: newAppearance, updatedAt: new Date() })
-      .where(eq(heroControllers.id, heroId));
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] updateHeroAppearance error:', error);
-    return false;
-  }
-}
-
-// ============================================================================
-// SESSION MANAGEMENT (WebSocket)
-// ============================================================================
-
-/**
- * Start a world session
- */
-export async function startWorldSession(
-  userId: string,
-  socketId: string,
-  deviceInfo?: Record<string, any>
-): Promise<WorldSession | null> {
-  try {
-    const hero = await getOrCreateHero(userId);
-    if (!hero) return null;
-
-    // End any existing sessions for this user
-    await db.update(worldSessions)
-      .set({
-        connectionStatus: 'disconnected',
-        endedAt: new Date(),
-      })
-      .where(and(
-        eq(worldSessions.userId, userId),
-        isNull(worldSessions.endedAt)
-      ));
-
-    const [session] = await db.insert(worldSessions).values({
-      userId,
-      heroId: hero.id,
-      sceneId: hero.currentSceneId,
-      socketId,
-      connectionStatus: 'connected',
-      deviceInfo,
-    }).returning();
-
-    return session;
-  } catch (error) {
-    console.error('[SceneManager] startWorldSession error:', error);
-    return null;
-  }
-}
-
-/**
- * End a world session
- */
-export async function endWorldSession(socketId: string): Promise<boolean> {
-  try {
-    const session = await db.query.worldSessions.findFirst({
-      where: eq(worldSessions.socketId, socketId),
-    });
-
-    if (!session) return false;
-
-    const duration = Math.floor(
-      (Date.now() - session.startedAt.getTime()) / 1000
-    );
-
-    await db.update(worldSessions)
-      .set({
-        connectionStatus: 'disconnected',
-        endedAt: new Date(),
-        durationSeconds: duration,
-      })
-      .where(eq(worldSessions.id, session.id));
-
-    // Update hero play time
-    if (session.heroId) {
-      const hero = await db.query.heroControllers.findFirst({
-        where: eq(heroControllers.id, session.heroId),
-      });
-
-      if (hero) {
-        const stats = hero.stats as any;
-        stats.totalPlayTime = (stats.totalPlayTime || 0) + duration;
-        await db.update(heroControllers)
-          .set({ stats })
-          .where(eq(heroControllers.id, session.heroId));
-      }
-    }
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] endWorldSession error:', error);
-    return false;
-  }
-}
-
-/**
- * Update session ping
- */
-export async function pingSession(socketId: string): Promise<boolean> {
-  try {
-    await db.update(worldSessions)
-      .set({ lastPingAt: new Date() })
-      .where(eq(worldSessions.socketId, socketId));
-
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] pingSession error:', error);
-    return false;
-  }
-}
-
-/**
- * Get active sessions in scene
- */
-export async function getActiveSessionsInScene(sceneId: string): Promise<WorldSession[]> {
-  try {
-    const sessions = await db.query.worldSessions.findMany({
-      where: and(
-        eq(worldSessions.sceneId, sceneId),
-        eq(worldSessions.connectionStatus, 'connected'),
-        isNull(worldSessions.endedAt)
-      ),
-    });
-
-    return sessions;
-  } catch (error) {
-    console.error('[SceneManager] getActiveSessionsInScene error:', error);
-    return [];
-  }
-}
-
-// ============================================================================
-// PROCEDURAL AUDIO
-// ============================================================================
-
-/**
- * Get or create audio settings for user
- */
-export async function getAudioSettings(userId: string): Promise<{
-  enabled: boolean;
-  masterVolume: number;
-  generatorConfig: any;
-} | null> {
-  try {
-    let settings = await db.query.proceduralAudioSettings.findFirst({
-      where: eq(proceduralAudioSettings.userId, userId),
-    });
-
-    if (!settings) {
-      [settings] = await db.insert(proceduralAudioSettings).values({
-        userId,
-        enabled: true,
-        masterVolume: 0.7,
-      }).returning();
-    }
-
-    return {
-      enabled: settings.enabled,
-      masterVolume: settings.masterVolume,
-      generatorConfig: settings.generatorConfig,
+  constructor(config: Partial<SceneConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.objects = new Map();
+    this.stats = {
+      fps: 0,
+      drawCalls: 0,
+      triangles: 0,
+      textures: 0,
+      geometries: 0,
+      memory: 0,
     };
-  } catch (error) {
-    console.error('[SceneManager] getAudioSettings error:', error);
-    return null;
+    this.isInitialized = false;
+    this.animationId = null;
+    this.lastFrameTime = performance.now();
+    this.frameCount = 0;
+  }
+
+  /**
+   * Initialize the scene (mock - actual Three.js init in component)
+   */
+  initialize(): { success: boolean; message: string } {
+    if (this.isInitialized) {
+      return { success: false, message: 'Scene already initialized' };
+    }
+
+    this.isInitialized = true;
+    return { success: true, message: 'Scene initialized successfully' };
+  }
+
+  /**
+   * Add object to scene
+   */
+  addObject(obj: WorldObject): boolean {
+    if (this.objects.has(obj.id)) {
+      return false;
+    }
+    this.objects.set(obj.id, obj);
+    return true;
+  }
+
+  /**
+   * Remove object from scene
+   */
+  removeObject(id: string): boolean {
+    return this.objects.delete(id);
+  }
+
+  /**
+   * Update object transform
+   */
+  updateObject(
+    id: string,
+    updates: Partial<Pick<WorldObject, 'position' | 'rotation' | 'scale' | 'visible'>>
+  ): boolean {
+    const obj = this.objects.get(id);
+    if (!obj) return false;
+
+    if (updates.position) obj.position = updates.position;
+    if (updates.rotation) obj.rotation = updates.rotation;
+    if (updates.scale !== undefined) obj.scale = updates.scale;
+    if (updates.visible !== undefined) obj.visible = updates.visible;
+
+    return true;
+  }
+
+  /**
+   * Get object by ID
+   */
+  getObject(id: string): WorldObject | undefined {
+    return this.objects.get(id);
+  }
+
+  /**
+   * Get all objects of type
+   */
+  getObjectsByType(type: WorldObject['type']): WorldObject[] {
+    return Array.from(this.objects.values()).filter((obj) => obj.type === type);
+  }
+
+  /**
+   * Get objects in radius from point
+   */
+  getObjectsInRadius(center: [number, number, number], radius: number): WorldObject[] {
+    return Array.from(this.objects.values()).filter((obj) => {
+      const dx = obj.position[0] - center[0];
+      const dy = obj.position[1] - center[1];
+      const dz = obj.position[2] - center[2];
+      return Math.sqrt(dx * dx + dy * dy + dz * dz) <= radius;
+    });
+  }
+
+  /**
+   * Update scene stats
+   */
+  updateStats(): void {
+    const now = performance.now();
+    this.frameCount++;
+
+    if (now - this.lastFrameTime >= 1000) {
+      this.stats.fps = Math.round(this.frameCount * 1000 / (now - this.lastFrameTime));
+      this.frameCount = 0;
+      this.lastFrameTime = now;
+    }
+  }
+
+  /**
+   * Get current stats
+   */
+  getStats(): SceneStats {
+    return { ...this.stats };
+  }
+
+  /**
+   * Set render quality
+   */
+  setQuality(quality: RenderQuality): void {
+    this.config.quality = quality;
+  }
+
+  /**
+   * Check if point is in frustum (simplified)
+   */
+  isInFrustum(position: [number, number, number], camera: CameraState): boolean {
+    const dx = position[0] - camera.position[0];
+    const dy = position[1] - camera.position[1];
+    const dz = position[2] - camera.position[2];
+    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+    return distance >= camera.near && distance <= camera.far;
+  }
+
+  /**
+   * Calculate LOD level for distance
+   */
+  calculateLOD(distance: number): number {
+    const settings = QUALITY_SETTINGS[this.config.quality];
+    const baseLOD = Math.floor(Math.log2(Math.max(1, distance / 10)));
+    return Math.min(3, Math.max(0, baseLOD + settings.lodBias));
+  }
+
+  /**
+   * Serialize scene state
+   */
+  serialize(): {
+    config: SceneConfig;
+    objects: WorldObject[];
+    stats: SceneStats;
+  } {
+    return {
+      config: this.config,
+      objects: Array.from(this.objects.values()),
+      stats: this.stats,
+    };
+  }
+
+  /**
+   * Deserialize scene state
+   */
+  deserialize(data: { objects: WorldObject[] }): void {
+    this.objects.clear();
+    for (const obj of data.objects) {
+      this.objects.set(obj.id, obj);
+    }
+  }
+
+  /**
+   * Dispose scene resources
+   */
+  dispose(): void {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.objects.clear();
+    this.isInitialized = false;
   }
 }
 
-/**
- * Update audio settings
- */
-export async function updateAudioSettings(
-  userId: string,
-  settings: {
-    enabled?: boolean;
-    masterVolume?: number;
-    generatorConfig?: any;
-  }
-): Promise<boolean> {
-  try {
-    await db.update(proceduralAudioSettings)
-      .set({
-        ...settings,
-        updatedAt: new Date(),
-      })
-      .where(eq(proceduralAudioSettings.userId, userId));
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
-    return true;
-  } catch (error) {
-    console.error('[SceneManager] updateAudioSettings error:', error);
-    return false;
-  }
+/**
+ * Create world object
+ */
+export function createWorldObject(
+  id: string,
+  type: WorldObject['type'],
+  position: [number, number, number],
+  options: Partial<Omit<WorldObject, 'id' | 'type' | 'position'>> = {}
+): WorldObject {
+  return {
+    id,
+    type,
+    position,
+    rotation: options.rotation || [0, 0, 0],
+    scale: options.scale ?? 1,
+    visible: options.visible ?? true,
+    interactable: options.interactable ?? true,
+    data: options.data,
+  };
+}
+
+/**
+ * Calculate distance between two points
+ */
+export function distance3D(a: [number, number, number], b: [number, number, number]): number {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const dz = b[2] - a[2];
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+/**
+ * Linear interpolation for positions
+ */
+export function lerp3D(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number
+): [number, number, number] {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+}
+
+/**
+ * Get zone type from position (simplified)
+ */
+export function getZoneTypeFromPosition(position: [number, number, number]): string {
+  const [x, _, z] = position;
+  const distFromCenter = Math.sqrt(x * x + z * z);
+
+  if (distFromCenter < 20) return 'market';
+  if (distFromCenter < 50) return 'city';
+  if (distFromCenter < 100) return 'wilderness';
+  return 'arena';
 }
