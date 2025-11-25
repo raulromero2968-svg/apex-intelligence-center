@@ -3,8 +3,13 @@
 // Production-ready with idempotency, provenance tracking, and pgvector support
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
+  // Binary targets for Vercel serverless deployment (fixes 403 binary fetch errors)
+  // - native: local development
+  // - rhel-openssl-3.0.x: Vercel serverless (Amazon Linux 2023)
+  // - debian-openssl-3.0.x: fallback for some serverless environments
+  binaryTargets   = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
