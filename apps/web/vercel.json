@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "installCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm install --ignore-scripts && NODE_OPTIONS='--max-old-space-size=2048' pnpm exec prisma generate || echo 'Prisma generate skipped'",
-  "buildCommand": "pnpm turbo build",
+  "installCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm install --ignore-scripts && NODE_OPTIONS='--max-old-space-size=2048' pnpm exec prisma generate --schema=./apps/web/prisma/schema.prisma || echo 'Prisma generate skipped'",
+  "buildCommand": "pnpm turbo build --filter=!@apex/mobile --filter=!@apex/knowledge-graph",
   "devCommand": "pnpm turbo dev",
   "framework": "nextjs",
   "regions": ["iad1", "sfo1", "fra1"],
