@@ -2,20 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "regions": ["iad1", "sfo1", "fra1"],
-  "functions": {
-    "api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 30
-    },
-    "api/tcg/**/*.ts": {
-      "memory": 2048,
-      "maxDuration": 60
-    },
-    "api/ethics/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 45
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
