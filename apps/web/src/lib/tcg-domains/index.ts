@@ -117,3 +117,50 @@ export {
   getAllActiveBoosts,
   applyBoostsToCard,
 } from './weather-location';
+
+// Game Battle Simulation
+export {
+  // Types
+  type BattlePhase,
+  type TargetType,
+  type EffectType,
+  type BattleCard,
+  type Ability,
+  type AbilityEffect,
+  type StatusEffect,
+  type Player,
+  type BattleState,
+  type TurnAction,
+  type ActionResult,
+  type BattleResult,
+
+  // Constants
+  ELEMENT_ADVANTAGES,
+  ELEMENT_DISADVANTAGES,
+  ADVANTAGE_MULTIPLIER,
+  DISADVANTAGE_MULTIPLIER,
+  CRITICAL_HIT_CHANCE,
+  CRITICAL_HIT_MULTIPLIER,
+  MAX_FIELD_SIZE,
+  STARTING_HAND_SIZE,
+  MAX_HAND_SIZE,
+  STARTING_ENERGY,
+  ENERGY_PER_TURN,
+  MAX_ENERGY,
+
+  // Battle Management
+  createBattle,
+  playCard,
+  attackWithCard,
+  useAbility,
+  endTurn,
+
+  // Damage Calculation
+  calculateDamage,
+
+  // AI
+  getAiAction,
+
+  // Results
+  calculateBattleResult,
+} from './game-battle';
