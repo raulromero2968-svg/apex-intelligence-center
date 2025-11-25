@@ -177,7 +177,7 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
   const exts = ['.ts', '.tsx'];
   const files = walk(srcRoot, exts);
 
-  // Drizzle ORM method names to exclude from column checks
+  // Drizzle ORM method names and JS properties to exclude from column checks
   const drizzleMethods = new Set([
     'findMany',
     'findFirst',
@@ -204,6 +204,15 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
     'every',
     'find',
     'includes',
+    'size', // JavaScript Map/Set .size property (not a DB column)
+    'values', // JavaScript Map/Set .values() method
+    'keys', // JavaScript Map/Set .keys() method
+    'entries', // JavaScript Map/Set .entries() method
+    'has', // JavaScript Map/Set .has() method
+    'get', // JavaScript Map .get() method
+    'set', // JavaScript Map .set() method
+    'clear', // JavaScript Map/Set .clear() method
+    'add', // JavaScript Set .add() method
   ]);
 
   const issues: SchemaIssue[] = [];
