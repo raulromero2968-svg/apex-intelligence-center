@@ -1,0 +1,43 @@
+{
+  "name": "@apex/knowledge-graph",
+  "version": "1.0.0",
+  "description": "Unified knowledge graph for Apex Intelligence Center (Neo4j + PostgreSQL)",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "neo4j:init": "tsx scripts/init-neo4j.ts",
+    "neo4j:seed": "tsx scripts/seed-data.ts",
+    "neo4j:query": "tsx scripts/query-examples.ts"
+  },
+  "dependencies": {
+    "neo4j-driver": "^5.26.0",
+    "@prisma/client": "^5.17.0",
+    "uuid": "^10.0.0",
+    "zod": "^3.24.1",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.2",
+    "tsx": "^4.19.2",
+    "eslint": "^9.17.0",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.14"
+  },
+  "keywords": [
+    "knowledge-graph",
+    "neo4j",
+    "graph-database",
+    "tcg",
+    "research",
+    "ai-scientist"
+  ],
+  "author": "Apex Intelligence Center",
+  "license": "MIT"
+}
