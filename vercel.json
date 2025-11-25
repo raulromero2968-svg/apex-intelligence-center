@@ -6,12 +6,6 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["iad1", "sfo1", "fra1"],
-  "functions": {
-    "apps/web/app/api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
