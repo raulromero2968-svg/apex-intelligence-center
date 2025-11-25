@@ -566,6 +566,7 @@ export function getQuantumBattleSummary(state: QuantumBattleState): {
   return {
     cardsInSuperposition: superpositionCount,
     entangledPairs: state.entanglements.length,
+    // Note: state.cards is a Map, .size is a JS Map property, not a DB column
     averageCoherence: state.cards.size > 0 ? totalCoherence / state.cards.size : 0,
     totalQuantumAdvantage: totalAdvantage,
   };
