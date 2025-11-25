@@ -11,7 +11,7 @@
 
 import { db } from '@/db';
 import { sales, cards, market_knowledge, manipulationAlerts, watchlistItems } from '@/db/schema';
-import { eq, and, gte, sql, desc } from 'drizzle-orm';
+import { eq, and, gte, sql, desc, ilike } from 'drizzle-orm';
 import { contrarianSearch, classifySentiment } from '@/../../../lib/rag/contrarian-rag';
 import { createId as cuid } from '@paralleldrive/cuid2';
 
@@ -90,8 +90,10 @@ async function checkOrganicDrivers(cardId: string, cardName: string): Promise<{
     const query = `Recent market activity and news for ${cardName}`;
 
     // Get LAMP sentiment from market_knowledge table
+    // Use ilike for safe parameterized case-insensitive search
+    const searchPattern = `%${cardName}%`;
     const lampResults = await db.query.market_knowledge.findMany({
-      where: sql`${market_knowledge.content} ILIKE ${'%' + cardName + '%'}`,
+      where: ilike(market_knowledge.content, searchPattern),
       orderBy: desc(market_knowledge.created_at),
       limit: 10,
     });
