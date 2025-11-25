@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'holo-mono': ['"JetBrains Mono"', 'monospace'],
+      },
       colors: {
         slate: {
           950: '#020617', // Titan Deep Space
