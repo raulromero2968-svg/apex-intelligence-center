@@ -1,0 +1,26 @@
+{
+  "name": "@apex/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Apex Intelligence Platform Core - Unified primitives for ethics, sync, RAG, and cross-pack integration",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./ethics": "./src/ethics/index.ts",
+    "./sync": "./src/sync/index.ts",
+    "./rag": "./src/rag/index.ts",
+    "./tcg": "./src/tcg/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.9.3"
+  }
+}

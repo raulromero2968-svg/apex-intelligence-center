@@ -1,380 +1,518 @@
 /**
- * AI-Driven Code Review Agent for Apex Intelligence
+ * AI Code Review Agent
  *
- * CUA (Computer-Use Agent) workflow that scans commits/PRs for:
- * - Ethics compliance violations
- * - Performance issues
- * - Security vulnerabilities
- * - Code quality concerns
+ * Automated code review using CUA (Computer-Using Agent) patterns.
+ * Ensures ethics compliance, security, and best practices.
  *
- * Integrates with GitHub API for PR commenting.
- *
- * @see pack-cua-001 §3.2 for workflow patterns
+ * Features:
+ * - Static analysis integration
+ * - Ethics guard verification
+ * - Security vulnerability detection
+ * - Performance recommendations
+ * - Human-in-the-loop approval workflow
  */
-
-import { ethicsGuard } from '@/lib/ethics';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-interface CodeReviewConfig {
-  repo: string;
-  owner: string;
-  prNumber?: number;
-  commitSha?: string;
-  token: string;
+export type ReviewSeverity = 'info' | 'warning' | 'error' | 'critical';
+export type ReviewCategory = 'ethics' | 'security' | 'performance' | 'style' | 'logic' | 'documentation';
+
+export interface CodeReviewRequest {
+  code: string;
+  filename: string;
+  language: 'typescript' | 'javascript' | 'python';
+  context?: {
+    prNumber?: number;
+    author?: string;
+    changes?: string;
+    branch?: string;
+  };
 }
 
-interface ReviewFinding {
-  type: 'ethics' | 'security' | 'performance' | 'quality';
-  severity: 'critical' | 'major' | 'minor' | 'suggestion';
-  file: string;
+export interface ReviewFinding {
+  id: string;
   line?: number;
+  severity: ReviewSeverity;
+  category: ReviewCategory;
   message: string;
   suggestion?: string;
+  autoFixable: boolean;
 }
 
-interface CodeReviewResult {
+export interface EthicsCheckResult {
+  passed: boolean;
+  score: number;
+  category: 'minimal' | 'low' | 'medium' | 'high' | 'critical';
+  concerns: string[];
+  requiredActions: string[];
+}
+
+export interface CodeReviewResult {
+  id: string;
+  filename: string;
+  timestamp: Date;
   findings: ReviewFinding[];
-  summary: string;
-  ethicsImpact: {
-    category: string;
-    approved: boolean;
-    reskillPlan?: string;
+  ethicsCheck: EthicsCheckResult;
+  summary: {
+    totalIssues: number;
+    critical: number;
+    errors: number;
+    warnings: number;
+    info: number;
   };
-  approved: boolean;
-  error?: string;
+  recommendation: 'approve' | 'request_changes' | 'block';
+  humanReviewRequired: boolean;
+}
+
+export interface ReviewWorkflow {
+  steps: ReviewStep[];
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  results: Partial<CodeReviewResult>;
+}
+
+export interface ReviewStep {
+  type: 'parse' | 'analyze' | 'ethics_check' | 'security_scan' | 'suggest';
+  status: 'pending' | 'completed' | 'failed';
+  output?: unknown;
 }
 
 // ============================================================================
-// CUA WORKFLOW EXECUTION
+// CONSTANTS
 // ============================================================================
 
-interface WorkflowStep {
-  type: 'observe' | 'analyze' | 'suggest' | 'act';
-  input?: string;
-  desc?: string;
-  model?: string;
-  output?: string;
-}
+export const ETHICS_PATTERNS = {
+  fullAutomation: /automationLevel\s*[=:]\s*['"`]full['"`]/g,
+  noGuard: /async\s+function\s+\w+.*\{(?![\s\S]*ethicsGuard|[\s\S]*assessJobImpact)/g,
+  dataCollection: /collect|track|monitor.*user|personal/gi,
+  jobReplacement: /replace.*employee|automate.*team|eliminate.*role/gi,
+};
 
-interface Workflow {
-  steps: WorkflowStep[];
+export const SECURITY_PATTERNS = {
+  sqlInjection: /`.*\$\{.*\}.*`.*(?:SELECT|INSERT|UPDATE|DELETE)/gi,
+  xss: /innerHTML\s*=|dangerouslySetInnerHTML/g,
+  hardcodedSecret: /(password|secret|api_key|token)\s*[=:]\s*['"`][^'"`]+['"`]/gi,
+  evalUsage: /eval\(|new Function\(/g,
+  unsafeRegex: /\(\.\*\)\+|\(\.\+\)\*/g,
+};
+
+export const PERFORMANCE_PATTERNS = {
+  nPlusOne: /for.*await.*for|\.map\(.*await/g,
+  missingMemo: /useCallback|useMemo/g,
+  largeBundle: /import\s+\*\s+as|import\s+\{[^}]{100,}\}/g,
+  synchronousOp: /readFileSync|writeFileSync|execSync/g,
+};
+
+// ============================================================================
+// ANALYSIS FUNCTIONS
+// ============================================================================
+
+/**
+ * Parse code and extract structure
+ */
+function parseCode(code: string, language: string): {
+  lines: string[];
+  functions: string[];
+  imports: string[];
+  exports: string[];
+} {
+  const lines = code.split('\n');
+
+  const functions: string[] = [];
+  const imports: string[] = [];
+  const exports: string[] = [];
+
+  for (const line of lines) {
+    if (line.match(/^import\s+/)) {
+      imports.push(line.trim());
+    }
+    if (line.match(/^export\s+/)) {
+      exports.push(line.trim());
+    }
+    if (line.match(/(?:async\s+)?function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\(/)) {
+      const match = line.match(/(?:function|const)\s+(\w+)/);
+      if (match) functions.push(match[1]);
+    }
+  }
+
+  return { lines, functions, imports, exports };
 }
 
 /**
- * Execute a CUA workflow for code analysis
+ * Check for ethics violations
  */
-async function executeWorkflow(workflow: Workflow): Promise<{
-  suggestions: string[];
-  findings: ReviewFinding[];
-  ethics?: any;
-}> {
-  const suggestions: string[] = [];
+function checkEthicsPatterns(code: string): ReviewFinding[] {
   const findings: ReviewFinding[] = [];
 
-  for (const step of workflow.steps) {
-    if (step.type === 'observe') {
-      // Parse code diff for patterns
-      const code = step.input || '';
-
-      // Check for common security issues
-      if (code.includes('eval(') || code.includes('dangerouslySetInnerHTML')) {
-        findings.push({
-          type: 'security',
-          severity: 'critical',
-          file: 'detected',
-          message: 'Potential XSS vulnerability detected',
-          suggestion: 'Use sanitized rendering methods instead of eval() or dangerouslySetInnerHTML',
-        });
-      }
-
-      // Check for hardcoded secrets
-      if (/api[_-]?key\s*=\s*['"][^'"]+['"]/i.test(code)) {
-        findings.push({
-          type: 'security',
-          severity: 'critical',
-          file: 'detected',
-          message: 'Hardcoded API key detected',
-          suggestion: 'Move secrets to environment variables',
-        });
-      }
-
-      // Check for console.log in production code
-      if (code.includes('console.log')) {
-        findings.push({
-          type: 'quality',
-          severity: 'minor',
-          file: 'detected',
-          message: 'Console.log statement found',
-          suggestion: 'Remove console.log before production or use proper logging',
-        });
-      }
-
-      // Check for ethics violations
-      if (code.includes('discriminat') || code.includes('bias')) {
-        findings.push({
-          type: 'ethics',
-          severity: 'major',
-          file: 'detected',
-          message: 'Potential bias-related code detected',
-          suggestion: 'Review for fairness and ensure ethical AI practices',
-        });
-      }
-
-    } else if (step.type === 'analyze') {
-      // Generate analysis suggestions
-      suggestions.push('Code structure follows project conventions');
-      if (findings.length > 0) {
-        suggestions.push(`Found ${findings.length} issues requiring attention`);
-      }
-
-    } else if (step.type === 'suggest') {
-      // Generate improvement suggestions
-      if (findings.filter(f => f.type === 'security').length > 0) {
-        suggestions.push('Security: Run SAST scan before merging');
-      }
-      if (findings.filter(f => f.type === 'performance').length > 0) {
-        suggestions.push('Performance: Consider profiling critical paths');
-      }
-      suggestions.push('Ethics: Ensure human-in-the-loop for AI decisions');
-    }
+  // Check for full automation without guard
+  const fullAutoMatches = code.matchAll(ETHICS_PATTERNS.fullAutomation);
+  for (const match of fullAutoMatches) {
+    const lineNum = code.substring(0, match.index).split('\n').length;
+    findings.push({
+      id: `ethics-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      line: lineNum,
+      severity: 'critical',
+      category: 'ethics',
+      message: 'Full automation level detected - requires ethics committee approval',
+      suggestion: 'Add ethicsGuard() check before this operation or use assessJobImpact()',
+      autoFixable: false,
+    });
   }
 
-  return { suggestions, findings };
-}
+  // Check for job replacement language
+  const jobMatches = code.matchAll(ETHICS_PATTERNS.jobReplacement);
+  for (const match of jobMatches) {
+    const lineNum = code.substring(0, match.index).split('\n').length;
+    findings.push({
+      id: `ethics-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      line: lineNum,
+      severity: 'warning',
+      category: 'ethics',
+      message: 'Language suggesting job replacement detected - review for ethical concerns',
+      suggestion: 'Consider reframing as "augmentation" or "assistance" rather than "replacement"',
+      autoFixable: false,
+    });
+  }
 
-// ============================================================================
-// GITHUB INTEGRATION
-// ============================================================================
-
-interface GitHubFile {
-  filename: string;
-  patch?: string;
-  status: string;
-  additions: number;
-  deletions: number;
+  return findings;
 }
 
 /**
- * Fetch PR files from GitHub
+ * Check for security vulnerabilities
  */
-async function fetchPRFiles(
-  owner: string,
-  repo: string,
-  prNumber: number,
-  token: string
-): Promise<GitHubFile[]> {
-  try {
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/files`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
+function checkSecurityPatterns(code: string): ReviewFinding[] {
+  const findings: ReviewFinding[] = [];
+
+  for (const [patternName, pattern] of Object.entries(SECURITY_PATTERNS)) {
+    const matches = code.matchAll(pattern);
+    for (const match of matches) {
+      const lineNum = code.substring(0, match.index).split('\n').length;
+      findings.push({
+        id: `security-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        line: lineNum,
+        severity: patternName === 'hardcodedSecret' ? 'critical' : 'error',
+        category: 'security',
+        message: `Potential security issue: ${formatPatternName(patternName)}`,
+        suggestion: getSecuritySuggestion(patternName),
+        autoFixable: false,
+      });
+    }
+  }
+
+  return findings;
+}
+
+/**
+ * Check for performance issues
+ */
+function checkPerformancePatterns(code: string): ReviewFinding[] {
+  const findings: ReviewFinding[] = [];
+
+  for (const [patternName, pattern] of Object.entries(PERFORMANCE_PATTERNS)) {
+    if (patternName === 'missingMemo') {
+      // Check if memo hooks are used appropriately
+      const hasCallback = code.includes('useCallback');
+      const hasMemo = code.includes('useMemo');
+      const hasUseEffect = code.includes('useEffect');
+
+      if (hasUseEffect && !hasCallback && !hasMemo && code.includes('useState')) {
+        findings.push({
+          id: `perf-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          severity: 'info',
+          category: 'performance',
+          message: 'Consider using useCallback/useMemo to optimize re-renders',
+          suggestion: 'Wrap callbacks in useCallback and computed values in useMemo',
+          autoFixable: false,
+        });
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
+      continue;
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error('[CUA] fetchPRFiles error:', error);
-    return [];
+    const matches = code.matchAll(pattern);
+    for (const match of matches) {
+      const lineNum = code.substring(0, match.index).split('\n').length;
+      findings.push({
+        id: `perf-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        line: lineNum,
+        severity: 'warning',
+        category: 'performance',
+        message: `Performance concern: ${formatPatternName(patternName)}`,
+        suggestion: getPerformanceSuggestion(patternName),
+        autoFixable: false,
+      });
+    }
   }
+
+  return findings;
 }
 
 /**
- * Post a review comment on GitHub PR
+ * Format pattern name for display
  */
-async function postPRComment(
-  owner: string,
-  repo: string,
-  prNumber: number,
-  body: string,
-  token: string
-): Promise<boolean> {
-  try {
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/issues/${prNumber}/comments`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ body }),
-      }
-    );
-
-    return response.ok;
-  } catch (error) {
-    console.error('[CUA] postPRComment error:', error);
-    return false;
-  }
-}
-
-// ============================================================================
-// MAIN CODE REVIEW FUNCTION
-// ============================================================================
-
-/**
- * Perform full AI-powered code review on a PR
- */
-export async function fullAICodeReview(config: CodeReviewConfig): Promise<CodeReviewResult> {
-  const { owner, repo, prNumber, token } = config;
-
-  try {
-    if (!prNumber) {
-      return {
-        findings: [],
-        summary: 'No PR number provided',
-        ethicsImpact: { category: 'none', approved: false },
-        approved: false,
-        error: 'PR number required',
-      };
-    }
-
-    // Fetch PR files
-    const files = await fetchPRFiles(owner, repo, prNumber, token);
-
-    if (files.length === 0) {
-      return {
-        findings: [],
-        summary: 'No files found in PR',
-        ethicsImpact: { category: 'low_impact', approved: true },
-        approved: true,
-      };
-    }
-
-    // Combine all patches for analysis
-    const combinedPatch = files
-      .filter(f => f.patch)
-      .map(f => `// File: ${f.filename}\n${f.patch}`)
-      .join('\n\n');
-
-    // Execute CUA workflow
-    const workflow: Workflow = {
-      steps: [
-        {
-          type: 'observe',
-          input: combinedPatch,
-          desc: 'Scan for ethics/perf/security issues',
-        },
-        {
-          type: 'analyze',
-          model: 'claude-3-sonnet',
-        },
-        {
-          type: 'suggest',
-          output: 'fixes list',
-        },
-      ],
-    };
-
-    const review = await executeWorkflow(workflow);
-
-    // Assess ethics impact
-    const ethicsCheck = await ethicsGuard(
-      { type: 'code_review_auto', impactScore: 0.3 },
-      'system'
-    );
-
-    const ethicsImpact = {
-      category: review.findings.some(f => f.type === 'ethics') ? 'medium_impact' : 'low_impact',
-      approved: ethicsCheck.approved,
-      reskillPlan: review.findings.some(f => f.type === 'ethics')
-        ? 'Ethics training recommended for team'
-        : undefined,
-    };
-
-    // Generate summary
-    const criticalCount = review.findings.filter(f => f.severity === 'critical').length;
-    const majorCount = review.findings.filter(f => f.severity === 'major').length;
-
-    const summary = [
-      '## AI Code Review Summary',
-      '',
-      `**Files Reviewed:** ${files.length}`,
-      `**Findings:** ${review.findings.length} total`,
-      `- Critical: ${criticalCount}`,
-      `- Major: ${majorCount}`,
-      `- Minor: ${review.findings.filter(f => f.severity === 'minor').length}`,
-      '',
-      '### Suggestions',
-      ...review.suggestions.map(s => `- ${s}`),
-      '',
-      `### Ethics Assessment`,
-      `- Category: ${ethicsImpact.category}`,
-      `- Approved: ${ethicsImpact.approved ? '✅' : '❌'}`,
-      ethicsImpact.reskillPlan ? `- Note: ${ethicsImpact.reskillPlan}` : '',
-    ].filter(Boolean).join('\n');
-
-    // Post comment to PR
-    await postPRComment(owner, repo, prNumber, summary, token);
-
-    // Determine approval
-    const approved = criticalCount === 0 && ethicsImpact.approved;
-
-    return {
-      findings: review.findings,
-      summary,
-      ethicsImpact,
-      approved,
-    };
-  } catch (error) {
-    console.error('[CUA] fullAICodeReview error:', error);
-    return {
-      findings: [],
-      summary: 'Review failed',
-      ethicsImpact: { category: 'unknown', approved: false },
-      approved: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
+function formatPatternName(name: string): string {
+  return name
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase())
+    .trim();
 }
 
 /**
- * Quick code scan without GitHub integration
+ * Get security suggestion for pattern
  */
-export async function quickCodeScan(code: string): Promise<ReviewFinding[]> {
-  const workflow: Workflow = {
-    steps: [
-      {
-        type: 'observe',
-        input: code,
-        desc: 'Quick security and ethics scan',
-      },
-    ],
+function getSecuritySuggestion(pattern: string): string {
+  const suggestions: Record<string, string> = {
+    sqlInjection: 'Use parameterized queries or an ORM',
+    xss: 'Sanitize user input and use React\'s built-in escaping',
+    hardcodedSecret: 'Move secrets to environment variables',
+    evalUsage: 'Avoid eval() - use safer alternatives',
+    unsafeRegex: 'Simplify regex to avoid ReDoS vulnerabilities',
   };
-
-  const result = await executeWorkflow(workflow);
-  return result.findings;
+  return suggestions[pattern] || 'Review and fix the security concern';
 }
 
 /**
- * Validate code changes against ethics policy
+ * Get performance suggestion for pattern
  */
-export async function validateEthicsCompliance(
-  code: string,
-  context: { featureName: string; teamSize?: number }
-): Promise<{ compliant: boolean; issues: string[]; recommendations: string[] }> {
-  const findings = await quickCodeScan(code);
-  const ethicsFindings = findings.filter(f => f.type === 'ethics');
+function getPerformanceSuggestion(pattern: string): string {
+  const suggestions: Record<string, string> = {
+    nPlusOne: 'Batch database queries or use DataLoader pattern',
+    largeBundle: 'Use named imports to enable tree-shaking',
+    synchronousOp: 'Use async versions for better performance',
+  };
+  return suggestions[pattern] || 'Consider optimizing this pattern';
+}
 
-  const issues = ethicsFindings.map(f => f.message);
-  const recommendations = ethicsFindings
-    .filter(f => f.suggestion)
-    .map(f => f.suggestion!);
+// ============================================================================
+// ETHICS CHECK
+// ============================================================================
+
+/**
+ * Perform comprehensive ethics check
+ */
+function performEthicsCheck(code: string, findings: ReviewFinding[]): EthicsCheckResult {
+  const ethicsFindings = findings.filter((f) => f.category === 'ethics');
+  const criticalCount = ethicsFindings.filter((f) => f.severity === 'critical').length;
+  const warningCount = ethicsFindings.filter((f) => f.severity === 'warning').length;
+
+  // Calculate ethics score (0-100)
+  let score = 100;
+  score -= criticalCount * 30;
+  score -= warningCount * 10;
+  score = Math.max(0, score);
+
+  // Determine category
+  let category: EthicsCheckResult['category'];
+  if (score >= 90) category = 'minimal';
+  else if (score >= 70) category = 'low';
+  else if (score >= 50) category = 'medium';
+  else if (score >= 30) category = 'high';
+  else category = 'critical';
+
+  // Collect concerns
+  const concerns = ethicsFindings.map((f) => f.message);
+
+  // Determine required actions
+  const requiredActions: string[] = [];
+  if (criticalCount > 0) {
+    requiredActions.push('Ethics committee review required');
+    requiredActions.push('Add job impact assessment');
+  }
+  if (warningCount > 0) {
+    requiredActions.push('Review language for ethical framing');
+  }
+  if (code.includes('automate') && !code.includes('ethicsGuard')) {
+    requiredActions.push('Add ethics guard to automation functions');
+  }
 
   return {
-    compliant: ethicsFindings.length === 0,
-    issues,
-    recommendations,
+    passed: category !== 'critical',
+    score,
+    category,
+    concerns,
+    requiredActions,
   };
+}
+
+// ============================================================================
+// MAIN REVIEW FUNCTION
+// ============================================================================
+
+/**
+ * Perform comprehensive code review
+ */
+export async function reviewCode(request: CodeReviewRequest): Promise<CodeReviewResult> {
+  const { code, filename, language, context } = request;
+
+  // Parse code structure
+  const parsed = parseCode(code, language);
+
+  // Collect all findings
+  const findings: ReviewFinding[] = [];
+
+  // Ethics analysis
+  findings.push(...checkEthicsPatterns(code));
+
+  // Security analysis
+  findings.push(...checkSecurityPatterns(code));
+
+  // Performance analysis
+  findings.push(...checkPerformancePatterns(code));
+
+  // Check for documentation
+  if (!code.includes('/**') && !code.includes('//')) {
+    findings.push({
+      id: `doc-${Date.now()}`,
+      severity: 'info',
+      category: 'documentation',
+      message: 'No documentation comments found',
+      suggestion: 'Add JSDoc comments to exported functions',
+      autoFixable: false,
+    });
+  }
+
+  // Perform ethics check
+  const ethicsCheck = performEthicsCheck(code, findings);
+
+  // Calculate summary
+  const summary = {
+    totalIssues: findings.length,
+    critical: findings.filter((f) => f.severity === 'critical').length,
+    errors: findings.filter((f) => f.severity === 'error').length,
+    warnings: findings.filter((f) => f.severity === 'warning').length,
+    info: findings.filter((f) => f.severity === 'info').length,
+  };
+
+  // Determine recommendation
+  let recommendation: CodeReviewResult['recommendation'];
+  if (summary.critical > 0 || !ethicsCheck.passed) {
+    recommendation = 'block';
+  } else if (summary.errors > 0 || summary.warnings > 2) {
+    recommendation = 'request_changes';
+  } else {
+    recommendation = 'approve';
+  }
+
+  // Determine if human review is required
+  const humanReviewRequired =
+    summary.critical > 0 ||
+    ethicsCheck.category === 'high' ||
+    ethicsCheck.category === 'critical' ||
+    (context?.changes?.length ?? 0) > 500;
+
+  return {
+    id: `review-${Date.now()}`,
+    filename,
+    timestamp: new Date(),
+    findings,
+    ethicsCheck,
+    summary,
+    recommendation,
+    humanReviewRequired,
+  };
+}
+
+/**
+ * Execute review workflow with multiple steps
+ */
+export async function executeReviewWorkflow(request: CodeReviewRequest): Promise<ReviewWorkflow> {
+  const workflow: ReviewWorkflow = {
+    steps: [
+      { type: 'parse', status: 'pending' },
+      { type: 'analyze', status: 'pending' },
+      { type: 'ethics_check', status: 'pending' },
+      { type: 'security_scan', status: 'pending' },
+      { type: 'suggest', status: 'pending' },
+    ],
+    status: 'pending',
+    results: {},
+  };
+
+  try {
+    workflow.status = 'in_progress';
+
+    // Step 1: Parse
+    workflow.steps[0].status = 'completed';
+    workflow.steps[0].output = parseCode(request.code, request.language);
+
+    // Step 2: Analyze
+    workflow.steps[1].status = 'completed';
+
+    // Step 3: Ethics check
+    const ethicsFindings = checkEthicsPatterns(request.code);
+    workflow.steps[2].status = 'completed';
+    workflow.steps[2].output = ethicsFindings;
+
+    // Step 4: Security scan
+    const securityFindings = checkSecurityPatterns(request.code);
+    workflow.steps[3].status = 'completed';
+    workflow.steps[3].output = securityFindings;
+
+    // Step 5: Generate suggestions
+    workflow.steps[4].status = 'completed';
+
+    // Complete review
+    const fullResult = await reviewCode(request);
+    workflow.results = fullResult;
+    workflow.status = 'completed';
+
+  } catch (error) {
+    workflow.status = 'failed';
+    console.error('Review workflow failed:', error);
+  }
+
+  return workflow;
+}
+
+/**
+ * Generate PR comment from review result
+ */
+export function generatePRComment(result: CodeReviewResult): string {
+  const lines: string[] = [];
+
+  lines.push(`## Code Review: ${result.filename}`);
+  lines.push('');
+
+  // Summary
+  lines.push(`### Summary`);
+  lines.push(`- **Total Issues:** ${result.summary.totalIssues}`);
+  lines.push(`- **Critical:** ${result.summary.critical}`);
+  lines.push(`- **Errors:** ${result.summary.errors}`);
+  lines.push(`- **Warnings:** ${result.summary.warnings}`);
+  lines.push('');
+
+  // Ethics Check
+  lines.push(`### Ethics Compliance`);
+  lines.push(`- **Score:** ${result.ethicsCheck.score}/100`);
+  lines.push(`- **Category:** ${result.ethicsCheck.category}`);
+  lines.push(`- **Passed:** ${result.ethicsCheck.passed ? 'Yes' : 'No'}`);
+
+  if (result.ethicsCheck.concerns.length > 0) {
+    lines.push('');
+    lines.push('**Concerns:**');
+    for (const concern of result.ethicsCheck.concerns) {
+      lines.push(`- ${concern}`);
+    }
+  }
+
+  if (result.ethicsCheck.requiredActions.length > 0) {
+    lines.push('');
+    lines.push('**Required Actions:**');
+    for (const action of result.ethicsCheck.requiredActions) {
+      lines.push(`- [ ] ${action}`);
+    }
+  }
+  lines.push('');
+
+  // Recommendation
+  const emoji = result.recommendation === 'approve' ? '✅' :
+               result.recommendation === 'request_changes' ? '🔄' : '🚫';
+  lines.push(`### Recommendation: ${emoji} ${result.recommendation.replace('_', ' ').toUpperCase()}`);
+
+  if (result.humanReviewRequired) {
+    lines.push('');
+    lines.push('> ⚠️ **Human review required** - Please have a team member verify these changes.');
+  }
+
+  return lines.join('\n');
 }
