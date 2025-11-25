@@ -6,6 +6,7 @@ import React, { useMemo } from "react";
 import { DigitalScrollWrapper } from "@/components/titan/DigitalScrollWrapper";
 import { TerminalStream } from "@/components/titan/TerminalStream";
 import { TitanHeader } from "@/components/titan/TitanHeader";
+import { HoloNumber } from "@/components/ui/HoloNumber";
 
 // --- DATA TYPES ---
 type MarketRiskLevel = "STABLE" | "VOLATILE" | "HYPED";
@@ -159,14 +160,21 @@ export const MarketPulse: React.FC = () => {
                   {/* Card Info */}
                   <div>
                     <h3 className="font-bold text-slate-100 group-hover:text-cyan-200 transition-colors">{card.cardName}</h3>
-                    <p className="text-xs font-mono text-slate-500">{card.set} · {card.price}</p>
+                    <p className="text-xs font-mono text-slate-500">
+                      {card.set} · <HoloNumber value={card.price} type="price" colorScheme="cyan" glitchIntensity="low" className="text-sm" />
+                    </p>
                   </div>
                 </div>
 
                 {/* Metrics */}
                 <div className="text-right">
-                    <div className="text-emerald-400 font-mono font-bold text-lg">
-                        +{card.changeWeek}%
+                    <div className="font-mono font-bold text-lg">
+                        <HoloNumber
+                          value={card.changeWeek}
+                          type="percent"
+                          colorScheme="emerald"
+                          glitchIntensity="medium"
+                        />
                     </div>
                     <span className={`text-[0.65rem] px-2 py-0.5 rounded border uppercase tracking-wider ${getRiskBadgeStyles(card.riskLevel)}`}>
                         {card.riskLevel}
