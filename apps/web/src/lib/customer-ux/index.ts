@@ -5,3 +5,4 @@
  */
 
 export * from './nexus-personalizer';
+export * from './delight-engine';

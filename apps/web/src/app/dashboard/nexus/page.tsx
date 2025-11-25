@@ -46,10 +46,19 @@ interface DashboardContent {
   upcomingEvents: string[];
 }
 
+interface DelightReward {
+  type: 'apex_points' | 'xp' | 'card_boost' | 'quantum_spin' | 'ar_unlock';
+  amount: number;
+  details?: string;
+}
+
 interface DelightMoment {
   type: string;
   title: string;
   description: string;
+  reward?: DelightReward;
+  animation?: string;
+  soundEffect?: string;
 }
 
 interface NexusData {
@@ -206,21 +215,51 @@ function RecommendationsCard({ content }: { content: DashboardContent }) {
 function DelightMomentBanner({ moment, onDismiss }: { moment: DelightMoment; onDismiss: () => void }) {
   const iconMap: Record<string, string> = {
     daily_reward: '🎁',
+    daily_welcome: '👋',
     weather_animation: '🌤️',
     personalized_tip: '💡',
     quantum_rng: '🎲',
+    quantum_effect: '⚛️',
     streak_bonus: '🔥',
     achievement: '🏆',
+    ar_boost: '📍',
+    community_reward: '👥',
+    market_success: '📈',
+    milestone_celebration: '🎉',
+  };
+
+  const rewardIconMap: Record<string, string> = {
+    apex_points: '🪙',
+    xp: '⭐',
+    card_boost: '🃏',
+    quantum_spin: '🎰',
+    ar_unlock: '🗺️',
   };
 
   return (
-    <div className="bg-gradient-to-r from-purple-600/30 to-cyan-600/30 rounded-xl p-4 border border-purple-500/30 mb-6 animate-pulse">
+    <div className={cn(
+      'rounded-xl p-4 border mb-6',
+      'bg-gradient-to-r from-purple-600/30 to-cyan-600/30 border-purple-500/30',
+      moment.animation && 'animate-pulse'
+    )}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-3xl">{iconMap[moment.type] || '✨'}</span>
           <div>
             <h4 className="text-white font-bold">{moment.title}</h4>
             <p className="text-gray-300 text-sm">{moment.description}</p>
+            {/* Reward Display */}
+            {moment.reward && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-lg">{rewardIconMap[moment.reward.type] || '🎁'}</span>
+                <span className="text-cyan-400 font-semibold">
+                  +{moment.reward.amount} {moment.reward.type.replace('_', ' ')}
+                </span>
+                {moment.reward.details && (
+                  <span className="text-gray-500 text-xs">({moment.reward.details})</span>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <button
@@ -281,6 +320,25 @@ export default function ApexTCGNexus() {
   // Mock userId - would come from auth context
   const userId = 'user_demo_123';
 
+  // Trigger login delight on mount
+  const triggerLoginDelight = useCallback(async () => {
+    try {
+      // In production, this calls the delight engine API
+      // const response = await fetch('/api/nexus/delight', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ trigger: 'login' }),
+      // });
+      // const delight = await response.json();
+      // if (delight.type && !delight.error) {
+      //   setData(prev => prev ? { ...prev, delightMoment: delight } : null);
+      // }
+      console.log('[Nexus] Login delight triggered');
+    } catch (err) {
+      console.error('[Nexus] Delight trigger error:', err);
+    }
+  }, []);
+
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
@@ -289,6 +347,8 @@ export default function ApexTCGNexus() {
       //   headers: { 'x-user-id': userId },
       // });
       // const data = await response.json();
+      // Then trigger login delight
+      // await triggerLoginDelight();
 
       // Simulated API response
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -334,9 +394,15 @@ export default function ApexTCGNexus() {
           ],
         },
         delightMoment: {
-          type: 'personalized_tip',
-          title: 'Market Insight',
+          type: 'daily_welcome',
+          title: 'Welcome Back!',
           description: 'Your favorite quantum-themed cards are trending up 12% this week!',
+          reward: {
+            type: 'apex_points',
+            amount: 25,
+            details: 'Daily login bonus',
+          },
+          animation: 'welcome_sparkle',
         },
         cxScore: 75,
       };
