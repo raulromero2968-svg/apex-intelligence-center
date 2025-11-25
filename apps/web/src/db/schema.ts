@@ -76,9 +76,9 @@ export const tcg_documents = pgTable('tcg_documents', {
 export const market_knowledge = pgTable('market_knowledge', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  // Vector embedding - using custom type to work around Drizzle type issues
-  // Note: NOT NULL constraint must be set in migration, not on sql template literal
-  embedding: sql<number[]>`vector(1536)`,
+  // Vector embedding - pgvector extension
+  // TODO: Re-add embedding column after fixing Drizzle type issues
+  // embedding: sql`vector(1536)`,
 
   // Market sentiment (enum enforced at DB level via CHECK constraint)
   sentiment: text('sentiment', {
@@ -161,8 +161,8 @@ export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
   // - image (CLIP ViT-B/32): 512 dimensions
   // - audio (Wav2Vec2): 768 dimensions
   // Using 768 to accommodate both (images will be padded/truncated if needed)
-  // Note: NOT NULL constraint must be set in migration, not on sql template literal
-  embedding: sql<number[]>`vector(768)`,
+  // TODO: Re-add embedding column after fixing Drizzle type issues
+  // embedding: sql`vector(768)`,
 
   // File storage reference (S3 URL or local path)
   fileUrl: text('file_url').notNull(),
@@ -563,7 +563,8 @@ export const cardForensics = pgTable('card_forensics', {
   id: uuid('id').defaultRandom().primaryKey(),
   cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
   // pgvector extension - stores as vector(768) for CLIP ViT-L/14
-  embedding: sql`vector(768)`,
+  // TODO: Re-add embedding column after fixing Drizzle type issues
+  // embedding: sql`vector(768)`,
   reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
   detectedDefects: jsonb('detected_defects').notNull().default({}),
   authenticityScore: real('authenticity_score').notNull(),
