@@ -1,0 +1,1 @@
+ALTER TABLE "multi_modal_embeddings" ADD COLUMN "embedding" vector(768) NOT NULL;
