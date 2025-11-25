@@ -36,7 +36,7 @@
       ]
     }
   ],
-  "installCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm install --ignore-scripts && cd apps/web && NODE_OPTIONS='--max-old-space-size=2048' pnpm prisma generate",
+  "installCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm install --ignore-scripts && NODE_OPTIONS='--max-old-space-size=2048' pnpm prisma generate",
   "buildCommand": "pnpm turbo build",
   "devCommand": "pnpm turbo dev",
   "framework": "nextjs",
