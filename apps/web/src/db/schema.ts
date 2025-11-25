@@ -5,9 +5,26 @@
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check, customType } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
+
+/**
+ * Custom pgvector type for Drizzle ORM
+ * Represents a vector(n) column type for storing embeddings
+ */
+const vector = customType<{ data: number[]; driverData: string }>({
+  dataType(config) {
+    return config?.dimensions ? `vector(${config.dimensions})` : 'vector';
+  },
+  toDriver(value: number[]): string {
+    return `[${value.join(',')}]`;
+  },
+  fromDriver(value: string): number[] {
+    // pgvector returns vectors as '[1,2,3]' format
+    return value.slice(1, -1).split(',').map(Number);
+  },
+});
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -161,8 +178,7 @@ export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
   // - image (CLIP ViT-B/32): 512 dimensions
   // - audio (Wav2Vec2): 768 dimensions
   // Using 768 to accommodate both (images will be padded/truncated if needed)
-  // TODO: Re-add embedding column after fixing Drizzle type issues
-  // embedding: sql`vector(768)`,
+  embedding: vector('embedding', { dimensions: 768 }).notNull(),
 
   // File storage reference (S3 URL or local path)
   fileUrl: text('file_url').notNull(),
