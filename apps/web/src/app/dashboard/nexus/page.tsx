@@ -18,6 +18,9 @@ import { cn } from '@/lib/utils';
 import { CommunityFeed } from '@/components/social/CommunityFeed';
 import { TutorialPlayer } from '@/components/video/TutorialPlayer';
 import { PurposeModeToggle } from '@/components/purpose/PurposeModeToggle';
+import { JobImpactPanel } from '@/components/ethics/JobImpactPanel';
+import { MarketChart } from '@/components/market/MarketChart';
+import { MetaversePreview } from '@/components/3d-world/MetaversePreview';
 
 // ============================================================================
 // TYPES
@@ -495,7 +498,19 @@ export default function ApexTCGNexus() {
         )}
 
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {/* Market Chart - Wide */}
+            <div className="lg:col-span-2">
+              <MarketChart title="TCG Market Index" height={350} showVolume />
+            </div>
+
+            {/* 3D Metaverse Preview */}
+            <MetaversePreview
+              userId={userId}
+              className="h-[350px]"
+              onEnterWorld={() => console.log('[Nexus] Enter metaverse')}
+            />
+
             {/* Preferences */}
             {data.prefs && (
               <PreferencesCard interests={data.prefs.tcgInterests} />
@@ -506,15 +521,26 @@ export default function ApexTCGNexus() {
               <AREventsCard arEvent={data.arEvent} />
             )}
 
+            {/* Ethics - Job Impact Panel */}
+            <JobImpactPanel
+              actionType="dashboard_personalization"
+              context={{
+                automationLevel: 'partial',
+                teamSize: 15,
+                description: 'AI-powered personalized recommendations',
+              }}
+              collapsed={true}
+            />
+
             {/* Recommendations - Full Width */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 xl:col-span-3">
               <RecommendationsCard content={data.content} />
             </div>
 
             {/* Upcoming Events */}
-            <div className="lg:col-span-2 bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+            <div className="lg:col-span-2 xl:col-span-3 bg-gray-800/50 rounded-xl p-6 border border-gray-700">
               <h3 className="text-xl font-bold text-cyan-200 mb-4">Upcoming Events</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {data.content.upcomingEvents.map((event, i) => (
                   <div key={i} className="bg-gray-900/50 rounded-lg p-4 flex items-center gap-3">
                     <div className="w-10 h-10 bg-purple-600/30 rounded-lg flex items-center justify-center">
