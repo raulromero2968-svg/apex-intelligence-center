@@ -5,6 +5,8 @@
  * Uses Redis to coordinate global force triggers.
  */
 
+export const dynamic = 'force-dynamic'; // Force server-side rendering
+
 import { NextRequest, NextResponse } from 'next/server';
 import { redisGet, RedisKeys } from '@/lib/redis';
 
