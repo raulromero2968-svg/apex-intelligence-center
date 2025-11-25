@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
+import { redisGet, redisSet, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,11 +13,11 @@ export async function POST(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Get current global trigger ID
-    const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
+    const globalTrigger = await redisGet(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {
       // Store acknowledgment with TTL
-      await redis.set(
+      await redisSet(
         RedisKeys.realityCheckAck(userId),
         globalTrigger as string,
         { ex: CacheTTL.REALITY_CHECK_ACK }

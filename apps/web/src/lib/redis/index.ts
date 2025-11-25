@@ -188,3 +188,34 @@ export async function invalidateUserWatchlistCache(userId: string): Promise<void
     console.error('Failed to invalidate watchlist cache:', error);
   }
 }
+
+/**
+ * Type-safe Redis GET wrapper
+ * Use this instead of redis.get() directly to avoid type issues
+ */
+export async function redisGet<T = string>(key: string): Promise<T | null> {
+  // @ts-expect-error - Upstash Redis types may be incomplete
+  return redis.get<T>(key);
+}
+
+/**
+ * Type-safe Redis SET wrapper
+ * Use this instead of redis.set() directly to avoid type issues
+ */
+export async function redisSet(
+  key: string,
+  value: string | number | object,
+  options?: { ex?: number }
+): Promise<void> {
+  // @ts-expect-error - Upstash Redis types may be incomplete
+  await redis.set(key, value, options);
+}
+
+/**
+ * Type-safe Redis DEL wrapper
+ * Use this instead of redis.del() directly to avoid type issues
+ */
+export async function redisDel(key: string): Promise<void> {
+  // @ts-expect-error - Upstash Redis types may be incomplete
+  await redis.del(key);
+}
