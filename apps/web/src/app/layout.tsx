@@ -36,6 +36,10 @@ import { cn } from '@/lib/utils';
 
 import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 
+import { SoundProvider } from '@/contexts/SoundContext';
+
+import '@fontsource/jetbrains-mono';
+
 import '@/styles/animations.css';
 
 import './globals.css';
@@ -248,7 +252,7 @@ export default function RootLayout({
         )}
 
       >
-
+        <SoundProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
           Skip to main content
@@ -402,7 +406,7 @@ export default function RootLayout({
         {/* Reality Check Modal - Triggers every 2h active session */}
 
         <RealityCheckProvider />
-
+        </SoundProvider>
       </body>
 
     </html>

@@ -57,6 +57,7 @@
     "@apex/db": "workspace:*",
     "@apex/realtime": "workspace:*",
     "@apex/valuation": "workspace:*",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@langchain/anthropic": "^1.0.1",
     "@langchain/cohere": "^1.0.0",
     "@langchain/community": "^1.0.3",
