@@ -49,3 +49,42 @@ export {
   getPromptTemplate,
   fillPromptTemplate,
 } from './domain-pack';
+
+// Job Impact Assessor (NIST/OECD/EU AI Act)
+export {
+  // Types
+  type RiskCategory,
+  type AutomationLevel,
+  type WorkforceImpact,
+  type AssessmentContext,
+  type ImpactAssessment,
+  type FrameworkCompliance,
+  type ReskillingRecommendation,
+  type MitigationAction,
+  type AuditRecord,
+
+  // Constants
+  AUTOMATION_LEVEL_WEIGHTS,
+  TASK_COMPLEXITY_MODIFIERS,
+  DECISION_AUTONOMY_WEIGHTS,
+  RISK_THRESHOLDS,
+  APPROVAL_REQUIREMENTS,
+
+  // Core Functions
+  calculateBaseScore,
+  getRiskCategory,
+  getWorkforceImpact,
+  assessFrameworkCompliance,
+
+  // Recommendations
+  generateReskillingRecommendations,
+  generateMitigations,
+
+  // Main Assessment
+  assessJobImpact,
+  batchAssessment,
+
+  // Approval Workflow
+  hasRequiredApprovals,
+  getPendingApprovals,
+} from './job-impact-assessor';
