@@ -164,3 +164,38 @@ export {
   // Results
   calculateBattleResult,
 } from './game-battle';
+
+// Chess-Style Battle System
+export {
+  // Types
+  type PieceType,
+  type Position,
+  type Direction,
+  type ChessCard,
+  type ChessAbility,
+  type ChessBoardState,
+  type ChessMove,
+  type ZoneBonus,
+  type MoveValidation,
+
+  // Constants
+  BOARD_SIZE,
+  PIECE_MOVEMENTS,
+  KNIGHT_OFFSETS,
+  DIRECTION_DELTAS,
+  COLUMN_NAMES,
+
+  // Board Management
+  createEmptyBoard,
+  initializeChessBattle,
+
+  // Movement
+  getValidMoves,
+  executeMove,
+
+  // Notation
+  boardToNotation,
+
+  // AI
+  getChessAiMove,
+} from './chess-battle';

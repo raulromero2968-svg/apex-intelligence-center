@@ -6,9 +6,9 @@
  */
 
 // Version
-export const version = '0.1.0';
+export const version = '0.2.0';
 
-// Components
+// Market Components
 export {
   CryptoMarketDashboard,
   type CryptoMarketDashboardProps,
@@ -16,3 +16,25 @@ export {
   type PortfolioHolding,
   type PriceAlert,
 } from './components/CryptoMarketDashboard';
+
+export {
+  MarketDashboardWithEthics,
+  type MarketDashboardWithEthicsProps,
+  type AutomationContext,
+  type EthicsAssessment,
+  type TradeAction,
+} from './components/finance/MarketDashboardWithEthics';
+
+// Ethics Components
+export {
+  JobImpactPanel,
+  type JobImpactPanelProps,
+  type AssessmentContext,
+  type ImpactAssessment,
+  type FrameworkCompliance,
+  type ReskillingRecommendation,
+  type MitigationAction,
+  type RiskCategory,
+  type AutomationLevel,
+  type WorkforceImpact,
+} from './components/ethics/JobImpactPanel';
