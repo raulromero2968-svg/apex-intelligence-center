@@ -82,3 +82,21 @@ export {
   type KnowledgeQuery,
   type PromptTemplate,
 } from './domain-pack';
+
+// Code Review Agent
+export {
+  reviewCode,
+  executeReviewWorkflow,
+  generatePRComment,
+  ETHICS_PATTERNS,
+  SECURITY_PATTERNS,
+  PERFORMANCE_PATTERNS,
+  type ReviewSeverity,
+  type ReviewCategory,
+  type CodeReviewRequest,
+  type ReviewFinding,
+  type EthicsCheckResult,
+  type CodeReviewResult,
+  type ReviewWorkflow,
+  type ReviewStep,
+} from './code-review-agent';
