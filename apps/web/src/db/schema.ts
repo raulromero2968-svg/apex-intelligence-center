@@ -3,11 +3,125 @@
  *
  * This schema includes the TCG RAG system for provenance-tracked market intelligence
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
+ *
+ * ARCHITECTURE: Lazy Relations Pattern
+ * -------------------------------------
+ * To prevent circular import issues (common cause of `notNull` errors), this schema
+ * follows the lazy relations pattern:
+ * 1. Base tables (users, cards) are defined FIRST
+ * 2. Dependent tables are defined AFTER their dependencies
+ * 3. All relations are defined in a separate section AFTER all tables
+ *
+ * This breaks circular dependency cycles while preserving type safety.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check, customType } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
+
+// ============================================================================
+// CUSTOM TYPES - pgvector support
+// ============================================================================
+
+/**
+ * Custom vector column type for pgvector extension
+ * Properly integrates with Drizzle's type system to avoid circular import issues
+ */
+const vector = customType<{ data: number[]; driverData: string; config: { dimensions: number } }>({
+  dataType(config) {
+    return `vector(${config?.dimensions ?? 1536})`;
+  },
+  toDriver(value: number[]): string {
+    return JSON.stringify(value);
+  },
+  fromDriver(value: string): number[] {
+    if (typeof value === 'string') {
+      // Handle PostgreSQL vector format: [1,2,3] or (1,2,3)
+      const cleaned = value.replace(/[\[\]()]/g, '');
+      return cleaned.split(',').map(Number);
+    }
+    return value as unknown as number[];
+  },
+});
+
+// ============================================================================
+// BASE TABLES - Define first to avoid circular references
+// ============================================================================
+
+/**
+ * Users table - Base user management with Stripe subscription support
+ * MUST be defined first as many other tables reference it
+ */
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name'),
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  subscriptionTier: text('subscription_tier', {
+    enum: ['free', 'pro', 'enterprise']
+  }).default('free').notNull(),
+  subscriptionStatus: text('subscription_status', {
+    enum: ['active', 'canceled', 'past_due', 'trialing']
+  }),
+  subscriptionEndsAt: timestamp('subscription_ends_at'),
+  breakModeUntil: timestamp('break_mode_until'),
+  breakModeActivatedBy: text('break_mode_activated_by', {
+    enum: ['child', 'parent']
+  }),
+  // Trust Score System (13_LAUNCH_02)
+  trustScore: integer('trust_score').default(10).notNull(),
+  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
+  phoneVerified: boolean('phone_verified').default(false).notNull(),
+  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
+  walletAddress: text('wallet_address'), // Base wallet for NFT
+  // Parent Dashboard (PROMPT_06) - Self-reference for parent-child hierarchy
+  parentId: text('parent_id'),
+  accountType: text('account_type', {
+    enum: ['parent', 'child', 'independent']
+  }).default('independent').notNull(),
+  accountFrozen: boolean('account_frozen').default(false).notNull(),
+  accountFrozenAt: timestamp('account_frozen_at'),
+  accountFrozenBy: text('account_frozen_by'), // Parent user ID
+  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
+  bedtimeStart: text('bedtime_start'), // HH:MM format
+  bedtimeEnd: text('bedtime_end'), // HH:MM format
+  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
+  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+/**
+ * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
+ * MUST be defined early as many tables reference it
+ */
+export const cards = pgTable('cards', {
+  id: text('id').primaryKey(), // cuid format
+  name: text('name').notNull(),
+  setName: text('set_name').notNull(),
+  cardNumber: text('card_number').notNull(),
+  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
+  artist: text('artist'),
+  rarity: text('rarity'),
+  tcgplayerId: integer('tcgplayer_id'),
+  scryfallId: text('scryfall_id'),
+  justTcgId: text('just_tcg_id'),
+  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
+  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
+  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
+  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
+  nameIdx: index('idx_cards_name').on(table.name),
+  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
+}));
+
+// ============================================================================
+// STANDALONE TABLES - No foreign key dependencies
+// ============================================================================
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -76,8 +190,8 @@ export const tcg_documents = pgTable('tcg_documents', {
 export const market_knowledge = pgTable('market_knowledge', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  // Vector embedding - using custom type to work around Drizzle type issues
-  embedding: sql<number[]>`vector(1536)`.notNull(),
+  // pgvector extension - 1536 dimensions for OpenAI text-embedding-3-large
+  embedding: vector('embedding', { dimensions: 1536 }),
 
   // Market sentiment (enum enforced at DB level via CHECK constraint)
   sentiment: text('sentiment', {
@@ -156,11 +270,10 @@ export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
     enum: ['image', 'audio']
   }).notNull(),
 
-  // Vector embedding - dimension varies by type:
-  // - image (CLIP ViT-B/32): 512 dimensions
-  // - audio (Wav2Vec2): 768 dimensions
+  // pgvector extension - 768 dimensions for CLIP/Wav2Vec2 embeddings
+  // Dimension varies by type: image (CLIP ViT-B/32): 512, audio (Wav2Vec2): 768
   // Using 768 to accommodate both (images will be padded/truncated if needed)
-  embedding: sql<number[]>`vector(768)`.notNull(),
+  embedding: vector('embedding', { dimensions: 768 }),
 
   // File storage reference (S3 URL or local path)
   fileUrl: text('file_url').notNull(),
@@ -243,35 +356,8 @@ export const videoGenerationRequests = pgTable('video_generation_requests', {
 }));
 
 // ============================================================================
-// PRODUCTION TCG MARKET DATA MODELS
+// CARD-DEPENDENT TABLES - Reference cards table
 // ============================================================================
-
-/**
- * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
- */
-export const cards = pgTable('cards', {
-  id: text('id').primaryKey(), // cuid format
-  name: text('name').notNull(),
-  setName: text('set_name').notNull(),
-  cardNumber: text('card_number').notNull(),
-  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
-  artist: text('artist'),
-  rarity: text('rarity'),
-  tcgplayerId: integer('tcgplayer_id'),
-  scryfallId: text('scryfall_id'),
-  justTcgId: text('just_tcg_id'),
-  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
-  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
-  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
-  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
-  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
-  nameIdx: index('idx_cards_name').on(table.name),
-  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
-}));
 
 /**
  * Prices table - Market prices from JustTCG, TCGPlayer, Cardmarket, etc.
@@ -340,47 +426,9 @@ export const populationReports = pgTable('population_reports', {
   uniquePop: uniqueIndex('idx_pop_unique').on(table.cardId, table.gradingCompany, table.lastUpdated),
 }));
 
-/**
- * Users table - Basic user management with Stripe subscription support
- */
-export const users = pgTable('users', {
-  id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  name: text('name'),
-  stripeCustomerId: text('stripe_customer_id'),
-  stripeSubscriptionId: text('stripe_subscription_id'),
-  subscriptionTier: text('subscription_tier', {
-    enum: ['free', 'pro', 'enterprise']
-  }).default('free').notNull(),
-  subscriptionStatus: text('subscription_status', {
-    enum: ['active', 'canceled', 'past_due', 'trialing']
-  }),
-  subscriptionEndsAt: timestamp('subscription_ends_at'),
-  breakModeUntil: timestamp('break_mode_until'),
-  breakModeActivatedBy: text('break_mode_activated_by', {
-    enum: ['child', 'parent']
-  }),
-  // Trust Score System (13_LAUNCH_02)
-  trustScore: integer('trust_score').default(10).notNull(),
-  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
-  phoneVerified: boolean('phone_verified').default(false).notNull(),
-  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
-  walletAddress: text('wallet_address'), // Base wallet for NFT
-  // Parent Dashboard (PROMPT_06)
-  parentId: text('parent_id').references((): any => users.id, { onDelete: 'cascade' }),
-  accountType: text('account_type', {
-    enum: ['parent', 'child', 'independent']
-  }).default('independent').notNull(),
-  accountFrozen: boolean('account_frozen').default(false).notNull(),
-  accountFrozenAt: timestamp('account_frozen_at'),
-  accountFrozenBy: text('account_frozen_by'), // Parent user ID
-  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
-  bedtimeStart: text('bedtime_start'), // HH:MM format
-  bedtimeEnd: text('bedtime_end'), // HH:MM format
-  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
-  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+// ============================================================================
+// USER-DEPENDENT TABLES - Reference users table
+// ============================================================================
 
 /**
  * Session History - Tracks user session activity for parent monitoring
@@ -560,8 +608,8 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
 export const cardForensics = pgTable('card_forensics', {
   id: uuid('id').defaultRandom().primaryKey(),
   cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  // pgvector extension - stores as vector(768) for CLIP ViT-L/14
-  embedding: sql`vector(768)`,
+  // pgvector extension - 768 dimensions for CLIP ViT-L/14 embeddings
+  embedding: vector('embedding', { dimensions: 768 }),
   reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
   detectedDefects: jsonb('detected_defects').notNull().default({}),
   authenticityScore: real('authenticity_score').notNull(),
