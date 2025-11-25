@@ -177,7 +177,7 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
   const exts = ['.ts', '.tsx'];
   const files = walk(srcRoot, exts);
 
-  // Drizzle ORM method names to exclude from column checks
+  // Drizzle ORM method names and JS built-in properties to exclude from column checks
   const drizzleMethods = new Set([
     'findMany',
     'findFirst',
@@ -204,6 +204,15 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
     'every',
     'find',
     'includes',
+    'size', // Map/Set.size property
+    'keys',
+    'values',
+    'entries',
+    'has',
+    'get',
+    'set',
+    'clear',
+    'add',
   ]);
 
   const issues: SchemaIssue[] = [];
@@ -225,8 +234,12 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
         const col = usageMatch[1];
         const matchStart = usageMatch.index;
 
-        // Skip if it's a known Drizzle method
+        // Skip if it's a known Drizzle method or JS built-in property
         if (drizzleMethods.has(col)) continue;
+
+        // Skip if tableVar is preceded by a dot (e.g., state.cards.size)
+        // This indicates it's a property of another object, not a direct table reference
+        if (matchStart > 0 && content[matchStart - 1] === '.') continue;
 
         // Check if followed by a parenthesis (indicating a method call)
         const matchEnd = matchStart + usageMatch[0].length;
