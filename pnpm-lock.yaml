@@ -438,6 +438,9 @@ importers:
       prisma:
         specifier: 5.17.0
         version: 5.17.0
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
       vercel:
         specifier: ^33.0.0
         version: 33.7.1
