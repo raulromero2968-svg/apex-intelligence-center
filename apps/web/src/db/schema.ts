@@ -1302,3 +1302,8 @@ export type NewSpendTracking = typeof spendTracking.$inferInsert;
  *   unique_id: "tcgplayer_article_12345"
  * }
  */
+
+// ============================================================================
+// AI SCIENTIST PHASE 1 SCHEMA EXPORTS
+// ============================================================================
+export * from './schema/ai-scientist';
