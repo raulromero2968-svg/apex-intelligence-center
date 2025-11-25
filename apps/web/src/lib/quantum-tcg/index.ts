@@ -19,9 +19,14 @@ export {
   // Constants
   QUANTUM_CONSTANTS,
   QUANTUM_EFFECT_COSTS,
+  RARITY_MAGNITUDE,
 
   // Card Initialization
   initializeQuantumCard,
+
+  // Rarity-Based Magnitude Helpers
+  getRarityMagnitude,
+  getCardCount,
 
   // Quantum Operations
   applySuperposition,

@@ -26,6 +26,9 @@ export interface QuantumCard {
   entangledWith?: string; // ID of entangled card
   coherence: number; // 0-1, chance of maintaining quantum state
   observedStats?: CardStats; // Stats after observation/collapse
+  // Database card properties for visual effect magnitude
+  rarity?: string; // e.g., "common", "uncommon", "rare", "mythic", "secret"
+  setName?: string; // Set name from database
 }
 
 export interface CardStats {
@@ -89,6 +92,48 @@ export const QUANTUM_EFFECT_COSTS: Record<QuantumEffect, number> = {
   interfere: 2,
   collapse: 1,
 };
+
+// ============================================================================
+// RARITY-BASED MAGNITUDE HELPERS
+// ============================================================================
+
+/**
+ * Rarity magnitude mapping for visual effect intensity.
+ * Higher rarity = higher magnitude for quantum effects.
+ * Uses standard TCG rarity tiers (Pokemon/Magic style).
+ */
+export const RARITY_MAGNITUDE: Record<string, number> = {
+  common: 0.2,
+  uncommon: 0.4,
+  rare: 0.6,
+  'rare holo': 0.7,
+  'ultra rare': 0.8,
+  'secret rare': 0.9,
+  mythic: 1.0,
+  // Fallback aliases
+  c: 0.2,
+  u: 0.4,
+  r: 0.6,
+  m: 1.0,
+};
+
+/**
+ * Get effect magnitude from card rarity.
+ * Falls back to 0.5 (medium) if rarity is unknown.
+ */
+export function getRarityMagnitude(rarity?: string): number {
+  if (!rarity) return 0.5;
+  const normalized = rarity.toLowerCase().trim();
+  return RARITY_MAGNITUDE[normalized] ?? 0.5;
+}
+
+/**
+ * Calculate the number of cards in a Map safely.
+ * Returns 0 if the map is null/undefined.
+ */
+export function getCardCount(cards: Map<string, QuantumCard> | null | undefined): number {
+  return cards?.size ?? 0;
+}
 
 // ============================================================================
 // QUANTUM STATE MANAGEMENT
@@ -549,24 +594,32 @@ export function getQuantumBattleSummary(state: QuantumBattleState): {
   entangledPairs: number;
   averageCoherence: number;
   totalQuantumAdvantage: number;
+  averageRarityMagnitude: number; // Visual effect intensity based on card rarity
 } {
   let superpositionCount = 0;
   let totalCoherence = 0;
   let totalAdvantage = 0;
+  let totalRarityMagnitude = 0;
 
   for (const card of state.cards.values()) {
     if (card.quantumState === 'superposition') superpositionCount++;
     totalCoherence += card.coherence;
+    // Use rarity as proxy for visual effect magnitude
+    totalRarityMagnitude += getRarityMagnitude(card.rarity);
   }
 
   for (const op of state.operationHistory) {
     totalAdvantage += op.result.quantumAdvantage || 0;
   }
 
+  // Safely get card count to avoid accessing .size on null/undefined
+  const cardCount = getCardCount(state.cards);
+
   return {
     cardsInSuperposition: superpositionCount,
     entangledPairs: state.entanglements.length,
-    averageCoherence: state.cards.size > 0 ? totalCoherence / state.cards.size : 0,
+    averageCoherence: cardCount > 0 ? totalCoherence / cardCount : 0,
     totalQuantumAdvantage: totalAdvantage,
+    averageRarityMagnitude: cardCount > 0 ? totalRarityMagnitude / cardCount : 0.5,
   };
 }
