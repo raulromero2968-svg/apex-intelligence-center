@@ -41,10 +41,27 @@
     color: #000;
     transition: transform 150ms ease-out, box-shadow 150ms ease-out, background-color 150ms ease-out;
   }
-  .btn-cyan:hover { background: #06b6d4; transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px rgba(34,211,238,0.35); }
-  .btn-cyan:active { transform: scale(0.98); }
-  .btn-cyan:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
-  @media (prefers-reduced-motion: reduce) { .btn-cyan { transition-duration: 0.01ms; } }
+
+  .btn-cyan:hover {
+    background: #06b6d4;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(34, 211, 238, 0.35);
+  }
+
+  .btn-cyan:active {
+    transform: scale(0.98);
+  }
+
+  .btn-cyan:focus-visible {
+    outline: 3px solid #22d3ee;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-cyan {
+      transition-duration: 0.01ms;
+    }
+  }
 
   /* Titan Typography - Hollow See-Through with External Glow */
   .font-titan {
@@ -64,7 +81,7 @@
   /* Holographic Background Effect (PS5-inspired) */
   .holo {
     background: radial-gradient(120% 120% at 0% 0%, var(--apex-cyan) 10%, transparent 40%),
-                radial-gradient(120% 120% at 100% 0%, var(--apex-purple) 12%, transparent 40%);
+      radial-gradient(120% 120% at 100% 0%, var(--apex-purple) 12%, transparent 40%);
     filter: saturate(1.1);
   }
 
@@ -83,6 +100,7 @@
     .holo-glow {
       box-shadow: none;
     }
+
     .holo-glow:hover {
       box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
     }
@@ -99,6 +117,7 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -115,7 +134,10 @@
 }
 
 /* Cursor remains hidden on interactive elements for consistency */
-input, textarea, button, a {
+input,
+textarea,
+button,
+a {
   cursor: none !important;
 }
 
@@ -181,9 +203,17 @@ input, textarea, button, a {
 
 /* Cyber Street Scanline Animation */
 @keyframes cyber-street-pass {
-  0% { left: -100%; }
-  20% { left: 200%; }
-  100% { left: 200%; }
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 200%;
+  }
+
+  100% {
+    left: 200%;
+  }
 }
 
 .cyber-street {
@@ -227,13 +257,20 @@ input, textarea, button, a {
   background: repeating-linear-gradient(to bottom, transparent 0%, rgba(34, 211, 238, 0.05) 1px, transparent 2px);
   animation: stream-scan 2s linear infinite;
   pointer-events: none;
-  z-index: -1; /* Subtle lines only, no rectangle */
-  opacity: 0.3; /* Reduced for minimalism */
+  z-index: -1;
+  /* Subtle lines only, no rectangle */
+  opacity: 0.3;
+  /* Reduced for minimalism */
 }
 
 @keyframes stream-scan {
-  0% { transform: translateY(-50%); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(-50%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* Accessibility fallback - disable animation and visual effect for reduced motion */
@@ -313,9 +350,17 @@ input, textarea, button, a {
 
 /* Prismatic Gradient Animation - Dynamic iridescence for headers */
 @keyframes gradient-x {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .animate-gradient-x {
@@ -354,6 +399,7 @@ input, textarea, button, a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .header-prismatic,
   .header-prismatic-purple {
     animation: none;
@@ -368,6 +414,7 @@ input, textarea, button, a {
 
 /* Fallback for browsers without -webkit-text-stroke support */
 @supports not (-webkit-text-stroke: 1px black) {
+
   .header-prismatic,
   .header-prismatic-purple {
     -webkit-text-fill-color: currentColor;
@@ -406,9 +453,11 @@ body::before {
     transform: translateY(-100%);
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
     transform: translateY(calc(100vh + 100%));
     opacity: 0;
@@ -426,13 +475,11 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 48px,
-    rgba(34, 211, 238, 0.03) 48px,
-    rgba(34, 211, 238, 0.03) 50px
-  );
+  background: repeating-linear-gradient(to bottom,
+      transparent 0px,
+      transparent 48px,
+      rgba(34, 211, 238, 0.03) 48px,
+      rgba(34, 211, 238, 0.03) 50px);
   animation: electronic-scroll 20s linear infinite;
   pointer-events: none;
   z-index: -1;
@@ -443,6 +490,7 @@ body::after {
   0% {
     background-position: 0 0;
   }
+
   100% {
     background-position: 0 50px;
   }
@@ -450,6 +498,7 @@ body::after {
 
 /* Disable scan animations for reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   body::before,
   body::after {
     animation: none;
@@ -478,9 +527,12 @@ body::after {
 }
 
 @keyframes cursor-blink {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0;
   }
@@ -503,8 +555,13 @@ body::after {
 }
 
 @keyframes wrap-animate {
-  0% { background-position: 0 0, 0 100%, 0 0, 100% 0; }
-  100% { background-position: 20px 0, -20px 100%, 0 20px, 100% -20px; }
+  0% {
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+  }
+
+  100% {
+    background-position: 20px 0, -20px 100%, 0 20px, 100% -20px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -521,14 +578,17 @@ body::after {
     transform-origin: left;
     opacity: 1;
   }
+
   50% {
     transform: scaleX(1);
     transform-origin: left;
     opacity: 1;
   }
+
   51% {
     transform-origin: right;
   }
+
   100% {
     transform: scaleX(0);
     transform-origin: right;
@@ -538,6 +598,7 @@ body::after {
 
 /* Disable electronic-wrap and section scan for reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   .electronic-wrap,
   .animate-scan-line {
     animation: none;
@@ -569,6 +630,129 @@ html.light .border-cyan-500\/20 {
 }
 
 /* Adjust background animations for light mode */
+/* Adjust background animations for light mode */
 html.light canvas {
   opacity: 0.3 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CUSTOM CURSOR - Wolf Nose Design
+   ═══════════════════════════════════════════════════════════════════ */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+}
+
+.custom-cursor-dot {
+  width: 100%;
+  height: 100%;
+  background-color: #22d3ee;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  /* Triangle/Nose shape */
+  box-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
+  animation: cursor-pulse 2s infinite;
+}
+
+@keyframes cursor-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHOOTING STAR ANIMATION
+   ═══════════════════════════════════════════════════════════════════ */
+.shooting-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
+  animation: animate-shooting-star 3s linear infinite;
+  opacity: 0;
+}
+
+.shooting-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, #fff, transparent);
+}
+
+@keyframes animate-shooting-star {
+  0% {
+    transform: rotate(315deg) translateX(0);
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(315deg) translateX(-1000px);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HOLOGRAPHIC SHEEN - For Header
+   ═══════════════════════════════════════════════════════════════════ */
+.text-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.text-sheen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%);
+  transform: skewX(-25deg);
+  animation: sheen-pass 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes sheen-pass {
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 200%;
+  }
+
+  100% {
+    left: 200%;
+  }
 }
