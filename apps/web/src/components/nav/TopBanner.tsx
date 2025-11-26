@@ -57,7 +57,7 @@ export const TopBanner = () => {
       {/* Right: Access Terminal Button - Tactical Style */}
       <Link
         href="/dashboard"
-        className="btn-tactical inline-flex items-center gap-2 text-xs px-3 py-1 font-mono"
+        className="btn-tactical inline-flex items-center gap-2 text-[10px] md:text-sm px-2 py-1 md:px-5 md:py-2 font-mono"
       >
         [ ACCESS_TERMINAL ]
       </Link>
