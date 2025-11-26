@@ -178,10 +178,10 @@ export default function HomePage() {
 
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
-                    UNDERGROUND
+                    UNDERGROUND INTEL
                   </span>
                   <br />
-                  INTEL
+                  & AI Research
                 </h1>
 
                 <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
