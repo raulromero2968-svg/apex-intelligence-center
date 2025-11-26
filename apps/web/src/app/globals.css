@@ -915,47 +915,73 @@ html.light canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect
-   Uses background-clip: text to restrict sheen to text letterforms only
+   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect (Viewport-Synced)
+   Uses viewport units to ensure all text is illuminated at the same speed
    ═══════════════════════════════════════════════════════════════════ */
+/* THE GLOBAL HOLO-BEAM */
 .text-sheen {
-  position: relative;
   display: inline-block;
-  /* Sheen gradient that flows across the text */
-  background: linear-gradient(to right, #22d3ee, #ffffff, #22d3ee);
-  background-size: 200% auto;
+  color: transparent;
+
+  /* 1. The Beam Geometry (Fixed to Screen Width) */
+  /* Width = 200% of VIEWPORT, not element */
+  background-size: 200vw 100%;
+
+  /* 2. The Beam Gradient (High Intensity White/Cyan) */
+  background-image: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 48%,
+    rgba(34, 211, 238, 1) 50%,
+    rgba(255, 255, 255, 0.9) 52%,
+    transparent 60%
+  );
+
+  /* 3. The Clip */
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
-  animation: sheen-flow 3s linear infinite;
+
+  /* 4. The Animation (Locked Timing) */
+  /* Linear timing ensures constant speed */
+  animation: global-sheen-pass 6s linear infinite;
+  /* Force synchronization */
+  animation-play-state: running;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes global-sheen-pass {
+  /* Move from Far Left to Far Right in Screen Space */
+  from { background-position-x: -200vw; }
+  to { background-position-x: 200vw; }
 }
 
 /* Purple variant of text sheen */
 .text-sheen-purple {
-  position: relative;
   display: inline-block;
-  background: linear-gradient(to right, #a855f7, #ffffff, #a855f7);
-  background-size: 200% auto;
+  color: transparent;
+  background-size: 200vw 100%;
+  background-image: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 48%,
+    rgba(168, 85, 247, 1) 50%,
+    rgba(255, 255, 255, 0.9) 52%,
+    transparent 60%
+  );
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
-  animation: sheen-flow 3s linear infinite;
-}
-
-@keyframes sheen-flow {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
+  animation: global-sheen-pass 6s linear infinite;
+  animation-play-state: running;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .text-sheen,
   .text-sheen-purple {
     animation: none;
-    background-position: 50% 50%;
+    background-position-x: 0vw;
   }
 } 
  /* Text Sheen Overlay - Works WITH existing gradient text styles */
