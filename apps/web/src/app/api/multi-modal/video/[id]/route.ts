@@ -10,7 +10,6 @@ import { videoGenerationRequests } from '@/db/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { readFile } from 'fs/promises';
 import * as Sentry from '@sentry/nextjs';
-import { eq, and } from 'drizzle-orm';
 
 /**
  * GET /api/multi-modal/video/[id]
@@ -32,7 +31,7 @@ export async function GET(
     const [request] = await db
       .select()
       .from(videoGenerationRequests)
-      .where(and(eq(videoGenerationRequests.id, params.id), eq(videoGenerationRequests.userId, user.id)))
+      .where((r) => r.id === params.id && r.userId === user.id)
       .limit(1);
 
     if (!request) {

@@ -24,7 +24,6 @@ import { generateVideo } from '@/lib/ml/video-generation';
 import * as Sentry from '@sentry/nextjs';
 import { randomUUID } from 'crypto';
 import path from 'path';
-import { eq, and } from 'drizzle-orm';
 
 // Input validation
 const GenerateVideoSchema = z.object({
@@ -116,7 +115,7 @@ export async function POST(req: NextRequest) {
           status: 'processing',
           processingStartedAt: new Date(),
         })
-        .where(eq(videoGenerationRequests.id, genRequest.id));
+        .where((r) => r.id === genRequest.id);
 
       // Generate video (this is a placeholder implementation)
       const outputDir = '/tmp/videos';
@@ -137,7 +136,7 @@ export async function POST(req: NextRequest) {
           processingCompletedAt: new Date(),
           outputUrl: videoPath, // In production, upload to S3 and store URL
         })
-        .where(eq(videoGenerationRequests.id, genRequest.id));
+        .where((r) => r.id === genRequest.id);
 
       // Track success
       Sentry.captureMessage('Video generation successful', {
@@ -162,7 +161,7 @@ export async function POST(req: NextRequest) {
           errorMessage:
             genError instanceof Error ? genError.message : 'Unknown error',
         })
-        .where(eq(videoGenerationRequests.id, genRequest.id));
+        .where((r) => r.id === genRequest.id);
 
       throw genError;
     }
@@ -217,7 +216,7 @@ export async function GET(req: NextRequest) {
     const [request] = await db
       .select()
       .from(videoGenerationRequests)
-      .where(and(eq(videoGenerationRequests.id, requestId), eq(videoGenerationRequests.userId, user.id)))
+      .where((r) => r.id === requestId && r.userId === user.id)
       .limit(1);
 
     if (!request) {

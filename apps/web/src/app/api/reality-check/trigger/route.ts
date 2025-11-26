@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, redisSet, redisDel, RedisKeys, CacheTTL } from '@/lib/redis';
+import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const triggerId = `trigger-${Date.now()}`;
 
     // Set global trigger flag with TTL
-    await redisSet(
+    await redis.set(
       RedisKeys.realityCheckTrigger(),
       triggerId,
       { ex: CacheTTL.REALITY_CHECK_TRIGGER }
@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     // Publish to pub/sub channel (if available)
     // This would notify all connected SSE clients immediately
     try {
+      // @ts-expect-error - publish may not be available in Upstash REST API
       await redis.publish(RedisKeys.realityCheckChannel(), triggerId);
     } catch {
       // Pub/sub not available, clients will pick up via SSE polling
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Clear global trigger
-    await redisDel(RedisKeys.realityCheckTrigger());
+    await redis.del(RedisKeys.realityCheckTrigger());
 
     return NextResponse.json({
       ok: true,

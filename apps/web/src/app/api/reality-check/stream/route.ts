@@ -14,7 +14,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { redisGet, RedisKeys } from '@/lib/redis';
+import { redis, RedisKeys } from '@/lib/redis';
 
 /**
  * SSE endpoint for reality check triggers
@@ -61,11 +61,11 @@ export async function GET(request: NextRequest) {
       // So we use polling as a fallback
       const checkTriggerInterval = setInterval(async () => {
         try {
-          const globalTrigger = await redisGet(RedisKeys.realityCheckTrigger());
+          const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
           if (globalTrigger) {
             // Check if user has already acknowledged this trigger
-            const userAck = await redisGet(RedisKeys.realityCheckAck(userId));
+            const userAck = await redis.get(RedisKeys.realityCheckAck(userId));
 
             if (!userAck || userAck !== globalTrigger) {
               // Send trigger event to client
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
       // Also check for automatic 2-hour trigger based on user's session
       const checkSessionInterval = setInterval(async () => {
         try {
-          const sessionData = await redisGet(RedisKeys.sessionActivity(userId));
+          const sessionData = await redis.get(RedisKeys.sessionActivity(userId));
 
           if (sessionData) {
             const session = JSON.parse(sessionData as string);
