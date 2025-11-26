@@ -2,11 +2,6 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
-import AuroraFX from '@/components/fx/AuroraFX';
-
-import BackgroundFX from '@/components/fx/BackgroundFX';
-
-import BackgroundStack from '@/components/fx/BackgroundStack';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
@@ -16,9 +11,6 @@ import { ProductionBanner } from '@/components/nav/ProductionBanner';
 
 import { LayoutFooter } from '@/components/footer/LayoutFooter';
 
-import { AnimatedBackground } from '@/components/background/AnimatedBackground';
-
-import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
 
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -245,13 +237,37 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
+          'min-h-screen bg-slate-950 text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
 
           fontSans.className,
 
         )}
 
       >
+
+        {/* GLOBAL MATRIX BACKGROUND */}
+
+        <div className="fixed inset-0 z-[-1]">
+
+          {/* Grid Pattern */}
+
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#083344_1px,transparent_1px),linear-gradient(to_bottom,#083344_1px,transparent_1px)] bg-[size:50px_50px] opacity-20" />
+
+
+
+          {/* Scanning Light Effect */}
+
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-900/10 to-transparent animate-scan" />
+
+
+
+          {/* Vignette */}
+
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020617_100%)]" />
+
+        </div>
+
+
 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
@@ -276,36 +292,6 @@ export default function RootLayout({
         {/* Top Banner */}
 
         <TopBanner />
-
-
-
-        {/* Starfield Galaxy Background */}
-
-        <StarfieldBackground />
-
-
-
-        {/* Animated Background */}
-
-        <AnimatedBackground />
-
-
-
-        {/* Aurora Background */}
-
-        <AuroraFX />
-
-
-
-        {/* Animated Background FX */}
-
-        <BackgroundFX />
-
-
-
-        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
-
-        <BackgroundStack />
 
 
 
