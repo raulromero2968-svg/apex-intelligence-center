@@ -7,13 +7,25 @@
     --purple: #9333ea;
     --apex-cyan: #00FFFF;
     --apex-purple: #8A2BE2;
+
+    /* GOLDEN RATIO TYPOGRAPHY SCALE */
+    --font-scale-h1: clamp(2.5rem, 5vw, 4.5rem); /* Desktop 72px */
+    --font-scale-h2: clamp(1.8rem, 3vw, 3rem);   /* Desktop 48px */
+    --font-scale-h3: clamp(1.2rem, 2vw, 1.8rem); /* Desktop 28px */
+    --font-scale-body: clamp(0.875rem, 1vw, 1rem); /* Desktop 16px */
   }
 
-  body {
+  html, body {
     background-color: var(--ink);
     color: white;
     min-height: 100vh;
+    /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
     overflow-x: hidden;
+    word-wrap: break-word;
+    word-break: normal; /* STOP SPLITTING WORDS */
+    overflow-wrap: break-word;
+    -webkit-hyphens: none;
+    hyphens: none;
   }
 
   /* Prevent mid-word breaking globally */
@@ -22,8 +34,38 @@
     word-break: normal;
   }
 
-  /* Extra protection for headings - no hyphenation */
-  h1, h2, h3, h4, h5, h6 {
+  /* Force Headers to specific scales */
+  h1 {
+    font-size: var(--font-scale-h1);
+    line-height: 1.1;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h2 {
+    font-size: var(--font-scale-h2);
+    line-height: 1.2;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h3 {
+    font-size: var(--font-scale-h3);
+    line-height: 1.3;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h4, h5, h6 {
     word-break: keep-all;
     overflow-wrap: break-word;
     hyphens: none;
@@ -32,6 +74,8 @@
   }
 
   p {
+    font-size: var(--font-scale-body);
+    line-height: 1.6;
     word-break: keep-all;
     overflow-wrap: break-word;
   }

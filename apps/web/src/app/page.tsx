@@ -231,10 +231,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   DIGITAL SCROLL
                 </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
+                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
                   Vintage WOTC Analysis
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
+                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
                   Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
@@ -264,10 +264,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
                   ELECTRONIC FOLDER
                 </div>
-                <h3 className="header-prismatic-purple text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
+                <h3 className="header-prismatic-purple text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
                   Rotation Window Strategy
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
+                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
                   Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
@@ -297,10 +297,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   DIGITAL SCROLL
                 </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
+                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
                   Pokemon 151 Market Report
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
+                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
                   Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
