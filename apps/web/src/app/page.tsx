@@ -1,317 +1,119 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { toast } from 'sonner';
-import { Search, Sparkles, ArrowRight, Terminal } from 'lucide-react';
-import MobileNav from '@/components/nav/MobileNav';
-import SearchBar from '@/components/search/SearchBar';
-import ToolCarousel from '@/components/carousel/ToolCarousel';
-import ContentCard from '@/components/ContentCard';
-import HorizontalCarousel from '@/components/HorizontalCarousel';
-import RouteTransition from '@/layout/RouteTransition';
-import ResearchDialog from '@/components/research/ResearchDialog';
-import { blogPosts, researchReports, intelNotes } from '@/content/seed';
-import { ContentKind } from '@/lib/routeMap';
-import { WolfConstellation } from '@/components/hero/WolfConstellation';
 
-// Sample data
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/research', label: 'Research' },
-  { href: '/insights', label: 'Insights' },
-  { href: '/subscribe', label: 'Subscribe' },
+  { href: '/intel', label: 'INTEL' },
+  { href: '/portfolio', label: 'PORTFOLIO' },
+  { href: '/commons', label: 'COMMONS' },
+  { href: '/about', label: 'ABOUT' },
+  { href: '/subscribe', label: 'SUBSCRIBE' },
 ];
-
-const tools = [
-  {
-    id: 'portfolio-tracker',
-    name: 'Portfolio Tracker',
-    description: 'Track your TCG collection value in real-time',
-    iconId: 'portfolio-tracker' as const,
-    href: '/tool-tracker',
-  },
-  {
-    id: 'trade-calculator',
-    name: 'Trade Calculator',
-    description: 'Calculate optimal trade values',
-    iconId: 'trade-calculator' as const,
-    href: '/tool-calculator',
-  },
-  {
-    id: 'grading-optimizer',
-    name: 'Grading Optimizer',
-    description: 'Determine which cards to grade for maximum ROI',
-    iconId: 'grading-optimizer' as const,
-    href: '/tool-grading',
-  },
-  {
-    id: 'bulk-analyzer',
-    name: 'Bulk Deal Analyzer',
-    description: 'Analyze bulk purchases and deals',
-    iconId: 'bulk-analyzer' as const,
-    href: '/tool-bulk-deal',
-  },
-  {
-    id: 'reprint-predictor',
-    name: 'Reprint Risk Predictor',
-    description: 'Predict reprint probability and timing',
-    iconId: 'reprint-predictor' as const,
-    href: '/tool-reprint-risk',
-  },
-  {
-    id: 'sealed-analyzer',
-    name: 'Sealed Product Analyzer',
-    description: 'Analyze sealed product investment opportunities',
-    iconId: 'sealed-analyzer' as const,
-    href: '/tool-sealed',
-  },
-  {
-    id: 'tax-dashboard',
-    name: 'Tax Dashboard',
-    description: 'Comprehensive tax reporting and planning',
-    iconId: 'tax-dashboard' as const,
-    href: '/tool-tax-dashboard',
-  },
-];
-
-// Latest Intelligence on the homepage is sourced from the same seeded content
-// used on the Blog / Research / Intel pages so everything stays in sync.
-// Convert to ContentItem format with kind and slug
-function getHomeFeed() {
-  const allContent = [
-    ...blogPosts.map((a) => ({
-      kind: 'blog' as ContentKind,
-      slug: a.href.replace('/blog/', ''),
-      title: a.title,
-      excerpt: a.excerpt,
-      dateISO: a.date,
-      badge: 'Blog',
-    })),
-    ...researchReports.map((a) => ({
-      kind: 'research' as ContentKind,
-      slug: a.href.replace('/research/', ''),
-      title: a.title,
-      excerpt: a.excerpt,
-      dateISO: a.date,
-      badge: 'Research',
-    })),
-    ...intelNotes.map((a) => ({
-      kind: 'intel' as ContentKind,
-      slug: a.href.replace('/intel/', ''),
-      title: a.title,
-      excerpt: a.excerpt,
-      dateISO: a.date,
-      badge: 'Intel',
-    })),
-  ];
-
-  // Return exactly 6 items for the carousel
-  return allContent.slice(0, 6);
-}
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isResearchDialogOpen, setIsResearchDialogOpen] = useState(false);
-  const [initialQuery, setInitialQuery] = useState('');
-  const feedItems = getHomeFeed();
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    // When user submits search (Enter key or form submit), open ResearchDialog
-    if (query.trim()) {
-      setInitialQuery(query.trim());
-      setIsResearchDialogOpen(true);
-    }
-  };
-
-  const handleOpenResearch = () => {
-    setIsResearchDialogOpen(true);
-  };
-
-  // Handle Ctrl+K to open research panel
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        // Only if not in an input field
-        const target = e.target as HTMLElement;
-        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
-          e.preventDefault();
-          handleOpenResearch();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
-    <RouteTransition>
-      <div className="min-h-screen">
-        {/* Main Content */}
-        <main className="container mx-auto px-4 py-8 space-y-16">
-          {/* Hero Section */}
-          <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden">
-            {/* Video Background */}
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-40 -z-10"
+    <div className="relative min-h-screen bg-slate-950 overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
+      >
+        <source src="/images/titan-loop.mp4" type="video/mp4" />
+      </video>
+
+      {/* Gradient Overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent z-[1]" />
+
+      {/* Header / Navigation */}
+      <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
+        {/* Left: Logo/Brand */}
+        <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono">
+          APEX<span className="text-cyan-400">_</span>INTEL
+        </Link>
+
+        {/* Center: Nav Links (hidden on mobile) */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-slate-400 hover:text-white text-sm font-medium tracking-wide transition-colors"
             >
-              <source src="/images/titan-loop.mp4" type="video/mp4" />
-            </video>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center">
-              {/* Left Column: Copy */}
-              <div className="space-y-8 z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                  </span>
-                  TCG Intelligence Network Online
-                </div>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-                  UNDERGROUND
-                  <br />
-                  INTEL
-                </h1>
-
-                <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
-                  Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-                  Morning Brew meets the underground—delivered to your inbox.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/intel" className="group inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-3 rounded-lg transition-all">
-                    Get Free Intel
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <button className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-medium px-8 py-3 rounded-lg transition-all">
-                    <Terminal className="w-4 h-4 text-slate-400" />
-                    Browse Archives
-                  </button>
-                </div>
-
-                {/* Social Proof / Data Stats */}
-                <div className="flex gap-8 pt-8 border-t border-slate-800/50">
-                  <div>
-                    <div className="text-2xl font-bold text-white">1.2K+</div>
-                    <div className="text-sm text-slate-500">Collectors</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-white">50+</div>
-                    <div className="text-sm text-slate-500">Intel Drops</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-white">$2M+</div>
-                    <div className="text-sm text-slate-500">Cards Tracked</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Visual */}
-              <div className="flex justify-center lg:justify-end z-10">
-                <WolfConstellation />
-              </div>
-            </div>
-          </section>
-
-          {/* Search Bar */}
-          <section>
-            <SearchBar onSearch={handleSearch} />
-          </section>
-
-          {/* Latest Intelligence Section with Horizontal Carousel */}
-          <section className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-3xl font-bold text-white">Latest Intelligence</h2>
-              <p className="text-white/70">
-                Market insights, research, and analysis from industry experts
-              </p>
-            </div>
-            <HorizontalCarousel>
-              {feedItems.map((item) => (
-                <ContentCard key={`${item.kind}-${item.slug}`} {...item} />
-              ))}
-            </HorizontalCarousel>
-          </section>
-
-          {/* Latest Insights Section */}
-          <section className="max-w-5xl mx-auto px-6 py-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold">Latest Insights</h2>
-              <Link href="/blog" className="text-cyan-400 hover:underline">View all</Link>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {blogPosts
-                .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-                .slice(0, 3)
-                .map((p) => (
-                  <Link
-                    key={p.href}
-                    href={p.href}
-                    className="border border-zinc-800 rounded-xl p-5 hover:border-cyan-400 transition"
-                  >
-                    <h3 className="text-lg font-medium">{p.title}</h3>
-                    <p className="text-zinc-400 mt-1 line-clamp-3">{p.excerpt}</p>
-                    <p className="text-xs text-zinc-500 mt-3">
-                      {new Date(p.date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </p>
-                  </Link>
-                ))}
-            </div>
-          </section>
-
-          {/* Tools Carousel */}
-          <section className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-3xl font-bold text-white">Free Collector Tools</h2>
-              <p className="text-white/70">
-                Professional-grade tools for TCG market analysis and portfolio management
-              </p>
-            </div>
-            <ToolCarousel />
-          </section>
-
-          {/* Footer Spacing */}
-          <div className="h-24" />
-        </main>
-
-        {/* Research Dialog */}
-        <ResearchDialog
-          isOpen={isResearchDialogOpen}
-          onClose={() => {
-            setIsResearchDialogOpen(false);
-            setInitialQuery('');
-          }}
-          initialQuery={initialQuery}
-        />
-
-        {/* Visible fallback button for Ctrl+K (always visible) */}
-        <button
-          onClick={handleOpenResearch}
-          className="fixed bottom-6 left-6 z-40 inline-flex items-center gap-2 px-4 py-3 bg-cyan-400/20 hover:bg-cyan-400/30 border border-cyan-400/50 rounded-lg text-cyan-400 font-medium transition-colors shadow-lg shadow-cyan-400/20 backdrop-blur-sm"
-          aria-label="Open Research (Ctrl+K)"
-          title="Open Research (Ctrl+K)"
+        {/* Right: Access Terminal Button */}
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 hover:border-cyan-500/50 hover:bg-white/5 rounded text-white font-mono text-sm tracking-wider transition-all"
         >
-          <Sparkles className="w-4 h-4" />
-          <span className="hidden sm:inline">Open Research</span>
-          <kbd className="hidden md:inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-white/10 text-white/70 border border-white/20">
-            <span>Ctrl</span>
-            <span>K</span>
-          </kbd>
-        </button>
+          [ ACCESS_TERMINAL ]
+        </Link>
+      </header>
+
+      {/* Hero Content (Centered) */}
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center">
+        {/* Status Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+          </span>
+          SYSTEM ONLINE // VER 2.0
+        </div>
+
+        {/* CRITICAL TITLE: Hollow "UNDERGROUND" + Solid "INTEL" */}
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
+          <span
+            className="block"
+            style={{
+              color: 'transparent',
+              WebkitTextStroke: '2px white',
+            }}
+          >
+            UNDERGROUND
+          </span>
+          <span className="block text-white">
+            INTEL
+          </span>
+        </h1>
+
+        {/* Description with block cursor */}
+        <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
+          Premium TCG market analysis, data-driven insights, and exclusive intelligence.
+          Morning Brew meets the underground—delivered to your inbox.
+          <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href="/subscribe"
+            className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg"
+          >
+            GET ALPHA ACCESS
+          </Link>
+          <Link
+            href="/intel"
+            className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg"
+          >
+            BROWSE DATABASE
+          </Link>
+        </div>
+      </main>
+
+      {/* Mobile Nav Toggle (optional - simplified for now) */}
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-full text-white font-mono text-sm"
+        >
+          [ ACCESS_TERMINAL ]
+        </Link>
       </div>
-    </RouteTransition>
+    </div>
   );
 }
