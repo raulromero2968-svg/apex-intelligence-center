@@ -120,24 +120,26 @@ export default function HomePage() {
           </div>
 
           {/* Main Title - Static (no typewriter) for immediate impact */}
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 relative">
-            {/* Line 1: Base layer - Hollow white outline for border effect */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] relative z-10">
-              Underground Intel
-            </span>
-            {/* Line 1: Overlap layer - Gradient fill with glow for depth - Perfectly Aligned */}
-            <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen z-20 text-sheen">
-              Underground Intel
-            </span>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
+            {/* Line 1: Wrapped in relative container */}
+            <div className="relative">
+              <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                Underground Intel
+              </span>
+              <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen text-sheen">
+                Underground Intel
+              </span>
+            </div>
 
-            {/* Line 2: Base layer - Hollow white outline */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)] relative z-10">
-              & AI Research
-            </span>
-            {/* Line 2: Overlap layer - Purple-shifted gradient for depth - Perfectly Aligned */}
-            <span className="block absolute bottom-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen z-20 text-sheen">
-              & AI Research
-            </span>
+            {/* Line 2: Wrapped in relative container */}
+            <div className="relative">
+              <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                & AI Research
+              </span>
+              <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen text-sheen">
+                & AI Research
+              </span>
+            </div>
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Typewriter applied for engagement */}
