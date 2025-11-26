@@ -105,12 +105,16 @@
   }
 }
 
-/* Hide default cursor globally */
+/* Titan Aesthetic: Global cursor hidden for immersive experience.
+   NOTE: This is an intentional design choice and may impact accessibility.
+   If a custom cursor component is disabled or removed, consider:
+   - Removing this rule entirely, or
+   - Scoping to homepage only via body.home-page selector */
 * {
   cursor: none !important;
 }
 
-/* But show default cursor on inputs/buttons for usability */
+/* Cursor remains hidden on interactive elements for consistency */
 input, textarea, button, a {
   cursor: none !important;
 }
