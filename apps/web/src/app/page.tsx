@@ -114,7 +114,7 @@ export default function HomePage() {
             {/* Section Header - Prismatic See-Through Typography */}
             <div className="flex items-center gap-4 mb-10">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+              <h2 className="header-prismatic-purple text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
                 [ MISSION ]
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -197,7 +197,7 @@ export default function HomePage() {
           {/* Section Header - Prismatic See-Through Typography */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+            <h2 className="header-prismatic text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
               [ LATEST INTELLIGENCE ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -341,7 +341,7 @@ export default function HomePage() {
                   ALPHA ACCESS OPEN
                 </div>
 
-                <h2 className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
+                <h2 className="header-prismatic text-sheen-overlay text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
                   Ready for the Alpha?
                 </h2>
 
