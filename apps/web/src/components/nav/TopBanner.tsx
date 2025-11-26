@@ -15,11 +15,7 @@ const navLinks = [
 export const TopBanner = () => {
   const pathname = usePathname() ?? '';
 
-  // Hide TopBanner on homepage - it has its own navigation
-  if (pathname === '/') {
-    return null;
-  }
-
+  // Show TopBanner on all pages including homepage for consistent fixed nav
   const isActive = (href: string) => {
     if (href === '/') {
       return pathname === '/';
