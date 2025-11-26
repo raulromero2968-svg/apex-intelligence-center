@@ -28,7 +28,7 @@ export const TopBanner = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 bg-black backdrop-blur-md border-b border-cyan-900/30">
+    <header className="sticky top-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-black backdrop-blur-md border-b border-cyan-900/30">
       {/* Left: Logo/Brand */}
       <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
         <Image
@@ -58,10 +58,10 @@ export const TopBanner = () => {
         ))}
       </nav>
 
-      {/* Right: Access Terminal Button */}
+      {/* Right: Access Terminal Button - Tactical Style */}
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 hover:border-cyan-500/50 hover:bg-white/5 rounded text-white font-mono text-sm tracking-wider transition-all"
+        className="btn-tactical inline-flex items-center gap-2 px-4 py-2 font-mono text-sm"
       >
         [ ACCESS_TERMINAL ]
       </Link>
