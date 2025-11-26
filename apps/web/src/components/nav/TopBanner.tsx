@@ -27,10 +27,10 @@ export const TopBanner = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 bg-black/80 backdrop-blur-md border-b border-cyan-500/20">
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 bg-black/80 backdrop-blur-md border-b border-cyan-900/30">
       {/* Left: Logo/Brand */}
-      <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono">
-        APEX<span className="text-cyan-400">_</span>INTEL
+      <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+        APEX INTELLIGENCE
       </Link>
 
       {/* Center: Nav Links (hidden on mobile) */}
