@@ -755,4 +755,96 @@ html.light canvas {
   100% {
     left: 200%;
   }
+} 
+ /* ═══════════════════════════════════════════════════════════════════
+   HUD CONTAINER - Tactical/Military UI
+   ═══════════════════════════════════════════════════════════════════ */
+.hud-container {
+    position: relative;
+    padding: 2rem;
+    background: rgba(2, 6, 23, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+.hud-label {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-family: monospace;
+    color: rgba(34, 211, 238, 0.7);
+    letter-spacing: 0.15em;
+    background: rgba(2, 6, 23, 0.9);
+    padding: 2px 12px;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 2px;
+}
+
+/* HUD Corner Brackets */
+.hud-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: rgba(34, 211, 238, 0.6);
+    pointer-events: none;
+}
+
+.hud-corner-tl {
+    top: 0;
+    left: 0;
+    border-top: 2px solid;
+    border-left: 2px solid;
+}
+
+.hud-corner-tr {
+    top: 0;
+    right: 0;
+    border-top: 2px solid;
+    border-right: 2px solid;
+}
+
+.hud-corner-bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+}
+
+.hud-corner-br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+}
+
+/* HUD Corner Accent Dots */
+.hud-corner::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #22d3ee;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #22d3ee;
+}
+
+.hud-corner-tl::after {
+    top: -2px;
+    left: -2px;
+}
+
+.hud-corner-tr::after {
+    top: -2px;
+    right: -2px;
+}
+
+.hud-corner-bl::after {
+    bottom: -2px;
+    left: -2px;
+}
+
+.hud-corner-br::after {
+    bottom: -2px;
+    right: -2px;
 }
