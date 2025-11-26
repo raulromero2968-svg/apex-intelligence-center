@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -21,10 +22,17 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="sticky top-0 z-0 h-screen flex flex-col overflow-hidden">
         {/* Header / Navigation */}
-        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
+        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6 bg-black">
           {/* Left: Logo/Brand */}
-          <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
-            APEX INTELLIGENCE
+          <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+            <Image
+              src="/images/apex-wolf-black-bg-final.png"
+              width={40}
+              height={40}
+              alt="Apex Wolf"
+              className="rounded-full mr-3"
+            />
+            <span className="text-prismatic">APEX INTELLIGENCE</span>
           </Link>
 
           {/* Center: Nav Links (hidden on mobile) */}
@@ -326,8 +334,15 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Column */}
             <div>
-              <Link href="/" className="text-white font-bold text-lg tracking-tight font-mono mb-4 block hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
-                APEX INTELLIGENCE
+              <Link href="/" className="flex items-center text-white font-bold text-lg tracking-tight font-mono mb-4 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+                <Image
+                  src="/images/apex-wolf-black-bg-final.png"
+                  width={32}
+                  height={32}
+                  alt="Apex Wolf"
+                  className="rounded-full mr-2"
+                />
+                <span className="text-prismatic">APEX INTELLIGENCE</span>
               </Link>
               <p className="text-slate-500 text-sm">
                 Underground intelligence for serious TCG collectors and investors.
