@@ -103,3 +103,17 @@
     border-color: currentColor;
   }
 }
+
+/* Matrix Grid Scanning Animation */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.animate-scan {
+  animation: scan 8s linear infinite;
+}
