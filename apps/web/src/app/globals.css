@@ -224,16 +224,11 @@ input, textarea, button, a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(34, 211, 238, 0.05) 1px,
-    transparent 2px
-  );
+  background: repeating-linear-gradient(to bottom, transparent 0%, rgba(34, 211, 238, 0.05) 1px, transparent 2px);
   animation: stream-scan 2s linear infinite;
   pointer-events: none;
-  z-index: -1; /* Behind text - no rectangle overlay */
-  opacity: 0.5;
+  z-index: -1; /* Subtle lines only, no rectangle */
+  opacity: 0.3; /* Reduced for minimalism */
 }
 
 @keyframes stream-scan {
@@ -466,7 +461,7 @@ body::after {
    TYPEWRITER EFFECT UTILITIES
    CSS classes for typewriter animation support
    ═══════════════════════════════════════════════════════════════════ */
-.typewriter-element {
+.typewriter {
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
@@ -516,7 +511,7 @@ body::after {
    SECTION SCAN LINE - Horizontal scan for section entry
    Hardware-accelerated via transform for smooth 60fps
    ═══════════════════════════════════════════════════════════════════ */
-.animate-section-scan {
+.animate-scan-line {
   animation: section-scan-sweep 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
@@ -544,7 +539,7 @@ body::after {
 /* Disable electronic-wrap and section scan for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .electronic-wrap,
-  .animate-section-scan {
+  .animate-scan-line {
     animation: none;
     opacity: 0;
   }
