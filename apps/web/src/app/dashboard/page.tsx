@@ -3,14 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Terminal } from "lucide-react";
-import WolfConstellation from "@/components/hero/WolfConstellation";
-import RouteTransition from "@/components/layout/RouteTransition";
+import { WolfConstellation } from "@/components/hero/WolfConstellation";
+import RouteTransition from "@/layout/RouteTransition";
 import SearchBar from "@/components/search/SearchBar";
-import HorizontalCarousel from "@/components/ui/HorizontalCarousel";
-import ContentCard from "@/components/ui/ContentCard";
-import { blogPosts } from "@/data/blog-posts";
-import { researchReports } from "@/data/research-reports";
-import { intelNotes } from "@/data/intel-notes";
+import HorizontalCarousel from "@/components/HorizontalCarousel";
+import ContentCard from "@/components/ContentCard";
+import { blogPosts, researchReports, intelNotes } from "@/content/seed";
 
 type ContentKind = 'blog' | 'research' | 'intel';
 
