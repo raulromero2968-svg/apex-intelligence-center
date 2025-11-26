@@ -41,7 +41,6 @@ export default function GuidedTour() {
   const [run, setRun] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const pathname = usePathname();
 
   // Don't render on public routes - tutorial only for authenticated app pages
   const isPublicRoute = PUBLIC_ROUTES.some(route =>
