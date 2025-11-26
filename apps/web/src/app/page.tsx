@@ -154,7 +154,17 @@ export default function HomePage() {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section */}
-          <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden">
+          <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden">
+            {/* Video Background */}
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover opacity-40 -z-10"
+            >
+              <source src="/images/titan-loop.mp4" type="video/mp4" />
+            </video>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center">
               {/* Left Column: Copy */}
               <div className="space-y-8 z-10">
