@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -9,7 +12,65 @@ const navLinks = [
   { href: '/subscribe', label: 'SUBSCRIBE' },
 ];
 
+/**
+ * Typewriter animation configuration
+ * Staggered delays create a "swarm" sequential reveal effect
+ */
+const TYPEWRITER_CONFIG = {
+  baseDuration: 2000,
+  staggerDelay: 300,
+  steps: 40,
+};
+
 export default function HomePage() {
+  const typewriterRefs = useRef<(HTMLElement | null)[]>([]);
+
+  useEffect(() => {
+    // Respect reduced motion preferences
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      typewriterRefs.current.forEach((el) => {
+        if (el) {
+          el.style.width = '100%';
+          el.style.opacity = '1';
+        }
+      });
+      return;
+    }
+
+    // Stagger typewriter animations for swarm-like sequential reveal
+    typewriterRefs.current.forEach((el, index) => {
+      if (!el) return;
+
+      // Initial hidden state
+      el.style.width = '0%';
+      el.style.opacity = '1';
+      el.style.overflow = 'hidden';
+      el.style.whiteSpace = 'nowrap';
+      el.style.display = 'inline-block';
+
+      // Staggered delay for swarm effect
+      const delay = index * TYPEWRITER_CONFIG.staggerDelay;
+      const duration = TYPEWRITER_CONFIG.baseDuration + (index * 100);
+
+      setTimeout(() => {
+        el.animate(
+          [{ width: '0%' }, { width: '100%' }],
+          {
+            duration,
+            easing: `steps(${TYPEWRITER_CONFIG.steps}, end)`,
+            fill: 'forwards',
+          }
+        );
+      }, delay);
+    });
+  }, []);
+
+  // Helper to set ref at index
+  const setRef = (index: number) => (el: HTMLElement | null) => {
+    typewriterRefs.current[index] = el;
+  };
+
   return (
     <div className="relative">
       {/* Cinematic Letterboxing - No Gap */}
@@ -31,35 +92,45 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - White Hollow Border with Cyber Stream Effect */}
+          {/* Main Title - White Hollow Border with Cyber Stream Effect + Typewriter */}
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 cyber-text relative">
             {/* Line 1: Base layer - Hollow white outline for border effect */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <span
+              ref={setRef(0)}
+              className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] typewriter-element"
+            >
               Underground Intel
             </span>
             {/* Line 1: Overlap layer - Gradient fill with glow for depth */}
             <span
-              className="block absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen translate-x-px translate-y-px"
+              ref={setRef(1)}
+              className="block absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen translate-x-px translate-y-px typewriter-element"
             >
               Underground Intel
             </span>
             {/* Line 2: Base layer - Hollow white outline */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+            <span
+              ref={setRef(2)}
+              className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)] typewriter-element"
+            >
               & AI Research
             </span>
             {/* Line 2: Overlap layer - Purple-shifted gradient for depth */}
             <span
-              className="block absolute left-0 top-1/2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen translate-x-px translate-y-px"
+              ref={setRef(3)}
+              className="block absolute left-0 top-1/2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen translate-x-px translate-y-px typewriter-element"
             >
               & AI Research
             </span>
           </h1>
 
-          {/* Description with block cursor and cyber stream effect */}
+          {/* Description with block cursor and cyber stream effect + Typewriter */}
           <p className="cyber-text text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
-            Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-            Institutional-grade analysis meets the underground—delivered to your inbox.
-            <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
+            <span ref={setRef(4)} className="typewriter-element">
+              Premium TCG market analysis, data-driven insights, and exclusive intelligence.
+              Institutional-grade analysis meets the underground—delivered to your inbox.
+            </span>
+            <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle typewriter-cursor" />
           </p>
 
           {/* CTA Buttons - Tactical Military Style */}
@@ -99,10 +170,13 @@ export default function HomePage() {
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
-            {/* Section Header - Prismatic See-Through Typography */}
+            {/* Section Header - Prismatic See-Through Typography + Typewriter */}
             <div className="flex items-center gap-4 mb-10">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+              <h2
+                ref={setRef(5)}
+                className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street typewriter-element"
+              >
                 [ MISSION ]
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -158,10 +232,13 @@ export default function HomePage() {
         }}
       >
         <div className="w-full px-6 md:px-12 py-16">
-          {/* Section Header - Prismatic See-Through Typography */}
+          {/* Section Header - Prismatic See-Through Typography + Typewriter */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+            <h2
+              ref={setRef(6)}
+              className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street typewriter-element"
+            >
               [ LATEST INTELLIGENCE ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -310,7 +387,10 @@ export default function HomePage() {
                   ALPHA ACCESS OPEN
                 </div>
 
-                <h2 className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
+                <h2
+                  ref={setRef(7)}
+                  className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street typewriter-element"
+                >
                   Ready for the Alpha?
                 </h2>
 
