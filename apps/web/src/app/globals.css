@@ -21,17 +21,17 @@
     min-height: 100vh;
     /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
     overflow-x: hidden;
-    word-wrap: break-word;
-    word-break: normal; /* STOP SPLITTING WORDS */
-    overflow-wrap: break-word;
+    word-break: normal !important; /* STOP SPLITTING WORDS */
+    overflow-wrap: normal !important;
     -webkit-hyphens: none;
     hyphens: none;
   }
 
-  /* Prevent mid-word breaking globally */
+  /* FORCE NO SPLITTING - Aggressive global override */
   * {
-    overflow-wrap: break-word;
-    word-break: normal;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   /* Force Headers to specific scales */
