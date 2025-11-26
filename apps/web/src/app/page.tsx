@@ -13,6 +13,8 @@ const navLinks = [
 export default function HomePage() {
   return (
     <div className="relative">
+      {/* Cinematic Letterboxing */}
+      <div className="fixed top-0 left-0 w-full h-2 bg-black z-[100]" />
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO (Base Layer - z-0)
