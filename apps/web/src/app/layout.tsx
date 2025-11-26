@@ -301,9 +301,10 @@ export default function RootLayout({
 
 
 
-        {/* Top Banner */}
-
-        <TopBanner />
+        {/* Pinned Navigation - Fixed to top with high z-index and glassmorphism */}
+        <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+          <TopBanner />
+        </header>
 
 
 
