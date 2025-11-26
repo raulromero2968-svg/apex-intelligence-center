@@ -246,9 +246,9 @@ export default function RootLayout({
 
         {/* GLOBAL STARFIELD BACKGROUND - Deep space layer */}
         <div className="fixed inset-0 z-[-2] overflow-hidden">
-          {/* CSS-generated starfield pattern */}
+          {/* CSS-generated starfield pattern - Boosted visibility */}
           <div
-            className="absolute inset-0 opacity-60 mix-blend-screen"
+            className="absolute inset-0 opacity-80 mix-blend-screen"
             style={{
               background: `
                 radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8) 1px, transparent 1px),
@@ -308,9 +308,9 @@ export default function RootLayout({
 
 
 
-        {/* Theme Toggle */}
+        {/* Theme Toggle - Disabled temporarily (moved to footer) */}
 
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
 
 
