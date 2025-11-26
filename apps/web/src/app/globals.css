@@ -48,9 +48,9 @@
 
   /* Titan Typography - Sharp Neon Wireframe */
   .font-titan {
-    -webkit-text-stroke: 1.5px #22d3ee;
+    -webkit-text-stroke: 1.5px #22d3ee; /* Thicker, sharper stroke */
     color: transparent;
-    /* Tight plasma edge - reduced from 15px to 4px */
+    /* Reduce blur from 15px to 4px for a tight "plasma" edge */
     text-shadow: 0 0 4px rgba(34, 211, 238, 0.6);
   }
 
@@ -115,11 +115,12 @@ input, textarea, button, a {
   cursor: none !important;
 }
 
-/* Titan Typography - Hollow Wireframe Neon Effect (Tuned: Sharp stroke, subtle glow) */
+/* Titan Typography - Hollow Wireframe Neon Effect (Sharp stroke, tight plasma edge) */
 .font-titan {
-  -webkit-text-stroke: 1.5px #22d3ee;
+  -webkit-text-stroke: 1.5px #22d3ee; /* Thicker, sharper stroke */
   color: transparent;
-  text-shadow: 0 0 5px rgba(34, 211, 238, 0.3);
+  /* Reduce blur from 15px to 4px for a tight "plasma" edge */
+  text-shadow: 0 0 4px rgba(34, 211, 238, 0.6);
   font-weight: 800;
   letter-spacing: 0.05em;
 }
