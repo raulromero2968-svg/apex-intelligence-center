@@ -446,8 +446,8 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) - Hidden on mobile per design spec */}
+      <div className="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <Link
           href="/dashboard"
           className="btn-tactical inline-flex items-center gap-2 px-3 py-1 font-mono text-sm w-auto"
