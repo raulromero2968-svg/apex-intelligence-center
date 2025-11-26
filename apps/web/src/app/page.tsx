@@ -56,11 +56,11 @@ export default function HomePage() {
           </div>
 
           {/* Main Title - Unified typography with white stroke + gradient fill */}
-          <h1 className="flex flex-col items-center text-center gap-2 w-full leading-tight py-2 cyber-stream">
-            <span className="font-titan-unified text-6xl md:text-8xl tracking-tighter">
+          <h1 className="flex flex-col items-center text-center gap-2 w-full max-w-[90vw] md:max-w-[800px] mx-auto leading-[1.1] py-2 cyber-stream">
+            <span className="font-titan-unified text-4xl sm:text-6xl lg:text-8xl tracking-tighter block w-full text-center">
               Underground Intel
             </span>
-            <span className="font-titan-unified-purple text-6xl md:text-8xl tracking-tighter">
+            <span className="font-titan-unified-purple text-4xl sm:text-6xl lg:text-8xl tracking-tighter block w-full text-center">
               & AI Research
             </span>
           </h1>
