@@ -275,7 +275,7 @@ export default function RootLayout({
         {/* GLOBAL MATRIX BACKGROUND - Enhanced for mobile visibility */}
         <div className="fixed inset-0 z-[-1]">
           {/* Grid Pattern - Brighter cyan (#0891b2), higher opacity for mobile */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-[size:50px_50px] opacity-40 md:opacity-30" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-[size:50px_50px] opacity-40" />
           {/* Scanning Light Effect - Enhanced glow */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/15 to-transparent animate-scan" />
           {/* Vignette - Softer for better grid visibility */}
