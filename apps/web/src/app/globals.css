@@ -210,10 +210,11 @@ input, textarea, button, a {
   }
 }
 
-/* Cyber Stream Effect - Subtle streaming scanlines for text elements */
+/* Cyber Stream Effect - Enhanced for hollow text visibility */
 .cyber-text {
   position: relative;
   overflow: hidden;
+  display: inline-block; /* Better for inline/block text */
 }
 
 .cyber-text::before {
@@ -226,11 +227,13 @@ input, textarea, button, a {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(34, 211, 238, 0.05) 1px,
+    rgba(34, 211, 238, 0.15) 1px, /* Increased opacity for visibility over hollow text */
     transparent 2px
   );
-  animation: stream-scan 2s linear infinite;
+  animation: stream-scan 1.5s linear infinite; /* Faster for dynamic cyberpunk feel */
   pointer-events: none;
+  z-index: 1; /* Over text for stream effect */
+  opacity: 0.8; /* Stronger overlay visibility */
 }
 
 @keyframes stream-scan {
@@ -238,10 +241,11 @@ input, textarea, button, a {
   100% { transform: translateY(0); }
 }
 
-/* Graceful degradation for reduced motion preference */
+/* Accessibility fallback - disable animation and visual effect for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .cyber-text::before {
     animation: none;
+    background: none;
   }
 }
 
@@ -361,12 +365,25 @@ input, textarea, button, a {
   }
 }
 
+/* Hollow Text with White Stroke - See-through letter effect */
+.text-hollow-white {
+  color: transparent;
+  -webkit-text-stroke: 2px white;
+}
+
 /* Fallback for browsers without -webkit-text-stroke support */
 @supports not (-webkit-text-stroke: 1px black) {
   .header-prismatic,
   .header-prismatic-purple {
     -webkit-text-fill-color: currentColor;
     text-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(168, 85, 247, 0.4);
+  }
+
+  /* Fallback for hollow text - show solid white with glow */
+  .text-hollow-white {
+    color: white;
+    -webkit-text-stroke: 0;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(168, 85, 247, 0.5);
   }
 }
 
