@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Search, Sparkles, ArrowRight, Terminal } from 'lucide-react';
+import { Search, Sparkles } from 'lucide-react';
 import MobileNav from '@/components/nav/MobileNav';
 import SearchBar from '@/components/search/SearchBar';
 import ToolCarousel from '@/components/carousel/ToolCarousel';
@@ -15,15 +15,6 @@ import ResearchDialog from '@/components/research/ResearchDialog';
 import { blogPosts, researchReports, intelNotes } from '@/content/seed';
 import { ContentKind } from '@/lib/routeMap';
 import { WolfConstellation } from '@/components/hero/WolfConstellation';
-
-// Sample data
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/research', label: 'Research' },
-  { href: '/insights', label: 'Insights' },
-  { href: '/subscribe', label: 'Subscribe' },
-];
 
 const tools = [
   {
@@ -154,48 +145,96 @@ export default function HomePage() {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section */}
-          <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden">
+          <section className="relative flex flex-col min-h-[90vh] px-4 md:px-20 overflow-hidden">
             {/* Video Background */}
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-40 -z-10"
+              className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-40"
             >
               <source src="/images/titan-loop.mp4" type="video/mp4" />
             </video>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center">
-              {/* Left Column: Copy */}
-              <div className="space-y-8 z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                  </span>
-                  TCG Intelligence Network Online
+
+            {/* Dark overlay */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/80 to-slate-950" />
+
+            {/* Header */}
+            <header className="relative z-10 flex items-center justify-between gap-6 py-6">
+              <div className="flex flex-col">
+                <span className="text-xs font-mono tracking-[0.3em] text-cyan-400/80">
+                  APEX INTELLIGENCE CENTER
+                </span>
+              </div>
+
+              <nav className="hidden items-center gap-8 text-sm font-medium text-slate-200 md:flex">
+                <Link href="/intel" className="hover:text-cyan-300">
+                  INTEL
+                </Link>
+                <Link href="/portfolio" className="hover:text-cyan-300">
+                  PORTFOLIO
+                </Link>
+                <Link href="/commons" className="hover:text-cyan-300">
+                  COMMONS
+                </Link>
+                <Link href="/about" className="hover:text-cyan-300">
+                  ABOUT
+                </Link>
+                <Link href="/subscribe" className="hover:text-cyan-300">
+                  SUBSCRIBE
+                </Link>
+              </nav>
+
+              <Link
+                href="/subscribe"
+                className="rounded-full border border-cyan-400/60 bg-cyan-500/10 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-cyan-200 hover:bg-cyan-500/20"
+              >
+                ACCESS_TERMINAL
+              </Link>
+            </header>
+
+            <div className="relative z-10 flex flex-1 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center">
+                {/* Left Column: Copy */}
+                <div className="space-y-8">
+                <div className="text-cyan-400 text-sm font-mono">
+                  ● SYSTEM ONLINE // VER 2.0
                 </div>
 
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-                  UNDERGROUND
-                  <br />
-                  INTEL
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+                  <span
+                    className="block text-transparent"
+                    style={{
+                      WebkitTextStroke: "2px white",
+                      textStroke: "2px white",
+                    }}
+                  >
+                    UNDERGROUND
+                  </span>
+                  <span className="block text-white font-extrabold">
+                    INTEL
+                  </span>
                 </h1>
 
-                <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
-                  Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-                  Morning Brew meets the underground—delivered to your inbox.
+                <p className="max-w-xl text-base md:text-lg text-slate-300">
+                  Premium TCG market analysis, data-driven insights, and exclusive
+                  intelligence. Morning Brew meets the underground—delivered to your inbox.█
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/intel" className="group inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-3 rounded-lg transition-all">
-                    Get Free Intel
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link
+                    href="/subscribe"
+                    className="inline-flex items-center justify-center rounded-lg bg-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/40 hover:bg-cyan-400"
+                  >
+                    GET ALPHA ACCESS
                   </Link>
-                  <button className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-medium px-8 py-3 rounded-lg transition-all">
-                    <Terminal className="w-4 h-4 text-slate-400" />
-                    Browse Archives
-                  </button>
+                  <Link
+                    href="/intel"
+                    className="inline-flex items-center justify-center rounded-lg border border-slate-600/80 bg-slate-900/70 px-6 py-3 text-sm font-semibold text-slate-100 hover:border-cyan-400/70 hover:bg-slate-900"
+                  >
+                    BROWSE DATABASE
+                  </Link>
                 </div>
 
                 {/* Social Proof / Data Stats */}
@@ -216,8 +255,9 @@ export default function HomePage() {
               </div>
 
               {/* Right Column: Visual */}
-              <div className="flex justify-center lg:justify-end z-10">
+              <div className="flex justify-center lg:justify-end">
                 <WolfConstellation />
+              </div>
               </div>
             </div>
           </section>
