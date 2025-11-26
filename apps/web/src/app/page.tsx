@@ -87,19 +87,13 @@ export default function HomePage() {
           SYSTEM ONLINE // VER 2.0
         </div>
 
-        {/* CRITICAL TITLE: Hollow "UNDERGROUND" + Solid "INTEL" with holographic glow */}
+        {/* Main Title: "Underground Intel" (white) + "& AI Research" (gradient) */}
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
-          <span
-            className="block drop-shadow-[0_0_30px_rgba(6,182,212,0.5)]"
-            style={{
-              color: 'transparent',
-              WebkitTextStroke: '2px white',
-            }}
-          >
-            UNDERGROUND
-          </span>
           <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-            INTEL
+            Underground Intel
+          </span>
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)]">
+            & AI Research
           </span>
         </h1>
 
