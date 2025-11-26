@@ -63,12 +63,18 @@
     }
   }
 
-  /* Titan Typography - Hollow See-Through with External Glow */
+  /* Titan Typography - Single-Element Hollow Text (No Stacking) */
   .font-titan {
-    color: transparent;
-    -webkit-text-stroke: 2px rgba(34, 211, 238, 0.9);
-    text-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.3);
-    filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
+    /* 1. The Hollow Stroke Effect */
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
+    color: transparent; /* Make the inside see-through */
+
+    /* 2. The Subtle Glow (Backlight) */
+    filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.4));
+
+    /* 3. Font Settings */
+    font-weight: 900;
+    letter-spacing: -0.02em;
   }
 
   /* Ethereal Scroll Transition - Lightsaber Effect */
@@ -141,17 +147,16 @@ a {
   cursor: none !important;
 }
 
-/* Titan Typography - Neon Gradient Stroke (Cyan to Purple) */
-.font-titan {
-  /* Gradient fill using background-clip for stroke effect */
-  background: linear-gradient(to right, #22d3ee, #a855f7);
+/* Titan Typography - Gradient Stroke Variant (Optional) */
+.font-titan-gradient {
+  background: linear-gradient(to bottom, #ffffff 40%, #22d3ee 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* Subtle cyan glow */
-  filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.5));
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  -webkit-text-stroke: 1px transparent; /* Hide standard stroke */
+  filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.4));
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 /* Titan Typography Purple Variant (Tuned: Sharp stroke, subtle glow) */
