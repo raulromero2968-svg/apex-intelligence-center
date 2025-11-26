@@ -65,14 +65,16 @@
 
   /* Titan Typography - Single-Element Hollow Text (No Stacking) */
   .font-titan {
-    /* 1. The Hollow Stroke Effect */
+    /* Ensure only one instance of text is visible */
+    color: transparent;
     -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-    color: transparent; /* Make the inside see-through */
-
-    /* 2. The Subtle Glow (Backlight) */
-    filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.4));
-
-    /* 3. Font Settings */
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+    position: relative;
+    z-index: 10;
+    /* Fix for potential double-rendering in some browsers */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Font Settings */
     font-weight: 900;
     letter-spacing: -0.02em;
   }
