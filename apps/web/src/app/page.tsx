@@ -62,10 +62,10 @@ export default function HomePage() {
 
           {/* Main Title - Titan Hollow Typography */}
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
-            <span className="block font-titan text-transparent">
+            <span className="block font-titan text-transparent cyber-street">
               Underground Intel
             </span>
-            <span className="block font-titan-purple text-transparent">
+            <span className="block font-titan-purple text-transparent cyber-street">
               & AI Research
             </span>
           </h1>
@@ -116,7 +116,7 @@ export default function HomePage() {
             {/* Section Header - Titan Typography Purple */}
             <div className="flex items-center gap-4 mb-10">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="font-titan-purple text-2xl md:text-3xl tracking-wider font-mono">
+              <h2 className="font-titan-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
                 [ MISSION ]
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -174,7 +174,7 @@ export default function HomePage() {
           {/* Section Header - Titan Typography */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="font-titan text-2xl md:text-3xl tracking-wider font-mono">
+            <h2 className="font-titan text-2xl md:text-3xl tracking-wider font-mono cyber-street">
               [ LATEST INTELLIGENCE ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -289,7 +289,7 @@ export default function HomePage() {
                   ALPHA ACCESS OPEN
                 </div>
 
-                <h2 className="font-titan text-3xl md:text-4xl tracking-wider mb-4">
+                <h2 className="font-titan text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
                   Ready for the Alpha?
                 </h2>
 
