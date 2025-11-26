@@ -9,6 +9,11 @@ export const TopBanner = () => {
   const [isHovered, setIsHovered] = useState(false);
   const pathname = usePathname() ?? '';
 
+  // Hide TopBanner on homepage - it has its own navigation
+  if (pathname === '/') {
+    return null;
+  }
+
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/intelligence', label: 'Intelligence', dataTour: 'nav-intelligence' },
