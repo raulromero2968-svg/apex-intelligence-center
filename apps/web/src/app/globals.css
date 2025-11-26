@@ -107,21 +107,23 @@
 
   /* Titan Unified - Animated Prismatic Rainbow/White/Iridescent */
   .font-titan-unified {
-    /* 1. Stroke: Pure White, 1.5px */
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.95);
+    /* 1. Stroke: Keep White */
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
 
-    /* 2. Fill: PRISMATIC Rainbow Gradient (Animated) */
-    background: linear-gradient(135deg, #ffffff 10%, #a5f3fc 30%, #22d3ee 50%, #c084fc 70%, #ffffff 90%);
+    /* 2. Fill: HIGH VIBRANCE Prismatic Gradient */
+    /* Use brighter colors (lighter stops) */
+    background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 25%, #22d3ee 50%, #e879f9 75%, #ffffff 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: prismatic-shift 8s linear infinite;
+    animation: prismatic-shift 4s linear infinite;
 
     /* 3. Blend: Standard transparency */
     color: transparent;
 
-    /* 4. Glow: Cyan/White blend, REDUCED opacity to stop "Dark/Black" bloom */
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+    /* 4. Glow: Reduce shadow opacity to prevent "Muddy" look */
+    /* Instead of black shadow, use a colored glow */
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.4));
 
     /* 5. Layout Safety - Prevent mid-word breaks */
     overflow-wrap: normal;
@@ -875,6 +877,7 @@ html.light canvas {
    ═══════════════════════════════════════════════════════════════════ */
 .text-sheen {
   position: relative;
+  display: inline-block;
   /* Sheen gradient that flows across the text */
   background: linear-gradient(to right, #22d3ee, #ffffff, #22d3ee);
   background-size: 200% auto;
@@ -887,6 +890,7 @@ html.light canvas {
 /* Purple variant of text sheen */
 .text-sheen-purple {
   position: relative;
+  display: inline-block;
   background: linear-gradient(to right, #a855f7, #ffffff, #a855f7);
   background-size: 200% auto;
   -webkit-background-clip: text;
