@@ -165,19 +165,19 @@ export default function HomePage() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
                   <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2">$43B+</div>
+                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">$43B+</div>
                     <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2">15%</div>
+                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">15%</div>
                     <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2">2.4M+</div>
+                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">2.4M+</div>
                     <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2">24/7</div>
+                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">24/7</div>
                     <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export default function HomePage() {
       </footer>
 
       {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <Link
           href="/dashboard"
           className="btn-tactical inline-flex items-center gap-2 px-3 py-1 font-mono text-sm w-auto"
