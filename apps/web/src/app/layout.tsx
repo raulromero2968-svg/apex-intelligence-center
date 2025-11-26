@@ -236,7 +236,7 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-slate-950 text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
+          'min-h-screen bg-transparent text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
 
           fontSans.className,
 
