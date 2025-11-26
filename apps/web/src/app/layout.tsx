@@ -12,6 +12,10 @@ import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
+import { ProductionBanner } from '@/components/nav/ProductionBanner';
+
+import { LayoutFooter } from '@/components/footer/LayoutFooter';
+
 import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
 import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
@@ -257,13 +261,9 @@ export default function RootLayout({
 
 
 
-        {/* Permanent Equilibrium Banner - Non-dismissible */}
+        {/* Permanent Equilibrium Banner - Non-dismissible (hidden on homepage) */}
 
-        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
-
-          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
-
-        </div>
+        <ProductionBanner />
 
 
 
@@ -335,11 +335,9 @@ export default function RootLayout({
 
 
 
-        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
+        {/* Layout Footer - hidden on homepage */}
 
-          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
-
-        </footer>
+        <LayoutFooter />
 
 
 

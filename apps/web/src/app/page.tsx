@@ -121,6 +121,98 @@ export default function HomePage() {
         </div>
       </main>
 
+      {/* Latest Intelligence Section */}
+      <section className="relative z-10 px-6 md:px-12 py-16">
+        {/* Section Header */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          <h2 className="text-2xl md:text-3xl font-bold tracking-wider text-white font-mono">
+            <span className="text-cyan-400">[</span> LATEST INTELLIGENCE <span className="text-cyan-400">]</span>
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+        </div>
+
+        {/* Intelligence Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Card 1: Vintage WOTC */}
+          <Link
+            href="/intel/vintage-wotc-analysis"
+            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+              DIGITAL SCROLL
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+              Vintage WOTC Analysis
+            </h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+              Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
+            </p>
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Nov 25, 2025</span>
+              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+            </div>
+          </Link>
+
+          {/* Card 2: Rotation Window */}
+          <Link
+            href="/intel/rotation-window-strategy"
+            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
+              <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+              ELECTRONIC FOLDER
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+              Rotation Window Strategy
+            </h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+              Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
+            </p>
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Nov 24, 2025</span>
+              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+            </div>
+          </Link>
+
+          {/* Card 3: Pokemon 151 */}
+          <Link
+            href="/intel/pokemon-151-market-report"
+            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+              DIGITAL SCROLL
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+              Pokemon 151 Market Report
+            </h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+              Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
+            </p>
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Nov 23, 2025</span>
+              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+            </div>
+          </Link>
+        </div>
+
+        {/* View All Link */}
+        <div className="text-center mt-10">
+          <Link
+            href="/intel"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm tracking-wide transition-colors"
+          >
+            [ VIEW_ALL_INTEL ]
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
+        </div>
+      </section>
+
       {/* Mobile Nav Toggle (optional - simplified for now) */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
         <Link
