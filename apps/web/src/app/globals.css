@@ -990,13 +990,13 @@ html.light canvas {
 
 @keyframes sheen-pass-overlay {
   0% {
-    left: 200%;
+    left: -200%;
   }
   20% {
-    left: -200%;
+    left: 200%;
   }
   100% {
-    left: -200%;
+    left: 200%;
   }
 }
 
