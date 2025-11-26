@@ -46,13 +46,12 @@
   .btn-cyan:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .btn-cyan { transition-duration: 0.01ms; } }
 
-  /* Titan Typography - Neon Gradient Stroke (Cyan to Purple) */
+  /* Titan Typography - Hollow See-Through with External Glow */
   .font-titan {
-    background: linear-gradient(to right, #22d3ee, #a855f7);
-    -webkit-background-clip: text;
-    background-clip: text;
     color: transparent;
-    filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.5));
+    -webkit-text-stroke: 2px rgba(34, 211, 238, 0.9);
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.3);
+    filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
   }
 
   /* Ethereal Scroll Transition - Lightsaber Effect */
