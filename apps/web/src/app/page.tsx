@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { HoloCardImage } from '@/components/titan/HoloCardImage';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -21,8 +22,8 @@ export default function HomePage() {
           SECTION 1: HERO (Base Layer - z-0)
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="sticky top-0 z-0 h-screen flex flex-col overflow-hidden">
-        {/* Header / Navigation */}
-        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6 bg-black">
+        {/* Header / Navigation - Sticky Black Banner */}
+        <header className="sticky top-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-black">
           {/* Left: Logo/Brand */}
           <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
             <Image
@@ -48,10 +49,10 @@ export default function HomePage() {
             ))}
           </nav>
 
-          {/* Right: Access Terminal Button */}
+          {/* Right: Access Terminal Button - Tactical Style */}
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 hover:border-cyan-500/50 hover:bg-white/5 rounded text-white font-mono text-sm tracking-wider transition-all"
+            className="btn-tactical inline-flex items-center gap-2 px-4 py-2 font-mono text-sm"
           >
             [ ACCESS_TERMINAL ]
           </Link>
@@ -85,17 +86,17 @@ export default function HomePage() {
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
 
-          {/* CTA Buttons with holographic effect */}
+          {/* CTA Buttons - Tactical Military Style */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/subscribe"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
+              className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)]"
             >
               GET ALPHA ACCESS
             </Link>
             <Link
               href="/intel"
-              className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+              className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
             >
               BROWSE DATABASE
             </Link>
@@ -188,83 +189,117 @@ export default function HomePage() {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
           </div>
 
-          {/* Intelligence Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Card 1: Vintage WOTC */}
-            <Link
-              href="/intel/vintage-wotc-analysis"
-              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-                <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                DIGITAL SCROLL
-              </div>
-              <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
-                Vintage WOTC Analysis
-              </h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
-              </p>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Nov 25, 2025</span>
-                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-              </div>
-            </Link>
+          {/* Intelligence Cards Grid - Wrapped in Cyber Folder */}
+          <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Card 1: Vintage WOTC - Prismatic Glass */}
+              <Link
+                href="/intel/vintage-wotc-analysis"
+                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <HoloCardImage
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Vintage WOTC Analysis"
+                    width={80}
+                    height={80}
+                    enableParticles={false}
+                    className="rounded-lg"
+                  />
+                </div>
+                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                  DIGITAL SCROLL
+                </div>
+                <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                  Vintage WOTC Analysis
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                  Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
+                </p>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>Nov 25, 2025</span>
+                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+                </div>
+              </Link>
 
-            {/* Card 2: Rotation Window */}
-            <Link
-              href="/intel/rotation-window-strategy"
-              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
-                <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                ELECTRONIC FOLDER
-              </div>
-              <h3 className="font-titan-purple text-xl mb-2 group-hover:text-purple-300 transition-colors">
-                Rotation Window Strategy
-              </h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
-              </p>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Nov 24, 2025</span>
-                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-              </div>
-            </Link>
+              {/* Card 2: Rotation Window - Prismatic Glass */}
+              <Link
+                href="/intel/rotation-window-strategy"
+                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-purple-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <HoloCardImage
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Rotation Window Strategy"
+                    width={80}
+                    height={80}
+                    enableParticles={false}
+                    className="rounded-lg"
+                  />
+                </div>
+                <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  ELECTRONIC FOLDER
+                </div>
+                <h3 className="font-titan-purple text-xl mb-2 group-hover:text-purple-300 transition-colors">
+                  Rotation Window Strategy
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                  Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
+                </p>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>Nov 24, 2025</span>
+                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+                </div>
+              </Link>
 
-            {/* Card 3: Pokemon 151 */}
-            <Link
-              href="/intel/pokemon-151-market-report"
-              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-            >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-                <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                DIGITAL SCROLL
-              </div>
-              <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
-                Pokemon 151 Market Report
-              </h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
-              </p>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>Nov 23, 2025</span>
-                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-              </div>
-            </Link>
+              {/* Card 3: Pokemon 151 - Prismatic Glass */}
+              <Link
+                href="/intel/pokemon-151-market-report"
+                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <HoloCardImage
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Pokemon 151 Market Report"
+                    width={80}
+                    height={80}
+                    enableParticles={false}
+                    className="rounded-lg"
+                  />
+                </div>
+                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                  DIGITAL SCROLL
+                </div>
+                <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                  Pokemon 151 Market Report
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                  Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
+                </p>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>Nov 23, 2025</span>
+                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+                </div>
+              </Link>
+            </div>
           </div>
 
-          {/* View All Link */}
+          {/* View All Link - Tactical Style */}
           <div className="text-center mt-10">
             <Link
               href="/intel"
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm tracking-wide transition-colors"
+              className="btn-tactical inline-flex items-center gap-2 font-mono text-sm"
             >
-              [ VIEW_ALL_INTEL ]
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              [ VIEW_ALL_INTEL ] →
             </Link>
           </div>
         </div>
@@ -309,13 +344,13 @@ export default function HomePage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
                     href="/subscribe"
-                    className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
+                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)]"
                   >
                     GET ALPHA ACCESS
                   </Link>
                   <Link
                     href="/about"
-                    className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50"
+                    className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
                   >
                     LEARN MORE
                   </Link>
@@ -394,11 +429,11 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Mobile Nav Toggle */}
+      {/* Mobile Nav Toggle - Tactical Style */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-full text-white font-mono text-sm"
+          className="btn-tactical inline-flex items-center gap-2 px-6 py-3 font-mono text-sm"
         >
           [ ACCESS_TERMINAL ]
         </Link>
