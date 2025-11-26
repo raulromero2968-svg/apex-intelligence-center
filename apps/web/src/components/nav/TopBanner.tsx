@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Zap } from 'lucide-react';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -29,7 +30,8 @@ export const TopBanner = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 bg-black/80 backdrop-blur-md border-b border-cyan-900/30">
       {/* Left: Logo/Brand */}
-      <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+      <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+        <Zap className="w-7 h-7 text-cyan-400 mr-2 drop-shadow-[0_0_6px_rgba(34,211,238,0.8)]" />
         APEX INTELLIGENCE
       </Link>
 
