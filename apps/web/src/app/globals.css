@@ -637,7 +637,7 @@ body::before {
   height: 2px;
   background: linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.3) 20%, #22d3ee 50%, rgba(34, 211, 238, 0.3) 80%, transparent 100%);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
-  animation: scan-line-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: scan-line-sweep 8s linear forwards;
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
@@ -943,7 +943,7 @@ html.light canvas {
 
   /* 4. The Animation (Locked Timing) */
   /* Linear timing ensures constant speed */
-  animation: global-sheen-pass 6s linear infinite;
+  animation: global-sheen-pass 8s linear infinite;
   /* Force synchronization */
   animation-play-state: running;
   animation-delay: 0s;
@@ -971,7 +971,7 @@ html.light canvas {
   );
   -webkit-background-clip: text;
   background-clip: text;
-  animation: global-sheen-pass 6s linear infinite;
+  animation: global-sheen-pass 8s linear infinite;
   animation-play-state: running;
   animation-delay: 0s;
   animation-fill-mode: forwards;
