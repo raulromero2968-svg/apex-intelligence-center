@@ -82,23 +82,23 @@ export const Footer = () => {
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Intel</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Blog</Link></li>
-              <li><Link href="/about" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">About</Link></li>
-              <li><Link href="/community" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Community</Link></li>
-              <li><Link href="/tutorial" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">New to Apex?</Link></li>
-              <li><Link href="/apex-omnis-studios" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Apex Omnis Studios</Link></li>
+              <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Intel</Link></li>
+              <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Blog</Link></li>
+              <li><Link href="/about" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">About</Link></li>
+              <li><Link href="/community" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Community</Link></li>
+              <li><Link href="/tutorial" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">New to Apex?</Link></li>
+              <li><Link href="/apex-omnis-studios" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Apex Omnis Studios</Link></li>
             </ul>
           </div>
-          
+
           {/* Legal Column */}
           <div>
             <h3 className="text-cyan-400 font-bold text-lg mb-4">Legal</h3>
             <ul className="space-y-2">
-              <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Terms of Service</Link></li>
-              <li><Link href="/disclaimer" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Disclaimer</Link></li>
-              <li><Link href="/security" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Security</Link></li>
+              <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Terms of Service</Link></li>
+              <li><Link href="/disclaimer" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Disclaimer</Link></li>
+              <li><Link href="/security" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Security</Link></li>
             </ul>
           </div>
           
