@@ -92,43 +92,30 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - White Hollow Border with Cyber Stream Effect + Typewriter */}
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 cyber-text relative">
+          {/* Main Title - Static (no typewriter) for immediate impact */}
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 relative">
             {/* Line 1: Base layer - Hollow white outline for border effect */}
-            <span
-              ref={setRef(0)}
-              className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] typewriter-element"
-            >
+            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
               Underground Intel
             </span>
             {/* Line 1: Overlap layer - Gradient fill with glow for depth */}
-            <span
-              ref={setRef(1)}
-              className="block absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen translate-x-px translate-y-px typewriter-element"
-            >
+            <span className="block absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen translate-x-px translate-y-px">
               Underground Intel
             </span>
             {/* Line 2: Base layer - Hollow white outline */}
-            <span
-              ref={setRef(2)}
-              className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)] typewriter-element"
-            >
+            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
               & AI Research
             </span>
             {/* Line 2: Overlap layer - Purple-shifted gradient for depth */}
-            <span
-              ref={setRef(3)}
-              className="block absolute left-0 top-1/2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen translate-x-px translate-y-px typewriter-element"
-            >
+            <span className="block absolute left-0 top-1/2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen translate-x-px translate-y-px">
               & AI Research
             </span>
           </h1>
 
-          {/* Description with block cursor and cyber stream effect + Typewriter */}
-          <p className="cyber-text text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
-            <span ref={setRef(4)} className="typewriter-element">
-              Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-              Institutional-grade analysis meets the underground—delivered to your inbox.
+          {/* Magnetizing Subtitle - Succinct, comprehensive; Typewriter applied for engagement */}
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center">
+            <span ref={setRef(0)} className="typewriter-element">
+              Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors.
             </span>
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle typewriter-cursor" />
           </p>
@@ -170,49 +157,75 @@ export default function HomePage() {
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
-            {/* Section Header - Prismatic See-Through Typography + Typewriter */}
+            {/* Section Header - Prismatic See-Through Typography */}
             <div className="flex items-center gap-4 mb-10">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2
-                ref={setRef(5)}
-                className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street typewriter-element"
-              >
+              <h2 className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
                 [ MISSION ]
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
             </div>
 
-            {/* Mission Content with cyber stream effect */}
-            <div className="space-y-6 text-center">
-              <p className="cyber-text text-xl md:text-2xl text-slate-300 leading-relaxed">
-                The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar industry</span> hiding in plain sight.
-              </p>
-              <p className="cyber-text text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-                While Wall Street sleeps on collectibles, serious collectors are building generational wealth.
-                We provide the intelligence infrastructure they need—real-time market data, predictive analytics,
-                and exclusive research that separates signal from noise.
-              </p>
-              <p className="cyber-text text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-                No hype. No speculation. Just data-driven insights delivered with institutional-grade precision.
-              </p>
+            {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
+            <div className="relative p-8 rounded-xl bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
+              {/* Cyan Scan Line - Horizontal scan on section view */}
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-section-scan"></div>
 
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800">
-                <div className="text-center">
-                  <div className="font-titan text-3xl md:text-4xl mb-2">$43B+</div>
-                  <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-titan-purple text-3xl md:text-4xl mb-2">15%</div>
-                  <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-titan text-3xl md:text-4xl mb-2">2.4M+</div>
-                  <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-titan-purple text-3xl md:text-4xl mb-2">24/7</div>
-                  <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
+              {/* Electronic Wrap Lines - Animated border effect */}
+              <div className="absolute inset-0 electronic-wrap pointer-events-none"></div>
+
+              {/* Mission Content - Succinct copy for magnetism */}
+              <div className="relative z-10 space-y-6 text-center">
+                <p ref={setRef(1)} className="text-xl md:text-2xl text-slate-300 leading-relaxed typewriter-element">
+                  The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar powerhouse</span>, yet most collectors operate blind.
+                </p>
+                <p ref={setRef(2)} className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto typewriter-element">
+                  Apex Intelligence builds the elite intel network that&apos;s been missing—data-driven, transparent, actionable insights for generational wealth.
+                </p>
+
+                {/* Key Points - Succinct bullets */}
+                <ul className="space-y-4 mt-8 text-left max-w-2xl mx-auto">
+                  <li className="flex items-start">
+                    <span className="mr-4 text-cyan-400 font-bold font-mono">01</span>
+                    <div>
+                      <h3 className="font-bold text-white">Data-Driven</h3>
+                      <p ref={setRef(3)} className="text-slate-400 typewriter-element">Real-time analytics separating signal from noise.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-4 text-cyan-400 font-bold font-mono">02</span>
+                    <div>
+                      <h3 className="font-bold text-white">Transparent</h3>
+                      <p ref={setRef(4)} className="text-slate-400 typewriter-element">No hype—just verified, institutional-grade precision.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-4 text-cyan-400 font-bold font-mono">03</span>
+                    <div>
+                      <h3 className="font-bold text-white">Actionable</h3>
+                      <p ref={setRef(5)} className="text-slate-400 typewriter-element">Insights that drive smart decisions for serious collectors.</p>
+                    </div>
+                  </li>
+                </ul>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
+                  <div className="text-center">
+                    <div className="font-titan text-3xl md:text-4xl mb-2">$43B+</div>
+                    <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-titan-purple text-3xl md:text-4xl mb-2">15%</div>
+                    <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-titan text-3xl md:text-4xl mb-2">2.4M+</div>
+                    <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-titan-purple text-3xl md:text-4xl mb-2">24/7</div>
+                    <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -232,13 +245,10 @@ export default function HomePage() {
         }}
       >
         <div className="w-full px-6 md:px-12 py-16">
-          {/* Section Header - Prismatic See-Through Typography + Typewriter */}
+          {/* Section Header - Prismatic See-Through Typography */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2
-              ref={setRef(6)}
-              className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street typewriter-element"
-            >
+            <h2 className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street">
               [ LATEST INTELLIGENCE ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -387,10 +397,7 @@ export default function HomePage() {
                   ALPHA ACCESS OPEN
                 </div>
 
-                <h2
-                  ref={setRef(7)}
-                  className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street typewriter-element"
-                >
+                <h2 className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
                   Ready for the Alpha?
                 </h2>
 

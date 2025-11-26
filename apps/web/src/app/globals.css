@@ -210,11 +210,11 @@ input, textarea, button, a {
   }
 }
 
-/* Cyber Stream Effect - Enhanced for hollow text visibility */
+/* Cyber Stream Effect - Subtle stream without rectangle overlay */
 .cyber-text {
   position: relative;
   overflow: hidden;
-  display: inline-block; /* Better for inline/block text */
+  display: inline-block;
 }
 
 .cyber-text::before {
@@ -227,13 +227,13 @@ input, textarea, button, a {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(34, 211, 238, 0.15) 1px, /* Increased opacity for visibility over hollow text */
+    rgba(34, 211, 238, 0.05) 1px,
     transparent 2px
   );
-  animation: stream-scan 1.5s linear infinite; /* Faster for dynamic cyberpunk feel */
+  animation: stream-scan 2s linear infinite;
   pointer-events: none;
-  z-index: 1; /* Over text for stream effect */
-  opacity: 0.8; /* Stronger overlay visibility */
+  z-index: -1; /* Behind text - no rectangle overlay */
+  opacity: 0.5;
 }
 
 @keyframes stream-scan {
@@ -487,6 +487,65 @@ body::after {
     opacity: 1;
   }
   50% {
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ELECTRONIC WRAP - Animated cyan border lines for glassmorphic cards
+   Creates sci-fi "confidential folder" wrap effect
+   ═══════════════════════════════════════════════════════════════════ */
+.electronic-wrap {
+  background:
+    linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-x top,
+    linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-x bottom,
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-y left,
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-y right;
+  background-size: 20px 1px, 20px 1px, 1px 20px, 1px 20px;
+  opacity: 0.3;
+  animation: wrap-animate 5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes wrap-animate {
+  0% { background-position: 0 0, 0 100%, 0 0, 100% 0; }
+  100% { background-position: 20px 0, -20px 100%, 0 20px, 100% -20px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTION SCAN LINE - Horizontal scan for section entry
+   Hardware-accelerated via transform for smooth 60fps
+   ═══════════════════════════════════════════════════════════════════ */
+.animate-section-scan {
+  animation: section-scan-sweep 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes section-scan-sweep {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 1;
+  }
+  51% {
+    transform-origin: right;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+    opacity: 0;
+  }
+}
+
+/* Disable electronic-wrap and section scan for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .electronic-wrap,
+  .animate-section-scan {
+    animation: none;
     opacity: 0;
   }
 }
