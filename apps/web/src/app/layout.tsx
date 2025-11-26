@@ -244,22 +244,42 @@ export default function RootLayout({
 
       >
 
+        {/* GLOBAL STARFIELD BACKGROUND - Deep space layer */}
+        <div className="fixed inset-0 z-[-2] overflow-hidden">
+          {/* CSS-generated starfield pattern */}
+          <div
+            className="absolute inset-0 opacity-60"
+            style={{
+              background: `
+                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8) 1px, transparent 1px),
+                radial-gradient(1px 1px at 30% 40%, rgba(34,211,238,0.6) 1px, transparent 1px),
+                radial-gradient(2px 2px at 50% 10%, rgba(168,85,247,0.5) 1px, transparent 1px),
+                radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.7) 1px, transparent 1px),
+                radial-gradient(1px 1px at 90% 30%, rgba(34,211,238,0.4) 1px, transparent 1px),
+                radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.6) 1px, transparent 1px),
+                radial-gradient(2px 2px at 85% 60%, rgba(168,85,247,0.4) 1px, transparent 1px),
+                radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.5) 1px, transparent 1px),
+                radial-gradient(1px 1px at 60% 50%, rgba(34,211,238,0.5) 1px, transparent 1px),
+                radial-gradient(1px 1px at 25% 15%, rgba(255,255,255,0.7) 1px, transparent 1px),
+                radial-gradient(1px 1px at 75% 25%, rgba(168,85,247,0.3) 1px, transparent 1px),
+                radial-gradient(1px 1px at 5% 55%, rgba(255,255,255,0.4) 1px, transparent 1px),
+                radial-gradient(1px 1px at 95% 85%, rgba(34,211,238,0.6) 1px, transparent 1px),
+                radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.5) 1px, transparent 1px),
+                radial-gradient(2px 2px at 65% 35%, rgba(168,85,247,0.5) 1px, transparent 1px)
+              `,
+              backgroundSize: '200px 200px'
+            }}
+          />
+        </div>
+
         {/* GLOBAL MATRIX BACKGROUND - Enhanced for mobile visibility */}
-
         <div className="fixed inset-0 z-[-1]">
-
           {/* Grid Pattern - Brighter cyan (#0891b2), higher opacity for mobile */}
-
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-[size:50px_50px] opacity-40 md:opacity-30" />
-
           {/* Scanning Light Effect - Enhanced glow */}
-
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/15 to-transparent animate-scan" />
-
           {/* Vignette - Softer for better grid visibility */}
-
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#020617_100%)]" />
-
         </div>
 
 
