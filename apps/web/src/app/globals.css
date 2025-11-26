@@ -115,26 +115,20 @@ input, textarea, button, a {
   cursor: none !important;
 }
 
-/* Titan Typography - Hollow Wireframe Neon Effect */
+/* Titan Typography - Hollow Wireframe Neon Effect (Tuned: Sharp stroke, subtle glow) */
 .font-titan {
-  -webkit-text-stroke: 1px #22d3ee;
+  -webkit-text-stroke: 1.5px #22d3ee;
   color: transparent;
-  text-shadow:
-    0 0 10px #22d3ee,
-    0 0 20px rgba(34, 211, 238, 0.5),
-    0 0 40px rgba(34, 211, 238, 0.3);
+  text-shadow: 0 0 5px rgba(34, 211, 238, 0.3);
   font-weight: 800;
   letter-spacing: 0.05em;
 }
 
-/* Titan Typography Purple Variant */
+/* Titan Typography Purple Variant (Tuned: Sharp stroke, subtle glow) */
 .font-titan-purple {
-  -webkit-text-stroke: 1px #a855f7;
+  -webkit-text-stroke: 1.5px #a855f7;
   color: transparent;
-  text-shadow:
-    0 0 10px #a855f7,
-    0 0 20px rgba(168, 85, 247, 0.5),
-    0 0 40px rgba(168, 85, 247, 0.3);
+  text-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
   font-weight: 800;
   letter-spacing: 0.05em;
 }
