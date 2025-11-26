@@ -88,13 +88,13 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Latest Intelligence Section */}
-      <section className="relative z-10 px-6 md:px-12 py-16">
-        {/* Section Header */}
+      {/* Latest Intelligence Section - Digital Scroll Wrapper */}
+      <section className="relative z-10 px-6 md:px-12 py-16 digital-scroll mx-4 md:mx-8 my-8">
+        {/* Section Header - Titan Typography */}
         <div className="flex items-center gap-4 mb-10">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-          <h2 className="text-2xl md:text-3xl font-bold tracking-wider text-white font-mono">
-            <span className="text-cyan-400">[</span> LATEST INTELLIGENCE <span className="text-cyan-400">]</span>
+          <h2 className="text-2xl md:text-3xl tracking-wider font-mono font-titan">
+            [ LATEST INTELLIGENCE ]
           </h2>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
         </div>
@@ -180,14 +180,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
+      {/* Mission Section - Digital Scroll Wrapper */}
+      <section className="relative z-10 px-6 md:px-12 py-20 digital-scroll mx-4 md:mx-8 my-8">
         <div className="max-w-4xl mx-auto">
-          {/* Section Header */}
+          {/* Section Header - Titan Typography Purple */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h2 className="text-2xl md:text-3xl font-bold tracking-wider text-white font-mono">
-              <span className="text-purple-400">[</span> MISSION <span className="text-purple-400">]</span>
+            <h2 className="text-2xl md:text-3xl tracking-wider font-mono font-titan-purple">
+              [ MISSION ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </div>
@@ -229,8 +229,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Ready for Alpha CTA Section */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
+      {/* Ready for Alpha CTA Section - Digital Scroll Wrapper */}
+      <section className="relative z-10 px-6 md:px-12 py-20 digital-scroll mx-4 md:mx-8 my-8">
         <div className="max-w-3xl mx-auto">
           <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-10 md:p-14 text-center overflow-hidden">
             {/* Glow effect */}
@@ -247,7 +247,7 @@ export default function HomePage() {
                 ALPHA ACCESS OPEN
               </div>
 
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-mono font-titan mb-4">
                 Ready for the Alpha?
               </h2>
 

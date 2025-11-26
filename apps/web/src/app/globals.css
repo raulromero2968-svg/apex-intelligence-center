@@ -100,6 +100,57 @@ input, textarea, button, a {
   cursor: none !important;
 }
 
+/* Titan Typography - Hollow Wireframe Neon Effect */
+.font-titan {
+  -webkit-text-stroke: 1px #22d3ee;
+  color: transparent;
+  text-shadow:
+    0 0 10px #22d3ee,
+    0 0 20px rgba(34, 211, 238, 0.5),
+    0 0 40px rgba(34, 211, 238, 0.3);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+/* Titan Typography Purple Variant */
+.font-titan-purple {
+  -webkit-text-stroke: 1px #a855f7;
+  color: transparent;
+  text-shadow:
+    0 0 10px #a855f7,
+    0 0 20px rgba(168, 85, 247, 0.5),
+    0 0 40px rgba(168, 85, 247, 0.3);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+/* Digital Scroll Wrapper */
+.digital-scroll {
+  border-left: 1px solid rgba(34, 211, 238, 0.3);
+  border-right: 1px solid rgba(34, 211, 238, 0.3);
+  background: rgba(2, 6, 23, 0.5);
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.digital-scroll::before,
+.digital-scroll::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+}
+
+.digital-scroll::before {
+  top: 0;
+}
+
+.digital-scroll::after {
+  bottom: 0;
+}
+
 /* Light mode overrides */
 html.light {
   --background: 240 10% 95%;
