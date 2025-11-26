@@ -307,7 +307,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       content: mdxContent,
     };
   } catch (error) {
-    console.error(`Error reading blog post ${slug}:`, error);
+    // Blog post not found - this is expected for missing files
     return null;
   }
 }
