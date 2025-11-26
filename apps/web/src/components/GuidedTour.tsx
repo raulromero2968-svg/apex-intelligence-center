@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
+
+// Public routes where tutorial should NOT run
+const PUBLIC_ROUTES = ['/', '/about', '/subscribe', '/intel', '/privacy', '/terms', '/disclaimer'];
 
 const steps: Step[] = [
   {
@@ -36,9 +40,19 @@ export default function GuidedTour() {
   const [run, setRun] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const pathname = usePathname();
+
+  // Don't render on public routes - tutorial only for authenticated app pages
+  const isPublicRoute = PUBLIC_ROUTES.some(route =>
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
 
   useEffect(() => {
     setIsClient(true);
+
+    // Skip tour on public routes
+    if (isPublicRoute) return;
+
     // Check if user has seen the tour (only on client)
     const tourCompleted = localStorage.getItem('apex_tour_completed');
     if (!tourCompleted) {
@@ -46,7 +60,7 @@ export default function GuidedTour() {
       // Delay to ensure DOM elements are ready
       setTimeout(() => setRun(true), 1000);
     }
-  }, []);
+  }, [isPublicRoute]);
 
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
@@ -70,6 +84,9 @@ export default function GuidedTour() {
       (window as any).restartApexTour = restartTour;
     }
   }, []);
+
+  // Don't render on public routes
+  if (isPublicRoute) return null;
 
   return (
     <Joyride

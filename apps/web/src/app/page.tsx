@@ -15,6 +15,11 @@ export default function HomePage() {
     <div className="relative">
 
       {/* ═══════════════════════════════════════════════════════════════════
+          BLACK TOP BANNER - Visual Anchor
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="fixed top-0 left-0 right-0 h-2 bg-black z-[100]" />
+
+      {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO (Base Layer - z-0)
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="sticky top-0 z-0 h-screen flex flex-col overflow-hidden">
@@ -100,9 +105,15 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2: MISSION (Card Layer 1 - z-10)
+          SECTION 2: MISSION (Card Layer 1 - z-10) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+      <section
+        className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+        }}
+      >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
             {/* Section Header - Titan Typography Purple */}
@@ -153,9 +164,15 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20)
+          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+      <section
+        className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+        }}
+      >
         <div className="w-full px-6 md:px-12 py-16">
           {/* Section Header - Titan Typography */}
           <div className="flex items-center gap-4 mb-10">
@@ -249,9 +266,15 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: CTA (Card Layer 3 - z-30)
+          SECTION 4: CTA (Card Layer 3 - z-30) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+      <section
+        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+        }}
+      >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
             <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-10 md:p-14 text-center overflow-hidden">
