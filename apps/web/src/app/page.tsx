@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { HoloCardImage } from '@/components/titan/HoloCardImage';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -198,16 +197,18 @@ export default function HomePage() {
                 className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
+                {/* Holo Thumbnail - SSR Safe */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
-                    src="/images/apex-wolf-black-bg-final.png"
-                    alt="Vintage WOTC Analysis"
-                    width={80}
-                    height={80}
-                    enableParticles={false}
-                    className="rounded-lg"
-                  />
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)] group-hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all">
+                    <Image
+                      src="/images/apex-wolf-black-bg-final.png"
+                      alt="Vintage WOTC Analysis"
+                      width={80}
+                      height={80}
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/10 to-purple-500/10 pointer-events-none" />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
@@ -231,16 +232,18 @@ export default function HomePage() {
                 className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-purple-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
+                {/* Holo Thumbnail - SSR Safe */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
-                    src="/images/apex-wolf-black-bg-final.png"
-                    alt="Rotation Window Strategy"
-                    width={80}
-                    height={80}
-                    enableParticles={false}
-                    className="rounded-lg"
-                  />
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] group-hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] transition-all">
+                    <Image
+                      src="/images/apex-wolf-black-bg-final.png"
+                      alt="Rotation Window Strategy"
+                      width={80}
+                      height={80}
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-purple-400/10 to-cyan-500/10 pointer-events-none" />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
@@ -264,16 +267,18 @@ export default function HomePage() {
                 className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
+                {/* Holo Thumbnail - SSR Safe */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
-                    src="/images/apex-wolf-black-bg-final.png"
-                    alt="Pokemon 151 Market Report"
-                    width={80}
-                    height={80}
-                    enableParticles={false}
-                    className="rounded-lg"
-                  />
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)] group-hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all">
+                    <Image
+                      src="/images/apex-wolf-black-bg-final.png"
+                      alt="Pokemon 151 Market Report"
+                      width={80}
+                      height={80}
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/10 to-purple-500/10 pointer-events-none" />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
