@@ -147,8 +147,17 @@ export const Footer = () => {
         </div>
         
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-cyan-500/20 text-center text-gray-500 text-sm">
-          © 2025 Apex Intelligence. All rights reserved.
+        <div className="pt-8 border-t border-cyan-500/20 flex flex-col md:flex-row items-center justify-between gap-4 text-gray-500 text-sm">
+          {/* Vercel-Style Theme Badge */}
+          <div className="flex items-center gap-2 text-xs border border-slate-800 rounded-full px-3 py-1 cursor-not-allowed opacity-70">
+            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span>Titan OS (Stable)</span>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-center md:text-right">
+            © 2025 Apex Intelligence. All rights reserved.
+          </div>
         </div>
       </div>
     </footer>

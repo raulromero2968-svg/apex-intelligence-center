@@ -1125,3 +1125,13 @@ html.light canvas {
     bottom: -2px;
     right: -2px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FINAL OVERRIDE TO STOP SPLITTING
+   Prevents mid-word breaks in all text elements
+   ═══════════════════════════════════════════════════════════════════ */
+p, h1, h2, h3, h4, h5, h6, span {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+}

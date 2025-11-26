@@ -66,7 +66,7 @@ export default function HomePage() {
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center">
+          <p className="w-full max-w-3xl mx-auto whitespace-normal break-words text-pretty text-lg md:text-xl text-slate-400 leading-relaxed mb-10 text-center">
             <Typewriter
               text="Advanced market intelligence infrastructure for the serious collector. Leveraging proprietary vision models and real-time arbitrage algorithms to decode the $43B TCG asset class."
               speed={0.02}
@@ -338,17 +338,20 @@ export default function HomePage() {
               <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                  </span>
-                  ALPHA ACCESS OPEN
-                </div>
+                {/* Header Container - Forced Column Stack on All Screens */}
+                <div className="flex flex-col items-start gap-2 mb-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    </span>
+                    ALPHA ACCESS OPEN
+                  </div>
 
-                <h2 className="header-prismatic text-sheen-overlay text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
-                  Ready for the Alpha?
-                </h2>
+                  <h2 className="header-prismatic text-sheen-overlay text-3xl md:text-4xl tracking-wider cyber-street">
+                    Ready for the Alpha?
+                  </h2>
+                </div>
 
                 <p className="cyber-text text-lg text-slate-400 mb-8 max-w-xl mx-auto">
                   Join the underground network of collectors who move before the market does.
