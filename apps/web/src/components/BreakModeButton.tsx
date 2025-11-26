@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Coffee, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -11,6 +12,7 @@ interface BreakModeState {
 }
 
 export function BreakModeButton() {
+  const pathname = usePathname();
   const [breakMode, setBreakMode] = useState<BreakModeState>({
     isActive: false,
     expiresAt: null,
@@ -19,6 +21,12 @@ export function BreakModeButton() {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  // Hide on public pages (homepage, intel, portfolio, commons, about, subscribe)
+  const publicPages = ['/', '/intel', '/portfolio', '/commons', '/about', '/subscribe'];
+  if (publicPages.includes(pathname || '')) {
+    return null;
+  }
 
   // Fetch current break mode status
   useEffect(() => {
