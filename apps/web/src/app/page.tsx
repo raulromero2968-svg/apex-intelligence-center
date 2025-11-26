@@ -1,8 +1,12 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
-import { HoloCardImage } from '@/components/titan/HoloCardImage';
+import dynamic from 'next/dynamic';
+
+// Load HoloCardImage only on client to avoid SSR issues
+const HoloCardImage = dynamic(
+  () => import('@/components/titan/HoloCardImage').then((mod) => mod.HoloCardImage),
+  { ssr: false }
+);
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
