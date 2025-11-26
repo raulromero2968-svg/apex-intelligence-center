@@ -3,7 +3,7 @@
   "version": 2,
   "installCommand": "NODE_OPTIONS='--max-old-space-size=6144' pnpm install --ignore-scripts && cd apps/web && NODE_OPTIONS='--max-old-space-size=4096' pnpm exec prisma generate --schema=./prisma/schema.prisma || echo 'Prisma generate skipped'",
   "buildCommand": "NODE_OPTIONS='--max-old-space-size=6144' pnpm turbo run build --filter=@apex/web...",
-  "outputDirectory": ".next",
+  "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
   "regions": ["iad1", "sfo1", "fra1"],
   "headers": [
