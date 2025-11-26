@@ -110,10 +110,10 @@ export default function HomePage() {
           SECTION 2: MISSION (Card Layer 1 - z-10) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
         style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
         }}
       >
         <div className="w-full px-6 md:px-12 py-20">
@@ -169,10 +169,10 @@ export default function HomePage() {
           SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
         style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
         }}
       >
         <div className="w-full px-6 md:px-12 py-16">
@@ -271,10 +271,10 @@ export default function HomePage() {
           SECTION 4: CTA (Card Layer 3 - z-30) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)]"
+        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
         style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%, black 100%)'
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
         }}
       >
         <div className="w-full px-6 md:px-12 py-20">
