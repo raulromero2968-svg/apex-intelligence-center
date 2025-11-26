@@ -16,6 +16,12 @@
     overflow-x: hidden;
   }
 
+  /* Prevent mid-word breaking on headings and paragraphs */
+  h1, h2, h3, h4, h5, h6, p {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
@@ -63,20 +69,26 @@
     }
   }
 
-  /* Titan Typography - Single-Element Hollow Text (No Stacking) */
+  /* Titan Typography - Prismatic Hollow Text with Gradient Stroke */
   .font-titan {
-    /* Ensure only one instance of text is visible */
+    /* Hollow transparent letters with gradient stroke */
+    -webkit-text-stroke: 1.5px transparent;
+    background: linear-gradient(to right, #ffffff 20%, #22d3ee 50%, #a855f7 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
-    position: relative;
-    z-index: 10;
+    /* Holographic glow effect */
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5)) drop-shadow(0 0 16px rgba(168, 85, 247, 0.3));
+    /* Prevent word breaking */
+    white-space: nowrap;
     /* Fix for potential double-rendering in some browsers */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Font Settings */
     font-weight: 900;
     letter-spacing: -0.02em;
+    position: relative;
+    z-index: 10;
   }
 
   /* Ethereal Scroll Transition - Lightsaber Effect */
