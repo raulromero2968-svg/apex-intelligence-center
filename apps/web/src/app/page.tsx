@@ -12,271 +12,296 @@ const navLinks = [
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative">
 
-      {/* Header / Navigation */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
-        {/* Left: Logo/Brand */}
-        <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono">
-          APEX<span className="text-cyan-400">_</span>INTEL
-        </Link>
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 1: HERO (Base Layer - z-0)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="sticky top-0 z-0 h-screen flex flex-col overflow-hidden">
+        {/* Header / Navigation */}
+        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
+          {/* Left: Logo/Brand */}
+          <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono">
+            APEX<span className="text-cyan-400">_</span>INTEL
+          </Link>
 
-        {/* Center: Nav Links (hidden on mobile) */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {/* Center: Nav Links (hidden on mobile) */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-slate-400 hover:text-white text-sm font-medium tracking-wide transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right: Access Terminal Button */}
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 hover:border-cyan-500/50 hover:bg-white/5 rounded text-white font-mono text-sm tracking-wider transition-all"
+          >
+            [ ACCESS_TERMINAL ]
+          </Link>
+        </header>
+
+        {/* Hero Content (Centered) */}
+        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center">
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+            </span>
+            SYSTEM ONLINE // VER 2.0
+          </div>
+
+          {/* Main Title - Titan Hollow Typography */}
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
+            <span className="block font-titan text-transparent">
+              Underground Intel
+            </span>
+            <span className="block font-titan-purple text-transparent">
+              & AI Research
+            </span>
+          </h1>
+
+          {/* Description with block cursor */}
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
+            Premium TCG market analysis, data-driven insights, and exclusive intelligence.
+            Morning Brew meets the underground—delivered to your inbox.
+            <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
+          </p>
+
+          {/* CTA Buttons with holographic effect */}
+          <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              key={link.href}
-              href={link.href}
-              className="text-slate-400 hover:text-white text-sm font-medium tracking-wide transition-colors"
+              href="/subscribe"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
             >
-              {link.label}
+              GET ALPHA ACCESS
             </Link>
-          ))}
-        </nav>
-
-        {/* Right: Access Terminal Button */}
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 hover:border-cyan-500/50 hover:bg-white/5 rounded text-white font-mono text-sm tracking-wider transition-all"
-        >
-          [ ACCESS_TERMINAL ]
-        </Link>
-      </header>
-
-      {/* Hero Content (Centered) */}
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center">
-        {/* Status Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-          </span>
-          SYSTEM ONLINE // VER 2.0
-        </div>
-
-        {/* Main Title: "Underground Intel" (white) + "& AI Research" (gradient) */}
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
-          <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-            Underground Intel
-          </span>
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)]">
-            & AI Research
-          </span>
-        </h1>
-
-        {/* Description with block cursor */}
-        <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
-          Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-          Morning Brew meets the underground—delivered to your inbox.
-          <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
-        </p>
-
-        {/* CTA Buttons with holographic effect */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/subscribe"
-            className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
-          >
-            GET ALPHA ACCESS
-          </Link>
-          <Link
-            href="/intel"
-            className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
-          >
-            BROWSE DATABASE
-          </Link>
-        </div>
-      </main>
-
-      {/* Latest Intelligence Section - Digital Scroll Wrapper */}
-      <section className="relative z-10 px-6 md:px-12 py-16 digital-scroll mx-4 md:mx-8 my-8">
-        {/* Section Header - Titan Typography */}
-        <div className="flex items-center gap-4 mb-10">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-          <h2 className="text-2xl md:text-3xl tracking-wider font-mono font-titan">
-            [ LATEST INTELLIGENCE ]
-          </h2>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-        </div>
-
-        {/* Intelligence Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {/* Card 1: Vintage WOTC */}
-          <Link
-            href="/intel/vintage-wotc-analysis"
-            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-              DIGITAL SCROLL
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-              Vintage WOTC Analysis
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
-            </p>
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Nov 25, 2025</span>
-              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-            </div>
-          </Link>
-
-          {/* Card 2: Rotation Window */}
-          <Link
-            href="/intel/rotation-window-strategy"
-            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
-              <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-              ELECTRONIC FOLDER
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-              Rotation Window Strategy
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
-            </p>
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Nov 24, 2025</span>
-              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-            </div>
-          </Link>
-
-          {/* Card 3: Pokemon 151 */}
-          <Link
-            href="/intel/pokemon-151-market-report"
-            className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-              DIGITAL SCROLL
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-              Pokemon 151 Market Report
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
-            </p>
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Nov 23, 2025</span>
-              <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-            </div>
-          </Link>
-        </div>
-
-        {/* View All Link */}
-        <div className="text-center mt-10">
-          <Link
-            href="/intel"
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm tracking-wide transition-colors"
-          >
-            [ VIEW_ALL_INTEL ]
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Mission Section - Digital Scroll Wrapper */}
-      <section className="relative z-10 px-6 md:px-12 py-20 digital-scroll mx-4 md:mx-8 my-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Section Header - Titan Typography Purple */}
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h2 className="text-2xl md:text-3xl tracking-wider font-mono font-titan-purple">
-              [ MISSION ]
-            </h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <Link
+              href="/intel"
+              className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+            >
+              BROWSE DATABASE
+            </Link>
           </div>
 
-          {/* Mission Content */}
-          <div className="space-y-6 text-center">
-            <p className="text-xl md:text-2xl text-slate-300 leading-relaxed">
-              The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar industry</span> hiding in plain sight.
-            </p>
-            <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-              While Wall Street sleeps on collectibles, serious collectors are building generational wealth.
-              We provide the intelligence infrastructure they need—real-time market data, predictive analytics,
-              and exclusive research that separates signal from noise.
-            </p>
-            <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-              No hype. No speculation. Just data-driven insights delivered with institutional-grade precision.
-            </p>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-cyan-400 mb-2">$43B+</div>
-                <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">15%</div>
-                <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-cyan-400 mb-2">2.4M+</div>
-                <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">24/7</div>
-                <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
-              </div>
-            </div>
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
+            <span className="text-xs font-mono tracking-wider">SCROLL</span>
+            <div className="w-px h-8 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
           </div>
-        </div>
+        </main>
       </section>
 
-      {/* Ready for Alpha CTA Section - Digital Scroll Wrapper */}
-      <section className="relative z-10 px-6 md:px-12 py-20 digital-scroll mx-4 md:mx-8 my-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-10 md:p-14 text-center overflow-hidden">
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-2xl" />
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
-
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                </span>
-                ALPHA ACCESS OPEN
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-mono font-titan mb-4">
-                Ready for the Alpha?
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 2: MISSION (Card Layer 1 - z-10)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+        <div className="w-full px-6 md:px-12 py-20">
+          <div className="max-w-4xl mx-auto">
+            {/* Section Header - Titan Typography Purple */}
+            <div className="flex items-center gap-4 mb-10">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+              <h2 className="font-titan-purple text-2xl md:text-3xl tracking-wider font-mono">
+                [ MISSION ]
               </h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            </div>
 
-              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-                Join the underground network of collectors who move before the market does.
-                Weekly intel drops. Zero spam. Unsubscribe anytime.
+            {/* Mission Content */}
+            <div className="space-y-6 text-center">
+              <p className="text-xl md:text-2xl text-slate-300 leading-relaxed">
+                The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar industry</span> hiding in plain sight.
+              </p>
+              <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
+                While Wall Street sleeps on collectibles, serious collectors are building generational wealth.
+                We provide the intelligence infrastructure they need—real-time market data, predictive analytics,
+                and exclusive research that separates signal from noise.
+              </p>
+              <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
+                No hype. No speculation. Just data-driven insights delivered with institutional-grade precision.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/subscribe"
-                  className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
-                >
-                  GET ALPHA ACCESS
-                </Link>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50"
-                >
-                  LEARN MORE
-                </Link>
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800">
+                <div className="text-center">
+                  <div className="font-titan text-3xl md:text-4xl mb-2">$43B+</div>
+                  <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-titan-purple text-3xl md:text-4xl mb-2">15%</div>
+                  <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-titan text-3xl md:text-4xl mb-2">2.4M+</div>
+                  <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-titan-purple text-3xl md:text-4xl mb-2">24/7</div>
+                  <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Standalone Footer */}
-      <footer className="relative z-10 border-t border-cyan-500/20 bg-slate-950/80 backdrop-blur-sm">
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+        <div className="w-full px-6 md:px-12 py-16">
+          {/* Section Header - Titan Typography */}
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            <h2 className="font-titan text-2xl md:text-3xl tracking-wider font-mono">
+              [ LATEST INTELLIGENCE ]
+            </h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          </div>
+
+          {/* Intelligence Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* Card 1: Vintage WOTC */}
+            <Link
+              href="/intel/vintage-wotc-analysis"
+              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+                <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                DIGITAL SCROLL
+              </div>
+              <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                Vintage WOTC Analysis
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
+              </p>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Nov 25, 2025</span>
+                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+              </div>
+            </Link>
+
+            {/* Card 2: Rotation Window */}
+            <Link
+              href="/intel/rotation-window-strategy"
+              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
+                <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                ELECTRONIC FOLDER
+              </div>
+              <h3 className="font-titan-purple text-xl mb-2 group-hover:text-purple-300 transition-colors">
+                Rotation Window Strategy
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
+              </p>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Nov 24, 2025</span>
+                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+              </div>
+            </Link>
+
+            {/* Card 3: Pokemon 151 */}
+            <Link
+              href="/intel/pokemon-151-market-report"
+              className="group relative border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-800/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+                <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                DIGITAL SCROLL
+              </div>
+              <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                Pokemon 151 Market Report
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
+              </p>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Nov 23, 2025</span>
+                <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* View All Link */}
+          <div className="text-center mt-10">
+            <Link
+              href="/intel"
+              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm tracking-wide transition-colors"
+            >
+              [ VIEW_ALL_INTEL ]
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 4: CTA (Card Layer 3 - z-30)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/30 flex items-center">
+        <div className="w-full px-6 md:px-12 py-20">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-10 md:p-14 text-center overflow-hidden">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-2xl" />
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                  </span>
+                  ALPHA ACCESS OPEN
+                </div>
+
+                <h2 className="font-titan text-3xl md:text-4xl tracking-wider mb-4">
+                  Ready for the Alpha?
+                </h2>
+
+                <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
+                  Join the underground network of collectors who move before the market does.
+                  Weekly intel drops. Zero spam. Unsubscribe anytime.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link
+                    href="/subscribe"
+                    className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
+                  >
+                    GET ALPHA ACCESS
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50"
+                  >
+                    LEARN MORE
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          FOOTER (Final Layer - z-40)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Column */}
@@ -291,7 +316,7 @@ export default function HomePage() {
 
             {/* Navigation Column */}
             <div>
-              <h4 className="text-cyan-400 font-semibold text-sm mb-4 font-mono">NAVIGATE</h4>
+              <h4 className="font-titan text-sm mb-4">NAVIGATE</h4>
               <ul className="space-y-2">
                 <li><Link href="/intel" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Intel</Link></li>
                 <li><Link href="/portfolio" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Portfolio</Link></li>
@@ -302,7 +327,7 @@ export default function HomePage() {
 
             {/* Legal Column */}
             <div>
-              <h4 className="text-cyan-400 font-semibold text-sm mb-4 font-mono">LEGAL</h4>
+              <h4 className="font-titan text-sm mb-4">LEGAL</h4>
               <ul className="space-y-2">
                 <li><Link href="/privacy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Terms of Service</Link></li>
@@ -312,7 +337,7 @@ export default function HomePage() {
 
             {/* Connect Column */}
             <div>
-              <h4 className="text-cyan-400 font-semibold text-sm mb-4 font-mono">CONNECT</h4>
+              <h4 className="font-titan text-sm mb-4">CONNECT</h4>
               <div className="flex gap-3">
                 <a href="https://twitter.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -334,8 +359,8 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Mobile Nav Toggle (optional - simplified for now) */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
+      {/* Mobile Nav Toggle */}
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-full text-white font-mono text-sm"
