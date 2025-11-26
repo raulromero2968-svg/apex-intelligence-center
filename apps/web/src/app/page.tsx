@@ -107,7 +107,7 @@ export default function HomePage() {
           SECTION 2: MISSION (Card Layer 1 - z-10) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-3xl overflow-hidden flex items-center"
+        className="relative md:sticky top-0 md:top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-3xl overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
@@ -191,7 +191,7 @@ export default function HomePage() {
           SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-3xl overflow-hidden flex items-center"
+        className="relative md:sticky top-0 md:top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-3xl overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-16">
           {/* Section Header - Prismatic See-Through Typography */}
@@ -203,8 +203,13 @@ export default function HomePage() {
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
           </div>
 
-          {/* Intelligence Cards Grid - Wrapped in Cyber Folder */}
-          <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto">
+          {/* Intelligence Cards Grid - Wrapped in Cyber Folder with HUD Brackets */}
+          <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto relative">
+            {/* HUD Corner Brackets - Cyan */}
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Card 1: Vintage WOTC - Transparent Glassmorphism */}
               <Link
@@ -322,7 +327,7 @@ export default function HomePage() {
           SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20"
+        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
@@ -441,13 +446,13 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Mobile Nav Toggle - Tactical Style */}
+      {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <Link
           href="/dashboard"
-          className="btn-tactical inline-flex items-center gap-2 px-6 py-3 font-mono text-sm"
+          className="btn-tactical inline-flex items-center gap-2 px-3 py-1 font-mono text-sm w-auto"
         >
-          [ ACCESS_TERMINAL ]
+          [ ACCESS ]
         </Link>
       </div>
 
