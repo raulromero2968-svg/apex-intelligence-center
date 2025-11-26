@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import CustomCursor from '@/components/ui/CustomCursor';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -17,13 +18,27 @@ const navLinks = [
  * Staggered delays create a "swarm" sequential reveal effect
  */
 const TYPEWRITER_CONFIG = {
-  baseDuration: 2000,
-  staggerDelay: 300,
-  steps: 40,
+  baseDuration: 3500, // Slowed down from 2000
+  staggerDelay: 500,  // Increased delay
+  steps: 60,          // More steps for smoother slow typing
 };
 
 export default function HomePage() {
   const typewriterRefs = useRef<(HTMLElement | null)[]>([]);
+  const [shootingStars, setShootingStars] = useState<number[]>([]);
+
+  useEffect(() => {
+    // Shooting star logic
+    const interval = setInterval(() => {
+      setShootingStars(prev => [...prev, Date.now()]);
+      // Cleanup old stars
+      setTimeout(() => {
+        setShootingStars(prev => prev.slice(1));
+      }, 3000);
+    }, 15000); // Every 15 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Respect reduced motion preferences
@@ -75,6 +90,18 @@ export default function HomePage() {
     <div className="relative">
       {/* Cinematic Letterboxing - No Gap */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-black z-[100] m-0 p-0" />
+      <CustomCursor />
+
+      {/* Shooting Stars Background Layer */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {shootingStars.map((id) => (
+          <div key={id} className="shooting-star" style={{
+            top: `${Math.random() * 50}%`,
+            left: `${Math.random() * 50 + 25}%`,
+            animationDelay: '0s'
+          }} />
+        ))}
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO (Base Layer - z-0)
@@ -95,26 +122,27 @@ export default function HomePage() {
           {/* Main Title - Static (no typewriter) for immediate impact */}
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 relative">
             {/* Line 1: Base layer - Hollow white outline for border effect */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] relative z-10">
               Underground Intel
             </span>
-            {/* Line 1: Overlap layer - Gradient fill with glow for depth */}
-            <span className="block absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen translate-x-px translate-y-px">
+            {/* Line 1: Overlap layer - Gradient fill with glow for depth - Perfectly Aligned */}
+            <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen z-20 text-sheen">
               Underground Intel
             </span>
+
             {/* Line 2: Base layer - Hollow white outline */}
-            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+            <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)] relative z-10">
               & AI Research
             </span>
-            {/* Line 2: Overlap layer - Purple-shifted gradient for depth */}
-            <span className="block absolute left-0 top-1/2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen translate-x-px translate-y-px">
+            {/* Line 2: Overlap layer - Purple-shifted gradient for depth - Perfectly Aligned */}
+            <span className="block absolute bottom-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen z-20 text-sheen">
               & AI Research
             </span>
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Typewriter applied for engagement */}
           <p ref={setRef(0)} className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center typewriter cyber-text">
-            Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors.
+            Unlock premium TCG intel: Real-time market analysis, AI-driven insights, <br className="hidden md:block" /> and exclusive underground research—delivered straight to serious collectors.
           </p>
 
           {/* CTA Buttons - Tactical Military Style */}
@@ -296,7 +324,7 @@ export default function HomePage() {
                     alt="Rotation Window Strategy"
                     width={80}
                     height={80}
-                    
+
                     className="rounded-lg"
                   />
                 </div>
@@ -329,7 +357,7 @@ export default function HomePage() {
                     alt="Pokemon 151 Market Report"
                     width={80}
                     height={80}
-                    
+
                     className="rounded-lg"
                   />
                 </div>
@@ -470,13 +498,13 @@ export default function HomePage() {
               <h4 className="font-titan text-sm mb-4">CONNECT</h4>
               <div className="flex gap-3">
                 <a href="https://twitter.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                 </a>
                 <a href="https://linkedin.com/company/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
                 </a>
                 <a href="https://github.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
                 </a>
               </div>
             </div>
