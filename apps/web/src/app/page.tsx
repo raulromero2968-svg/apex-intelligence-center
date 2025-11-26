@@ -23,8 +23,8 @@ export default function HomePage() {
         {/* Header / Navigation */}
         <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
           {/* Left: Logo/Brand */}
-          <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono">
-            APEX<span className="text-cyan-400">_</span>INTEL
+          <Link href="/" className="text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+            APEX INTELLIGENCE
           </Link>
 
           {/* Center: Nav Links (hidden on mobile) */}
@@ -73,7 +73,7 @@ export default function HomePage() {
           {/* Description with block cursor */}
           <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
             Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-            Morning Brew meets the underground—delivered to your inbox.
+            Institutional-grade analysis meets the underground—delivered to your inbox.
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
 
@@ -266,7 +266,7 @@ export default function HomePage() {
           SECTION 4: CTA (Card Layer 3 - z-30) - Ethereal Wave Transition
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
+        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)] pb-20"
         style={{
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
@@ -326,8 +326,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Column */}
             <div>
-              <Link href="/" className="text-white font-bold text-lg tracking-tight font-mono mb-4 block">
-                APEX<span className="text-cyan-400">_</span>INTEL
+              <Link href="/" className="text-white font-bold text-lg tracking-tight font-mono mb-4 block hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+                APEX INTELLIGENCE
               </Link>
               <p className="text-slate-500 text-sm">
                 Underground intelligence for serious TCG collectors and investors.

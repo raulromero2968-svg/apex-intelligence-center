@@ -7,7 +7,6 @@ import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
-import { ProductionBanner } from '@/components/nav/ProductionBanner';
 
 import { LayoutFooter } from '@/components/footer/LayoutFooter';
 
@@ -273,9 +272,6 @@ export default function RootLayout({
 
 
 
-        {/* Permanent Equilibrium Banner - Non-dismissible (hidden on homepage) */}
-
-        <ProductionBanner />
 
 
 
