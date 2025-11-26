@@ -61,14 +61,14 @@ export default function HomePage() {
               Underground Intel
             </span>
             <span className="font-titan-unified-purple text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
-              & AI Research
+              & AI Research Center
             </span>
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
           <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center">
             <Typewriter
-              text="Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors."
+              text="Advanced market intelligence infrastructure for the serious collector. Leveraging proprietary vision models and real-time arbitrage algorithms to decode the $43B TCG asset class."
               speed={0.02}
             />
           </p>
@@ -327,7 +327,7 @@ export default function HomePage() {
           SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20"
+        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20 mb-40"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
