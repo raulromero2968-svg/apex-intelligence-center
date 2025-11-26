@@ -113,11 +113,8 @@ export default function HomePage() {
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Typewriter applied for engagement */}
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center">
-            <span ref={setRef(0)} className="typewriter-element">
-              Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors.
-            </span>
-            <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle typewriter-cursor" />
+          <p ref={setRef(0)} className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center typewriter cyber-text">
+            Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors.
           </p>
 
           {/* CTA Buttons - Tactical Military Style */}
@@ -169,18 +166,15 @@ export default function HomePage() {
             {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
             <div className="relative p-8 rounded-xl bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
               {/* Cyan Scan Line - Horizontal scan on section view */}
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-section-scan"></div>
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
 
               {/* Electronic Wrap Lines - Animated border effect */}
               <div className="absolute inset-0 electronic-wrap pointer-events-none"></div>
 
               {/* Mission Content - Succinct copy for magnetism */}
               <div className="relative z-10 space-y-6 text-center">
-                <p ref={setRef(1)} className="text-xl md:text-2xl text-slate-300 leading-relaxed typewriter-element">
-                  The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar powerhouse</span>, yet most collectors operate blind.
-                </p>
-                <p ref={setRef(2)} className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto typewriter-element">
-                  Apex Intelligence builds the elite intel network that&apos;s been missing—data-driven, transparent, actionable insights for generational wealth.
+                <p ref={setRef(1)} className="text-slate-400 mb-6 typewriter cyber-text">
+                  The TCG market is a multi-billion dollar powerhouse, yet most collectors operate blind. Apex Intelligence builds the elite intel network that&apos;s been missing—data-driven, transparent, actionable insights for generational wealth.
                 </p>
 
                 {/* Key Points - Succinct bullets */}
@@ -189,21 +183,21 @@ export default function HomePage() {
                     <span className="mr-4 text-cyan-400 font-bold font-mono">01</span>
                     <div>
                       <h3 className="font-bold text-white">Data-Driven</h3>
-                      <p ref={setRef(3)} className="text-slate-400 typewriter-element">Real-time analytics separating signal from noise.</p>
+                      <p ref={setRef(2)} className="text-slate-400 typewriter">Real-time analytics separating signal from noise.</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-4 text-cyan-400 font-bold font-mono">02</span>
                     <div>
                       <h3 className="font-bold text-white">Transparent</h3>
-                      <p ref={setRef(4)} className="text-slate-400 typewriter-element">No hype—just verified, institutional-grade precision.</p>
+                      <p ref={setRef(3)} className="text-slate-400 typewriter">No hype—just verified, institutional-grade precision.</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-4 text-cyan-400 font-bold font-mono">03</span>
                     <div>
                       <h3 className="font-bold text-white">Actionable</h3>
-                      <p ref={setRef(5)} className="text-slate-400 typewriter-element">Insights that drive smart decisions for serious collectors.</p>
+                      <p ref={setRef(4)} className="text-slate-400 typewriter">Insights that drive smart decisions for serious collectors.</p>
                     </div>
                   </li>
                 </ul>
