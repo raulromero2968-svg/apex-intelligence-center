@@ -17,46 +17,11 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO (Base Layer - z-0)
+          Uses global fixed nav from layout.tsx - no duplicate header needed
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="sticky top-0 z-0 h-screen flex flex-col overflow-hidden">
-        {/* Header / Navigation - Sticky Black Banner */}
-        <header className="sticky top-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-black">
-          {/* Left: Logo/Brand */}
-          <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
-            <Image
-              src="/images/apex-wolf-black-bg-final.png"
-              width={40}
-              height={40}
-              alt="Apex Wolf"
-              className="rounded-full mr-3"
-            />
-            <span className="text-prismatic">APEX INTELLIGENCE</span>
-          </Link>
-
-          {/* Center: Nav Links (hidden on mobile) */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-slate-400 hover:text-white text-sm font-medium tracking-wide transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Right: Access Terminal Button - Tactical Style */}
-          <Link
-            href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-2 px-4 py-2 font-mono text-sm"
-          >
-            [ ACCESS_TERMINAL ]
-          </Link>
-        </header>
-
-        {/* Hero Content (Centered) */}
-        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center">
+      <section className="relative z-0 min-h-screen flex flex-col overflow-hidden">
+        {/* Hero Content (Centered) - Transparent to show starfield/matrix */}
+        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-16">
           {/* Status Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
             <span className="relative flex h-2 w-2">
@@ -76,8 +41,8 @@ export default function HomePage() {
             </span>
           </h1>
 
-          {/* Description with block cursor */}
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
+          {/* Description with block cursor and cyber stream effect */}
+          <p className="cyber-text text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
             Premium TCG market analysis, data-driven insights, and exclusive intelligence.
             Institutional-grade analysis meets the underground—delivered to your inbox.
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
@@ -109,9 +74,10 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 2: MISSION (Card Layer 1 - z-10) - Ethereal Wave Transition
+          Transparent to show starfield/matrix background on scroll
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-10 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
+        className="sticky top-0 z-10 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
         style={{
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
@@ -128,17 +94,17 @@ export default function HomePage() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
             </div>
 
-            {/* Mission Content */}
+            {/* Mission Content with cyber stream effect */}
             <div className="space-y-6 text-center">
-              <p className="text-xl md:text-2xl text-slate-300 leading-relaxed">
+              <p className="cyber-text text-xl md:text-2xl text-slate-300 leading-relaxed">
                 The TCG market is a <span className="text-cyan-400 font-semibold">multi-billion dollar industry</span> hiding in plain sight.
               </p>
-              <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
+              <p className="cyber-text text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
                 While Wall Street sleeps on collectibles, serious collectors are building generational wealth.
                 We provide the intelligence infrastructure they need—real-time market data, predictive analytics,
                 and exclusive research that separates signal from noise.
               </p>
-              <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
+              <p className="cyber-text text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
                 No hype. No speculation. Just data-driven insights delivered with institutional-grade precision.
               </p>
 
@@ -168,9 +134,10 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Ethereal Wave Transition
+          Transparent to show starfield/matrix background on scroll
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-20 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
+        className="sticky top-0 z-20 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
         style={{
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
@@ -303,9 +270,10 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 4: CTA (Card Layer 3 - z-30) - Ethereal Wave Transition
+          Transparent to show starfield/matrix background on scroll
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-30 min-h-screen bg-slate-950/95 backdrop-blur-xl border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)] pb-20"
+        className="sticky top-0 z-30 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)] pb-20"
         style={{
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
@@ -332,7 +300,7 @@ export default function HomePage() {
                   Ready for the Alpha?
                 </h2>
 
-                <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
+                <p className="cyber-text text-lg text-slate-400 mb-8 max-w-xl mx-auto">
                   Join the underground network of collectors who move before the market does.
                   Weekly intel drops. Zero spam. Unsubscribe anytime.
                 </p>
@@ -359,8 +327,9 @@ export default function HomePage() {
 
       {/* ═══════════════════════════════════════════════════════════════════
           FOOTER (Final Layer - z-40)
+          Transparent to show starfield/matrix background
           ═══════════════════════════════════════════════════════════════════ */}
-      <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950">
+      <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Column */}
