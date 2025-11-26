@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 
 const steps: Step[] = [
@@ -33,9 +34,16 @@ const steps: Step[] = [
 ];
 
 export default function GuidedTour() {
+  const pathname = usePathname();
   const [run, setRun] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
   const [isClient, setIsClient] = useState(false);
+
+  // STRICTLY disable on public routes
+  const publicRoutes = ['/', '/about', '/intel', '/research', '/portfolio', '/commons', '/subscribe'];
+  if (publicRoutes.includes(pathname || '')) {
+    return null;
+  }
 
   useEffect(() => {
     setIsClient(true);

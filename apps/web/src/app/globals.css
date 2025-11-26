@@ -46,6 +46,21 @@
   .btn-cyan:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .btn-cyan { transition-duration: 0.01ms; } }
 
+  /* Titan Typography - Sharp Neon Wireframe */
+  .font-titan {
+    -webkit-text-stroke: 1.5px #22d3ee;
+    color: transparent;
+    /* Tight plasma edge - reduced from 15px to 4px */
+    text-shadow: 0 0 4px rgba(34, 211, 238, 0.6);
+  }
+
+  /* Ethereal Scroll Transition - Lightsaber Effect */
+  .ethereal-scroll {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
+    box-shadow: 0 -30px 80px -10px rgba(6, 182, 212, 0.15);
+  }
+
   /* Holographic Background Effect (PS5-inspired) */
   .holo {
     background: radial-gradient(120% 120% at 0% 0%, var(--apex-cyan) 10%, transparent 40%),
