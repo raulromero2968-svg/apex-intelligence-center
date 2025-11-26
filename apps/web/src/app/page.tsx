@@ -12,40 +12,7 @@ const navLinks = [
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-slate-950 overflow-hidden">
-      {/* Matrix Grid Cyber Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Base dark background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
-        
-        {/* Cyan grid pattern */}
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `
-              linear-gradient(cyan 1px, transparent 1px),
-              linear-gradient(90deg, cyan 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-          }}
-        />
-        
-        {/* Animated glow orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        
-        {/* Scan lines effect */}
-        <div 
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, cyan 2px, cyan 4px)',
-            animation: 'scan 8s linear infinite',
-          }}
-        />
-      </div>
-
-      {/* Gradient Overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent z-[1]" />
+    <div className="relative min-h-screen overflow-hidden">
 
       {/* Header / Navigation */}
       <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
@@ -377,16 +344,6 @@ export default function HomePage() {
         </Link>
       </div>
 
-      <style jsx>{`
-        @keyframes scan {
-          0% {
-            transform: translateY(-100%);
-          }
-          100% {
-            transform: translateY(100%);
-          }
-        }
-      `}</style>
     </div>
   );
 }
