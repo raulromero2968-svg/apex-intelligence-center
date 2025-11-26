@@ -2,29 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomCursor from '@/components/ui/CustomCursor';
-
-const navLinks = [
-  { href: '/intel', label: 'INTEL' },
-  { href: '/portfolio', label: 'PORTFOLIO' },
-  { href: '/commons', label: 'COMMONS' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/subscribe', label: 'SUBSCRIBE' },
-];
-
-/**
- * Typewriter animation configuration
- * Staggered delays create a "swarm" sequential reveal effect
- */
-const TYPEWRITER_CONFIG = {
-  baseDuration: 3500, // Slowed down from 2000
-  staggerDelay: 500,  // Increased delay
-  steps: 60,          // More steps for smoother slow typing
-};
+import { Typewriter } from '@/components/ui/Typewriter';
 
 export default function HomePage() {
-  const typewriterRefs = useRef<(HTMLElement | null)[]>([]);
   const [shootingStars, setShootingStars] = useState<number[]>([]);
 
   useEffect(() => {
@@ -39,52 +21,6 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    // Respect reduced motion preferences
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mediaQuery.matches) {
-      typewriterRefs.current.forEach((el) => {
-        if (el) {
-          el.style.width = '100%';
-          el.style.opacity = '1';
-        }
-      });
-      return;
-    }
-
-    // Stagger typewriter animations for swarm-like sequential reveal
-    typewriterRefs.current.forEach((el, index) => {
-      if (!el) return;
-
-      // Initial hidden state
-      el.style.width = '0%';
-      el.style.opacity = '1';
-      el.style.overflow = 'hidden';
-      el.style.whiteSpace = 'nowrap';
-      el.style.display = 'inline-block';
-
-      // Staggered delay for swarm effect
-      const delay = index * TYPEWRITER_CONFIG.staggerDelay;
-      const duration = TYPEWRITER_CONFIG.baseDuration + (index * 100);
-
-      setTimeout(() => {
-        el.animate(
-          [{ width: '0%' }, { width: '100%' }],
-          {
-            duration,
-            easing: `steps(${TYPEWRITER_CONFIG.steps}, end)`,
-            fill: 'forwards',
-          }
-        );
-      }, delay);
-    });
-  }, []);
-
-  // Helper to set ref at index
-  const setRef = (index: number) => (el: HTMLElement | null) => {
-    typewriterRefs.current[index] = el;
-  };
 
   return (
     <div className="relative">
@@ -142,9 +78,12 @@ export default function HomePage() {
             </div>
           </h1>
 
-          {/* Magnetizing Subtitle - Succinct, comprehensive; Typewriter applied for engagement */}
-          <p ref={setRef(0)} className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center typewriter cyber-text">
-            Unlock premium TCG intel: Real-time market analysis, AI-driven insights, <br className="hidden md:block" /> and exclusive underground research—delivered straight to serious collectors.
+          {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10 text-center">
+            <Typewriter
+              text="Unlock premium TCG intel: Real-time market analysis, AI-driven insights, and exclusive underground research—delivered straight to serious collectors."
+              speed={0.02}
+            />
           </p>
 
           {/* CTA Buttons - Tactical Military Style */}
@@ -172,15 +111,16 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2: MISSION (Card Layer 1 - z-10) - Ethereal Wave Transition
-          Transparent to show starfield/matrix background on scroll
+          ANTI-GRAVITY CARD STACK CONTAINER
+          Increasing top values create the "stacked deck" visual
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="relative flex flex-col gap-32 pb-32">
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 2: MISSION (Card Layer 1 - z-10) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-10 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
-        style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
-        }}
+        className="sticky top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-3xl overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
@@ -203,8 +143,11 @@ export default function HomePage() {
 
               {/* Mission Content - Succinct copy for magnetism */}
               <div className="relative z-10 space-y-6 text-center">
-                <p ref={setRef(1)} className="text-slate-400 mb-6 typewriter cyber-text">
-                  The TCG market is a multi-billion dollar powerhouse, yet most collectors operate blind. Apex Intelligence builds the elite intel network that&apos;s been missing—data-driven, transparent, actionable insights for generational wealth.
+                <p className="text-slate-400 mb-6">
+                  <Typewriter
+                    text="The TCG market is a multi-billion dollar powerhouse, yet most collectors operate blind. Apex Intelligence builds the elite intel network that's been missing—data-driven, transparent, actionable insights for generational wealth."
+                    speed={0.015}
+                  />
                 </p>
 
                 {/* Key Points - Succinct bullets */}
@@ -213,21 +156,21 @@ export default function HomePage() {
                     <span className="mr-4 text-cyan-400 font-bold font-mono">01</span>
                     <div>
                       <h3 className="font-bold text-white">Data-Driven</h3>
-                      <p ref={setRef(2)} className="text-slate-400 typewriter">Real-time analytics separating signal from noise.</p>
+                      <p className="text-slate-400">Real-time analytics separating signal from noise.</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-4 text-cyan-400 font-bold font-mono">02</span>
                     <div>
                       <h3 className="font-bold text-white">Transparent</h3>
-                      <p ref={setRef(3)} className="text-slate-400 typewriter">No hype—just verified, institutional-grade precision.</p>
+                      <p className="text-slate-400">No hype—just verified, institutional-grade precision.</p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="mr-4 text-cyan-400 font-bold font-mono">03</span>
                     <div>
                       <h3 className="font-bold text-white">Actionable</h3>
-                      <p ref={setRef(4)} className="text-slate-400 typewriter">Insights that drive smart decisions for serious collectors.</p>
+                      <p className="text-slate-400">Insights that drive smart decisions for serious collectors.</p>
                     </div>
                   </li>
                 </ul>
@@ -258,15 +201,10 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Ethereal Wave Transition
-          Transparent to show starfield/matrix background on scroll
+          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-20 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)]"
-        style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
-        }}
+        className="sticky top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-3xl overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-16">
           {/* Section Header - Prismatic See-Through Typography */}
@@ -394,15 +332,10 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: CTA (Card Layer 3 - z-30) - Ethereal Wave Transition
-          Transparent to show starfield/matrix background on scroll
+          SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="sticky top-0 z-30 min-h-screen bg-slate-950/60 backdrop-blur-sm border-t border-cyan-500/20 flex items-center shadow-[0_-30px_80px_-10px_rgba(6,182,212,0.15)] pb-20"
-        style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
-        }}
+        className="sticky top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
@@ -449,6 +382,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      </div> {/* End Anti-Gravity Card Stack Container */}
 
       {/* ═══════════════════════════════════════════════════════════════════
           FOOTER (Final Layer - z-40)
