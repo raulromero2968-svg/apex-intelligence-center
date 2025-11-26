@@ -45,7 +45,7 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative z-0 min-h-screen flex flex-col overflow-hidden">
         {/* Hero Content (Centered) - Transparent to show starfield/matrix */}
-        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-16">
+        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
           {/* Status Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
             <span className="relative flex h-2 w-2">
@@ -56,7 +56,7 @@ export default function HomePage() {
           </div>
 
           {/* Main Title - Unified typography with white stroke + gradient fill */}
-          <h1 className="flex flex-col items-center text-center gap-2 w-full max-w-[90vw] md:max-w-[800px] mx-auto leading-[1.1] py-2 cyber-stream">
+          <h1 className="flex flex-col items-center text-center gap-1 md:gap-2 w-full max-w-[90vw] md:max-w-[800px] mx-auto leading-[1.1] py-2 cyber-stream">
             <span className="font-titan-unified text-4xl sm:text-6xl lg:text-8xl tracking-tighter block w-full text-center">
               Underground Intel
             </span>

@@ -59,7 +59,7 @@ export const TopBanner = () => {
         href="/dashboard"
         className="btn-tactical inline-flex items-center gap-2 text-[10px] md:text-sm px-2 py-1 md:px-5 md:py-2 font-mono"
       >
-        [ ACCESS_TERMINAL ]
+        <span className="hidden md:inline">[ </span>ACCESS_TERMINAL<span className="hidden md:inline"> ]</span>
       </Link>
     </nav>
   );
