@@ -1,12 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-
-// Load HoloCardImage only on client to avoid SSR issues
-const HoloCardImage = dynamic(
-  () => import('@/components/titan/HoloCardImage').then((mod) => mod.HoloCardImage),
-  { ssr: false }
-);
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
@@ -204,12 +197,11 @@ export default function HomePage() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
+                  <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Vintage WOTC Analysis"
                     width={80}
                     height={80}
-                    enableParticles={false}
                     className="rounded-lg"
                   />
                 </div>
@@ -237,12 +229,12 @@ export default function HomePage() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
+                  <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Rotation Window Strategy"
                     width={80}
                     height={80}
-                    enableParticles={false}
+                    
                     className="rounded-lg"
                   />
                 </div>
@@ -270,12 +262,12 @@ export default function HomePage() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
                 <div className="mb-4 flex justify-center">
-                  <HoloCardImage
+                  <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Pokemon 151 Market Report"
                     width={80}
                     height={80}
-                    enableParticles={false}
+                    
                     className="rounded-lg"
                   />
                 </div>
