@@ -2,10 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-
-// Disable SSR for HoloCardImage to prevent build errors
-const HoloCardImage = dynamic(() => import('@/components/titan/HoloCardImage').then(mod => mod.HoloCardImage), { ssr: false });
+import { HoloCardImage } from '@/components/titan/HoloCardImage';
 
 const navLinks = [
   { href: '/intel', label: 'INTEL' },
