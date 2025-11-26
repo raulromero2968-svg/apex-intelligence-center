@@ -1,3 +1,5 @@
+'use client';
+
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
 import LiveScatter from "@/components/charts/LiveScatter";
