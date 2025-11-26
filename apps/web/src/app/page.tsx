@@ -31,12 +31,12 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - Titan Hollow Typography */}
+          {/* Main Title - Prismatic See-Through Typography */}
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
-            <span className="block font-titan text-transparent cyber-street">
+            <span className="block header-prismatic cyber-street drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
               Underground Intel
             </span>
-            <span className="block font-titan-purple text-transparent cyber-street">
+            <span className="block header-prismatic-purple cyber-street drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">
               & AI Research
             </span>
           </h1>
@@ -85,10 +85,10 @@ export default function HomePage() {
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
-            {/* Section Header - Titan Typography Purple */}
+            {/* Section Header - Prismatic See-Through Typography */}
             <div className="flex items-center gap-4 mb-10">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="font-titan-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+              <h2 className="header-prismatic-purple text-2xl md:text-3xl tracking-wider font-mono cyber-street">
                 [ MISSION ]
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -144,10 +144,10 @@ export default function HomePage() {
         }}
       >
         <div className="w-full px-6 md:px-12 py-16">
-          {/* Section Header - Titan Typography */}
+          {/* Section Header - Prismatic See-Through Typography */}
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="font-titan text-2xl md:text-3xl tracking-wider font-mono cyber-street">
+            <h2 className="header-prismatic text-2xl md:text-3xl tracking-wider font-mono cyber-street">
               [ LATEST INTELLIGENCE ]
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -156,10 +156,10 @@ export default function HomePage() {
           {/* Intelligence Cards Grid - Wrapped in Cyber Folder */}
           <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1: Vintage WOTC - Prismatic Glass */}
+              {/* Card 1: Vintage WOTC - Transparent Glassmorphism */}
               <Link
                 href="/intel/vintage-wotc-analysis"
-                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
@@ -176,10 +176,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   DIGITAL SCROLL
                 </div>
-                <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
                   Vintage WOTC Analysis
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
                   Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
@@ -188,10 +188,10 @@ export default function HomePage() {
                 </div>
               </Link>
 
-              {/* Card 2: Rotation Window - Prismatic Glass */}
+              {/* Card 2: Rotation Window - Transparent Glassmorphism */}
               <Link
                 href="/intel/rotation-window-strategy"
-                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-purple-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+                className="group relative bg-black/30 backdrop-blur-md border border-purple-400/30 rounded-lg p-6 hover:border-purple-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.15)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
@@ -209,10 +209,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
                   ELECTRONIC FOLDER
                 </div>
-                <h3 className="font-titan-purple text-xl mb-2 group-hover:text-purple-300 transition-colors">
+                <h3 className="header-prismatic-purple text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
                   Rotation Window Strategy
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
                   Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
@@ -221,10 +221,10 @@ export default function HomePage() {
                 </div>
               </Link>
 
-              {/* Card 3: Pokemon 151 - Prismatic Glass */}
+              {/* Card 3: Pokemon 151 - Transparent Glassmorphism */}
               <Link
                 href="/intel/pokemon-151-market-report"
-                className="group relative bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-slate-900/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 {/* Holo Thumbnail */}
@@ -242,10 +242,10 @@ export default function HomePage() {
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   DIGITAL SCROLL
                 </div>
-                <h3 className="font-titan text-xl mb-2 group-hover:text-cyan-300 transition-colors">
+                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text">
                   Pokemon 151 Market Report
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                <p className="text-slate-400 text-sm leading-relaxed mb-4 cyber-text">
                   Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
@@ -296,7 +296,7 @@ export default function HomePage() {
                   ALPHA ACCESS OPEN
                 </div>
 
-                <h2 className="font-titan text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
+                <h2 className="header-prismatic text-3xl md:text-4xl tracking-wider mb-4 cyber-street">
                   Ready for the Alpha?
                 </h2>
 
