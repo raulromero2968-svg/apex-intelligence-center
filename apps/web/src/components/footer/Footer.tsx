@@ -1,8 +1,18 @@
+'use client';
+
 import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { SOCIAL_PROFILES } from '@/lib/constants';
 
 export const Footer = () => {
+  const pathname = usePathname() ?? '';
+
+  // Hide Footer on homepage - it has its own standalone layout
+  if (pathname === '/') {
+    return null;
+  }
+
   return (
     <footer 
       className="relative mt-20 border-t border-cyan-500/20"
