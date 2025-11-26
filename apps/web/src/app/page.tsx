@@ -77,13 +77,13 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/subscribe"
-              className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)]"
+              className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
             >
               GET ALPHA ACCESS
             </Link>
             <Link
               href="/intel"
-              className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
+              className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
             >
               BROWSE DATABASE
             </Link>
@@ -358,13 +358,13 @@ export default function HomePage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
                     href="/subscribe"
-                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)]"
+                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
                   >
                     GET ALPHA ACCESS
                   </Link>
                   <Link
                     href="/about"
-                    className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
+                    className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
                   >
                     LEARN MORE
                   </Link>
