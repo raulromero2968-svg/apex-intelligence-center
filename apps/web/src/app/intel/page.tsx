@@ -7,6 +7,8 @@ import { CardViewer } from "@/components/three/CardViewer";
 import { intelNotes } from "@/content/seed";
 import StarfieldFX from "@/components/fx/StarfieldFX";
 
+export const dynamic = 'force-dynamic';
+
 export default function IntelPage() {
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 md:px-12 relative">
