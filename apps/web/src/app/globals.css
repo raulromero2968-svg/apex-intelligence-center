@@ -920,6 +920,7 @@ html.light canvas {
 .text-sheen-overlay {
   position: relative;
   display: inline-block;
+  width: fit-content;
   isolation: isolate;
 }
 
@@ -931,26 +932,27 @@ html.light canvas {
   width: 50%;
   height: 100%;
   background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
+    110deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 45%,
+    rgba(34, 211, 238, 0.9) 50%,
+    rgba(255, 255, 255, 0.9) 55%,
+    transparent 60%
   );
-  transform: skewX(-25deg);
-  animation: sheen-pass-overlay 3s infinite;
+  animation: sheen-pass-overlay 6s ease-in-out infinite;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
 @keyframes sheen-pass-overlay {
   0% {
-    left: -100%;
+    left: 200%;
   }
   20% {
-    left: 200%;
+    left: -200%;
   }
   100% {
-    left: 200%;
+    left: -200%;
   }
 }
 
