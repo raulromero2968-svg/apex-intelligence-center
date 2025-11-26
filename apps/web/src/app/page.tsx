@@ -11,16 +11,36 @@ const navLinks = [
 export default function HomePage() {
   return (
     <div className="relative min-h-screen bg-slate-950 overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-40 z-0"
-      >
-        <source src="/images/titan-loop.mp4" type="video/mp4" />
-      </video>
+      {/* Matrix Grid Cyber Background */}
+      <div className="absolute inset-0 z-0">
+        {/* Base dark background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
+        
+        {/* Cyan grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `
+              linear-gradient(cyan 1px, transparent 1px),
+              linear-gradient(90deg, cyan 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+          }}
+        />
+        
+        {/* Animated glow orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        
+        {/* Scan lines effect */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, cyan 2px, cyan 4px)',
+            animation: 'scan 8s linear infinite',
+          }}
+        />
+      </div>
 
       {/* Gradient Overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent z-[1]" />
@@ -65,10 +85,10 @@ export default function HomePage() {
           SYSTEM ONLINE // VER 2.0
         </div>
 
-        {/* CRITICAL TITLE: Hollow "UNDERGROUND" + Solid "INTEL" */}
+        {/* CRITICAL TITLE: Hollow "UNDERGROUND" + Solid "INTEL" with holographic glow */}
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
           <span
-            className="block"
+            className="block drop-shadow-[0_0_30px_rgba(6,182,212,0.5)]"
             style={{
               color: 'transparent',
               WebkitTextStroke: '2px white',
@@ -76,7 +96,7 @@ export default function HomePage() {
           >
             UNDERGROUND
           </span>
-          <span className="block text-white">
+          <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
             INTEL
           </span>
         </h1>
@@ -88,17 +108,17 @@ export default function HomePage() {
           <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
         </p>
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons with holographic effect */}
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
             href="/subscribe"
-            className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg"
+            className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
           >
             GET ALPHA ACCESS
           </Link>
           <Link
             href="/intel"
-            className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg"
+            className="inline-flex items-center justify-center gap-2 border border-slate-700 hover:bg-white/10 text-white font-medium px-8 py-4 rounded-lg transition-all text-lg hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
           >
             BROWSE DATABASE
           </Link>
@@ -114,6 +134,17 @@ export default function HomePage() {
           [ ACCESS_TERMINAL ]
         </Link>
       </div>
+
+      <style jsx>{`
+        @keyframes scan {
+          0% {
+            transform: translateY(-100%);
+          }
+          100% {
+            transform: translateY(100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
