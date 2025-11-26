@@ -9,17 +9,31 @@
 
 // Quilt Generation
 export {
-  generateQuiltConfig,
-  generateQuilt,
+  // Asset management
+  createQuiltAsset,
   getQuiltAsset,
   getUserQuiltAssets,
+  getPublicQuiltAssets,
   updateQuiltAsset,
   deleteQuiltAsset,
+  // Configuration
+  getRecommendedConfig,
   calculateQuiltDimensions,
-  generateQuiltPreview,
+  calculateViewCone,
+  getCameraPositions,
+  // Rendering helpers
+  getQuiltShaderCode,
+  getViewUVs,
+  estimateFileSizeBytes,
+  getFallbackRenderParams,
+  getAnaglyphViewIndices,
+  // Presets
+  QUILT_PRESETS,
+  DISPLAY_PRESETS,
+  // Types
   type QuiltConfig,
-  type QuiltGenerationRequest,
-  type QuiltGenerationResult,
+  type QuiltPreset,
+  type ViewConeConfig,
 } from './quilt-generator';
 
 // Display Calibration
