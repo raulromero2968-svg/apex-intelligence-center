@@ -244,8 +244,8 @@ export default function RootLayout({
 
       >
 
-        {/* GLOBAL STARFIELD BACKGROUND - Deep space layer */}
-        <div className="fixed inset-0 z-[-2] overflow-hidden">
+        {/* GLOBAL STARFIELD BACKGROUND - Deep space layer with dynamic viewport height for mobile */}
+        <div className="fixed inset-0 h-[100dvh] w-screen z-[-2] overflow-hidden">
           {/* CSS-generated starfield pattern */}
           <div
             className="absolute inset-0 opacity-60"
@@ -272,8 +272,8 @@ export default function RootLayout({
           />
         </div>
 
-        {/* GLOBAL MATRIX BACKGROUND - Enhanced for mobile visibility */}
-        <div className="fixed inset-0 z-[-1]">
+        {/* GLOBAL MATRIX BACKGROUND - Enhanced for mobile visibility with dynamic viewport height */}
+        <div className="fixed inset-0 h-[100dvh] w-screen z-[-1]">
           {/* Grid Pattern - Brighter cyan (#0891b2), higher opacity for mobile */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-[size:50px_50px] opacity-40 md:opacity-30" />
           {/* Scanning Light Effect - Enhanced glow */}
