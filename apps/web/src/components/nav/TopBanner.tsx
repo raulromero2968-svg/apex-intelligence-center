@@ -28,7 +28,7 @@ export const TopBanner = () => {
   };
 
   return (
-    <header className="sticky top-0 z-[100] flex items-center justify-between px-6 md:px-12 py-6 bg-black backdrop-blur-md border-b border-cyan-900/30">
+    <nav className="relative flex items-center justify-between px-6 md:px-12 py-4 border-b border-cyan-900/30">
       {/* Left: Logo/Brand */}
       <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
         <Image
@@ -65,6 +65,6 @@ export const TopBanner = () => {
       >
         [ ACCESS_TERMINAL ]
       </Link>
-    </header>
+    </nav>
   );
 };
