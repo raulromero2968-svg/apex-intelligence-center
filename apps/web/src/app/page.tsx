@@ -55,12 +55,12 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - Single-element hollow text (no duplicates) */}
-          <h1 className="flex flex-col items-center text-center gap-2">
-            <span className="font-titan text-6xl md:text-8xl tracking-tighter">
+          {/* Main Title - Unified typography with white stroke + gradient fill */}
+          <h1 className="flex flex-col items-center text-center gap-2 w-full leading-tight py-2 cyber-stream">
+            <span className="font-titan-unified text-6xl md:text-8xl tracking-tighter">
               Underground Intel
             </span>
-            <span className="text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent [-webkit-text-stroke:0px]">
+            <span className="font-titan-unified-purple text-6xl md:text-8xl tracking-tighter">
               & AI Research
             </span>
           </h1>
