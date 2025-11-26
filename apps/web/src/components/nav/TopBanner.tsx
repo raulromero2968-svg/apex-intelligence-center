@@ -24,15 +24,15 @@ export const TopBanner = () => {
   };
 
   return (
-    <nav className="relative flex items-center justify-between px-6 md:px-12 py-4 border-b border-cyan-900/30">
+    <nav className="relative flex items-center justify-between px-6 md:px-12 h-14 md:h-16 border-b border-cyan-900/30">
       {/* Left: Logo/Brand */}
-      <Link href="/" className="flex items-center text-white font-bold text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+      <Link href="/" className="flex items-center text-white font-bold text-sm md:text-lg tracking-widest font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
         <Image
           src="/images/apex-wolf-black-bg-final.png"
-          width={40}
-          height={40}
+          width={24}
+          height={24}
           alt="Apex Wolf"
-          className="rounded-full mr-3"
+          className="w-6 h-6 md:w-8 md:h-8 rounded-full mr-2 md:mr-3"
         />
         <span className="text-prismatic">APEX INTELLIGENCE</span>
       </Link>
