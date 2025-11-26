@@ -55,27 +55,14 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - Static (no typewriter) for immediate impact */}
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
-            {/* Line 1: Wrapped in relative container */}
-            <div className="relative">
-              <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-                Underground Intel
-              </span>
-              <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.5)] mix-blend-screen text-sheen">
-                Underground Intel
-              </span>
-            </div>
-
-            {/* Line 2: Wrapped in relative container */}
-            <div className="relative">
-              <span className="block text-hollow-white drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                & AI Research
-              </span>
-              <span className="block absolute top-0 left-0 w-full text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.5)] mix-blend-screen text-sheen">
-                & AI Research
-              </span>
-            </div>
+          {/* Main Title - Single-element hollow text (no duplicates) */}
+          <h1 className="flex flex-col items-center text-center gap-2">
+            <span className="font-titan text-6xl md:text-8xl tracking-tighter">
+              Underground Intel
+            </span>
+            <span className="text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent [-webkit-text-stroke:0px]">
+              & AI Research
+            </span>
           </h1>
 
           {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
