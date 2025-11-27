@@ -13,7 +13,10 @@ import { db } from '@/db';
 import { sales, cards, market_knowledge, manipulationAlerts, watchlistItems } from '@/db/schema';
 import { eq, and, gte, sql, desc, ilike } from 'drizzle-orm';
 import { contrarianSearch, classifySentiment } from '@/../../../lib/rag/contrarian-rag';
-import { createId as cuid } from '@paralleldrive/cuid2';
+// Lightweight ID generator to avoid external dependency on @paralleldrive/cuid2.
+// Safe for both Node and edge runtimes.
+const cuid = (): string =>
+  Math.random().toString(36).slice(2) + Date.now().toString(36);
 
 export interface ManipulationAlert {
   cardId: string;

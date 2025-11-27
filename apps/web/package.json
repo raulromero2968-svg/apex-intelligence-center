@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@apex/auth": "workspace:*",
+    "@apex/compliance": "workspace:*",
     "@apex/db": "workspace:*",
     "@apex/knowledge-graph": "workspace:*",
     "@apex/realtime": "workspace:*",
