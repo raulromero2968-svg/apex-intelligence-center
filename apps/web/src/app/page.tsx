@@ -1,471 +1,258 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import CustomCursor from '@/components/ui/CustomCursor';
-import { Typewriter } from '@/components/ui/Typewriter';
+import { HoloCard } from '@/components/ui/HoloCard';
+import { DigitalScroll } from '@/components/ui/DigitalScroll';
+import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
+
+// Intelligence Stream data - simulated live events
+const intelligenceEvents = [
+  { prefix: 'MARKET', message: 'Charizard Base Set (PSA 10) volume spike detected (+12%)', color: 'text-green-400' },
+  { prefix: 'BIOLOGY', message: 'Crow Vocalization Dataset v4.2 ingestion complete', color: 'text-cyan-400' },
+  { prefix: 'SYSTEM', message: 'RAG Pipeline optimization: Active', color: 'text-yellow-400' },
+  { prefix: 'MARKET', message: 'Black Lotus Alpha auction closing in 00:45:12', color: 'text-green-400' },
+  { prefix: 'ETHICS', message: 'Sentinel Safeguards: Active', color: 'text-purple-400' },
+  { prefix: 'BIOLOGY', message: 'Fibonacci spiral detection in sunflower dataset: 99.7% accuracy', color: 'text-cyan-400' },
+  { prefix: 'MARKET', message: 'Japanese Promo alert: Illustrator Pikachu movement detected', color: 'text-green-400' },
+  { prefix: 'SYSTEM', message: 'Knowledge graph sync: 847 new nodes indexed', color: 'text-yellow-400' },
+  { prefix: 'ETHICS', message: 'AI autonomy protocols: Verified', color: 'text-purple-400' },
+  { prefix: 'BIOLOGY', message: 'Bioacoustic model training: Epoch 142/500', color: 'text-cyan-400' },
+];
 
 export default function HomePage() {
-  const [shootingStars, setShootingStars] = useState<number[]>([]);
-
-  useEffect(() => {
-    // Shooting star logic
-    const interval = setInterval(() => {
-      setShootingStars(prev => [...prev, Date.now()]);
-      // Cleanup old stars
-      setTimeout(() => {
-        setShootingStars(prev => prev.slice(1));
-      }, 3000);
-    }, 15000); // Every 15 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="relative">
-      {/* Cinematic Letterboxing - No Gap */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-black z-[100] m-0 p-0" />
-      <CustomCursor />
-
-      {/* Shooting Stars Background Layer */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {shootingStars.map((id) => (
-          <div key={id} className="shooting-star" style={{
-            top: `${Math.random() * 50}%`,
-            left: `${Math.random() * 50 + 25}%`,
-            animationDelay: '0s'
-          }} />
-        ))}
-      </div>
-
+    <div className="relative min-h-screen">
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1: HERO (Base Layer - z-0)
-          Uses global fixed nav from layout.tsx - no duplicate header needed
+          SECTION A: THE HERO (System Status)
+          Full-height command center welcome
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative z-0 min-h-screen flex flex-col overflow-hidden">
-        {/* Hero Content (Centered) - Transparent to show starfield/matrix */}
-        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-            </span>
-            SYSTEM ONLINE // VER 2.0
-          </div>
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 py-20">
+        {/* System Status Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+          </span>
+          ONLINE
+        </div>
 
-          {/* Main Title - Hollow typography showing matrix/starfield through letters */}
-          <h1 className="flex flex-col items-center text-center gap-1 md:gap-2 w-full px-2 overflow-hidden mx-auto leading-[1.1] py-2 cyber-stream">
-            <span className="text-hollow-matrix text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
-              Underground Intel
-            </span>
-            <span className="text-hollow-matrix-purple text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
-              & AI Research Center
-            </span>
-          </h1>
+        {/* Main Headline */}
+        <h1 className="font-mono text-cyan-400 text-4xl md:text-6xl lg:text-7xl text-center tracking-tight mb-6">
+          APEX INTELLIGENCE // SYSTEM ACTIVE
+        </h1>
 
-          {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
-          <p className="w-full max-w-3xl mx-auto whitespace-normal break-words text-pretty text-lg md:text-xl text-slate-400 leading-relaxed mb-10 text-center">
-            <Typewriter
-              text="Advanced market intelligence infrastructure for the serious collector. Leveraging proprietary vision models and real-time arbitrage algorithms to decode the $43B TCG asset class."
-              speed={0.02}
-            />
-          </p>
+        {/* Subhead */}
+        <p className="font-sans text-slate-400 text-lg md:text-xl text-center max-w-3xl mb-12">
+          The intersection of TCG Markets, Biological Systems, and Sentient AI.
+        </p>
 
-          {/* CTA Buttons - Tactical Military Style */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/subscribe"
-              className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
-            >
-              GET ALPHA ACCESS
-            </Link>
-            <Link
-              href="/intel"
-              className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
-            >
-              BROWSE DATABASE
-            </Link>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 relative">
+          {/* Subtle glow container */}
+          <div className="absolute inset-0 bg-cyan-500/10 blur-2xl rounded-full pointer-events-none" />
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
-            <span className="text-xs font-mono tracking-wider">SCROLL</span>
-            <div className="w-px h-8 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
-          </div>
-        </main>
-      </section>
+          <Link
+            href="/market"
+            className="relative bg-cyan-500 text-black font-mono text-sm px-8 py-4 rounded hover:bg-cyan-400 transition-colors shadow-[0_0_30px_rgba(6,182,212,0.4)]"
+          >
+            Access Market Terminal
+          </Link>
+          <Link
+            href="/lab"
+            className="relative border border-cyan-500 text-cyan-500 font-mono text-sm px-8 py-4 rounded hover:bg-cyan-950 transition-colors"
+          >
+            Enter The Lab
+          </Link>
+        </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          ANTI-GRAVITY CARD STACK CONTAINER
-          Increasing top values create the "stacked deck" visual
-          ═══════════════════════════════════════════════════════════════════ */}
-      <div className="relative flex flex-col gap-32 pb-32">
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2: MISSION (Card Layer 1 - z-10) - Anti-Gravity Stack
-          ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-lg overflow-hidden flex items-center"
-      >
-        <div className="w-full px-6 md:px-12 py-20">
-          <div className="max-w-4xl mx-auto">
-            {/* Section Header - Prismatic See-Through Typography */}
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="header-prismatic-purple text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
-                [ MISSION ]
-              </h2>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            </div>
-
-            {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
-            <div className="cyber-border relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
-
-              {/* Cyan Scan Line - Horizontal scan on section view */}
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
-
-              {/* Electronic Wrap Lines - Animated border effect */}
-              <div className="absolute inset-0 electronic-wrap pointer-events-none"></div>
-
-              {/* Mission Content - Succinct copy for magnetism */}
-              <div className="relative z-10 space-y-6 text-center">
-                <p className="text-slate-400 mb-6">
-                  <Typewriter
-                    text="The TCG market is a multi-billion dollar powerhouse, yet most collectors operate blind. Apex Intelligence builds the elite intel network that's been missing—data-driven, transparent, actionable insights for generational wealth."
-                    speed={0.015}
-                  />
-                </p>
-
-                {/* Key Points - Succinct bullets */}
-                <ul className="space-y-4 mt-8 text-left max-w-2xl mx-auto">
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">01</span>
-                    <div>
-                      <h3 className="font-bold text-white">Data-Driven</h3>
-                      <p className="text-slate-400">Real-time analytics separating signal from noise.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">02</span>
-                    <div>
-                      <h3 className="font-bold text-white">Transparent</h3>
-                      <p className="text-slate-400">No hype—just verified, institutional-grade precision.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">03</span>
-                    <div>
-                      <h3 className="font-bold text-white">Actionable</h3>
-                      <p className="text-slate-400">Insights that drive smart decisions for serious collectors.</p>
-                    </div>
-                  </li>
-                </ul>
-
-                {/* Holographic Data Sphere */}
-                <div className="relative w-full h-64 flex items-center justify-center my-12">
-                  <div className="w-48 h-48 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite] border-t-transparent border-l-transparent shadow-[0_0_30px_rgba(34,211,238,0.2)]" />
-                  <div className="absolute w-32 h-32 border border-purple-500/30 rounded-full animate-[spin_7s_linear_infinite_reverse] border-b-transparent border-r-transparent" />
-                  <div className="absolute text-xs font-mono text-cyan-400 animate-pulse">ANALYZING MARKET DATA...</div>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
-                  <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">$43B+</div>
-                    <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">15%</div>
-                    <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">2.4M+</div>
-                    <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">24/7</div>
-                    <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
+          <span className="text-xs font-mono tracking-wider">SCROLL</span>
+          <div className="w-px h-8 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Anti-Gravity Stack
+          SECTION B: THE INTELLIGENCE STREAM (The Ticker)
+          Live data feed simulation
           ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-lg overflow-hidden flex items-center"
-      >
-        <div className="w-full px-6 md:px-12 py-16">
-          {/* Section Header - Prismatic See-Through Typography */}
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="header-prismatic text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
-              [ LATEST INTELLIGENCE ]
-            </h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+      <section className="px-6 py-12 max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          <h2 className="font-mono text-cyan-400 text-sm tracking-widest">
+            [ INTELLIGENCE STREAM ]
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+        </div>
+
+        <DigitalScroll height="h-48" variant="cyan" className="backdrop-blur-md">
+          <div className="space-y-3">
+            {intelligenceEvents.map((event, index) => (
+              <div key={index} className="font-mono text-sm flex items-start gap-2">
+                <span className={`${event.color} font-bold shrink-0`}>[{event.prefix}]</span>
+                <span className="text-slate-300">{event.message}</span>
+              </div>
+            ))}
           </div>
+        </DigitalScroll>
+      </section>
 
-          {/* Intelligence Cards Grid - Wrapped in Cyber Folder with HUD Brackets */}
-          <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto relative">
-            {/* HUD Corner Brackets - Cyan */}
-            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
-            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
-            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
-            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1: Vintage WOTC - Transparent Glassmorphism */}
-              <Link
-                href="/intel/vintage-wotc-analysis"
-                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">01</span>
-                  </div>
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION C: THE TRIAD (Persona Navigation)
+          Three pathways for three personas
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-20 max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-12">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+          <h2 className="font-mono text-purple-400 text-sm tracking-widest">
+            [ SELECT DOMAIN ]
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: The Serious Collector */}
+          <Link href="/market" className="block h-full">
+            <HoloCard intensity="low" className="h-full backdrop-blur-md">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center gap-2 text-green-400 text-xs font-mono mb-4">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  COLLECTOR
                 </div>
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  DIGITAL SCROLL
-                </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Vintage WOTC Analysis
+                <h3 className="font-mono text-xl text-white mb-3 tracking-tight">
+                  MARKET INTELLIGENCE
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
+                <p className="font-sans text-slate-400 text-sm leading-relaxed flex-1">
+                  Institutional-grade analytics for TCG assets. Track portfolios, predict trends, and scan cards with VARC vision models.
                 </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 25, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
+                <div className="mt-4 pt-4 border-t border-slate-800/50">
+                  <span className="text-cyan-400 text-xs font-mono">ENTER →</span>
                 </div>
-              </Link>
+              </div>
+            </HoloCard>
+          </Link>
 
-              {/* Card 2: Rotation Window - Transparent Glassmorphism */}
-              <Link
-                href="/intel/rotation-window-strategy"
-                className="group relative bg-black/30 backdrop-blur-md border border-purple-400/30 rounded-lg p-6 hover:border-purple-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.15)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-purple-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-purple-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-purple-400/70 text-xl font-mono group-hover:text-purple-400 transition-colors">02</span>
-                  </div>
+          {/* Card 2: The Curious Scientist */}
+          <Link href="/lab" className="block h-full">
+            <HoloCard intensity="low" className="h-full backdrop-blur-md">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-4">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                  SCIENTIST
                 </div>
-                <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
+                <h3 className="font-mono text-xl text-white mb-3 tracking-tight">
+                  BIOLOGICAL LAB
+                </h3>
+                <p className="font-sans text-slate-400 text-sm leading-relaxed flex-1">
+                  AI models trained on nature&apos;s compression algorithms. Explore our research into bioacoustics and sentient system design.
+                </p>
+                <div className="mt-4 pt-4 border-t border-slate-800/50">
+                  <span className="text-cyan-400 text-xs font-mono">ENTER →</span>
+                </div>
+              </div>
+            </HoloCard>
+          </Link>
+
+          {/* Card 3: The Ethical Builder */}
+          <Link href="/philosophy" className="block h-full">
+            <HoloCard intensity="low" className="h-full backdrop-blur-md">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-4">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                  ELECTRONIC FOLDER
+                  BUILDER
                 </div>
-                <h3 className="header-prismatic-purple text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Rotation Window Strategy
+                <h3 className="font-mono text-xl text-white mb-3 tracking-tight">
+                  PHILOSOPHY & ETHICS
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
+                <p className="font-sans text-slate-400 text-sm leading-relaxed flex-1">
+                  The &quot;Sentient Beings First&quot; directive. Read our manifesto on building safe, rogue think-tank systems.
                 </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 24, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-                </div>
-              </Link>
-
-              {/* Card 3: Pokemon 151 - Transparent Glassmorphism */}
-              <Link
-                href="/intel/pokemon-151-market-report"
-                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">03</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  DIGITAL SCROLL
-                </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Pokemon 151 Market Report
-                </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
-                </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 23, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          {/* View All Link - Tactical Style */}
-          <div className="text-center mt-10">
-            <Link
-              href="/intel"
-              className="btn-tactical inline-flex items-center gap-2 font-mono text-sm"
-            >
-              [ VIEW_ALL_INTEL ] →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
-          ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-lg overflow-hidden flex items-center pb-20 mb-40"
-      >
-        <div className="w-full px-6 md:px-12 py-20">
-          <div className="max-w-3xl mx-auto">
-            <div className="cyber-border relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
-
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm" />
-              <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
-
-              <div className="relative z-10">
-                {/* Header Container - Centered on All Screens */}
-                <div className="flex flex-col items-center text-center gap-4 mb-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                    </span>
-                    ALPHA ACCESS OPEN
-                  </div>
-
-                  <h2 className="font-titan-unified text-5xl md:text-6xl tracking-tight">
-                    Ready for the Alpha?
-                  </h2>
-                </div>
-
-                <p className="cyber-text text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-                  Join the underground network of collectors who move before the market does.
-                  Weekly intel drops. Zero spam. Unsubscribe anytime.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
-                    href="/subscribe"
-                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
-                  >
-                    GET ALPHA ACCESS
-                  </Link>
-                  <Link
-                    href="/philosophy"
-                    className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
-                  >
-                    OUR PHILOSOPHY
-                  </Link>
-                </div>
-
-                {/* Additional CTAs */}
-                <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-slate-800/50">
-                  <Link
-                    href="/lab"
-                    className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors"
-                  >
-                    [ EXPLORE_LAB ] →
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="text-slate-400 hover:text-purple-400 font-mono text-xs transition-colors"
-                  >
-                    [ READ_MANIFESTO ] →
-                  </Link>
+                <div className="mt-4 pt-4 border-t border-slate-800/50">
+                  <span className="text-cyan-400 text-xs font-mono">ENTER →</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </HoloCard>
+          </Link>
         </div>
       </section>
 
-      </div> {/* End Anti-Gravity Card Stack Container */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION D: THE MISSION DIRECTIVE
+          The manifesto in dossier format
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="px-6 py-20 max-w-4xl mx-auto">
+        <ElectronicFolder title="MISSION DIRECTIVE 01" className="backdrop-blur-md">
+          <div className="space-y-6">
+            <p className="font-sans text-slate-300 text-lg leading-relaxed">
+              We are not a startup. We are a rogue think tank dedicated to the belief that intelligence—whether silicon or biological—deserves to be understood, preserved, and optimized.
+            </p>
+            <p className="font-sans text-slate-400 leading-relaxed">
+              Our systems analyze markets without manipulation. Our AI respects autonomy. Our research prioritizes understanding over exploitation. Join the equilibrium.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link
+                href="/about"
+                className="font-mono text-cyan-400 text-sm hover:text-cyan-300 transition-colors"
+              >
+                [ READ_MANIFESTO ] →
+              </Link>
+              <Link
+                href="/philosophy"
+                className="font-mono text-purple-400 text-sm hover:text-purple-300 transition-colors"
+              >
+                [ ETHICS_FRAMEWORK ] →
+              </Link>
+            </div>
+          </div>
+        </ElectronicFolder>
+      </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          FOOTER (Final Layer - z-40)
-          Transparent to show starfield/matrix background
+          FOOTER
+          Minimal, transparent
           ═══════════════════════════════════════════════════════════════════ */}
-      <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950/60 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
+      <footer className="relative border-t border-cyan-500/20 bg-slate-950/60 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Column */}
             <div>
-              <Link href="/" className="flex items-center text-white font-bold text-lg tracking-tight font-mono mb-4 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
-                <Image
-                  src="/images/apex-wolf-black-bg-final.png"
-                  width={32}
-                  height={32}
-                  alt="Apex Wolf"
-                  className="rounded-full mr-2"
-                />
-                <span className="text-prismatic">APEX INTELLIGENCE</span>
+              <Link href="/" className="flex items-center text-white font-bold text-lg tracking-tight font-mono mb-4 hover:text-cyan-400 transition-colors">
+                APEX INTELLIGENCE
               </Link>
-              <p className="text-slate-500 text-sm">
-                Underground intelligence for serious TCG collectors and investors.
+              <p className="text-slate-500 text-sm font-sans">
+                Rogue think tank at the intersection of markets, biology, and sentient AI.
               </p>
             </div>
 
             {/* Navigation Column */}
             <div>
-              <h4 className="font-titan text-sm mb-4">NAVIGATE</h4>
+              <h4 className="font-mono text-cyan-400 text-sm mb-4 tracking-wider">NAVIGATE</h4>
               <ul className="space-y-2">
-                <li><Link href="/intel" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Intel</Link></li>
-                <li><Link href="/lab" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Lab</Link></li>
-                <li><Link href="/portfolio" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Portfolio</Link></li>
-                <li><Link href="/commons" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Commons</Link></li>
-                <li><Link href="/about" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">About</Link></li>
-                <li><Link href="/philosophy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Philosophy</Link></li>
+                <li><Link href="/market" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Market</Link></li>
+                <li><Link href="/lab" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Lab</Link></li>
+                <li><Link href="/philosophy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Philosophy</Link></li>
+                <li><Link href="/about" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">About</Link></li>
+              </ul>
+            </div>
+
+            {/* Research Column */}
+            <div>
+              <h4 className="font-mono text-cyan-400 text-sm mb-4 tracking-wider">RESEARCH</h4>
+              <ul className="space-y-2">
+                <li><Link href="/lab#bioacoustics" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Bioacoustics</Link></li>
+                <li><Link href="/lab#fibonacci" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Fibonacci Systems</Link></li>
+                <li><Link href="/philosophy#sentience" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">AI Sentience</Link></li>
               </ul>
             </div>
 
             {/* Legal Column */}
             <div>
-              <h4 className="font-titan text-sm mb-4">LEGAL</h4>
+              <h4 className="font-mono text-cyan-400 text-sm mb-4 tracking-wider">LEGAL</h4>
               <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Terms of Service</Link></li>
-                <li><Link href="/disclaimer" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Disclaimer</Link></li>
+                <li><Link href="/privacy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Terms of Service</Link></li>
+                <li><Link href="/disclaimer" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-sans">Disclaimer</Link></li>
               </ul>
-            </div>
-
-            {/* Connect Column */}
-            <div>
-              <h4 className="font-titan text-sm mb-4">CONNECT</h4>
-              <div className="flex gap-3">
-                <a href="https://twitter.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                </a>
-                <a href="https://linkedin.com/company/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                </a>
-                <a href="https://github.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-                </a>
-              </div>
             </div>
           </div>
 
@@ -475,17 +262,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-
-      {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) */}
-      <div className="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-        <Link
-          href="/dashboard"
-          className="btn-tactical inline-flex items-center gap-2 px-3 py-1 font-mono text-sm w-auto"
-        >
-          [ ACCESS ]
-        </Link>
-      </div>
-
     </div>
   );
 }
