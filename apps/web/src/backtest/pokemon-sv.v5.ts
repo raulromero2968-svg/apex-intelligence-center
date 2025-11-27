@@ -226,3 +226,4 @@ export async function getScarletVioletCards(): Promise<string[]> {
 
   return result.map((c) => c.id);
 }
+

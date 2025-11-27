@@ -47,3 +47,4 @@ export function extractPricesAgent(input: CardWithPrices): ExtractedPrices {
     prices: pricesBySource,
   };
 }
+

@@ -1,6 +1,11 @@
 /**
  * Public API for compliance module
- * Barrel file for compliance and regulatory functionality
+ * Explicit exports for compliance and regulatory functionality
  */
 
-export * from './eu-ai-act';
+export {
+  EuAiActCompliance,
+  createComplianceLogger,
+  type ComplianceReport,
+} from './eu-ai-act';
+

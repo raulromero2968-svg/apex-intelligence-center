@@ -170,3 +170,4 @@ export function formatSourcesForOutput(sources: RerankedResult[]): Array<{
     score: Math.min(1, Math.max(0, source.rerankScore || 0)), // Ensure 0..1
   }));
 }
+

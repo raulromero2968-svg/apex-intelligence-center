@@ -292,3 +292,4 @@ export function clearAuthCookies(headers: Headers): void {
     'refreshToken=; HttpOnly; Secure; SameSite=Strict; Path=/api/auth/refresh; Max-Age=0'
   );
 }
+

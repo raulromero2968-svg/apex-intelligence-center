@@ -71,6 +71,38 @@ const nextConfig = {
   // No trailing slashes
   trailingSlash: false,
 
+  // PWA headers and service worker configuration
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
+          {
+            key: 'Service-Worker-Allowed',
+            value: '/',
+          },
+        ],
+      },
+      {
+        source: '/manifest.webmanifest',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+        ],
+      },
+    ];
+  },
+
   // Webpack optimizations for serverless bundle size reduction (2025 best practices)
   webpack: (config, { isServer }) => {
     if (isServer) {

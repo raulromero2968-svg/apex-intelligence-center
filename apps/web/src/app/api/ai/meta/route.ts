@@ -31,3 +31,4 @@ export type Product = typeof facts.product;
 export type Pricing = typeof facts.pricing;
 export type Links = typeof facts.links;
 export type Technology = typeof facts.technology;
+

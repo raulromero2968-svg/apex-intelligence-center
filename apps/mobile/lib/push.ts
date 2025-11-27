@@ -24,7 +24,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
  * Controls how notifications appear in foreground/background
  */
 Notifications.setNotificationHandler({
-  handleNotification: async (notification) => {
+  handleNotification: async () => {
     const transaction = Sentry.startTransaction({
       name: 'mobile.push.received',
       op: 'notification',
@@ -233,7 +233,7 @@ export async function clearAllNotifications(): Promise<void> {
 export async function scheduleLocalNotification(
   title: string,
   body: string,
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 ): Promise<string> {
   try {
     const notificationId = await Notifications.scheduleNotificationAsync({
@@ -248,7 +248,8 @@ export async function scheduleLocalNotification(
     });
 
     return notificationId;
-  } catch (error) {
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error('Unknown error');
     Sentry.captureException(error);
     console.error('Failed to schedule notification:', error);
     throw error;
@@ -303,7 +304,7 @@ export async function areNotificationsEnabled(): Promise<boolean> {
   try {
     const { status } = await Notifications.getPermissionsAsync();
     return status === 'granted';
-  } catch (error) {
+  } catch {
     return false;
   }
 }

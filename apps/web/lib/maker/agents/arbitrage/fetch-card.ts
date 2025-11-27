@@ -42,3 +42,4 @@ export async function fetchCardAgent(cardId: string): Promise<CardWithPrices> {
     prices: card.prices,
   };
 }
+

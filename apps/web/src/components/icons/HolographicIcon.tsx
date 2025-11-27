@@ -41,3 +41,4 @@ export const HolographicIcon = ({
     </motion.div>
   );
 };
+

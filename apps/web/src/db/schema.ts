@@ -5,7 +5,7 @@
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
 
@@ -70,78 +70,6 @@ export const tcg_documents = pgTable('tcg_documents', {
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
-/**
- * Market Knowledge table for AI-generated market intelligence
- *
- * Stores market intelligence claims with vector embeddings, sentiment analysis,
- * and reliability scoring. Designed for high-performance semantic search with HNSW indexing.
- *
- * Features:
- * - Vector embeddings (1536-dim) for semantic similarity search
- * - Sentiment classification (bullish/bearish/neutral)
- * - Reliability scoring (0.0-1.0) for filtering high-confidence claims
- * - Cluster grouping for related knowledge
- * - HNSW indexing for fast vector search
- * - Provenance tracking via metadata
- */
-export const market_knowledge = pgTable('market_knowledge', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // Vector embedding - using custom type to work around Drizzle type issues
-  embedding: sql<number[]>`vector(1536)`.notNull(),
-
-  // Market sentiment (enum enforced at DB level via CHECK constraint)
-  sentiment: text('sentiment', {
-    enum: ['bullish', 'bearish', 'neutral']
-  }).notNull(),
-
-  // Type/category of the claim
-  claim_type: text('claim_type').notNull(),
-
-  // Reliability score (0.0 to 1.0) - CHECK constraint enforced at DB level
-  reliability_score: real('reliability_score').notNull(),
-
-  // Cluster ID for knowledge grouping
-  cluster_id: integer('cluster_id'),
-
-  // Claim content (the actual market intelligence statement)
-  content: text('content').notNull(),
-
-  // Source metadata (provenance, citations, etc.)
-  metadata: jsonb('metadata').$type<{
-    source?: string;
-    task_id?: string;
-    vote_consensus?: number;
-    red_flags?: number;
-    citations?: Array<{ type: string; id: string }>;
-    generated_at?: string;
-    model?: string;
-    unique_id?: string;
-    [key: string]: any;
-  }>().notNull().default({}),
-
-  // Timestamps
-  created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  // HNSW index for vector similarity (created in migration)
-  // B-tree composite index on sentiment + claim_type
-  sentimentClaimTypeIdx: index('idx_market_knowledge_sentiment_claim_type')
-    .on(table.sentiment, table.claim_type),
-  // Index on reliability_score for high-confidence filtering
-  reliabilityIdx: index('idx_market_knowledge_reliability')
-    .on(table.reliability_score),
-  // Index on cluster_id
-  clusterIdx: index('idx_market_knowledge_cluster')
-    .on(table.cluster_id),
-  // Composite index for common query patterns (sentiment + reliability)
-  sentimentReliabilityIdx: index('idx_market_knowledge_sentiment_reliability')
-    .on(table.sentiment, table.reliability_score),
-  // Timestamp index for temporal queries
-  createdAtIdx: index('idx_market_knowledge_created_at')
-    .on(table.created_at),
-}));
-
 // ============================================================================
 // PRODUCTION TCG MARKET DATA MODELS
 // ============================================================================
@@ -161,10 +89,6 @@ export const cards = pgTable('cards', {
   scryfallId: text('scryfall_id'),
   justTcgId: text('just_tcg_id'),
   apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
-  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
-  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
-  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
-  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -248,7 +172,6 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name'),
   stripeCustomerId: text('stripe_customer_id'),
-  stripeSubscriptionId: text('stripe_subscription_id'),
   subscriptionTier: text('subscription_tier', {
     enum: ['free', 'pro', 'enterprise']
   }).default('free').notNull(),
@@ -256,34 +179,8 @@ export const users = pgTable('users', {
     enum: ['active', 'canceled', 'past_due', 'trialing']
   }),
   subscriptionEndsAt: timestamp('subscription_ends_at'),
-  breakModeUntil: timestamp('break_mode_until'),
-  breakModeActivatedBy: text('break_mode_activated_by', {
-    enum: ['child', 'parent']
-  }),
-  // Trust Score System (13_LAUNCH_02)
-  trustScore: integer('trust_score').default(10).notNull(),
-  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
-  phoneVerified: boolean('phone_verified').default(false).notNull(),
-  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
-  walletAddress: text('wallet_address'), // Base wallet for NFT
-
-  // Family Protection Lockdown v3 (immutable constitution)
-  dateOfBirth: timestamp('date_of_birth'), // Required for age gating (13+ required)
-  monthlySpendLimit: real('monthly_spend_limit').default(50.00).notNull(), // $50/month default
-  currentMonthlySpend: real('current_monthly_spend').default(0.00).notNull(),
-  bedtimeStart: text('bedtime_start'), // HH:MM format (e.g., "22:00")
-  bedtimeEnd: text('bedtime_end'),     // HH:MM format (e.g., "07:00")
-  parentUserId: text('parent_user_id').references((): any => users.id, { onDelete: 'set null' }),
-  isMinor: boolean('is_minor').default(false).notNull(), // Auto-set for users under 18
-  coolDownUntil: timestamp('cool_down_until'), // "Take a Break" forced cooldown
-
   createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => ({
-  bedtimeIdx: index('idx_users_bedtime').on(table.bedtimeStart, table.bedtimeEnd),
-  coolDownIdx: index('idx_users_cool_down').on(table.coolDownUntil),
-  isMinorIdx: index('idx_users_is_minor').on(table.isMinor),
-  parentIdx: index('idx_users_parent').on(table.parentUserId),
-}));
+});
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -298,7 +195,6 @@ export const watchlistItems = pgTable('watchlist_items', {
   triggeredAt: timestamp('triggered_at'),
   notified: boolean('notified').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdx: index('idx_watchlist_user').on(table.userId),
   cardIdx: index('idx_watchlist_card').on(table.cardId),
@@ -434,102 +330,6 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
 }));
 
 /**
- * Card Forensics - AI-powered card authenticity analysis
- *
- * Stores comprehensive forensic analysis of TCG cards including:
- * - Visual embeddings for similarity matching (768-dim CLIP vectors)
- * - Structured reasoning trace for explainability
- * - Detected defects catalog
- * - Authenticity scoring
- */
-export const cardForensics = pgTable('card_forensics', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  // pgvector extension - stores as vector(768) for CLIP ViT-L/14
-  embedding: sql`vector(768)`,
-  reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
-  detectedDefects: jsonb('detected_defects').notNull().default({}),
-  authenticityScore: real('authenticity_score').notNull(),
-  modelVersion: text('model_version').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  cardIdIdx: index('idx_card_forensics_card_id').on(table.cardId),
-  authenticityScoreIdx: index('idx_card_forensics_authenticity_score').on(table.authenticityScore),
-  modelVersionIdx: index('idx_card_forensics_model_version').on(table.modelVersion),
-  createdAtIdx: index('idx_card_forensics_created_at').on(table.createdAt),
-  uniqueCard: uniqueIndex('card_forensics_card_unique').on(table.cardId),
-}));
-
-/**
- * Manipulation Alerts - Detected coordinated pump patterns
- *
- * Stores alerts when LAMP + Contrarian detect volume spikes (>40%) with no organic drivers.
- * Used to display warning banners and send notifications to users.
- */
-export const manipulationAlerts = pgTable('manipulation_alerts', {
-  id: text('id').primaryKey(),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  volumeSpikePct: real('volume_spike_pct').notNull(),
-  baselineVolume: real('baseline_volume').notNull(),
-  currentVolume: integer('current_volume').notNull(),
-  lampSentiment: text('lamp_sentiment', {
-    enum: ['bullish', 'bearish', 'neutral']
-  }).notNull(),
-  contrarianDiversity: real('contrarian_diversity').notNull(),
-  severity: text('severity', {
-    enum: ['warning', 'critical']
-  }).notNull(),
-  isActive: boolean('is_active').notNull().default(true),
-  detectedAt: timestamp('detected_at').notNull(),
-  resolvedAt: timestamp('resolved_at'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => ({
-  cardActiveIdx: index('idx_manipulation_card_active').on(table.cardId, table.isActive),
-  severityIdx: index('idx_manipulation_severity').on(table.severity),
-  detectedAtIdx: index('idx_manipulation_detected').on(table.detectedAt),
-}));
-
-/**
- * Market Submissions - Crowdsourced sale data from users
- *
- * Architecture: 13_LAUNCH_02
- * Users submit verified sales with proof (receipt/PWCC link/Goldin link)
- * VARC validates card identity from uploaded images
- * Trust score system prevents spam and fake submissions
- */
-export const marketSubmissions = pgTable('market_submissions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  price: real('price').notNull(),
-  currency: text('currency').notNull().default('USD'),
-  saleDate: timestamp('sale_date').notNull(),
-  grade: text('grade'),
-  gradingCompany: text('grading_company'),
-  certNumber: text('cert_number'),
-  proofUrl: text('proof_url').notNull(), // S3 URL or external link
-  proofType: text('proof_type', {
-    enum: ['receipt', 'auction_link', 'marketplace_screenshot']
-  }).notNull(),
-  status: text('status', {
-    enum: ['pending', 'approved', 'rejected']
-  }).default('pending').notNull(),
-  verifiedByVarc: boolean('verified_by_varc').default(false).notNull(),
-  varcConfidence: real('varc_confidence'), // 0.0-1.0
-  reviewedBy: text('reviewed_by'), // Admin user ID
-  reviewedAt: timestamp('reviewed_at'),
-  rejectionReason: text('rejection_reason'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  userIdx: index('idx_submissions_user').on(table.userId),
-  cardIdx: index('idx_submissions_card').on(table.cardId),
-  statusIdx: index('idx_submissions_status').on(table.status),
-  createdIdx: index('idx_submissions_created').on(table.createdAt),
-}));
-
-/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -623,6 +423,33 @@ export const makerVotes = pgTable('maker_votes', {
   redFlaggedIdx: index('idx_maker_votes_flagged').on(table.isRedFlagged),
 }));
 
+/**
+ * Card Forensics - VARC (Visual Authentication & Rarity Classification) results
+ *
+ * Stores forensic analysis results from VARC jobs including:
+ * - Grade assessment (PSA, BGS, CGC, etc.)
+ * - Confidence scores
+ * - Counterfeit detection scores
+ * - Reasoning trace (JSON structure)
+ */
+export const cardForensics = pgTable('card_forensics', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  jobId: text('job_id').notNull().unique(),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'set null' }),
+  imageUrl: text('image_url').notNull(),
+  grade: text('grade'), // "PSA 10", "BGS 9.5", etc.
+  confidence: real('confidence'), // 0-1 score
+  counterfeitScore: real('counterfeit_score'), // 0-1, higher = more likely counterfeit
+  reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+}, (table) => ({
+  jobIdIdx: index('idx_forensics_job').on(table.jobId),
+  cardIdIdx: index('idx_forensics_card').on(table.cardId),
+  createdAtIdx: index('idx_forensics_created').on(table.createdAt),
+}));
+
 // ============================================================================
 // DRIZZLE ORM RELATIONS (Critical for type-safe relational queries)
 // ============================================================================
@@ -640,9 +467,6 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
-  cardForensics: many(cardForensics),
-  manipulationAlerts: many(manipulationAlerts),
-  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -708,7 +532,6 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
-  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -764,40 +587,6 @@ export const arbitrageOpportunitiesRelations = relations(arbitrageOpportunities,
 }));
 
 /**
- * Card Forensics relations
- */
-export const cardForensicsRelations = relations(cardForensics, ({ one }) => ({
-  card: one(cards, {
-    fields: [cardForensics.cardId],
-    references: [cards.id],
-  }),
-}));
-
-/**
- * Manipulation Alerts relations
- */
-export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one }) => ({
-  card: one(cards, {
-    fields: [manipulationAlerts.cardId],
-    references: [cards.id],
-  }),
-}));
-
-/**
- * Market Submissions relations
- */
-export const marketSubmissionsRelations = relations(marketSubmissions, ({ one }) => ({
-  user: one(users, {
-    fields: [marketSubmissions.userId],
-    references: [users.id],
-  }),
-  card: one(cards, {
-    fields: [marketSubmissions.cardId],
-    references: [cards.id],
-  }),
-}));
-
-/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -814,46 +603,6 @@ export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
   }),
   card: one(cards, {
     fields: [makerVotes.cardId],
-    references: [cards.id],
-  }),
-}));
-
-// ============================================================================
-// VAULT JOBS - Production Job Queue
-// ============================================================================
-
-/**
- * Vault Jobs table - Production job queue for Vault content generation
- *
- * Replaces the legacy queue.json system with a database-backed queue.
- * Handles high-volatility cards detected by the cron job and processes them
- * through the community pulse collector → vault writer → MDX generator pipeline.
- */
-export const vaultJobs = pgTable('vault_jobs', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  status: text('status', {
-    enum: ['pending', 'processing', 'completed', 'failed']
-  }).default('pending').notNull(),
-  priority: integer('priority').default(0).notNull(),
-  retryCount: integer('retry_count').default(0).notNull(),
-  errorMessage: text('error_message'),
-  communityQuotes: jsonb('community_quotes').$type<string[]>(),
-  mdxContent: text('mdx_content'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  cardIdx: index('idx_vault_jobs_card').on(table.cardId),
-  statusIdx: index('idx_vault_jobs_status').on(table.status),
-  priorityIdx: index('idx_vault_jobs_priority').on(table.priority, table.createdAt),
-}));
-
-/**
- * Vault Jobs relations
- */
-export const vaultJobsRelations = relations(vaultJobs, ({ one }) => ({
-  card: one(cards, {
-    fields: [vaultJobs.cardId],
     references: [cards.id],
   }),
 }));
@@ -897,8 +646,6 @@ export type PushTicket = typeof pushTickets.$inferSelect;
 export type NewPushTicket = typeof pushTickets.$inferInsert;
 export type ArbitrageOpportunity = typeof arbitrageOpportunities.$inferSelect;
 export type NewArbitrageOpportunity = typeof arbitrageOpportunities.$inferInsert;
-export type CardForensics = typeof cardForensics.$inferSelect;
-export type NewCardForensics = typeof cardForensics.$inferInsert;
 export type HumanConceptionStatement = typeof humanConceptionStatements.$inferSelect;
 export type NewHumanConceptionStatement = typeof humanConceptionStatements.$inferInsert;
 export type ComplianceLog = typeof complianceLogs.$inferSelect;
@@ -907,14 +654,8 @@ export type MakerTask = typeof makerTasks.$inferSelect;
 export type NewMakerTask = typeof makerTasks.$inferInsert;
 export type MakerVote = typeof makerVotes.$inferSelect;
 export type NewMakerVote = typeof makerVotes.$inferInsert;
-export type MarketKnowledge = typeof market_knowledge.$inferSelect;
-export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
-export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
-export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
-export type MarketSubmission = typeof marketSubmissions.$inferSelect;
-export type NewMarketSubmission = typeof marketSubmissions.$inferInsert;
-export type VaultJob = typeof vaultJobs.$inferSelect;
-export type NewVaultJob = typeof vaultJobs.$inferInsert;
+export type CardForensics = typeof cardForensics.$inferSelect;
+export type NewCardForensics = typeof cardForensics.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
@@ -949,3 +690,4 @@ export type NewVaultJob = typeof vaultJobs.$inferInsert;
  *   unique_id: "tcgplayer_article_12345"
  * }
  */
+

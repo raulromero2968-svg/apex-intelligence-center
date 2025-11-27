@@ -122,3 +122,4 @@ export function isValidPushSubscription(subscription: any): boolean {
 export function getVapidPublicKey(): string | null {
   return vapidPublicKey || null;
 }
+

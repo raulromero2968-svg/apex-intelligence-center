@@ -17,12 +17,14 @@ import InfoBox from '@/components/mdx/InfoBox';
 import ImageWithCaption from '@/components/mdx/ImageWithCaption';
 import ShareButtons from '@/components/mdx/ShareButtons';
 import DiscoverMore from '@/components/mdx/DiscoverMore';
-import ShadowReflexTest from '@/components/commons/ShadowReflexTest';
+
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return typeof error === 'object' && error !== null && 'code' in error;
+}
 
 const articlesDirectory = path.join(process.cwd(), 'src/content/articles');
 // Blog directory is at repo root, so go up from apps/web to find it
 const blogDirectory = path.join(process.cwd(), '..', '..', 'content', 'blog');
-const commonsDirectory = path.join(process.cwd(), 'src/content/commons');
 
 export interface ArticleFrontmatter {
   title: string;
@@ -97,10 +99,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
     }
   }
 
-  // Also include blog post slugs
-  const blogSlugs = await getAllBlogPostSlugs();
-  slugs.push(...blogSlugs);
-
   return slugs;
 }
 
@@ -123,10 +121,8 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         words: rawContent.trim().split(/\s+/).length,
       };
 
-      const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${rawContent}`;
-
       const { content: mdxContent } = await compileMDX<ArticleFrontmatter>({
-        source: enrichedSource,
+        source: rawContent,
         components: {
           AreaChartViz,
           BarChartViz,
@@ -142,13 +138,16 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
           ImageWithCaption,
           ShareButtons,
           DiscoverMore,
-          ShadowReflexTest,
         },
         options: {
           parseFrontmatter: false, // We already parsed with gray-matter
+          scope: {
+            frontMatter: frontmatter,
+          },
           mdxOptions: {
             remarkPlugins: [remarkGfm],
             rehypePlugins: [],
+            useDynamicImport: true,
           },
         },
       });
@@ -160,8 +159,12 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         readingTime: readingTimeData,
       };
     } catch (error) {
-      // File not in this category, try next one
-      continue;
+      if (isErrnoException(error) && error.code === 'ENOENT') {
+        continue;
+      }
+
+      console.error(`Error reading article ${slug} in category ${category}:`, error);
+      throw error;
     }
   }
 
@@ -271,10 +274,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const source = await readFile(filePath, 'utf8');
 
     const { data: frontmatter, content } = matter(source);
-    const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${content}`;
-
     const { content: mdxContent } = await compileMDX<BlogPostFrontmatter>({
-      source: enrichedSource,
+      source: content,
       components: {
         AreaChartViz,
         BarChartViz,
@@ -290,13 +291,16 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
         ImageWithCaption,
         ShareButtons,
         DiscoverMore,
-        ShadowReflexTest,
       },
       options: {
         parseFrontmatter: false,
+        scope: {
+          frontMatter: frontmatter,
+        },
         mdxOptions: {
           remarkPlugins: [remarkGfm],
           rehypePlugins: [],
+          useDynamicImport: true,
         },
       },
     });
@@ -344,138 +348,3 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
-// ============================================================================
-// Commons Functions (src/content/commons/)
-// ============================================================================
-
-export interface CommonsFrontmatter {
-  title: string;
-  subtitle?: string;
-  category: string;
-  publishedAt: string;
-  tags: string[];
-  heroImage?: string;
-  author?: string;
-  readingTime?: string;
-}
-
-export interface CommonsPost {
-  slug: string;
-  frontmatter: CommonsFrontmatter;
-  content: any;
-  readingTime?: {
-    text: string;
-    minutes: number;
-    words: number;
-  };
-}
-
-// Get all commons post slugs
-export async function getAllCommonsSlugs(): Promise<string[]> {
-  try {
-    const files = await readdir(commonsDirectory);
-    return files
-      .filter((file) => file.endsWith('.mdx'))
-      .map((file) => file.replace(/\.mdx$/, ''));
-  } catch (error) {
-    console.warn('Commons directory not found:', error);
-    return [];
-  }
-}
-
-// Get commons post by slug
-export async function getCommonsBySlug(slug: string): Promise<CommonsPost | null> {
-  try {
-    const filePath = path.join(commonsDirectory, `${slug}.mdx`);
-    const source = await readFile(filePath, 'utf8');
-
-    const { data: frontmatter, content: rawContent } = matter(source);
-
-    // Calculate reading time
-    const readingTimeData = {
-      text: `${calculateReadTime(rawContent)} min read`,
-      minutes: calculateReadTime(rawContent),
-      words: rawContent.trim().split(/\s+/).length,
-    };
-
-    const enrichedSource = `const frontMatter = ${JSON.stringify(frontmatter)};\n${rawContent}`;
-
-    const { content: mdxContent } = await compileMDX<CommonsFrontmatter>({
-      source: enrichedSource,
-      components: {
-        AreaChartViz,
-        BarChartViz,
-        HeroImage,
-        AskFollowUp,
-        InteractiveLineChart,
-        ScatterPlot,
-        PublishedTime,
-        SourceBadge,
-        SourceCards,
-        TableOfContents,
-        InfoBox,
-        ImageWithCaption,
-        ShareButtons,
-        DiscoverMore,
-        ShadowReflexTest,
-      },
-      options: {
-        parseFrontmatter: false,
-        mdxOptions: {
-          remarkPlugins: [remarkGfm],
-          rehypePlugins: [],
-        },
-      },
-    });
-
-    return {
-      slug,
-      frontmatter: frontmatter as CommonsFrontmatter,
-      content: mdxContent,
-      readingTime: readingTimeData,
-    };
-  } catch (error) {
-    console.error(`Error reading commons post ${slug}:`, error);
-    return null;
-  }
-}
-
-// Get all commons posts
-export async function getAllCommonsPosts(): Promise<CommonsPost[]> {
-  try {
-    const files = await readdir(commonsDirectory);
-    const posts: CommonsPost[] = [];
-
-    for (const file of files) {
-      if (!file.endsWith('.mdx')) continue;
-
-      const slug = file.replace(/\.mdx$/, '');
-      const filePath = path.join(commonsDirectory, file);
-      const source = await readFile(filePath, 'utf8');
-
-      const { data: frontmatter, content: rawContent } = matter(source);
-
-      // Calculate reading time for listing
-      const readingTimeData = {
-        text: `${calculateReadTime(rawContent)} min read`,
-        minutes: calculateReadTime(rawContent),
-        words: rawContent.trim().split(/\s+/).length,
-      };
-
-      posts.push({
-        slug,
-        frontmatter: frontmatter as CommonsFrontmatter,
-        content: null,
-        readingTime: readingTimeData,
-      });
-    }
-
-    // Sort by publishedAt (newest first)
-    return posts.sort((a, b) => {
-      return new Date(b.frontmatter.publishedAt).getTime() - new Date(a.frontmatter.publishedAt).getTime();
-    });
-  } catch (error) {
-    console.warn('Error reading commons posts:', error);
-    return [];
-  }
-}

@@ -2,14 +2,19 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
+import { Analytics } from '@vercel/analytics/react';
+
+import AuroraFX from '@/components/fx/AuroraFX';
+
+import BackgroundFX from '@/components/fx/BackgroundFX';
+
+import BackgroundStack from '@/components/fx/BackgroundStack';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
-
-import { LayoutFooter } from '@/components/footer/LayoutFooter';
-
+import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -19,11 +24,9 @@ import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
 
-import { BreakModeButton } from '@/components/BreakModeButton';
-
 import ToastHost from '@/components/ToastHost';
 
-import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
 import { fontSans } from '@/lib/fonts';
 
@@ -45,6 +48,8 @@ const facts = getFacts();
 // Default metadata - uses facts registry where available, with fallbacks
 
 export const metadata: Metadata = {
+
+  metadataBase: new URL(facts.links.website || 'https://apexintelligence.io'),
 
   // Base metadata - using facts registry
 
@@ -214,6 +219,16 @@ export default function RootLayout({
 
       <head>
 
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0891b2" />
+        
+        {/* iOS PWA Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Apex Intelligence" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
         {/* JSON-LD Structured Data - Generated from facts registry */}
 
         {schemas.map((schema, index) => (
@@ -236,53 +251,13 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-slate-950 text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
+          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
 
           fontSans.className,
 
         )}
 
       >
-
-        {/* GLOBAL STARFIELD BACKGROUND - Deep space layer with dynamic viewport height for mobile */}
-        <div className="fixed inset-0 h-[100dvh] w-screen z-[-2] overflow-hidden">
-          {/* CSS-generated starfield pattern */}
-          <div
-            className="absolute inset-0 opacity-60"
-            style={{
-              background: `
-                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8) 1px, transparent 1px),
-                radial-gradient(1px 1px at 30% 40%, rgba(34,211,238,0.6) 1px, transparent 1px),
-                radial-gradient(2px 2px at 50% 10%, rgba(168,85,247,0.5) 1px, transparent 1px),
-                radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.7) 1px, transparent 1px),
-                radial-gradient(1px 1px at 90% 30%, rgba(34,211,238,0.4) 1px, transparent 1px),
-                radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.6) 1px, transparent 1px),
-                radial-gradient(2px 2px at 85% 60%, rgba(168,85,247,0.4) 1px, transparent 1px),
-                radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.5) 1px, transparent 1px),
-                radial-gradient(1px 1px at 60% 50%, rgba(34,211,238,0.5) 1px, transparent 1px),
-                radial-gradient(1px 1px at 25% 15%, rgba(255,255,255,0.7) 1px, transparent 1px),
-                radial-gradient(1px 1px at 75% 25%, rgba(168,85,247,0.3) 1px, transparent 1px),
-                radial-gradient(1px 1px at 5% 55%, rgba(255,255,255,0.4) 1px, transparent 1px),
-                radial-gradient(1px 1px at 95% 85%, rgba(34,211,238,0.6) 1px, transparent 1px),
-                radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.5) 1px, transparent 1px),
-                radial-gradient(2px 2px at 65% 35%, rgba(168,85,247,0.5) 1px, transparent 1px)
-              `,
-              backgroundSize: '200px 200px'
-            }}
-          />
-        </div>
-
-        {/* GLOBAL MATRIX BACKGROUND - Enhanced for mobile visibility with dynamic viewport height */}
-        <div className="fixed inset-0 h-[100dvh] w-screen z-[-1]">
-          {/* Grid Pattern - Brighter cyan (#0891b2), higher opacity for mobile */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-[size:50px_50px] opacity-40 md:opacity-30" />
-          {/* Scanning Light Effect - Enhanced glow */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/15 to-transparent animate-scan" />
-          {/* Vignette - Softer for better grid visibility */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#020617_100%)]" />
-        </div>
-
-
 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
@@ -292,6 +267,13 @@ export default function RootLayout({
 
 
 
+        {/* Permanent Equilibrium Banner - Non-dismissible */}
+
+        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
+
+          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
+
+        </div>
 
 
 
@@ -301,10 +283,33 @@ export default function RootLayout({
 
 
 
-        {/* Pinned Navigation - Fixed to top with high z-index and glassmorphism */}
-        <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-          <TopBanner />
-        </header>
+        {/* Top Banner */}
+
+        <TopBanner />
+
+
+
+        {/* Animated Background */}
+
+        <AnimatedBackground />
+
+
+
+        {/* Aurora Background */}
+
+        <AuroraFX />
+
+
+
+        {/* Animated Background FX */}
+
+        <BackgroundFX />
+
+
+
+        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
+
+        <BackgroundStack />
 
 
 
@@ -334,9 +339,11 @@ export default function RootLayout({
 
 
 
-        {/* Layout Footer - hidden on homepage */}
+        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
 
-        <LayoutFooter />
+          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
+
+        </footer>
 
 
 
@@ -349,12 +356,6 @@ export default function RootLayout({
         {/* Help FAB */}
 
         <HelpFAB />
-
-
-
-        {/* Break Mode Button */}
-
-        <BreakModeButton />
 
 
 
@@ -396,9 +397,13 @@ export default function RootLayout({
 
         <ToastHost />
 
-        {/* Reality Check Modal - Triggers every 2h active session */}
+        {/* PWA Install Prompt */}
 
-        <RealityCheckProvider />
+        <PwaInstallPrompt />
+
+        {/* Vercel Analytics */}
+
+        <Analytics />
 
       </body>
 
@@ -407,3 +412,4 @@ export default function RootLayout({
   );
 
 }
+

@@ -40,3 +40,4 @@ export const sentryConfig = {
   // Release tracking (set by CI/CD pipeline)
   release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
 } as const;
+

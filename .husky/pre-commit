@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Run lint-staged for staged files
 pnpm lint-staged
+
+# Run tests (pass with no tests)
+pnpm test -- --passWithNoTests
+
+# Run format check (if prettier is configured)
+if command -v prettier >/dev/null 2>&1; then
+  pnpm format --check || pnpm format
+fi

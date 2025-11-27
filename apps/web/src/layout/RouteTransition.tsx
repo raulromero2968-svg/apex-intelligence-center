@@ -47,3 +47,4 @@ export default function RouteTransition({ children }: RouteTransitionProps) {
     </AnimatePresence>
   );
 }
+

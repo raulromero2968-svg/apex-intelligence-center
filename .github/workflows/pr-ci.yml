@@ -33,6 +33,9 @@ jobs:
       - name: Verify schema sync
         run: pnpm --filter web exec tsx scripts/verify-schema-sync.ts
 
+      - name: Schema check (drift detection)
+        run: pnpm schema:check
+
       - name: Verify Drizzle syntax
         run: pnpm verify:drizzle-syntax
 

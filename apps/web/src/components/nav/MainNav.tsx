@@ -15,7 +15,7 @@ const links = [
 ];
 
 export function MainNav() {
-  const pathname = usePathname() ?? '';
+  const pathname = usePathname() ?? "";
   return (
     <nav aria-label="Global">
       <ul className="flex gap-2">
@@ -52,3 +52,4 @@ export function MainNav() {
     </nav>
   );
 }
+

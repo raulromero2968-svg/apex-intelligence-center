@@ -1,2 +1,11 @@
-export * from './biometric';
-export * from './types';
+export {
+  authenticateBiometric,
+  isBiometricAvailable,
+  getSupportedBiometrics,
+} from './biometric';
+
+export type {
+  BiometricAuthResult,
+  BiometricConfig,
+} from './types';
+

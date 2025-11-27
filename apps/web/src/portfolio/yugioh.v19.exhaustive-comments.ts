@@ -162,3 +162,4 @@ export async function yugiohFrontierV19(cardIds: string[], budget = 25000000): P
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

@@ -12,7 +12,6 @@
 
 import {
   shouldPromptEnrollment,
-  showEnrollmentPrompt,
   completeEnrollment,
   skipEnrollment,
   disableBiometrics,

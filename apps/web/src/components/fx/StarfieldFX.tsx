@@ -67,3 +67,4 @@ export default function StarfieldFX() {
   return <canvas ref={canvasRef} aria-hidden className="fixed inset-0 -z-60 pointer-events-none" />;
 }
 
+

@@ -57,3 +57,4 @@ export function getTierLimits(tier: SubscriptionTier) {
 export function hasTierFeature(tier: SubscriptionTier, feature: string): boolean {
   return TIER_LIMITS[tier].features.includes(feature as any);
 }
+

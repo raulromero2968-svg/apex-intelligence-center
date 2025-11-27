@@ -24,3 +24,4 @@ export default function HorizontalCarousel({ children, cardWidth = 320 }: Props)
     </div>
   );
 }
+

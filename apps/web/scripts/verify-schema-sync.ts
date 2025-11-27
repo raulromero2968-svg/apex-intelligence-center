@@ -1,221 +1,177 @@
-#!/usr/bin/env tsx
-/**
- * Bulletproof Drizzle schema/code sync verifier – zero false positives
- *
- * Uses ts-morph AST parsing to extract only real column references in Drizzle queries.
- * Ignores all Drizzle ORM query methods (findMany, findFirst, slice, etc.) that were
- * causing false positives with the regex-based approach.
- *
- * This verifier:
- * 1. Extracts all column names from pgTable definitions in schema.ts
- * 2. Parses all TypeScript files to find property access expressions
- * 3. Filters out known Drizzle query methods and safe patterns
- * 4. Only flags genuine missing columns that exist in code but not in schema
- */
+import fs from 'node:fs';
+import path from 'node:path';
 
-import { Project, SyntaxKind, Node } from 'ts-morph';
-import { join } from 'path';
+type TableColumns = Record<string, Set<string>>;
 
-// Known Drizzle ORM methods that should never be treated as column references
-const DRIZZLE_METHODS = new Set([
-  // Query methods
-  'findMany',
-  'findFirst',
-  'findUnique',
-  'create',
-  'update',
-  'delete',
-  'upsert',
-  'count',
-  'aggregate',
-  'groupBy',
-  'select',
-  'where',
-  'orderBy',
-  'limit',
-  'offset',
-  'slice',
-  'map',
-  'filter',
-  'reduce',
-  'forEach',
-  'some',
-  'every',
-  'length',
-  'push',
-  'pop',
-  'shift',
-  'unshift',
-  // Custom query methods
-  'getBySlug',
-  'getById',
-  'getWithLatestPrices',
-  'getHighValueWithPrices',
-  'listPublic',
-  // Drizzle relation methods
-  'with',
-  'leftJoin',
-  'rightJoin',
-  'innerJoin',
-  'fullJoin',
-  // Common object/array methods
-  'toString',
-  'valueOf',
-  'toJSON',
-]);
-
-// Common safe patterns that are always valid (e.g., from auth/session objects)
-const SAFE_PATTERNS = new Set([
-  'id',
-  'email',
-  'name',
-  'createdAt',
-  'updatedAt',
-  'userId', // Common reference field
-]);
-
-function extractSchemaColumns(): Set<string> {
-  const project = new Project({
-    tsConfigFilePath: join(process.cwd(), 'tsconfig.json'),
-    skipAddingFilesFromTsConfig: true,
-  });
-
-  const schemaPath = join(process.cwd(), 'src', 'db', 'schema.ts');
-  const schemaFile = project.addSourceFileAtPath(schemaPath);
-  const columnNames = new Set<string>();
-
-  // Find all pgTable calls and extract column names from their object literal arguments
-  schemaFile.getDescendantsOfKind(SyntaxKind.CallExpression).forEach((callExpr) => {
-    const expr = callExpr.getExpression();
-    if (Node.isIdentifier(expr) && expr.getText() === 'pgTable') {
-      const args = callExpr.getArguments();
-      // pgTable('table_name', { columns... })
-      if (args.length >= 2 && Node.isObjectLiteralExpression(args[1])) {
-        args[1].getProperties().forEach((prop) => {
-          if (Node.isPropertyAssignment(prop)) {
-            const name = prop.getName();
-            if (name) {
-              columnNames.add(name);
-            }
-          }
-        });
-      }
-    }
-  });
-
-  return columnNames;
+function readFile(filePath: string): string {
+  return fs.readFileSync(filePath, 'utf8');
 }
 
-function findColumnReferences(schemaColumns: Set<string>): string[] {
-  const project = new Project({
-    tsConfigFilePath: join(process.cwd(), 'tsconfig.json'),
-    skipAddingFilesFromTsConfig: true,
-  });
+function collectSchemaColumns(schemaPath: string): TableColumns {
+  const src = readFile(schemaPath);
+  const tables: TableColumns = {};
 
-  // Add all source files except node_modules, .next, etc.
-  const srcFiles = project.addSourceFilesAtPaths('src/**/*.{ts,tsx}');
+  // Find pgTable definitions: export const tableName = pgTable('table_name', { ... });
+  const tableRegex = /export const\s+(\w+)\s*=\s*pgTable\([^,]+,\s*\{/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = tableRegex.exec(src)) !== null) {
+    const tableVarName = match[1];
+    const startPos = match.index + match[0].length;
+    
+    // Find the matching closing brace for the column definition block
+    let braceCount = 1;
+    let pos = startPos;
+    let columnsBlockEnd = startPos;
+    
+    while (pos < src.length && braceCount > 0) {
+      if (src[pos] === '{') braceCount++;
+      else if (src[pos] === '}') braceCount--;
+      if (braceCount === 0) {
+        columnsBlockEnd = pos;
+        break;
+      }
+      pos++;
+    }
+    
+    const columnsBlock = src.slice(startPos, columnsBlockEnd);
+
+    const columnNames = new Set<string>();
+    // More robust regex: match column names at start of line (with optional whitespace) or after comma/newline
+    const columnRegex = /(?:^|\n|,)\s*([\w$]+)\s*:/gm;
+    let colMatch: RegExpExecArray | null;
+
+    while ((colMatch = columnRegex.exec(columnsBlock)) !== null) {
+      const colName = colMatch[1];
+      // Skip if it's a TypeScript keyword or common non-column patterns
+      if (colName === 'table' || colName === 'export' || colName === 'const') continue;
+      columnNames.add(colName);
+    }
+
+    tables[tableVarName] = columnNames;
+  }
+
+  return tables;
+}
+
+function walk(dir: string, exts: string[], files: string[] = []): string[] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      // Skip node_modules and build output
+      if (entry.name === 'node_modules' || entry.name === '.next' || entry.name === 'dist') continue;
+      walk(fullPath, exts, files);
+    } else {
+      if (exts.includes(path.extname(entry.name))) {
+        files.push(fullPath);
+      }
+    }
+  }
+  return files;
+}
+
+function verifyColumnUsage(schemaPath: string, srcRoot: string): void {
+  const tables = collectSchemaColumns(schemaPath);
+  const exts = ['.ts', '.tsx'];
+  const files = walk(srcRoot, exts);
+
+  // Common Drizzle ORM method names to exclude from column checks
+  const drizzleMethods = new Set([
+    'findMany',
+    'findFirst',
+    'findUnique',
+    'create',
+    'update',
+    'delete',
+    'upsert',
+    'count',
+    'aggregate',
+    'groupBy',
+    'getBySlug',
+    'getById',
+    'getWithLatestPrices',
+    'getHighValueWithPrices',
+    'listPublic',
+    'map',
+    'slice',
+    'length',
+  ]);
+
   const errors: string[] = [];
 
-  srcFiles.forEach((sourceFile) => {
-    // Find all property access expressions (e.g., table.column)
-    sourceFile.getDescendantsOfKind(SyntaxKind.PropertyAccessExpression).forEach((propAccess) => {
-      const propertyName = propAccess.getName();
+  for (const file of files) {
+    const content = readFile(file);
+    for (const [tableVar, columns] of Object.entries(tables)) {
+      // Match table.column patterns - we'll filter out method calls after matching
+      const usageRegex = new RegExp(`${tableVar}\\.([A-Za-z0-9_]+)`, 'g');
+      let usageMatch: RegExpExecArray | null;
 
-      // Skip if it's a known Drizzle method
-      if (DRIZZLE_METHODS.has(propertyName)) {
-        return;
-      }
+      while ((usageMatch = usageRegex.exec(content)) !== null) {
+        const col = usageMatch[1];
+        const matchStart = usageMatch.index;
 
-      // Skip if it's a safe pattern (id, email, etc.)
-      if (SAFE_PATTERNS.has(propertyName)) {
-        return;
-      }
+        // Skip if it's a known Drizzle method
+        if (drizzleMethods.has(col)) continue;
 
-      // Skip if the property access is followed by a call expression
-      // This catches method calls like table.someMethod()
-      const parent = propAccess.getParent();
-      if (parent && Node.isCallExpression(parent)) {
-        return;
-      }
+        // Check if followed by a parenthesis (indicating a method call)
+        const matchEnd = matchStart + usageMatch[0].length;
+        const afterMatch = content.slice(matchEnd);
+        // Look for optional whitespace followed by '('
+        if (/^\s*\(/.test(afterMatch)) continue;
 
-      // Check if this looks like a table column access pattern
-      const fullText = propAccess.getText();
-      const objectName = propAccess.getExpression().getText();
+        // Skip if inside a SQL template literal (sql`...` or sql.raw(...))
+        // Check backwards from match position for sql` or sql.raw
+        const beforeMatch = content.slice(Math.max(0, matchStart - 50), matchStart);
+        if (/sql[`.]/.test(beforeMatch)) {
+          // Find the start of the SQL template
+          const sqlStart = beforeMatch.lastIndexOf('sql');
+          if (sqlStart >= 0) {
+            const sqlContext = beforeMatch.slice(sqlStart);
+            // If it's sql` or sql.raw, skip this match
+            if (sqlContext.includes('sql`') || sqlContext.includes('sql.raw')) continue;
+          }
+        }
 
-      // Heuristic: If the object name looks like a table variable (common patterns)
-      // and the property is not in the schema, flag it
-      const tablePatterns = [
-        'cards',
-        'prices',
-        'sales',
-        'users',
-        'collections',
-        'portfolios',
-        'holdings',
-        'watchlistItems',
-        'alertSubscriptions',
-        'pushSubscriptions',
-        'mobilePushTokens',
-        'pushTickets',
-        'arbitrageOpportunities',
-        'populationReports',
-        'tcg_documents',
-        'intel_items',
-        'collection_items',
-        'humanConceptionStatements',
-        'complianceLogs',
-        'makerTasks',
-        'makerVotes',
-      ];
-
-      if (tablePatterns.includes(objectName)) {
-        if (!schemaColumns.has(propertyName)) {
+        if (!columns.has(col)) {
           errors.push(
-            `Unknown column reference: ${fullText} in ${sourceFile.getFilePath().replace(
+            `Unknown column reference: ${tableVar}.${col} in ${path.relative(
               process.cwd(),
-              '',
+              file,
             )}`,
           );
         }
       }
-    });
-  });
-
-  return errors;
-}
-
-function main() {
-  try {
-    // eslint-disable-next-line no-console
-    console.log('🔍 Extracting schema columns from src/db/schema.ts...');
-    const schemaColumns = extractSchemaColumns();
-
-    // eslint-disable-next-line no-console
-    console.log(`✅ Found ${schemaColumns.size} columns in schema`);
-
-    // eslint-disable-next-line no-console
-    console.log('🔍 Scanning source files for column references...');
-    const errors = findColumnReferences(schemaColumns);
-
-    if (errors.length > 0) {
-      // eslint-disable-next-line no-console
-      console.error('❌ Schema/code sync verification failed:');
-      errors.forEach((err) => {
-        // eslint-disable-next-line no-console
-        console.error(`  - ${err}`);
-      });
-      process.exit(1);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(
-        '✅ Schema perfectly synchronized with code usage (no unknown column references)',
-      );
     }
-  } catch (error) {
+  }
+
+  if (errors.length > 0) {
     // eslint-disable-next-line no-console
-    console.error('❌ Verification failed with error:', error);
+    console.error('❌ Schema/code sync verification failed:');
+    for (const err of errors) {
+      // eslint-disable-next-line no-console
+      console.error(`  - ${err}`);
+    }
     process.exit(1);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('✅ Schema/code sync verification passed (no unknown column references).');
   }
 }
 
+function main() {
+  const schemaPath = path.join(process.cwd(), 'src', 'db', 'schema.ts');
+  const srcRoot = path.join(process.cwd(), 'src');
+
+  if (!fs.existsSync(schemaPath)) {
+    // eslint-disable-next-line no-console
+    console.error(`Schema file not found at ${schemaPath}`);
+    process.exit(1);
+  }
+
+  verifyColumnUsage(schemaPath, srcRoot);
+}
+
 main();
+
+

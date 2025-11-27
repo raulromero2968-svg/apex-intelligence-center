@@ -14,7 +14,7 @@ import { Webhook as DiscordWebhook } from 'discord-webhook-node';
 import TelegramBot from 'node-telegram-bot-api';
 import webpush from 'web-push';
 import { db } from '@/db';
-import { alertSubscriptions, pushSubscriptions, users } from '@/db/schema';
+import { alertSubscriptions, pushSubscriptions } from '@/db/schema';
 import { eq, and, or, isNull } from 'drizzle-orm';
 import { PopDeltaAlert, formatPopDeltaMessage } from '@/jobs/pop-delta/detector.job';
 import * as Sentry from '@sentry/nextjs';
@@ -50,31 +50,6 @@ if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 }
 
 /**
- * Check if a user is in break mode (24-hour notification pause)
- * @param userId - User ID to check
- * @returns true if user is in break mode, false otherwise
- */
-export async function isUserInBreakMode(userId: string): Promise<boolean> {
-  try {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, userId),
-    });
-
-    if (!user || !user.breakModeUntil) {
-      return false;
-    }
-
-    const now = new Date();
-    const expiresAt = new Date(user.breakModeUntil);
-
-    return expiresAt > now;
-  } catch (error) {
-    console.error('[BreakMode] Check failed for user:', userId, error);
-    return false; // Fail open - send notifications if check fails
-  }
-}
-
-/**
  * Send Pop Delta notifications to all subscribed users
  *
  * @param alert - Pop delta alert data
@@ -99,12 +74,6 @@ export async function sendPopDeltaNotifications(alert: PopDeltaAlert): Promise<v
 
     // Send to each subscriber based on their channel preferences
     for (const sub of subscriptions) {
-      // Check if user is in break mode
-      if (await isUserInBreakMode(sub.userId)) {
-        console.log(`[Notifications] Skipping user ${sub.userId} - in break mode`);
-        continue;
-      }
-
       // Check if alert meets user's threshold
       if (Math.abs(alert.deltaPct30d) < sub.threshold) {
         continue; // Skip if below user's threshold
@@ -176,12 +145,6 @@ export async function sendTelegramAlert(userId: string, message: string): Promis
     return;
   }
 
-  // Check break mode
-  if (await isUserInBreakMode(userId)) {
-    console.log(`[Telegram] Skipping user ${userId} - in break mode`);
-    return;
-  }
-
   try {
     // In production, userId would map to telegram chat_id
     // For now, send to configured chat
@@ -200,12 +163,6 @@ export async function sendEmailAlert(
   subject: string,
   message: string
 ): Promise<void> {
-  // Check break mode
-  if (await isUserInBreakMode(userId)) {
-    console.log(`[Email] Skipping user ${userId} - in break mode`);
-    return;
-  }
-
   // TODO: Integrate with SendGrid/Resend
   console.log('[Email] Would send:', { userId, subject, message: message.slice(0, 100) });
 
@@ -228,18 +185,12 @@ export async function sendPushNotification(
   cardId: string | null,
   message: string
 ): Promise<void> {
-  // Check break mode
-  if (await isUserInBreakMode(userId)) {
-    console.log(`[Push] Skipping user ${userId} - in break mode`);
-    return;
-  }
-
   try {
     // Get user's push subscriptions
     const subs = await db.query.pushSubscriptions.findMany({
       where: and(
         eq(pushSubscriptions.userId, userId),
-        cardId
+        cardId 
           ? or(eq(pushSubscriptions.cardId, cardId), isNull(pushSubscriptions.cardId))
           : isNull(pushSubscriptions.cardId)
       ),
@@ -322,159 +273,3 @@ Volume: ${spike.volume24h} sales
   }
 }
 
-/**
- * Send Manipulation Warning Push Notification
- *
- * Sends non-dismissible push notification when manipulation detected
- */
-export async function sendManipulationWarningNotification(alert: {
-  cardId: string;
-  cardName: string;
-  volumeSpikePct: number;
-  severity: 'warning' | 'critical';
-}): Promise<void> {
-  try {
-    // Get all users subscribed to this card or all alerts
-    const subscriptions = await db.query.alertSubscriptions.findMany({
-      where: and(
-        eq(alertSubscriptions.isActive, true),
-        or(
-          eq(alertSubscriptions.cardId, alert.cardId),
-          isNull(alertSubscriptions.cardId) // Subscribed to all cards
-        )
-      ),
-    });
-
-    console.log(
-      `[Notifications] Sending manipulation warning for ${alert.cardName} to ${subscriptions.length} subscribers`
-    );
-
-    const warningMessage = `⚠️ MANIPULATION WARNING
-
-${alert.cardName}
-Volume spike: ${alert.volumeSpikePct.toFixed(0)}%
-Historical success rate: 6%
-
-⛔ Price alerts automatically paused
-🛡️ Protection activated
-
-🔗 View: https://apex.tcgaisociety.com/card/${alert.cardId}`;
-
-    // Send to each subscriber based on their channel preferences
-    for (const sub of subscriptions) {
-      const channels = sub.channels as string[];
-
-      // Send to each preferred channel
-      for (const channel of channels) {
-        try {
-          switch (channel) {
-            case 'discord':
-              await sendDiscordAlert(warningMessage);
-              break;
-            case 'telegram':
-              await sendTelegramAlert(sub.userId, warningMessage);
-              break;
-            case 'email':
-              await sendEmailAlert(
-                sub.userId,
-                '⚠️ Manipulation Shield Alert',
-                warningMessage
-              );
-              break;
-            case 'push':
-              await sendManipulationPushNotification(sub.userId, alert);
-              break;
-          }
-        } catch (channelError) {
-          Sentry.captureException(channelError, {
-            extra: {
-              channel,
-              userId: sub.userId,
-              alertCardId: alert.cardId,
-            },
-          });
-          console.error(`[Notifications] ${channel} failed for user ${sub.userId}:`, channelError);
-        }
-      }
-    }
-  } catch (error) {
-    Sentry.captureException(error, {
-      extra: { alert },
-    });
-    console.error('[Notifications] Manipulation warning notification failed:', error);
-  }
-}
-
-/**
- * Send Manipulation Warning via Web Push
- */
-async function sendManipulationPushNotification(
-  userId: string,
-  alert: {
-    cardId: string;
-    cardName: string;
-    volumeSpikePct: number;
-    severity: 'warning' | 'critical';
-  }
-): Promise<void> {
-  try {
-    // Get user's push subscriptions
-    const subs = await db.query.pushSubscriptions.findMany({
-      where: and(
-        eq(pushSubscriptions.userId, userId),
-        or(
-          eq(pushSubscriptions.cardId, alert.cardId),
-          isNull(pushSubscriptions.cardId)
-        )
-      ),
-    });
-
-    for (const sub of subs) {
-      try {
-        const payload = JSON.stringify({
-          title: '⚠️ Manipulation Warning',
-          body: `Warning: manipulation patterns detected. Historical success rate 6%`,
-          icon: '/logo-192.png',
-          badge: '/badge-72.png',
-          tag: `manipulation-${alert.cardId}`, // Groups notifications for same card
-          requireInteraction: true, // Requires user to dismiss
-          data: {
-            cardId: alert.cardId,
-            cardName: alert.cardName,
-            volumeSpikePct: alert.volumeSpikePct,
-            severity: alert.severity,
-            url: `/card/${alert.cardId}`,
-            type: 'manipulation_warning',
-          },
-          actions: [
-            {
-              action: 'view',
-              title: 'View Card',
-            },
-            {
-              action: 'dismiss',
-              title: 'Dismiss',
-            },
-          ],
-        });
-
-        await webpush.sendNotification(
-          {
-            endpoint: sub.endpoint,
-            keys: sub.keys as { p256dh: string; auth: string },
-          },
-          payload
-        );
-      } catch (pushError) {
-        // Remove invalid subscription
-        if ((pushError as any).statusCode === 410) {
-          await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, sub.id));
-        }
-        throw pushError;
-      }
-    }
-  } catch (error) {
-    console.error('[Push] Manipulation warning push failed:', error);
-    throw error;
-  }
-}

@@ -11,6 +11,11 @@ import { ShadowReflexTest } from '@/components/mdx/ShadowReflexTest';
 
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return getMDXComponents(components);
+}
+
+// Non-hook version for server-side usage
+export function getMDXComponents(components: MDXComponents = {}): MDXComponents {
   return {
     // Custom MDX components
     AreaChartViz,
@@ -143,3 +148,4 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ...components,
   };
 }
+

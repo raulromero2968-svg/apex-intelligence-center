@@ -114,3 +114,4 @@ export function extractSymbolsWithConfidence(text: string): Array<{ symbol: stri
     .filter(({ confidence }) => confidence > 0)
     .sort((a, b) => b.confidence - a.confidence);
 }
+

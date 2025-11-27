@@ -4,7 +4,6 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import * as Notifications from 'expo-notifications';
 import {
   getPushToken,
   setupForegroundNotificationHandler,

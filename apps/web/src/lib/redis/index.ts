@@ -187,3 +187,4 @@ export async function invalidateUserWatchlistCache(userId: string): Promise<void
     console.error('Failed to invalidate watchlist cache:', error);
   }
 }
+

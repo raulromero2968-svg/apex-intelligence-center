@@ -26,3 +26,19 @@ These icons are referenced in `src/lib/iconMap.ts` and used by the `HolographicI
 ## Placeholder
 
 Until actual holographic icons are available, you can use temporary placeholder images with the same filenames.
+
+## PWA Icons (Required)
+
+For Progressive Web App functionality, the following icons are required:
+
+1. **icon-192.png** - 192x192px PNG icon for PWA manifest
+2. **icon-512.png** - 512x512px PNG icon for PWA manifest
+
+These icons should:
+- Represent the Apex Intelligence brand
+- Be square (1:1 aspect ratio)
+- Use the brand colors (cyan #0891b2, black background)
+- Be optimized PNG files
+- Support maskable icons (safe zone: 80% of icon area)
+
+**Note**: These icons are referenced in `/manifest.webmanifest` and are required for the PWA to pass Lighthouse checks and be installable.

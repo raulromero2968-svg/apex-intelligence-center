@@ -170,3 +170,4 @@ export class CitationMapper {
     return bestScore > 0.2 ? bestIndex : null;
   }
 }
+

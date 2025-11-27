@@ -158,3 +158,4 @@ export async function GET(request: NextRequest) {
 // Required Next.js config exports
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs'; // Required for Redis connections
+

@@ -265,3 +265,4 @@ export function hashData(data: any): string {
   const canonical = JSON.stringify(data, Object.keys(data).sort());
   return crypto.createHash('sha256').update(canonical).digest('hex');
 }
+

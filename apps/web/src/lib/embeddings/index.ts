@@ -1,6 +1,12 @@
 /**
  * Public API for embeddings module
- * Barrel file for embedding generation functionality
+ * Explicit exports for embedding generation functionality
  */
 
-export * from './voyage';
+export {
+  VoyageEmbeddings,
+  createVoyageEmbeddings,
+  cosineSimilarity,
+  type VoyageEmbeddingOptions,
+} from './voyage';
+

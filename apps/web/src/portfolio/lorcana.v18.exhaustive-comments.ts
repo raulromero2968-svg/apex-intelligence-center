@@ -152,3 +152,4 @@ export async function lorcanaFrontierV18(cardIds: string[], budget = 16000000): 
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

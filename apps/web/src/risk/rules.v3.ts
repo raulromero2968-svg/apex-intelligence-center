@@ -151,3 +151,4 @@ export function shouldStopLoss(entryPrice: number, currentPrice: number): boolea
 export function shouldExitPopGrowth(pop90d: number | null): boolean {
   return pop90d !== null && pop90d > RISK.popSell;
 }
+

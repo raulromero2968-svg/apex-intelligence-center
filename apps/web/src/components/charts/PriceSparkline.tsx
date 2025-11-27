@@ -96,3 +96,4 @@ export default function PriceSparkline({ src, color = '#00FFFF' }: Props) {
     </div>
   );
 }
+

@@ -100,3 +100,4 @@ export interface VotingOptions<T> {
   maxVotes?: number;
   redFlags?: RedFlagFunction<T>[];
 }
+
