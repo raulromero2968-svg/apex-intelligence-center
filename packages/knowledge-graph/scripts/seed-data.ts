@@ -1,397 +1,579 @@
 #!/usr/bin/env tsx
 /**
- * Seed Neo4j Database with Sample Data
+ * Neo4j Seed Data Script
  *
- * This script populates the Neo4j database with sample TCG cards, markets,
- * transactions, research papers, and concepts for development and testing.
+ * This script populates the Neo4j database with sample TCG market data,
+ * research papers, and concepts for testing and development.
  *
  * Usage: pnpm neo4j:seed
+ *
+ * @module seed-data
  */
 
 import 'dotenv/config';
-import { createNeo4jClient, Neo4jClient } from '../src/neo4j-client';
+import neo4j, { Driver } from 'neo4j-driver';
+import { v4 as uuidv4 } from 'uuid';
 
-interface SampleCard {
-  name: string;
-  set: string;
-  rarity: string;
-  cardNumber: string;
-  releaseDate: Date;
-  description: string;
-  type: string;
-  attributes: Record<string, any>;
-  imageUrl?: string;
+interface SeedConfig {
+  uri: string;
+  username: string;
+  password: string;
+  database: string;
 }
 
-interface SampleMarket {
-  name: string;
-  url: string;
-  region: string;
-  currency: string;
-  apiAvailable: boolean;
-}
+const config: SeedConfig = {
+  uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
+  username: process.env.NEO4J_USERNAME || 'neo4j',
+  password: process.env.NEO4J_PASSWORD || 'password',
+  database: process.env.NEO4J_DATABASE || 'neo4j',
+};
 
-interface SampleResearch {
-  title: string;
-  abstract: string;
-  authors: string[];
-  year: number;
-  venue: string;
-  url: string;
-  doi?: string;
-  keywords: string[];
-  citationCount: number;
-}
-
-// Sample TCG Cards
-const SAMPLE_CARDS: SampleCard[] = [
+/**
+ * Sample TCG Cards
+ */
+const SAMPLE_CARDS = [
   {
+    id: uuidv4(),
     name: 'Charizard',
     set: 'Base Set',
     rarity: 'Holo Rare',
     cardNumber: '4/102',
-    releaseDate: new Date('1999-01-09'),
-    description: 'Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally.',
+    releaseDate: '1999-01-09',
+    description: 'Spits fire that is hot enough to melt boulders. Known to unintentionally cause forest fires.',
     type: 'Pokemon',
-    attributes: { hp: 120, type: 'Fire', stage: 'Stage 2', weakness: 'Water', resistance: 'Fighting' },
+    attributes: JSON.stringify({ hp: 120, type: 'Fire', stage: 'Stage 2', weakness: 'Water' }),
+    imageUrl: 'https://images.pokemontcg.io/base1/4.png',
   },
   {
+    id: uuidv4(),
+    name: 'Charizard',
+    set: 'Base Set',
+    rarity: 'Holo Rare',
+    cardNumber: '4/102',
+    releaseDate: '1999-01-09',
+    description: '1st Edition shadowless variant - extremely rare and valuable.',
+    type: 'Pokemon',
+    attributes: JSON.stringify({ hp: 120, type: 'Fire', stage: 'Stage 2', edition: '1st Edition', shadowless: true }),
+    imageUrl: 'https://images.pokemontcg.io/base1/4.png',
+    variant: '1st Edition Shadowless',
+  },
+  {
+    id: uuidv4(),
     name: 'Pikachu',
     set: 'Base Set',
     rarity: 'Common',
     cardNumber: '58/102',
-    releaseDate: new Date('1999-01-09'),
+    releaseDate: '1999-01-09',
     description: 'When several of these Pokemon gather, their electricity could build and cause lightning storms.',
     type: 'Pokemon',
-    attributes: { hp: 40, type: 'Electric', stage: 'Basic', weakness: 'Fighting' },
+    attributes: JSON.stringify({ hp: 40, type: 'Electric', stage: 'Basic' }),
+    imageUrl: 'https://images.pokemontcg.io/base1/58.png',
   },
   {
-    name: 'Blastoise',
-    set: 'Base Set',
-    rarity: 'Holo Rare',
-    cardNumber: '2/102',
-    releaseDate: new Date('1999-01-09'),
-    description: 'A brutal Pokemon with pressurized water jets on its shell. They are used for high speed tackles.',
-    type: 'Pokemon',
-    attributes: { hp: 100, type: 'Water', stage: 'Stage 2', weakness: 'Grass' },
-  },
-  {
-    name: 'Venusaur',
-    set: 'Base Set',
-    rarity: 'Holo Rare',
-    cardNumber: '15/102',
-    releaseDate: new Date('1999-01-09'),
-    description: 'The plant blooms when it is absorbing solar energy. It stays on the move to seek sunlight.',
-    type: 'Pokemon',
-    attributes: { hp: 100, type: 'Grass', stage: 'Stage 2', weakness: 'Fire' },
-  },
-  {
+    id: uuidv4(),
     name: 'Black Lotus',
     set: 'Alpha',
     rarity: 'Rare',
-    cardNumber: 'A-001',
-    releaseDate: new Date('1993-08-05'),
-    description: 'Add three mana of any single color of your choice to your mana pool, then is discarded.',
+    cardNumber: '232',
+    releaseDate: '1993-08-05',
+    description: 'The most iconic and valuable Magic: The Gathering card. Add 3 mana of any single color.',
     type: 'Magic',
-    attributes: { cmc: 0, type: 'Artifact', rarity: 'Power Nine' },
+    attributes: JSON.stringify({ manaCost: 0, type: 'Artifact', ability: 'Add 3 mana of any single color' }),
+    imageUrl: 'https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=3&type=card',
   },
   {
+    id: uuidv4(),
     name: 'Blue-Eyes White Dragon',
-    set: 'Legend of Blue-Eyes White Dragon',
+    set: 'Legend of Blue Eyes White Dragon',
     rarity: 'Ultra Rare',
     cardNumber: 'LOB-001',
-    releaseDate: new Date('2002-03-08'),
-    description: 'This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale.',
+    releaseDate: '2002-03-08',
+    description: 'This legendary dragon is a powerful engine of destruction.',
     type: 'Yu-Gi-Oh',
-    attributes: { atk: 3000, def: 2500, level: 8, attribute: 'LIGHT' },
+    attributes: JSON.stringify({ attack: 3000, defense: 2500, level: 8, attribute: 'LIGHT' }),
+    imageUrl: 'https://images.ygoprodeck.com/images/cards/89631139.jpg',
+  },
+  {
+    id: uuidv4(),
+    name: 'Mew',
+    set: 'Fossil',
+    rarity: 'Rare Holo',
+    cardNumber: '8/62',
+    releaseDate: '1999-10-10',
+    description: 'So rare that it is still said to be a mirage by many experts.',
+    type: 'Pokemon',
+    attributes: JSON.stringify({ hp: 50, type: 'Psychic', stage: 'Basic' }),
+    imageUrl: 'https://images.pokemontcg.io/fossil/8.png',
+  },
+  {
+    id: uuidv4(),
+    name: 'Umbreon',
+    set: 'Neo Discovery',
+    rarity: 'Holo Rare',
+    cardNumber: '13/75',
+    releaseDate: '2001-06-01',
+    description: 'When darkness falls, the rings on the body glow.',
+    type: 'Pokemon',
+    attributes: JSON.stringify({ hp: 70, type: 'Dark', stage: 'Stage 1' }),
+    imageUrl: 'https://images.pokemontcg.io/neo2/13.png',
+  },
+  {
+    id: uuidv4(),
+    name: 'Lugia',
+    set: 'Neo Genesis',
+    rarity: 'Holo Rare',
+    cardNumber: '9/111',
+    releaseDate: '2000-12-16',
+    description: 'It is said to be the guardian of the seas.',
+    type: 'Pokemon',
+    attributes: JSON.stringify({ hp: 90, type: 'Psychic', stage: 'Basic' }),
+    imageUrl: 'https://images.pokemontcg.io/neo1/9.png',
   },
 ];
 
-// Sample Markets
-const SAMPLE_MARKETS: SampleMarket[] = [
-  {
-    name: 'TCGPlayer',
-    url: 'https://www.tcgplayer.com',
-    region: 'North America',
-    currency: 'USD',
-    apiAvailable: true,
-  },
-  {
-    name: 'eBay',
-    url: 'https://www.ebay.com',
-    region: 'Global',
-    currency: 'USD',
-    apiAvailable: true,
-  },
-  {
-    name: 'CardMarket',
-    url: 'https://www.cardmarket.com',
-    region: 'Europe',
-    currency: 'EUR',
-    apiAvailable: true,
-  },
-  {
-    name: 'Troll and Toad',
-    url: 'https://www.trollandtoad.com',
-    region: 'North America',
-    currency: 'USD',
-    apiAvailable: false,
-  },
+/**
+ * Sample Transactions (price data)
+ */
+const SAMPLE_TRANSACTIONS = [
+  // Charizard Base Set - various grades
+  { cardIndex: 0, price: 450.00, condition: 'Near Mint', grading: 'PSA 9', source: 'TCGPlayer', daysAgo: 1 },
+  { cardIndex: 0, price: 1250.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'eBay', daysAgo: 3 },
+  { cardIndex: 0, price: 380.00, condition: 'Excellent', grading: 'PSA 8', source: 'TCGPlayer', daysAgo: 5 },
+  { cardIndex: 0, price: 425.00, condition: 'Near Mint', grading: 'BGS 9', source: 'PWCC', daysAgo: 7 },
+
+  // 1st Edition Charizard - extremely high value
+  { cardIndex: 1, price: 125000.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'PWCC', daysAgo: 14 },
+  { cardIndex: 1, price: 85000.00, condition: 'Near Mint', grading: 'PSA 9', source: 'eBay', daysAgo: 30 },
+  { cardIndex: 1, price: 45000.00, condition: 'Excellent', grading: 'PSA 8', source: 'Heritage', daysAgo: 45 },
+
+  // Pikachu - affordable common
+  { cardIndex: 2, price: 15.00, condition: 'Near Mint', grading: 'Raw', source: 'TCGPlayer', daysAgo: 1 },
+  { cardIndex: 2, price: 75.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'eBay', daysAgo: 5 },
+
+  // Black Lotus - ultra high value
+  { cardIndex: 3, price: 450000.00, condition: 'Near Mint', grading: 'BGS 9.5', source: 'PWCC', daysAgo: 60 },
+  { cardIndex: 3, price: 180000.00, condition: 'Lightly Played', grading: 'CGC 7', source: 'eBay', daysAgo: 90 },
+
+  // Blue-Eyes White Dragon
+  { cardIndex: 4, price: 8500.00, condition: 'Near Mint', grading: 'PSA 9', source: 'eBay', daysAgo: 10 },
+  { cardIndex: 4, price: 2500.00, condition: 'Excellent', grading: 'PSA 8', source: 'TCGPlayer', daysAgo: 15 },
+
+  // Mew Fossil
+  { cardIndex: 5, price: 250.00, condition: 'Near Mint', grading: 'PSA 9', source: 'TCGPlayer', daysAgo: 7 },
+  { cardIndex: 5, price: 650.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'eBay', daysAgo: 14 },
+
+  // Umbreon Neo Discovery
+  { cardIndex: 6, price: 1800.00, condition: 'Near Mint', grading: 'PSA 9', source: 'eBay', daysAgo: 21 },
+  { cardIndex: 6, price: 4500.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'PWCC', daysAgo: 35 },
+
+  // Lugia Neo Genesis
+  { cardIndex: 7, price: 950.00, condition: 'Near Mint', grading: 'PSA 9', source: 'TCGPlayer', daysAgo: 3 },
+  { cardIndex: 7, price: 3200.00, condition: 'Gem Mint', grading: 'PSA 10', source: 'eBay', daysAgo: 10 },
 ];
 
-// Sample Research Papers
-const SAMPLE_RESEARCH: SampleResearch[] = [
+/**
+ * Sample Research Papers
+ */
+const SAMPLE_RESEARCH = [
   {
-    title: 'OmniScientist: Agentic AI Researcher for Autonomous Scientific Discovery',
-    abstract: 'We present OmniScientist, a multi-agent AI system designed for autonomous scientific research. The system combines literature review, hypothesis generation, experiment design, and result analysis in a unified framework.',
-    authors: ['A. Chen', 'B. Wang', 'C. Liu', 'D. Zhang'],
+    id: uuidv4(),
+    title: 'OmniScientist: AI-Driven Scientific Discovery with Multi-Agent Systems',
+    abstract: 'We present OmniScientist, a framework for automated scientific discovery using large language models and multi-agent systems. The system combines deep ideation, iterative refinement, and autonomous experimentation.',
+    authors: ['Zhang, L.', 'Wang, X.', 'Liu, Y.'],
     year: 2025,
     venue: 'NeurIPS',
     url: 'https://arxiv.org/abs/2501.12345',
-    doi: '10.1234/neurips.2025.12345',
-    keywords: ['multi-agent systems', 'scientific discovery', 'autonomous research'],
-    citationCount: 127,
-  },
-  {
-    title: 'Computer-Using Agents: A Survey of Recent Advances',
-    abstract: 'This survey provides a comprehensive overview of computer-using agents (CUAs), AI systems capable of interacting with graphical user interfaces. We analyze architectures, benchmarks, and applications.',
-    authors: ['E. Smith', 'F. Johnson'],
-    year: 2024,
-    venue: 'ACL',
-    url: 'https://arxiv.org/abs/2410.67890',
-    keywords: ['computer-using agents', 'GUI automation', 'language models'],
-    citationCount: 89,
-  },
-  {
-    title: 'Knowledge Graphs for AI Research: A Practical Guide',
-    abstract: 'We present a practical framework for building and maintaining knowledge graphs in AI research settings. Our approach emphasizes reproducibility and collaboration.',
-    authors: ['G. Brown', 'H. Davis', 'I. Miller'],
-    year: 2024,
-    venue: 'EMNLP',
-    url: 'https://arxiv.org/abs/2409.11111',
-    keywords: ['knowledge graphs', 'AI research', 'reproducibility'],
+    keywords: ['multi-agent systems', 'scientific discovery', 'LLM', 'automation'],
     citationCount: 45,
   },
   {
-    title: 'Holographic Display Technology: Current State and Future Directions',
-    abstract: 'This paper reviews the current state of holographic display technology, including recent advances in light field displays, computational holography, and eye-tracking integration.',
-    authors: ['J. Wilson', 'K. Taylor'],
+    id: uuidv4(),
+    title: 'Computer-Using Agents for Web Automation: A Survey',
+    abstract: 'This survey reviews the state-of-the-art in computer-using agents (CUAs) for web automation, including vision-language models, action prediction, and safety considerations.',
+    authors: ['Chen, M.', 'Patel, R.', 'Kim, S.'],
     year: 2024,
-    venue: 'SIGGRAPH',
-    url: 'https://dl.acm.org/doi/10.1145/3588432.3591518',
-    keywords: ['holographic displays', 'light field', 'augmented reality'],
-    citationCount: 32,
+    venue: 'ACM Computing Surveys',
+    url: 'https://arxiv.org/abs/2402.54321',
+    keywords: ['computer-using agents', 'web automation', 'vision-language models', 'GUI agents'],
+    citationCount: 128,
+  },
+  {
+    id: uuidv4(),
+    title: 'Fara-7B: A Lightweight CUA for Consumer Hardware',
+    abstract: 'We introduce Fara-7B, a 7 billion parameter model optimized for computer-using agent tasks that runs efficiently on consumer GPUs and Copilot+ PCs.',
+    authors: ['Microsoft Research'],
+    year: 2025,
+    venue: 'ICML',
+    url: 'https://arxiv.org/abs/2503.98765',
+    keywords: ['Fara-7B', 'computer-using agents', 'edge deployment', 'efficient models'],
+    citationCount: 67,
+  },
+  {
+    id: uuidv4(),
+    title: 'Knowledge Graphs for Trading Card Game Market Analysis',
+    abstract: 'We propose a knowledge graph-based approach for analyzing trading card game markets, incorporating price trends, market dynamics, and collector behavior patterns.',
+    authors: ['Thompson, J.', 'Garcia, M.'],
+    year: 2024,
+    venue: 'IEEE BigData',
+    url: 'https://arxiv.org/abs/2411.11111',
+    keywords: ['knowledge graphs', 'TCG', 'market analysis', 'price prediction'],
+    citationCount: 23,
+  },
+  {
+    id: uuidv4(),
+    title: 'Deep Ideation Networks for Scientific Hypothesis Generation',
+    abstract: 'This paper presents Deep Ideation Networks, a framework for generating novel scientific hypotheses using transformer models and knowledge graph reasoning.',
+    authors: ['Lee, K.', 'Brown, A.', 'Taylor, S.'],
+    year: 2024,
+    venue: 'AAAI',
+    url: 'https://arxiv.org/abs/2401.22222',
+    keywords: ['deep ideation', 'hypothesis generation', 'knowledge graphs', 'transformers'],
+    citationCount: 89,
   },
 ];
 
-// Sample Concepts
+/**
+ * Sample Concepts
+ */
 const SAMPLE_CONCEPTS = [
-  { name: 'multi-agent systems', definition: 'Computational systems composed of multiple interacting intelligent agents', category: 'methodology' },
-  { name: 'knowledge graphs', definition: 'Graph-structured databases that store interconnected entities and their relationships', category: 'technology' },
-  { name: 'computer-using agents', definition: 'AI systems that interact with computer interfaces like humans do', category: 'technology' },
-  { name: 'holographic displays', definition: 'Display technology that creates three-dimensional images using light diffraction', category: 'technology' },
-  { name: 'scientific discovery', definition: 'The process of acquiring new knowledge through systematic investigation', category: 'domain' },
-  { name: 'autonomous research', definition: 'Research conducted with minimal human intervention using AI systems', category: 'methodology' },
+  { id: uuidv4(), name: 'computer-using agent', definition: 'An AI system capable of autonomously operating computer interfaces to accomplish tasks', category: 'technology', frequency: 156 },
+  { id: uuidv4(), name: 'knowledge graph', definition: 'A structured representation of entities and their relationships in a graph database', category: 'methodology', frequency: 245 },
+  { id: uuidv4(), name: 'multi-agent system', definition: 'A system composed of multiple interacting intelligent agents', category: 'technology', frequency: 189 },
+  { id: uuidv4(), name: 'deep ideation', definition: 'Using deep learning to generate creative ideas and hypotheses', category: 'methodology', frequency: 67 },
+  { id: uuidv4(), name: 'TCG market', definition: 'The marketplace for trading card games including Pokemon, Magic, and Yu-Gi-Oh', category: 'domain', frequency: 34 },
+  { id: uuidv4(), name: 'price prediction', definition: 'Using machine learning to forecast future prices of assets', category: 'application', frequency: 312 },
+  { id: uuidv4(), name: 'vision-language model', definition: 'Neural networks that process both visual and textual information', category: 'technology', frequency: 423 },
+  { id: uuidv4(), name: 'grading services', definition: 'Professional card authentication and grading (PSA, BGS, CGC)', category: 'domain', frequency: 45 },
 ];
 
-async function seedDatabase(): Promise<void> {
-  console.log('Apex Knowledge Graph - Database Seeding');
-  console.log('='.repeat(50));
-  console.log('');
-
-  let client: Neo4jClient;
+async function runQuery(driver: Driver, query: string, params: Record<string, unknown> = {}): Promise<void> {
+  const session = driver.session({ database: config.database });
   try {
-    client = createNeo4jClient();
-  } catch (error: any) {
-    console.error('Failed to create Neo4j client:', error.message);
-    process.exit(1);
-  }
-
-  try {
-    // Test connectivity
-    console.log('Testing connection...');
-    const connected = await client.verifyConnectivity();
-    if (!connected) {
-      console.error('Failed to connect to Neo4j');
-      process.exit(1);
-    }
-    console.log('Connected successfully!\n');
-
-    // Create Markets
-    console.log('Creating Markets...');
-    const marketIds: Map<string, string> = new Map();
-    for (const market of SAMPLE_MARKETS) {
-      try {
-        const result = await client.write(
-          `CREATE (m:Market {
-            id: randomUUID(),
-            name: $name,
-            url: $url,
-            region: $region,
-            currency: $currency,
-            apiAvailable: $apiAvailable,
-            createdAt: datetime(),
-            updatedAt: datetime()
-          }) RETURN m.id as id, m.name as name`,
-          market
-        );
-        if (result[0]) {
-          marketIds.set(market.name, result[0].id);
-          console.log(`  [OK] ${market.name}`);
-        }
-      } catch (error: any) {
-        console.log(`  [SKIP] ${market.name} (may already exist)`);
-      }
-    }
-    console.log('');
-
-    // Create Cards
-    console.log('Creating Cards...');
-    const cardIds: Map<string, string> = new Map();
-    for (const card of SAMPLE_CARDS) {
-      try {
-        const createdCard = await client.createCard(card);
-        cardIds.set(card.name, createdCard.id);
-        console.log(`  [OK] ${card.name} (${card.set})`);
-      } catch (error: any) {
-        console.log(`  [SKIP] ${card.name} (may already exist)`);
-      }
-    }
-    console.log('');
-
-    // Create Transactions (link cards to markets)
-    console.log('Creating Transactions...');
-    const tcgplayerId = marketIds.get('TCGPlayer');
-    const ebayId = marketIds.get('eBay');
-
-    if (tcgplayerId && cardIds.get('Charizard')) {
-      try {
-        await client.createTransaction(cardIds.get('Charizard')!, tcgplayerId, {
-          price: 350.00,
-          currency: 'USD',
-          condition: 'Near Mint',
-          grading: 'PSA 10',
-          quantity: 1,
-          date: new Date('2025-11-20'),
-          source: 'API',
-        });
-        console.log('  [OK] Charizard PSA 10 @ TCGPlayer: $350');
-      } catch (error) {
-        console.log('  [SKIP] Charizard transaction');
-      }
-    }
-
-    if (ebayId && cardIds.get('Black Lotus')) {
-      try {
-        await client.createTransaction(cardIds.get('Black Lotus')!, ebayId, {
-          price: 250000.00,
-          currency: 'USD',
-          condition: 'Lightly Played',
-          grading: 'BGS 9.5',
-          quantity: 1,
-          date: new Date('2025-11-15'),
-          source: 'Scraping',
-        });
-        console.log('  [OK] Black Lotus BGS 9.5 @ eBay: $250,000');
-      } catch (error) {
-        console.log('  [SKIP] Black Lotus transaction');
-      }
-    }
-    console.log('');
-
-    // Create Research Papers
-    console.log('Creating Research Papers...');
-    const researchIds: Map<string, string> = new Map();
-    for (const research of SAMPLE_RESEARCH) {
-      try {
-        const createdResearch = await client.createResearch(research);
-        researchIds.set(research.title.substring(0, 30), createdResearch.id);
-        console.log(`  [OK] ${research.title.substring(0, 50)}...`);
-      } catch (error: any) {
-        console.log(`  [SKIP] ${research.title.substring(0, 50)}...`);
-      }
-    }
-    console.log('');
-
-    // Create Concepts
-    console.log('Creating Concepts...');
-    for (const concept of SAMPLE_CONCEPTS) {
-      try {
-        await client.createConcept({ ...concept, frequency: 1 });
-        console.log(`  [OK] ${concept.name}`);
-      } catch (error: any) {
-        console.log(`  [SKIP] ${concept.name}`);
-      }
-    }
-    console.log('');
-
-    // Create Citation relationships
-    console.log('Creating Citations...');
-    const omniscientistId = researchIds.get('OmniScientist: Agentic AI R');
-    const cuaSurveyId = researchIds.get('Computer-Using Agents: A Su');
-    const kgGuideId = researchIds.get('Knowledge Graphs for AI Res');
-
-    if (omniscientistId && cuaSurveyId) {
-      try {
-        await client.createCitation(
-          omniscientistId,
-          cuaSurveyId,
-          'We build upon the CUA framework described in prior work',
-          'Related Work'
-        );
-        console.log('  [OK] OmniScientist -> CUA Survey');
-      } catch (error) {
-        console.log('  [SKIP] OmniScientist -> CUA Survey');
-      }
-    }
-
-    if (omniscientistId && kgGuideId) {
-      try {
-        await client.createCitation(
-          omniscientistId,
-          kgGuideId,
-          'Our knowledge management approach follows the guidelines established by prior research',
-          'Methodology'
-        );
-        console.log('  [OK] OmniScientist -> KG Guide');
-      } catch (error) {
-        console.log('  [SKIP] OmniScientist -> KG Guide');
-      }
-    }
-    console.log('');
-
-    // Create Concept Co-occurrences
-    console.log('Creating Concept Co-occurrences...');
-    if (omniscientistId) {
-      try {
-        await client.createConceptCoOccurrence('multi-agent systems', 'scientific discovery', omniscientistId);
-        console.log('  [OK] multi-agent systems <-> scientific discovery');
-      } catch (error) {
-        console.log('  [SKIP] concept co-occurrence');
-      }
-
-      try {
-        await client.createConceptCoOccurrence('knowledge graphs', 'autonomous research', omniscientistId);
-        console.log('  [OK] knowledge graphs <-> autonomous research');
-      } catch (error) {
-        console.log('  [SKIP] concept co-occurrence');
-      }
-    }
-    console.log('');
-
-    // Summary
-    console.log('='.repeat(50));
-    console.log('Seeding Complete!');
-    console.log(`  Cards: ${SAMPLE_CARDS.length}`);
-    console.log(`  Markets: ${SAMPLE_MARKETS.length}`);
-    console.log(`  Research: ${SAMPLE_RESEARCH.length}`);
-    console.log(`  Concepts: ${SAMPLE_CONCEPTS.length}`);
-
+    await session.run(query, params);
   } finally {
-    await client.close();
+    await session.close();
   }
-
-  console.log('\nDone!');
 }
 
-seedDatabase();
+async function seedCards(driver: Driver): Promise<string[]> {
+  console.log('\nSeeding TCG cards...');
+  const cardIds: string[] = [];
+
+  for (const card of SAMPLE_CARDS) {
+    const query = `
+      CREATE (c:Card {
+        id: $id,
+        name: $name,
+        set: $set,
+        rarity: $rarity,
+        cardNumber: $cardNumber,
+        releaseDate: date($releaseDate),
+        description: $description,
+        type: $type,
+        attributes: $attributes,
+        imageUrl: $imageUrl,
+        createdAt: datetime(),
+        updatedAt: datetime()
+      })
+      RETURN c.id as id
+    `;
+
+    try {
+      await runQuery(driver, query, card);
+      cardIds.push(card.id);
+      console.log(`  ✓ Card: ${card.name} (${card.set})`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ✗ Error seeding card ${card.name}: ${errorMessage}`);
+    }
+  }
+
+  // Create SOLD_ON relationships to markets
+  console.log('\nCreating card-market relationships...');
+  for (const cardId of cardIds) {
+    const marketQuery = `
+      MATCH (c:Card {id: $cardId}), (m:Market)
+      WHERE m.name IN ['TCGPlayer', 'eBay']
+      CREATE (c)-[:SOLD_ON {
+        firstListedDate: datetime() - duration({days: 365}),
+        lastSeenDate: datetime(),
+        transactionCount: toInteger(rand() * 100) + 1
+      }]->(m)
+    `;
+    await runQuery(driver, marketQuery, { cardId });
+  }
+  console.log('  ✓ Card-Market relationships created');
+
+  return cardIds;
+}
+
+async function seedTransactions(driver: Driver, cardIds: string[]): Promise<void> {
+  console.log('\nSeeding price transactions...');
+
+  for (const tx of SAMPLE_TRANSACTIONS) {
+    const cardId = cardIds[tx.cardIndex];
+    if (!cardId) continue;
+
+    const transactionId = uuidv4();
+    const transactionDate = new Date();
+    transactionDate.setDate(transactionDate.getDate() - tx.daysAgo);
+
+    // Get market ID for the source
+    const marketMap: Record<string, string> = {
+      'TCGPlayer': 'market-tcgplayer',
+      'eBay': 'market-ebay',
+      'CardMarket': 'market-cardmarket',
+      'PWCC': 'market-pwccauctions',
+      'Heritage': 'market-pwccauctions',
+    };
+
+    const marketId = marketMap[tx.source] || 'market-tcgplayer';
+
+    const query = `
+      MATCH (c:Card {id: $cardId}), (m:Market {id: $marketId})
+      CREATE (t:Transaction {
+        id: $transactionId,
+        price: $price,
+        currency: 'USD',
+        condition: $condition,
+        grading: $grading,
+        quantity: 1,
+        date: datetime($date),
+        source: $source,
+        createdAt: datetime()
+      })
+      CREATE (c)-[:PRICED_AT {source: $source, verified: true}]->(t)
+      CREATE (t)-[:OCCURRED_ON {listingId: $listingId}]->(m)
+    `;
+
+    try {
+      await runQuery(driver, query, {
+        cardId,
+        marketId,
+        transactionId,
+        price: tx.price,
+        condition: tx.condition,
+        grading: tx.grading,
+        source: tx.source,
+        date: transactionDate.toISOString(),
+        listingId: `${tx.source}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      });
+      console.log(`  ✓ Transaction: $${tx.price.toLocaleString()} (${tx.grading})`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ✗ Error seeding transaction: ${errorMessage}`);
+    }
+  }
+}
+
+async function seedResearch(driver: Driver): Promise<string[]> {
+  console.log('\nSeeding research papers...');
+  const researchIds: string[] = [];
+
+  for (const paper of SAMPLE_RESEARCH) {
+    const query = `
+      CREATE (r:Research {
+        id: $id,
+        title: $title,
+        abstract: $abstract,
+        authors: $authors,
+        year: $year,
+        venue: $venue,
+        url: $url,
+        keywords: $keywords,
+        citationCount: $citationCount,
+        createdAt: datetime(),
+        updatedAt: datetime()
+      })
+      RETURN r.id as id
+    `;
+
+    try {
+      await runQuery(driver, query, paper);
+      researchIds.push(paper.id);
+      console.log(`  ✓ Paper: ${paper.title.substring(0, 50)}...`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ✗ Error seeding paper: ${errorMessage}`);
+    }
+  }
+
+  // Create some citation relationships
+  console.log('\nCreating citation relationships...');
+  if (researchIds.length >= 3) {
+    // Paper 0 cites papers 1 and 2
+    await runQuery(driver, `
+      MATCH (r1:Research {id: $citing}), (r2:Research {id: $cited})
+      CREATE (r1)-[:CITES {context: 'Building on prior work in CUA systems', section: 'Related Work', sentiment: 'positive'}]->(r2)
+    `, { citing: researchIds[0], cited: researchIds[1] });
+
+    await runQuery(driver, `
+      MATCH (r1:Research {id: $citing}), (r2:Research {id: $cited})
+      CREATE (r1)-[:CITES {context: 'Extends the Fara-7B architecture', section: 'Methods', sentiment: 'neutral'}]->(r2)
+    `, { citing: researchIds[0], cited: researchIds[2] });
+
+    // Paper 4 cites paper 3
+    await runQuery(driver, `
+      MATCH (r1:Research {id: $citing}), (r2:Research {id: $cited})
+      CREATE (r1)-[:CITES {context: 'Similar approach to knowledge graph construction', section: 'Introduction', sentiment: 'positive'}]->(r2)
+    `, { citing: researchIds[4], cited: researchIds[3] });
+
+    console.log('  ✓ Citation relationships created');
+  }
+
+  // Link research to Fara-7B agent
+  console.log('\nLinking research to AI agents...');
+  await runQuery(driver, `
+    MATCH (r:Research), (a:Agent {name: 'Fara-7B'})
+    WHERE r.title CONTAINS 'Fara'
+    CREATE (r)-[:CONTRIBUTED_BY {role: 'subject', timestamp: datetime(), action: 'described'}]->(a)
+  `);
+  console.log('  ✓ Research-Agent relationships created');
+
+  return researchIds;
+}
+
+async function seedConcepts(driver: Driver, researchIds: string[]): Promise<void> {
+  console.log('\nSeeding concepts...');
+
+  for (const concept of SAMPLE_CONCEPTS) {
+    const query = `
+      CREATE (c:Concept {
+        id: $id,
+        name: $name,
+        definition: $definition,
+        category: $category,
+        frequency: $frequency,
+        createdAt: datetime(),
+        updatedAt: datetime()
+      })
+      RETURN c.id as id
+    `;
+
+    try {
+      await runQuery(driver, query, concept);
+      console.log(`  ✓ Concept: ${concept.name}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ✗ Error seeding concept: ${errorMessage}`);
+    }
+  }
+
+  // Create MENTIONS relationships between research and concepts
+  console.log('\nCreating research-concept relationships...');
+  const mentionQueries = [
+    { concept: 'computer-using agent', keywords: ['computer-using', 'CUA', 'GUI agents'] },
+    { concept: 'knowledge graph', keywords: ['knowledge graph', 'graph'] },
+    { concept: 'multi-agent system', keywords: ['multi-agent', 'agents'] },
+    { concept: 'deep ideation', keywords: ['ideation', 'hypothesis'] },
+    { concept: 'vision-language model', keywords: ['vision-language', 'visual'] },
+  ];
+
+  for (const { concept, keywords } of mentionQueries) {
+    const keywordPattern = keywords.join('|');
+    await runQuery(driver, `
+      MATCH (r:Research), (c:Concept {name: $conceptName})
+      WHERE any(kw IN r.keywords WHERE kw =~ $pattern) OR r.abstract =~ $pattern
+      CREATE (r)-[:MENTIONS {frequency: toInteger(rand() * 10) + 1, importance: rand()}]->(c)
+    `, { conceptName: concept, pattern: `(?i).*(?:${keywordPattern}).*` });
+  }
+  console.log('  ✓ Research-Concept relationships created');
+
+  // Create CO_OCCURS_WITH relationships between concepts
+  console.log('\nCreating concept co-occurrence relationships...');
+  await runQuery(driver, `
+    MATCH (c1:Concept {name: 'computer-using agent'}), (c2:Concept {name: 'vision-language model'})
+    CREATE (c1)-[:CO_OCCURS_WITH {frequency: 45, strength: 0.85}]->(c2)
+  `);
+  await runQuery(driver, `
+    MATCH (c1:Concept {name: 'knowledge graph'}), (c2:Concept {name: 'multi-agent system'})
+    CREATE (c1)-[:CO_OCCURS_WITH {frequency: 23, strength: 0.62}]->(c2)
+  `);
+  await runQuery(driver, `
+    MATCH (c1:Concept {name: 'deep ideation'}), (c2:Concept {name: 'multi-agent system'})
+    CREATE (c1)-[:CO_OCCURS_WITH {frequency: 18, strength: 0.54}]->(c2)
+  `);
+  console.log('  ✓ Concept co-occurrence relationships created');
+}
+
+async function printSummary(driver: Driver): Promise<void> {
+  console.log('\n' + '='.repeat(60));
+  console.log('Seed Data Summary');
+  console.log('='.repeat(60));
+
+  const session = driver.session({ database: config.database });
+  try {
+    const countQuery = `
+      MATCH (n)
+      WITH labels(n) AS labels
+      UNWIND labels AS label
+      RETURN label, count(*) AS count
+      ORDER BY count DESC
+    `;
+
+    const result = await session.run(countQuery);
+    console.log('\nNodes by label:');
+    for (const record of result.records) {
+      const label = record.get('label');
+      const count = record.get('count').toNumber();
+      console.log(`  ${label}: ${count}`);
+    }
+
+    const relQuery = `
+      MATCH ()-[r]->()
+      RETURN type(r) AS type, count(*) AS count
+      ORDER BY count DESC
+    `;
+
+    const relResult = await session.run(relQuery);
+    console.log('\nRelationships by type:');
+    for (const record of relResult.records) {
+      const type = record.get('type');
+      const count = record.get('count').toNumber();
+      console.log(`  ${type}: ${count}`);
+    }
+
+  } finally {
+    await session.close();
+  }
+}
+
+async function main(): Promise<void> {
+  console.log('='.repeat(60));
+  console.log('Apex Intelligence Center - Neo4j Seed Data');
+  console.log('='.repeat(60));
+  console.log(`\nConnecting to Neo4j at ${config.uri}...`);
+
+  const driver = neo4j.driver(
+    config.uri,
+    neo4j.auth.basic(config.username, config.password)
+  );
+
+  try {
+    await driver.verifyConnectivity();
+    console.log('Connected successfully!');
+
+    // Seed data
+    const cardIds = await seedCards(driver);
+    await seedTransactions(driver, cardIds);
+    const researchIds = await seedResearch(driver);
+    await seedConcepts(driver, researchIds);
+
+    // Print summary
+    await printSummary(driver);
+
+    console.log('\n' + '='.repeat(60));
+    console.log('Seed data complete!');
+    console.log('='.repeat(60));
+    console.log('\nYou can now run queries using:');
+    console.log('  pnpm neo4j:query');
+
+  } catch (error) {
+    console.error('\nSeeding failed:', error);
+    process.exit(1);
+  } finally {
+    await driver.close();
+  }
+}
+
+main();
