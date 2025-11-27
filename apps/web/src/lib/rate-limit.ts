@@ -130,3 +130,65 @@ export function getRetryAfter(reset: number): number {
   return Math.ceil((reset - Date.now()) / 1000);
 }
 
+// ============================================================================
+// MULTI-MODAL RATE LIMITERS
+// ============================================================================
+
+/**
+ * Rate limiters for multi-modal endpoints (video generation, uploads, etc.)
+ * More restrictive limits due to higher resource consumption
+ */
+export const multiModalRateLimiters = {
+  /**
+   * Video generation rate limiter
+   * Free: 5/hour, Pro: 20/hour, Enterprise: 100/hour
+   */
+  generateVideo: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = {
+      free: 5,
+      pro: 20,
+      enterprise: 100,
+    };
+    return ratelimit(limits[tier], `multimodal:video:${userId}`, 3600); // 1 hour window
+  },
+
+  /**
+   * File upload rate limiter
+   * Free: 10/min, Pro: 50/min, Enterprise: unlimited
+   */
+  upload: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = {
+      free: 10,
+      pro: 50,
+      enterprise: Infinity,
+    };
+    return ratelimit(limits[tier], `multimodal:upload:${userId}`, 60); // 1 min window
+  },
+
+  /**
+   * Image processing rate limiter
+   * Free: 20/min, Pro: 100/min, Enterprise: unlimited
+   */
+  imageProcess: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = {
+      free: 20,
+      pro: 100,
+      enterprise: Infinity,
+    };
+    return ratelimit(limits[tier], `multimodal:image:${userId}`, 60); // 1 min window
+  },
+
+  /**
+   * Audio processing rate limiter
+   * Free: 10/min, Pro: 50/min, Enterprise: unlimited
+   */
+  audioProcess: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = {
+      free: 10,
+      pro: 50,
+      enterprise: Infinity,
+    };
+    return ratelimit(limits[tier], `multimodal:audio:${userId}`, 60); // 1 min window
+  },
+};
+
