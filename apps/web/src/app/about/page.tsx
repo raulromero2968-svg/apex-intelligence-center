@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Twitter, Linkedin, Instagram, Github, TrendingUp, Microscope, Shield } from 'lucide-react';
+import { Twitter, Linkedin, Instagram, Github, TrendingUp, Microscope, Shield, Target, Compass, Rocket } from 'lucide-react';
 import { SOCIAL_PROFILES } from '@/lib/constants';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 
@@ -51,10 +51,14 @@ export default function AboutPage() {
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
                 <h2 className="text-xl font-bold tracking-wider text-white font-mono">
-                  <span className="text-cyan-400">[</span> THE TRIAD STRATEGY <span className="text-cyan-400">]</span>
+                  <span className="text-cyan-400">[</span> WHO APEX INTELLIGENCE IS FOR <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
               </div>
+
+              <p className="text-slate-400 text-center max-w-3xl mx-auto mb-10 leading-relaxed">
+                We design everything we build around three core personas. Each one shapes our priorities, our tone, and our product decisions.
+              </p>
 
               <div className="grid md:grid-cols-3 gap-6">
                 {/* The Serious Collector */}
@@ -64,19 +68,38 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-3 font-mono">THE SERIOUS COLLECTOR</h3>
                   <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                    Institutional-grade market intelligence. We deploy VARC scanning protocols and real-time data pipelines to surface ROI opportunities invisible to retail.
+                    A disciplined TCG or collectibles investor who wants an edge <em>without</em> spending all day in spreadsheets and Discord.
                   </p>
-                  <ul className="space-y-2 text-xs text-slate-500 font-mono">
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Real-time arbitrage detection
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Predictive valuation models
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Market sentiment analysis
-                    </li>
-                  </ul>
+
+                  <div className="mb-4">
+                    <h4 className="text-cyan-400 text-xs font-mono mb-2">THEY CARE ABOUT:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Accurate, timely price signals
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Avoiding hype cycles & exit liquidity
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Tools that respect their time
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-white text-xs font-mono mb-2">HOW WE SERVE THEM:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> High-signal intel reports
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Clear risk explanations
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Openly admitting uncertainty
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 {/* The Curious Scientist */}
@@ -86,19 +109,38 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-3 font-mono">THE CURIOUS SCIENTIST</h3>
                   <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                    LAMARL: Language Model for Animal Research & Learning. We&apos;re decoding interspecies communication and building biological AI bridges.
+                    A researcher, quant, or technologist who sees TCG markets as a live sandbox—and is increasingly interested in biological data.
                   </p>
-                  <ul className="space-y-2 text-xs text-slate-500 font-mono">
-                    <li className="flex items-center gap-2">
-                      <span className="text-purple-400">→</span> Animal communication research
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-purple-400">→</span> Biological signal processing
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-purple-400">→</span> Cross-species interface design
-                    </li>
-                  </ul>
+
+                  <div className="mb-4">
+                    <h4 className="text-purple-400 text-xs font-mono mb-2">THEY CARE ABOUT:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> Transparent methodology
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> Interpretable models
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> Path from toys to serious research
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-white text-xs font-mono mb-2">HOW WE SERVE THEM:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> Technical appendices
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> Model failure case studies
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-purple-400">→</span> TCG → AI for bio roadmap
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 {/* The Ethical Builder */}
@@ -108,19 +150,38 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-3 font-mono">THE ETHICAL BUILDER</h3>
                   <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                    &ldquo;Sentient Beings First&rdquo; isn&apos;t a slogan—it&apos;s architecture. Every system we build includes safeguards against misuse and manipulation.
+                    Someone designing systems who wants them to be <em>humane by default</em>, especially in domains impacting sentient beings.
                   </p>
-                  <ul className="space-y-2 text-xs text-slate-500 font-mono">
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Harm-resistant system design
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Rogue think-tank philosophy
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-cyan-400">→</span> Transparency-first protocols
-                    </li>
-                  </ul>
+
+                  <div className="mb-4">
+                    <h4 className="text-cyan-400 text-xs font-mono mb-2">THEY CARE ABOUT:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Practical, implementable ethics
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Patterns assuming error
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Avoiding harmful externalities
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-white text-xs font-mono mb-2">HOW WE SERVE THEM:</h4>
+                    <ul className="space-y-1 text-xs text-slate-500 font-mono">
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Ethics-in-the-loop patterns
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> Do-no-harm protocols
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-cyan-400">→</span> AI for animal welfare research
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -143,9 +204,111 @@ export default function AboutPage() {
                   &ldquo;We build systems that assume error. We prioritize the welfare of all sentient beings—silicon or biological.&rdquo;
                 </blockquote>
 
-                <p className="text-slate-400 text-center max-w-2xl mx-auto leading-relaxed">
+                <p className="text-slate-400 text-center max-w-2xl mx-auto leading-relaxed mb-6">
                   At Apex Intelligence, we assume people arrive with all kinds of impulses. Our job is not to judge—but to ensure our tools never turn a passing urge into a permanent wound. In everything we build, we aim to be a lens and a guide, never a weapon.
                 </p>
+
+                <div className="text-center">
+                  <Link
+                    href="/philosophy"
+                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors"
+                  >
+                    [ READ_FULL_PHILOSOPHY ] →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* Long-Term Vision Section */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="LONG-TERM VISION" classification="STRATEGIC DIRECTION // 2025+">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <span className="text-cyan-400">[</span> WHERE WE&apos;RE HEADED <span className="text-cyan-400">]</span>
+              </h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-10">
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
+                    <Target className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-mono">SHORT-TERM</h3>
+                </div>
+                <p className="text-slate-400 leading-relaxed">
+                  Apex looks like a sharp, cyberpunk-flavored intel platform for TCG markets. High-signal reports, transparent methodology, and a culture that openly admits uncertainty.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+                    <Compass className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-mono">LONG-TERM</h3>
+                </div>
+                <p className="text-slate-400 leading-relaxed">
+                  A small, independent AI research center focused on biological science and animal welfare, grounded in real-world markets and ethics. No corporate gloss, no hype cycles.
+                </p>
+              </div>
+            </div>
+
+            {/* Evolution Path */}
+            <div className="relative border border-slate-700/50 bg-slate-900/30 backdrop-blur-sm rounded-xl p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/40 flex items-center justify-center">
+                  <Rocket className="w-5 h-5 text-cyan-400" />
+                </div>
+                <h3 className="text-lg font-bold text-white font-mono">OUR EVOLUTION</h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
+                    <span className="text-cyan-400 font-mono text-xs">01</span>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-mono text-sm mb-1">MAINTAIN THE UNDERGROUND AESTHETIC</h4>
+                    <p className="text-slate-500 text-sm">No corporate gloss, no hype cycles. Dispatches, dossiers, and public notes.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+                    <span className="text-purple-400 font-mono text-xs">02</span>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-mono text-sm mb-1">BUILD BRIDGES</h4>
+                    <p className="text-slate-500 text-sm">Connect TCG data → AI model evaluation → AI safety research → animal welfare.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
+                    <span className="text-cyan-400 font-mono text-xs">03</span>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-mono text-sm mb-1">COLLABORATE WITH THE FIELD</h4>
+                    <p className="text-slate-500 text-sm">Work alongside Sentient Futures, Earth Species Project, Faunalytics, ACE.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
+                    <span className="text-purple-400 font-mono text-xs">04</span>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-mono text-sm mb-1">STAY ALIGNED</h4>
+                    <p className="text-slate-500 text-sm">Simple constraint: if it doesn&apos;t benefit humans and other sentient beings, we don&apos;t ship it.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </ElectronicFolder>
@@ -235,12 +398,20 @@ export default function AboutPage() {
             Get exclusive market intelligence delivered weekly. No spam, just alpha.
           </p>
 
-          <Link
-            href="/subscribe"
-            className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
-          >
-            [ INITIATE_ACCESS ]
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/subscribe"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
+            >
+              [ INITIATE_ACCESS ]
+            </Link>
+            <Link
+              href="/lab"
+              className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
+            >
+              [ EXPLORE_LAB ]
+            </Link>
+          </div>
         </div>
       </section>
     </div>
