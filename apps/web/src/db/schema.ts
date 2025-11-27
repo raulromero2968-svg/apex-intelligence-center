@@ -89,11 +89,13 @@ export const cards = pgTable('cards', {
   scryfallId: text('scryfall_id'),
   justTcgId: text('just_tcg_id'),
   apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage for analytics/sorting
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
   nameIdx: index('idx_cards_name').on(table.name),
+  sevenDayGainIdx: index('idx_cards_seven_day_gain').on(table.sevenDayGainPercent),
   uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
 }));
 
@@ -171,6 +173,7 @@ export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   name: text('name'),
+  parentId: text('parent_id'), // For family hierarchies; optional reference to parent user
   stripeCustomerId: text('stripe_customer_id'),
   subscriptionTier: text('subscription_tier', {
     enum: ['free', 'pro', 'enterprise']
@@ -180,7 +183,9 @@ export const users = pgTable('users', {
   }),
   subscriptionEndsAt: timestamp('subscription_ends_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  parentIdIdx: index('idx_users_parent').on(table.parentId),
+}));
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -322,11 +327,18 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
   riskAdjustedSpreadPct: real('risk_adjusted_spread_pct').notNull(),
   liquidity: integer('liquidity').notNull(),
   shippingCost: real('shipping_cost'),
+  baseCollection: text('base_collection'), // Base collection string for filtering
+  status: text('status').default('open'), // Status: 'open' | 'closed' | 'expired'
+  edgeBps: integer('edge_bps'), // Basis points edge
+  estimatedProfitUsd: real('estimated_profit_usd'), // USD profit estimate
   detectedAt: timestamp('detected_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(), // Timestamp for queries
   expiresAt: timestamp('expires_at').notNull(),
 }, (table) => ({
   spreadExpiresIdx: index('idx_arb_spread_expires').on(table.spreadPct, table.expiresAt),
   cardIdx: index('idx_arb_card').on(table.cardId),
+  statusIdx: index('idx_arb_status').on(table.status),
+  createdAtIdx: index('idx_arb_created').on(table.createdAt),
 }));
 
 /**
