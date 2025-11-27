@@ -4,6 +4,8 @@ import { Toaster } from 'sonner';
 
 import { Analytics } from '@vercel/analytics/react';
 
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 import AuroraFX from '@/components/fx/AuroraFX';
 
 import BackgroundFX from '@/components/fx/BackgroundFX';
@@ -405,9 +407,11 @@ export default function RootLayout({
 
         <PwaInstallPrompt />
 
-        {/* Vercel Analytics */}
+        {/* Vercel Analytics & Speed Insights (KB-04: Core Web Vitals tracking) */}
 
         <Analytics />
+
+        <SpeedInsights />
 
       </body>
 

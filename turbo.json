@@ -40,6 +40,14 @@
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
     },
+    "verify-barrels": {
+      "cache": true,
+      "outputs": []
+    },
+    "verify-schema": {
+      "cache": true,
+      "outputs": []
+    },
     "db:migrate": {
       "cache": false
     },

@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // Enable gzip compression for static assets (KB-07: 20-30% faster loads)
+  compress: true,
   eslint: {
     // Disable ESLint during production builds on Vercel
     ignoreDuringBuilds: true,
