@@ -55,13 +55,13 @@
     "summary": "Free tools available with premium subscription tiers for advanced research and analytics"
   },
   "links": {
-    "website": "https://apex-intelligence.vercel.app",
+    "website": "https://www.apexintelligence.io",
     "github": "https://github.com/raulromero2968-svg/apex-intelligence-center",
-    "documentation": "https://apex-intelligence.vercel.app/docs",
-    "blog": "https://apex-intelligence.vercel.app/blog",
-    "research": "https://apex-intelligence.vercel.app/research",
-    "insights": "https://apex-intelligence.vercel.app/insights",
-    "intel": "https://apex-intelligence.vercel.app/intel"
+    "documentation": "https://www.apexintelligence.io/docs",
+    "blog": "https://www.apexintelligence.io/blog",
+    "research": "https://www.apexintelligence.io/research",
+    "insights": "https://www.apexintelligence.io/insights",
+    "intel": "https://www.apexintelligence.io/intel"
   },
   "technology": {
     "stack": [
@@ -101,9 +101,9 @@
     "linkedin": "apex-intelligence"
   },
   "legal": {
-    "termsOfService": "https://apex-intelligence.vercel.app/terms",
-    "privacyPolicy": "https://apex-intelligence.vercel.app/privacy",
-    "disclaimer": "https://apex-intelligence.vercel.app/disclaimer",
+    "termsOfService": "https://www.apexintelligence.io/terms",
+    "privacyPolicy": "https://www.apexintelligence.io/privacy",
+    "disclaimer": "https://www.apexintelligence.io/disclaimer",
     "license": "Proprietary - All rights reserved"
   }
 }
