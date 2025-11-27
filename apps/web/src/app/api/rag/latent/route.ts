@@ -15,7 +15,7 @@ import {
   generateLatentQueries,
   compressForAgentComm,
   type LatentQueryConfig,
-} from '@/../../../../../lib/rag/latent-query';
+} from '@/lib/rag/latent-query';
 
 // ============================================================================
 // TYPES

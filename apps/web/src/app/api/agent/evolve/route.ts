@@ -15,13 +15,13 @@ import {
   generateVisualCode,
   verifyWithPigeonParadox,
   analyzeMarket,
-} from '@/../../../../../lib/agents/multi-agent';
+} from '@/lib/agents/multi-agent';
 import {
   TaskDefinition,
   VisualCodeRequest,
   VerificationRequest,
   TASK_TEMPLATES,
-} from '@/../../../../../lib/agents/types';
+} from '@/lib/agents/types';
 
 // ============================================================================
 // TYPES
