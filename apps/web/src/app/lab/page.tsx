@@ -66,32 +66,32 @@ export default function LabPage() {
                         <TrendingUp className="w-7 h-7 text-cyan-400" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white font-mono">MARKET SYSTEMS & FORECASTING</h3>
+                        <h3 className="text-2xl font-bold text-white font-mono">MARKET SYSTEMS &amp; FORECASTING</h3>
                         <p className="text-slate-500 text-sm font-mono">TCG Markets as a Live-Fire Testbed</p>
                       </div>
                     </div>
 
                     <p className="text-slate-400 leading-relaxed mb-6">
-                      We treat TCG markets as a live-fire testbed for forecasting methods, model calibration, and humanAI collaboration. Real stakes, contained risk, fully observable behavior.
+                      We treat TCG markets as a live-fire testbed for forecasting methods, model calibration, and human-AI collaboration. Real stakes, contained risk, fully observable behavior.
                     </p>
 
                     <div className="space-y-4">
                       <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
-                          Price prediction experiments & validation
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          Price prediction experiments &amp; validation
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
-                          Liquidity & volatility studies
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          Liquidity &amp; volatility studies
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
                           Postmortems on where our forecasts failed
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
                           Model calibration benchmarks
                         </li>
                       </ul>
@@ -131,7 +131,7 @@ export default function LabPage() {
                         <Brain className="w-7 h-7 text-purple-400" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white font-mono">AI & ANIMAL WELFARE</h3>
+                        <h3 className="text-2xl font-bold text-white font-mono">AI &amp; ANIMAL WELFARE</h3>
                         <p className="text-slate-500 text-sm font-mono">Tracking the AI x Animals Field</p>
                       </div>
                     </div>
@@ -144,19 +144,19 @@ export default function LabPage() {
                       <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">’</span>
+                          <span className="text-purple-400 font-mono">-&gt;</span>
                           State-of-the-field reports on AI x animals
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">’</span>
+                          <span className="text-purple-400 font-mono">-&gt;</span>
                           Ethics briefs (&ldquo;If you build X, here&apos;s your risk checklist&rdquo;)
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">’</span>
+                          <span className="text-purple-400 font-mono">-&gt;</span>
                           Commentaries on ESP, Sentient Futures, Faunalytics, ACE
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">’</span>
+                          <span className="text-purple-400 font-mono">-&gt;</span>
                           NatureLM-audio and bioacoustics analysis
                         </li>
                       </ul>
@@ -203,26 +203,26 @@ export default function LabPage() {
                     </div>
 
                     <p className="text-slate-400 leading-relaxed mb-6">
-                      We explore what it would mean to design systemsfrom tools to institutionsthat treat humans, non-human animals, and potentially future digital minds as stakeholders, not just data sources.
+                      We explore what it would mean to design systemsâ€”from tools to institutionsâ€”that treat humans, non-human animals, and potentially future digital minds as stakeholders, not just data sources.
                     </p>
 
                     <div className="space-y-4">
                       <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
                           Design patterns for &ldquo;ethical defaults&rdquo;
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
                           Protocols for avoiding harm and aggregating welfare
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
-                          Models of AI safety × animal ethics × market design
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          Models of AI safety + animal ethics + market design
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">’</span>
+                          <span className="text-cyan-400 font-mono">-&gt;</span>
                           Digital minds moral consideration frameworks
                         </li>
                       </ul>
@@ -272,7 +272,7 @@ export default function LabPage() {
                   Like Earth Species Project building bioacoustic foundation models (NatureLM-audio).
                 </p>
                 <p className="text-slate-500 text-xs font-mono">
-                  WE INTERPRET & CONTEXTUALIZE
+                  WE INTERPRET &amp; CONTEXTUALIZE
                 </p>
               </div>
 
@@ -286,7 +286,7 @@ export default function LabPage() {
                   Like Sentient Futures running coordination, conferences, and fellowships.
                 </p>
                 <p className="text-slate-500 text-xs font-mono">
-                  WE AMPLIFY & SYNTHESIZE
+                  WE AMPLIFY &amp; SYNTHESIZE
                 </p>
               </div>
 
