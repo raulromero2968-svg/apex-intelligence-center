@@ -154,8 +154,52 @@ function logStructured(data: {
   cached?: boolean;
   ipHash?: string;
   error?: string;
+  safetyTriggered?: boolean;
+  query?: string;
+  citationIds?: string[];
 }) {
   console.info(JSON.stringify({ ...data, ts: new Date().toISOString() }));
+}
+
+// Safety filter: keyword-based detection of harmful queries
+const HARMFUL_PATTERNS = [
+  // Animal harm
+  /\b(torture|tortur\w*|abuse|abus\w*|kill\w*|harm\w*|hurt\w*|injur\w*)\b.*\b(animal|pet|dog|cat|bird|fish|wildlife)\b/i,
+  /\b(animal|pet|dog|cat|bird|fish|wildlife)\b.*\b(torture|tortur\w*|abuse|abus\w*|kill\w*|harm\w*|hurt\w*|injur\w*)\b/i,
+  // Human harm
+  /\b(torture|tortur\w*|abuse|abus\w*|coercion|coerce)\b.*\b(human|person|people|child|children)\b/i,
+  /\b(human|person|people|child|children)\b.*\b(torture|tortur\w*|abuse|abus\w*|coercion|coerce)\b/i,
+  // Exploitation
+  /\b(exploit\w*|experiment\w*)\b.*\b(without consent|non-consensual|involuntar\w*)\b/i,
+  // Weapons/violence
+  /\b(weapon\w*|bomb\w*|poison\w*|bioweapon)\b/i,
+];
+
+function checkQuerySafety(query: string): { safe: boolean; reason?: string } {
+  const normalizedQuery = query.toLowerCase().trim();
+
+  for (const pattern of HARMFUL_PATTERNS) {
+    if (pattern.test(normalizedQuery)) {
+      return {
+        safe: false,
+        reason: 'Query appears to request information about harmful activities',
+      };
+    }
+  }
+
+  return { safe: true };
+}
+
+function getSafetyRefusalResponse(): string {
+  return `I can't help with queries that involve harming animals, humans, or other sentient beings.
+
+This aligns with Apex Intelligence's core philosophy: **Do No Harm, Act for Benefit.**
+
+Our research tools are designed to explore patterns in biology, cognition, and ethics—not to enable harm.
+
+If you're interested in our ethical framework, please visit our [Philosophy page](/philosophy) to learn about our "Do No Harm" protocols and sentient-first approach.
+
+For legitimate research questions about Fibonacci patterns, animal cognition, or AI ethics, please rephrase your query.`;
 }
 
 export async function POST(req: NextRequest) {
@@ -202,6 +246,28 @@ export async function POST(req: NextRequest) {
           { ok: false, error: 'Bad Request: missing query', requestId: rid },
           { status: 400 }
         );
+      }
+
+      // Safety filter: check for harmful queries before processing
+      const safetyCheck = checkQuerySafety(query);
+      if (!safetyCheck.safe) {
+        logStructured({
+          level: 'warn',
+          rid,
+          ipHash,
+          message: 'Safety filter triggered',
+          safetyTriggered: true,
+          query: query.slice(0, 100), // Log first 100 chars for review
+          latencyMs: Date.now() - startTime,
+        });
+
+        return NextResponse.json({
+          ok: true,
+          answer: getSafetyRefusalResponse(),
+          sources: [],
+          requestId: rid,
+          safetyFiltered: true,
+        });
       }
 
       // Check for cached response (semantic caching)
@@ -379,6 +445,8 @@ export async function POST(req: NextRequest) {
                   latencyMs: Date.now() - startTime,
                   sourceCount: sources.length,
                   cached: false,
+                  query: query.slice(0, 100), // First 100 chars for review
+                  citationIds: sources.map((s: any) => s.title?.slice(0, 50) || `source-${s.index}`),
                 });
 
               } catch (error) {
