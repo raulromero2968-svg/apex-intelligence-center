@@ -8,17 +8,28 @@ interface DigitalScrollProps {
   height?: string;
   children: ReactNode;
   className?: string;
+  variant?: 'cyan' | 'purple';
 }
 
 /**
  * DigitalScroll - Constrained height container with high-tech custom scrollbar
  * Use for: Article feeds, long content lists, data streams
+ *
+ * Features:
+ * - Custom cyan/purple gradient scrollbar
+ * - Top/bottom fade gradients for terminal readout effect
+ * - Configurable height
+ * - Side indicator accent line
  */
 export function DigitalScroll({
   height = 'h-[600px]',
   children,
   className,
+  variant = 'cyan',
 }: DigitalScrollProps) {
+  const scrollbarClass = variant === 'purple' ? 'scrollbar-thin-purple' : 'scrollbar-thin';
+  const accentColor = variant === 'purple' ? 'via-purple-500/50' : 'via-cyan-500/50';
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -43,29 +54,18 @@ export function DigitalScroll({
           'overflow-y-auto',
           height,
           'px-4 py-6',
-          // Custom scrollbar styling
-          '[&::-webkit-scrollbar]:w-2',
-          '[&::-webkit-scrollbar-track]:bg-slate-900/50',
-          '[&::-webkit-scrollbar-track]:rounded-full',
-          '[&::-webkit-scrollbar-thumb]:bg-gradient-to-b',
-          '[&::-webkit-scrollbar-thumb]:from-cyan-500',
-          '[&::-webkit-scrollbar-thumb]:to-cyan-600',
-          '[&::-webkit-scrollbar-thumb]:rounded-full',
-          '[&::-webkit-scrollbar-thumb]:border-2',
-          '[&::-webkit-scrollbar-thumb]:border-slate-900/50',
-          'hover:[&::-webkit-scrollbar-thumb]:from-cyan-400',
-          'hover:[&::-webkit-scrollbar-thumb]:to-cyan-500',
-          // Firefox scrollbar
-          'scrollbar-thin',
-          'scrollbar-track-slate-900/50',
-          'scrollbar-thumb-cyan-500'
+          scrollbarClass
         )}
       >
         {children}
       </div>
 
-      {/* Decorative side indicators */}
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[1px] h-24 bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent pointer-events-none" />
+      {/* Decorative side indicator */}
+      <div className={clsx(
+        'absolute top-1/2 right-0 -translate-y-1/2 w-[1px] h-24',
+        `bg-gradient-to-b from-transparent ${accentColor} to-transparent`,
+        'pointer-events-none'
+      )} />
     </motion.div>
   );
 }
