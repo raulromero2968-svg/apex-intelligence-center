@@ -21,7 +21,7 @@ import {
   handleApiError,
 } from '@/lib/errors';
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import {
   isMinor,

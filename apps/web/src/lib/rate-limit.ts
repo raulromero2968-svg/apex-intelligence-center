@@ -130,3 +130,22 @@ export function getRetryAfter(reset: number): number {
   return Math.ceil((reset - Date.now()) / 1000);
 }
 
+// =============================================================================
+// EMERGENCY STUB - Multi-Modal Rate Limiters
+// =============================================================================
+// Placeholder rate limiters for multi-modal features under development
+
+const createStubLimiter = () => ({
+  limit: async (_identifier: string) => ({
+    success: true,
+    limit: 100,
+    remaining: 99,
+    reset: Date.now() + 60000,
+  }),
+});
+
+export const multiModalRateLimiters = {
+  multiModalUpload: createStubLimiter(),
+  videoGeneration: createStubLimiter(),
+};
+
