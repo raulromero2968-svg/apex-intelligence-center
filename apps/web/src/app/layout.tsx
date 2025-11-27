@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
+import StarfieldFX from '@/components/fx/StarfieldFX';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
@@ -110,6 +111,7 @@ export const metadata: Metadata = {
 
   // OpenGraph metadata for rich social cards
   // CRITICAL: Using explicit absolute URLs for maximum Twitter/X compatibility
+  // Static thumbnail for faster CDN serving and reliable social previews
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -119,9 +121,9 @@ export const metadata: Metadata = {
     description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
     images: [
       {
-        // Primary: Dynamic OG image with explicit absolute URL for Twitter/X
-        url: `${baseUrl}/api/og`,
-        secureUrl: `${baseUrl}/api/og`,
+        // Primary: Static OG thumbnail for reliable social previews
+        url: `${baseUrl}/og-thumbnail.png`,
+        secureUrl: `${baseUrl}/og-thumbnail.png`,
         width: 1200,
         height: 630,
         alt: 'Apex Intelligence - TCG Market Intelligence Platform',
@@ -139,12 +141,13 @@ export const metadata: Metadata = {
 
   // Twitter Card metadata - optimized for large thumbnail display on X
   // CRITICAL: Twitter requires explicit absolute URLs and summary_large_image for thumbnails
+  // Using static thumbnail for reliable X/Twitter previews
   twitter: {
     card: 'summary_large_image',
     title: 'Apex Intelligence - TCG Market Intelligence Platform',
     description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
-    // Explicit absolute URL for Twitter image (most reliable for X crawlers)
-    images: [`${baseUrl}/api/og`],
+    // Static thumbnail for reliable X/Twitter crawlers
+    images: [`${baseUrl}/og-thumbnail.png`],
     creator: facts.social.twitter || '@ApexIntel',
     site: facts.social.twitter || '@ApexIntel',
   },
@@ -218,15 +221,8 @@ export default function RootLayout({
         {/* LAYER 1: DEEP SPACE BASE (Fixed) */}
         <div className="fixed inset-0 z-[-10] bg-[#020617]" />
 
-        {/* LAYER 2: STARFIELD (Max Visibility) */}
-        <div
-          className="fixed inset-0 z-[-9] opacity-100 mix-blend-screen pointer-events-none"
-          style={{
-            backgroundImage: "url('/images/starfield.png')",
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
+        {/* LAYER 2: STARFIELD (Animated Canvas - Cyan/Purple themed) */}
+        <StarfieldFX />
 
         {/* LAYER 3: MATRIX GRID (Bright Cyan) */}
         <div
