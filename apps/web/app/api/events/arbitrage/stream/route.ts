@@ -2,14 +2,19 @@ import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
 import { arbitrageOpportunityChannel, type ArbitrageEvent } from '@apex/shared';
 
-if (!process.env.REDIS_URL) {
-  throw new Error('REDIS_URL environment variable is required');
-}
+// Force dynamic to prevent static generation during build
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-const redis = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-});
+function getRedisClient() {
+  if (!process.env.REDIS_URL) {
+    throw new Error('REDIS_URL environment variable is required');
+  }
+  return new Redis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+  });
+}
 
 export async function GET(request: NextRequest) {
   const encoder = new TextEncoder();

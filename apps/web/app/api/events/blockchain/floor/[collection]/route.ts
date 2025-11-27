@@ -7,14 +7,9 @@ import {
   SupportedChainSchema,
 } from '@apex/shared';
 
-if (!process.env.REDIS_URL) {
-  throw new Error('REDIS_URL environment variable is required');
-}
-
-const redis = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-});
+// Force dynamic to prevent static generation during build
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // Collection to chain mapping
 const COLLECTION_TO_CHAIN: Record<string, 'immutable_zkevm' | 'ronin'> = {

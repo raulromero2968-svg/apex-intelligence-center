@@ -2,14 +2,9 @@ import { NextRequest } from 'next/server';
 import Redis from 'ioredis';
 import { varcCompletedChannel, type VarcResultPayload } from '@apex/shared';
 
-if (!process.env.REDIS_URL) {
-  throw new Error('REDIS_URL environment variable is required');
-}
-
-const redis = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-});
+// Force dynamic to prevent static generation during build
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET(
   request: NextRequest,
