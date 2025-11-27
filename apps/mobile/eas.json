@@ -3,74 +3,29 @@
     "version": ">= 5.9.0"
   },
   "build": {
-    "internal": {
+    "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development",
-      "android": {
-        "gradleCommand": ":app:assembleDebug",
-        "buildType": "apk"
-      },
-      "ios": {
-        "buildConfiguration": "Debug",
-        "simulator": true
-      },
       "env": {
-        "APP_ENV": "development",
-        "EXPO_PUBLIC_API_URL": "http://localhost:3000",
-        "EXPO_PUBLIC_SENTRY_DSN": "${DEV_SENTRY_DSN}",
-        "EXPO_PUBLIC_VAPID_PUBLIC_KEY": "${DEV_VAPID_PUBLIC_KEY}"
+        "ENV": "development"
       }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview",
-      "android": {
-        "buildType": "apk"
-      },
-      "ios": {
-        "buildConfiguration": "Release",
-        "resourceClass": "m-medium"
-      },
       "env": {
-        "APP_ENV": "preview",
-        "EXPO_PUBLIC_API_URL": "https://preview.apex-intelligence.vercel.app",
-        "EXPO_PUBLIC_SENTRY_DSN": "${PREVIEW_SENTRY_DSN}",
-        "EXPO_PUBLIC_VAPID_PUBLIC_KEY": "${PREVIEW_VAPID_PUBLIC_KEY}"
-      }
+        "ENV": "preview"
+      },
+      "channel": "preview"
     },
     "production": {
-      "distribution": "store",
-      "channel": "production",
-      "android": {
-        "buildType": "app-bundle",
-        "resourceClass": "large"
-      },
-      "ios": {
-        "buildConfiguration": "Release",
-        "resourceClass": "m-medium"
-      },
       "env": {
-        "APP_ENV": "production",
-        "EXPO_PUBLIC_API_URL": "https://apex-intelligence-center.vercel.app",
-        "EXPO_PUBLIC_SENTRY_DSN": "${PROD_SENTRY_DSN}",
-        "EXPO_PUBLIC_VAPID_PUBLIC_KEY": "${PROD_VAPID_PUBLIC_KEY}"
+        "ENV": "production"
       },
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {
-    "production": {
-      "android": {
-        "serviceAccountKeyPath": "./android-service-account.json",
-        "track": "internal",
-        "releaseStatus": "draft"
-      },
-      "ios": {
-        "appleId": "${APPLE_ID}",
-        "ascAppId": "${ASC_APP_ID}",
-        "appleTeamId": "${APPLE_TEAM_ID}"
-      }
-    }
+    "production": {}
   }
 }

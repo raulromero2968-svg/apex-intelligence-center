@@ -3,7 +3,13 @@
  * Vercel Cron Job - Runs every 10 minutes
  * Checks Expo push notification receipts and handles retries
  *
- * Add to vercel.json crons array with schedule: every 10 minutes
+ * Add to vercel.json:
+ * {
+ *   "crons": [{
+ *     "path": "/api/cron/push-receipts",
+ *     "schedule": "*/10 * * * *"
+ *   }]
+ * }
  */
 
 import { NextRequest, NextResponse } from 'next/server';
