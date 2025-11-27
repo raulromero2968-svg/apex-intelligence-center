@@ -49,6 +49,7 @@ export const collection_items = pgTable('collection_items', {
   collection_id: uuid('collection_id').references(() => collections.id).notNull(),
   item_id: text('item_id').notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
 /**
@@ -307,6 +308,7 @@ export const prices = pgTable('prices', {
   cgcBlackLabel: real('cgc_black_label'),
   bgs95: real('bgs95'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardDateIdx: index('idx_prices_card_date').on(table.cardId, table.date),
   sourceDateIdx: index('idx_prices_source_date').on(table.source, table.date),
@@ -329,6 +331,7 @@ export const sales = pgTable('sales', {
   imageUrls: jsonb('image_urls'),
   sellerUsername: text('seller_username'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardSaleDateIdx: index('idx_sales_card_date').on(table.cardId, table.saleDate),
   sourceDateIdx: index('idx_sales_source_date').on(table.source, table.saleDate),
@@ -352,6 +355,7 @@ export const populationReports = pgTable('population_reports', {
   growthRate90d: real('growth_rate_90d'), // computed
   sourceUrl: text('source_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardCompanyIdx: index('idx_pop_card_company').on(table.cardId, table.gradingCompany),
   deltaIdx: index('idx_pop_delta').on(table.delta30d),
@@ -398,6 +402,7 @@ export const users = pgTable('users', {
   cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
   spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 /**
@@ -1312,6 +1317,7 @@ export const gamResearchSessions = pgTable('gam_research_sessions', {
 
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
   completedAt: timestamp('completed_at'),
 }, (table) => ({
   statusIdx: index('idx_gam_research_status').on(table.status),
@@ -1351,6 +1357,7 @@ export const gamRLTrainingData = pgTable('gam_rl_training_data', {
 
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   trainedIdx: index('idx_gam_rl_trained').on(table.trained),
   createdAtIdx: index('idx_gam_rl_created_at').on(table.createdAt),
