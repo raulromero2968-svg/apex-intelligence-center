@@ -9,7 +9,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'holo-mono': ['"JetBrains Mono"', 'monospace'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', '"JetBrains Mono"', 'monospace'],
+        'holo-mono': ['var(--font-mono)', '"JetBrains Mono"', 'monospace'],
       },
       colors: {
         slate: {
@@ -27,6 +29,27 @@ module.exports = {
         }
       },
       keyframes: {
+        'tilt': {
+          '0%, 50%, 100%': {
+            transform: 'rotate(0deg)',
+          },
+          '25%': {
+            transform: 'rotate(0.5deg)',
+          },
+          '75%': {
+            transform: 'rotate(-0.5deg)',
+          },
+        },
+        'breathing': {
+          '0%, 100%': {
+            opacity: '0.3',
+            transform: 'scale(1)',
+          },
+          '50%': {
+            opacity: '0.6',
+            transform: 'scale(1.02)',
+          },
+        },
         'holo-glitch': {
           '0%': {
             boxShadow: '0 0 20px #00eaff, 0 0 40px #00eaff, 0 0 60px #00eaff, inset 0 0 20px #00eaff',
@@ -62,6 +85,8 @@ module.exports = {
       animation: {
         'holo-glitch': 'holo-glitch 1s ease-in-out infinite', // Faster for racing intensity
         'scanlines': 'scanlines 1.5s ease-in-out infinite',
+        'tilt': 'tilt 10s ease-in-out infinite',
+        'breathing': 'breathing 4s ease-in-out infinite',
       },
     },
   },

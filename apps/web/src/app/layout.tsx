@@ -26,7 +26,7 @@ import ToastHost from '@/components/ToastHost';
 
 import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
 
-import { fontSans } from '@/lib/fonts';
+import { fontSans, fontMono } from '@/lib/fonts';
 
 import { cn } from '@/lib/utils';
 
@@ -212,7 +212,11 @@ export default function RootLayout({
 
           'min-h-screen bg-black text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
 
-          fontSans.className,
+          fontSans.variable,
+
+          fontMono.variable,
+
+          'font-sans',
 
         )}
 
