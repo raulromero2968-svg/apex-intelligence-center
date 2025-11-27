@@ -13,7 +13,6 @@
 
 import { Expo, ExpoPushMessage, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
 import { db } from '@/db';
-import { mobilePushTokens } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import * as Sentry from '@sentry/nextjs';
 
@@ -241,13 +240,17 @@ export async function checkPushReceipts(ticketIds: string[]): Promise<void> {
 async function getUserPushTokens(userId: string): Promise<string[]> {
   try {
     const results = await db.query.mobilePushTokens.findMany({
-      where: eq(mobilePushTokens.userId, userId),
+      where: (mobilePushTokens: any, { eq }: any) => eq(mobilePushTokens.userId, userId),
       columns: {
         token: true,
       },
     });
 
-    return results.map((r) => r.token);
+    if (!results) {
+      return [];
+    }
+
+    return results.map((r: any) => r.token);
   } catch (error) {
     console.error('Failed to get push tokens:', error);
     return [];

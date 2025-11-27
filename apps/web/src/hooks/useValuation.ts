@@ -41,14 +41,13 @@ export function useValuation(cardId: string | null, years: number = 5) {
     if (!cardId) return;
 
     let cancelled = false;
-    const currentCardId = cardId; // Capture for type narrowing
 
     async function loadValuation() {
       setLoading(true);
       setError(null);
 
       try {
-        const result = await fetchValuation(currentCardId, years);
+        const result = await fetchValuation(cardId!, years);
         if (!cancelled) {
           setValuation(result);
         }
@@ -88,7 +87,6 @@ export function useLiveValuation(cardId: string | null, years: number = 5) {
 
     let socket: any = null;
     let cancelled = false;
-    const currentCardId = cardId; // Capture for type narrowing
 
     async function setupRealtimeValuation() {
       setLoading(true);
@@ -109,7 +107,7 @@ export function useLiveValuation(cardId: string | null, years: number = 5) {
           setIsConnected(true);
 
           // Subscribe to card-specific valuation updates
-          socket.emit('join', `valuation:${currentCardId}`);
+          socket.emit('join', `valuation:${cardId}`);
         });
 
         socket.on('disconnect', () => {
@@ -118,7 +116,7 @@ export function useLiveValuation(cardId: string | null, years: number = 5) {
         });
 
         socket.on('valuation:update', (data: ValuationResult) => {
-          if (!cancelled && data.cardId === currentCardId) {
+          if (!cancelled && data.cardId === cardId) {
             console.log('📊 Received valuation update', data);
             setValuation(data);
           }
@@ -130,7 +128,7 @@ export function useLiveValuation(cardId: string | null, years: number = 5) {
         });
 
         // Fetch initial valuation
-        const initial = await fetchValuation(currentCardId, years);
+        const initial = await fetchValuation(cardId!, years);
         if (!cancelled) {
           setValuation(initial);
           setLoading(false);
