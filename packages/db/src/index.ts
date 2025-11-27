@@ -4,7 +4,7 @@
 // - Types: import { User, WatchlistItem, ... } from '@apex/db/types'
 // - Repositories: import { ... } from '@apex/db/repositories/cardForensicsRepo'
 
-// Re-export commonly used items for convenience (explicit, not barrel)
+// Re-export base tables from schema.ts
 export {
   users,
   watchlist,
@@ -13,6 +13,10 @@ export {
   pushTokens,
   pushTickets,
   priceHistory,
+} from './schema';
+
+// Re-export extended tables from schema/ directory
+export {
   cardForensics,
   marketKnowledge,
   arbitrageOpportunities,
@@ -23,8 +27,9 @@ export {
   projectOdiscordMessages,
   digitalTwinTokens,
   digitalTwinStatusEnum,
-} from './schema';
+} from './schema/index';
 
+// Re-export types from types.ts
 export type {
   User,
   NewUser,
@@ -40,6 +45,10 @@ export type {
   NewPushTicket,
   PriceHistory,
   NewPriceHistory,
+} from './types';
+
+// Re-export extended types from schema/ directory
+export type {
   CardForensics,
   NewCardForensics,
   MarketKnowledge,
@@ -58,6 +67,6 @@ export type {
   NewProjectODiscordMessage,
   DigitalTwinToken,
   NewDigitalTwinToken,
-} from './schema';
+} from './schema/index';
 
 
