@@ -43,11 +43,11 @@ export default function PhilosophyPage() {
         </div>
       </section>
 
-      {/* Humans First Section */}
+      {/* Core Philosophy Section */}
       <section className="relative z-10 px-6 md:px-12 py-12">
         <div className="max-w-6xl mx-auto">
-          <ElectronicFolder title="FOUNDATIONAL PRINCIPLES" classification="ROGUE THINK TANK // APEX DOCTRINE">
-            {/* Core Principle Block */}
+          <ElectronicFolder title="CORE DOCTRINE" classification="ROGUE THINK TANK // APEX PHILOSOPHY">
+            {/* Humans First / Sentient Beings First */}
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -501,19 +501,19 @@ export default function PhilosophyPage() {
               </div>
             </div>
 
-            {/* RAG Research Form with new CTA framing */}
+            {/* RAG Research Form */}
             <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
                   <Brain className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div>
-                  <h4 className="text-md font-bold text-white font-mono">EXPLORE THE RESEARCH</h4>
+                  <h4 className="text-md font-bold text-white font-mono">FIBONACCI RESEARCH CONSOLE</h4>
                   <p className="text-slate-500 text-xs">Query our curated docs on Fibonacci in biology—grounded in real research, not numerology</p>
                 </div>
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-cyan-500/50 pl-3">
-                Want to see how researchers actually talk about Fibonacci in biology? Search our curated knowledge base below. Results are drawn from vetted sources—not random web claims.
+                Search our curated knowledge base for how researchers actually talk about Fibonacci in biology. Results come from vetted sources—not the open web. We don&apos;t answer queries about harming humans or animals.
               </p>
               <FibonacciResearch />
             </div>

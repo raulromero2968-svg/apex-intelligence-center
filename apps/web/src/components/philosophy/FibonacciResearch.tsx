@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Loader2, BookOpen, ExternalLink } from 'lucide-react';
+import { Search, Sparkles, Loader2, BookOpen, ExternalLink, AlertTriangle } from 'lucide-react';
 
 interface FibonacciResearchProps {
+  suggestions?: string[];
   className?: string;
 }
 
@@ -18,6 +19,15 @@ interface ResearchResult {
   }>;
 }
 
+const DEFAULT_SUGGESTIONS = [
+  'Fibonacci phyllotaxis in plants',
+  'Overfitting patterns in finance data',
+  'Animal perception of symmetry',
+  'Fibonacci spirals in DNA',
+  'Pattern recognition limits',
+  'Golden ratio in nature',
+];
+
 /**
  * FibonacciResearch - RAG-powered research form for Fibonacci patterns
  *
@@ -25,23 +35,18 @@ interface ResearchResult {
  * - Pre-filled query suggestions for Fibonacci in biology/nature
  * - SSE streaming response support
  * - Source citation display
- * - Error handling with retry
+ * - Error handling with specific messages for rate limits and safety refusals
+ * - Safety disclaimer about curated corpus and ethical constraints
  */
-export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
+export function FibonacciResearch({
+  suggestions = DEFAULT_SUGGESTIONS,
+  className = '',
+}: FibonacciResearchProps) {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResearchResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; type: 'rate_limit' | 'refused' | 'error' } | null>(null);
   const [streamingText, setStreamingText] = useState('');
-
-  const suggestedQueries = [
-    'Fibonacci in animal biology',
-    'Fibonacci spirals in DNA and neurons',
-    'How does the golden ratio appear in animal sentience?',
-    'Fibonacci patterns in honeybee ancestry',
-    'Neural branching and Fibonacci efficiency',
-    'Golden ratio in animal communication patterns',
-  ];
 
   const handleResearch = useCallback(async (searchQuery?: string) => {
     const finalQuery = searchQuery || query;
@@ -59,9 +64,20 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
         body: JSON.stringify({ query: finalQuery }),
       });
 
+      // Handle specific HTTP error codes
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Research query failed');
+        if (res.status === 429) {
+          throw { message: "You've hit the research rate limit. Try again in a minute.", type: 'rate_limit' as const };
+        }
+        if (res.status === 400) {
+          const err = await res.json().catch(() => ({}));
+          throw {
+            message: err.error || "We can't answer that query. Please try a different question about Fibonacci patterns.",
+            type: 'refused' as const
+          };
+        }
+        const err = await res.json().catch(() => ({}));
+        throw { message: err.error || 'Research query failed', type: 'error' as const };
       }
 
       // Check if streaming response
@@ -70,7 +86,7 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
       if (contentType.includes('text/event-stream')) {
         // Handle SSE streaming
         const reader = res.body?.getReader();
-        if (!reader) throw new Error('No response body');
+        if (!reader) throw { message: 'No response body', type: 'error' as const };
 
         const decoder = new TextDecoder();
         let fullText = '';
@@ -95,7 +111,7 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
             }
           } else if (chunk.includes('__ERROR__')) {
             const errorMsg = chunk.split('__ERROR__')[1]?.trim();
-            throw new Error(errorMsg || 'Research failed');
+            throw { message: errorMsg || 'Research failed', type: 'error' as const };
           } else {
             fullText += chunk;
             setStreamingText(fullText);
@@ -112,7 +128,14 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
         });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (err && typeof err === 'object' && 'type' in err) {
+        setError(err as { message: string; type: 'rate_limit' | 'refused' | 'error' });
+      } else {
+        setError({
+          message: err instanceof Error ? err.message : 'Something broke on our side. Try again later.',
+          type: 'error'
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -121,6 +144,12 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     handleResearch(suggestion);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !loading && query.trim()) {
+      handleResearch();
+    }
   };
 
   return (
@@ -135,11 +164,13 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleResearch()}
+            onKeyDown={handleKeyDown}
             placeholder="Research Fibonacci patterns in nature and biology..."
             className="w-full bg-black/50 border border-cyan-500/30 rounded-lg pl-12 pr-28 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 font-mono text-sm"
+            aria-label="Research query"
           />
           <button
+            type="button"
             onClick={() => handleResearch()}
             disabled={loading || !query.trim()}
             className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-mono font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
@@ -164,12 +195,13 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
             Suggested queries:
           </div>
           <div className="flex flex-wrap gap-2">
-            {suggestedQueries.map((sq, i) => (
+            {suggestions.map((sq, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={() => handleSuggestionClick(sq)}
                 disabled={loading}
-                className="px-3 py-1.5 text-xs bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/30 hover:border-cyan-500/30 rounded-full text-slate-400 hover:text-cyan-400 transition-all font-mono disabled:opacity-50"
+                className="px-3 py-1.5 text-xs bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/30 hover:border-cyan-500/30 rounded-full text-slate-400 hover:text-cyan-400 transition-all font-mono disabled:opacity-50 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
               >
                 {sq}
               </button>
@@ -185,16 +217,39 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 flex items-start gap-3"
+            className={`mb-6 p-4 rounded-lg flex items-start gap-3 ${
+              error.type === 'rate_limit'
+                ? 'bg-yellow-500/10 border border-yellow-500/30'
+                : error.type === 'refused'
+                ? 'bg-purple-500/10 border border-purple-500/30'
+                : 'bg-red-500/10 border border-red-500/30'
+            }`}
           >
-            <span className="text-red-400">Error:</span>
-            <span>{error}</span>
-            <button
-              onClick={() => handleResearch()}
-              className="ml-auto text-xs underline hover:text-red-300"
-            >
-              Retry
-            </button>
+            <AlertTriangle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+              error.type === 'rate_limit'
+                ? 'text-yellow-400'
+                : error.type === 'refused'
+                ? 'text-purple-400'
+                : 'text-red-400'
+            }`} />
+            <div className="flex-1">
+              <span className={`text-sm ${
+                error.type === 'rate_limit'
+                  ? 'text-yellow-300'
+                  : error.type === 'refused'
+                  ? 'text-purple-300'
+                  : 'text-red-300'
+              }`}>{error.message}</span>
+            </div>
+            {error.type === 'error' && (
+              <button
+                type="button"
+                onClick={() => handleResearch()}
+                className="text-xs underline text-slate-400 hover:text-slate-300"
+              >
+                Retry
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -270,6 +325,7 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-cyan-400 hover:text-cyan-300"
+                            aria-label={`Open source: ${source.title}`}
                           >
                             <ExternalLink className="w-3 h-3" />
                           </a>
@@ -296,6 +352,13 @@ export function FibonacciResearch({ className = '' }: FibonacciResearchProps) {
           </p>
         </div>
       )}
+
+      {/* Safety Disclaimer */}
+      <p className="mt-6 text-[11px] text-slate-500 leading-relaxed">
+        This console summarizes a small, vetted set of research notes and articles.
+        It will refuse queries that involve harming humans or animals, and its answers
+        may be incomplete or outdated. Results come from a curated corpus, not the open web.
+      </p>
     </div>
   );
 }
