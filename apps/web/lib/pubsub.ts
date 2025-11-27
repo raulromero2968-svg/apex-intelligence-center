@@ -159,7 +159,7 @@ class PubSubPool {
    * Close all connections
    */
   async close() {
-    const promises: Promise<unknown>[] = [];
+    const promises: Promise<void>[] = [];
 
     if (this.publisher) {
       promises.push(this.publisher.quit());

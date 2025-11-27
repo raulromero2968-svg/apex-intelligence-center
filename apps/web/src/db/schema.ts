@@ -5,26 +5,9 @@
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
-
-/**
- * Custom pgvector type for Drizzle ORM
- * Represents a vector(n) column type for storing embeddings
- */
-const vector = customType<{ data: number[]; driverData: string }>({
-  dataType(config) {
-    return config?.dimensions ? `vector(${config.dimensions})` : 'vector';
-  },
-  toDriver(value: number[]): string {
-    return `[${value.join(',')}]`;
-  },
-  fromDriver(value: string): number[] {
-    // pgvector returns vectors as '[1,2,3]' format
-    return value.slice(1, -1).split(',').map(Number);
-  },
-});
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -93,9 +76,8 @@ export const tcg_documents = pgTable('tcg_documents', {
 export const market_knowledge = pgTable('market_knowledge', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  // Vector embedding - pgvector extension
-  // TODO: Re-add embedding column after fixing Drizzle type issues
-  // embedding: sql`vector(1536)`,
+  // Vector embedding - using custom type to work around Drizzle type issues
+  embedding: sql<number[]>`vector(1536)`.notNull(),
 
   // Market sentiment (enum enforced at DB level via CHECK constraint)
   sentiment: text('sentiment', {
@@ -178,7 +160,7 @@ export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
   // - image (CLIP ViT-B/32): 512 dimensions
   // - audio (Wav2Vec2): 768 dimensions
   // Using 768 to accommodate both (images will be padded/truncated if needed)
-  embedding: vector('embedding', { dimensions: 768 }).notNull(),
+  embedding: sql<number[]>`vector(768)`.notNull(),
 
   // File storage reference (S3 URL or local path)
   fileUrl: text('file_url').notNull(),
@@ -579,8 +561,7 @@ export const cardForensics = pgTable('card_forensics', {
   id: uuid('id').defaultRandom().primaryKey(),
   cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
   // pgvector extension - stores as vector(768) for CLIP ViT-L/14
-  // TODO: Re-add embedding column after fixing Drizzle type issues
-  // embedding: sql`vector(768)`,
+  embedding: sql`vector(768)`,
   reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
   detectedDefects: jsonb('detected_defects').notNull().default({}),
   authenticityScore: real('authenticity_score').notNull(),
@@ -1131,11 +1112,11 @@ export const parentalControls = pgTable('parental_controls', {
 }));
 
 /**
- * Child Activity History - Tracks child activity for parent monitoring
+ * Session History - Tracks child activity for parent monitoring
  *
  * Records all significant child activities for real-time monitoring and history review.
  */
-export const childActivityHistory = pgTable('child_activity_history', {
+export const sessionHistory = pgTable('session_history', {
   id: text('id').primaryKey(),
   childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 
@@ -1157,9 +1138,9 @@ export const childActivityHistory = pgTable('child_activity_history', {
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  childTimestampIdx: index('idx_child_activity_history_child_timestamp').on(table.childId, table.timestamp.desc()),
-  activityTypeIdx: index('idx_child_activity_history_activity_type').on(table.activityType),
-  timestampIdx: index('idx_child_activity_history_timestamp').on(table.timestamp.desc()),
+  childTimestampIdx: index('idx_session_history_child_timestamp').on(table.childId, table.timestamp.desc()),
+  activityTypeIdx: index('idx_session_history_activity_type').on(table.activityType),
+  timestampIdx: index('idx_session_history_timestamp').on(table.timestamp.desc()),
 }));
 
 /**
@@ -1192,11 +1173,11 @@ export const parentalControlsRelations = relations(parentalControls, ({ one }) =
 }));
 
 /**
- * Child Activity History relations
+ * Session History relations
  */
-export const childActivityHistoryRelations = relations(childActivityHistory, ({ one }) => ({
+export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
   child: one(users, {
-    fields: [childActivityHistory.childId],
+    fields: [sessionHistory.childId],
     references: [users.id],
   }),
 }));
@@ -1264,8 +1245,8 @@ export type FamilyLink = typeof familyLinks.$inferSelect;
 export type NewFamilyLink = typeof familyLinks.$inferInsert;
 export type ParentalControl = typeof parentalControls.$inferSelect;
 export type NewParentalControl = typeof parentalControls.$inferInsert;
-export type ChildActivityHistory = typeof childActivityHistory.$inferSelect;
-export type NewChildActivityHistory = typeof childActivityHistory.$inferInsert;
+export type SessionHistory = typeof sessionHistory.$inferSelect;
+export type NewSessionHistory = typeof sessionHistory.$inferInsert;
 export type SpendTracking = typeof spendTracking.$inferSelect;
 export type NewSpendTracking = typeof spendTracking.$inferInsert;
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "framework": "nextjs",
@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/update-prices",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/push-receipts",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

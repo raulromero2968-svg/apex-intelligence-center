@@ -2,16 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
 
 export const StarfieldBackground = () => {
-  const pathname = usePathname() ?? '';
-
-  // Hide on homepage - it has its own standalone background
-  if (pathname === '/') {
-    return null;
-  }
-
   // We use CSS for the stars to reduce JS load (LCP optimization)
   // The subtle grid represents the "Matrix/Data" river
   return (

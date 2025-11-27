@@ -1,81 +1,78 @@
+import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
+import LiveScatter from "@/components/charts/LiveScatter";
+import { CardViewer } from "@/components/three/CardViewer";
 import { intelNotes } from "@/content/seed";
+import StarfieldFX from "@/components/fx/StarfieldFX";
 
 export default function IntelPage() {
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 md:px-12 relative bg-slate-950">
-      {/* Starfield background effect */}
-      <div className="fixed inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 -z-10" />
+    <div className="min-h-screen pt-24 pb-12 px-4 md:px-12 relative">
+      <StarfieldFX />
 
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 animate-pulse">
-            INTELLIGENCE ARCHIVE
-          </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-            <span className="text-cyan-400 font-mono">[ CLASSIFIED MARKET DATA ]</span> // LEVEL 5 CLEARANCE
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-4">Intelligence Center</h1>
+          <p className="text-slate-400 max-w-2xl">
+            Real-time optical analysis and market velocity tracking.
+            Inspect assets with our <span className="text-cyan-400">VARC-3D</span> rendering engine.
           </p>
         </div>
 
-        {/* Filter Tags */}
-        <div className="flex flex-wrap gap-3 justify-center">
-          {['ALL', 'SUCCESS', 'BLOG', 'INTEL', 'VINTAGE ANALYSIS', 'SET ANALYTICS', 'FORENSICS'].map((tag) => (
-            <button
-              key={tag}
-              className="px-4 py-2 bg-slate-900/50 border border-cyan-500/30 text-cyan-400 rounded-lg hover:bg-cyan-500/10 hover:border-cyan-400 transition-all font-mono text-sm"
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* Intel Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {intelNotes.map((note) => (
-            <div
-              key={note.href}
-              className="group relative overflow-hidden rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/90 to-slate-950/90 p-6 hover:border-cyan-500/50 transition-all duration-300"
-            >
-              {/* Holographic glow effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-purple-500/0 to-cyan-500/0 group-hover:from-cyan-500/10 group-hover:via-purple-500/10 group-hover:to-cyan-500/10 transition-all duration-500" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-mono rounded border border-amber-500/30">
-                    INTEL REPORT
-                  </span>
-                  <span className="text-slate-500 text-xs font-mono">{note.date}</span>
+          {/* Left: 3D Viewer (Takes up 1 column or featured spot) */}
+          <div className="lg:col-span-1 space-y-6">
+             <CardViewer />
+
+             {/* Stats Card */}
+             <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-xl backdrop-blur-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-slate-400">Market Price</span>
+                  <span className="text-2xl font-bold text-white">$420,000</span>
                 </div>
-                
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-                  {note.title}
-                </h3>
-                
-                <p className="text-slate-400 text-sm mb-4 line-clamp-3">
-                  {note.excerpt}
-                </p>
-                
-                <a
-                  href={note.href}
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm"
-                >
-                  <span>[ READ_INTEL ]</span>
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Stats Footer */}
-        <div className="flex justify-center gap-8 pt-8 border-t border-slate-800/50">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-cyan-400 font-mono">
-              ▲ ARCHIVE_BEST_C16
-            </div>
-            <div className="text-sm text-slate-500 mt-1">System Status</div>
+                <div className="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
+                  <div className="bg-cyan-500 w-[75%] h-full" />
+                </div>
+                <div className="flex justify-between text-xs text-slate-500 mt-2">
+                  <span>Low: $380k</span>
+                  <span>High: $450k</span>
+                </div>
+             </div>
           </div>
+
+          {/* Right: Charts & Data (Takes up 2 columns) */}
+          <div className="lg:col-span-2 space-y-6">
+            <LiveScatter title="Charizard 1st Edition PSA 10" subtitle="Real-time market analysis and trend tracking" />
+
+            {/* Sources / News Feed */}
+            <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-xl backdrop-blur-sm">
+              <h3 className="text-lg font-semibold text-white mb-4">Latest Intel Sources</h3>
+              <ul className="space-y-4">
+                {[
+                  { source: "Goldman Sachs Report", title: "Collectibles vs. S&P 500 Q4 Analysis", date: "2h ago" },
+                  { source: "PSA Auction Data", title: "Volume spike detected in Vintage Pokemon", date: "5h ago" },
+                  { source: "Apex Alpha", title: "Whale wallet movement detected on eBay Vault", date: "8h ago" }
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start justify-between border-b border-slate-800 pb-2 last:border-0">
+                    <div>
+                      <div className="text-cyan-400 text-sm font-medium">{item.title}</div>
+                      <div className="text-slate-500 text-xs mt-1">Source: {item.source}</div>
+                    </div>
+                    <span className="text-slate-600 text-xs whitespace-nowrap">{item.date}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Intel Notes Section */}
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {intelNotes.map((a) => <ArticleCard key={a.href} a={a} />)}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

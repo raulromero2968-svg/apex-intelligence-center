@@ -4,11 +4,11 @@
   "private": true,
   "description": "Apex Intelligence Web - Next.js Application",
   "scripts": {
-    "postinstall": "prisma generate || echo 'Prisma generate skipped (binaries may be unavailable locally)'",
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "verify-barrels": "tsx scripts/verify-barrels.ts",
     "verify:drizzle-syntax": "drizzle-kit check",
-    "prebuild": "(pnpm verify-barrels && tsx scripts/verify-schema-sync.ts && tsx scripts/verify-lockfile.ts) || echo 'Prebuild verification skipped'",
+    "prebuild": "pnpm verify-barrels && tsx scripts/verify-schema-sync.ts && tsx scripts/verify-lockfile.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "@apex/auth": "workspace:*",
-    "@apex/compliance": "workspace:*",
     "@apex/db": "workspace:*",
     "@apex/realtime": "workspace:*",
     "@apex/valuation": "workspace:*",
@@ -68,8 +67,7 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.0.3",
-    "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.19.0",
     "@sentry/nextjs": "^10.25.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@tsparticles/engine": "^3.9.1",
@@ -78,8 +76,7 @@
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^19.2.5",
     "@upstash/ratelimit": "^2.0.7",
     "@upstash/redis": "^1.35.6",
     "@vercel/og": "^0.8.5",
@@ -131,12 +128,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
     "eslint-plugin-mdx": "^3.6.2",
-    "prisma": "^6.7.0",
-<<<<<<< HEAD
-    "sharp": "^0.34.5",
-=======
->>>>>>> origin/claude/fix-dark-mode-ui-01946xAxuUW7RnUoxqyxNsH3
-    "tsx": "^4.20.6",
+    "prisma": "^6.19.0",
     "vercel": "^33.0.0",
     "vitest": "^4.0.10"
   }

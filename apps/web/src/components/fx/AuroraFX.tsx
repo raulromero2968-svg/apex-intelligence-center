@@ -1,15 +1,8 @@
 "use client";
 import { motion, useReducedMotion } from "framer-motion";
-import { usePathname } from "next/navigation";
 
 export default function AuroraFX() {
   const reduced = useReducedMotion();
-  const pathname = usePathname() ?? '';
-
-  // Hide on homepage - it has its own standalone background
-  if (pathname === '/') {
-    return null;
-  }
 
   // Gentle, slow, meditative drift. Long durations, low opacity.
   const common = {

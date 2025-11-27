@@ -10,9 +10,6 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    // Reduce memory usage during build
-    workerThreads: false,
-    cpus: 1,
     typedRoutes: false,
     optimizeCss: true, // CSS optimization for better performance
     staleTimes: { dynamic: 0 }, // Keep default; tag invalidation is our lever
@@ -81,8 +78,6 @@ const nextConfig = {
       config.optimization = {
         ...config.optimization,
         minimize: true,
-        // Reduce memory usage during build
-        moduleIds: 'deterministic',
         // Split large chunks for better serverless cold start
         splitChunks: {
           chunks: 'all',

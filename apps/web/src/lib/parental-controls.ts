@@ -6,7 +6,7 @@
  */
 
 import { db } from '@/db';
-import { parentalControls, familyLinks, childActivityHistory } from '@/db/schema';
+import { parentalControls, familyLinks, sessionHistory } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 /**
@@ -101,12 +101,12 @@ export async function isActionAllowed(
     ['trade', 'portfolio_update'].includes(actionType)
   ) {
     // Get last trade activity
-    const lastActivity = await db.query.childActivityHistory.findFirst({
+    const lastActivity = await db.query.sessionHistory.findFirst({
       where: and(
-        eq(childActivityHistory.childId, userId),
-        eq(childActivityHistory.activityType, actionType)
+        eq(sessionHistory.childId, userId),
+        eq(sessionHistory.activityType, actionType)
       ),
-      orderBy: (childActivityHistory, { desc }) => [desc(childActivityHistory.timestamp)],
+      orderBy: (sessionHistory, { desc }) => [desc(sessionHistory.timestamp)],
     });
 
     if (lastActivity) {
@@ -129,10 +129,10 @@ export async function isActionAllowed(
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const todaysTrades = await db.query.childActivityHistory.findMany({
+    const todaysTrades = await db.query.sessionHistory.findMany({
       where: and(
-        eq(childActivityHistory.childId, userId),
-        eq(childActivityHistory.activityType, 'trade')
+        eq(sessionHistory.childId, userId),
+        eq(sessionHistory.activityType, 'trade')
       ),
     });
 
@@ -168,7 +168,7 @@ export async function logActivity(
     blockedByCoolDown?: boolean;
   }
 ) {
-  await db.insert(childActivityHistory).values({
+  await db.insert(sessionHistory).values({
     id: crypto.randomUUID(),
     childId,
     activityType,

@@ -1,7 +1,6 @@
 "use client";
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 type ShootingSquare = { id:number; size:number; x:number; y:number; dur:number; delay:number; rot:number; };
@@ -26,13 +25,7 @@ function useSquares(count = 6) {    // fewer stars
 
 export default function BackgroundFX({ className }: { className?: string }) {
   const reduced = useReducedMotion();
-  const pathname = usePathname() ?? '';
   const squares = useSquares(7);
-
-  // Hide on homepage - it has its own standalone background
-  if (pathname === '/') {
-    return null;
-  }
 
   return (
     <div aria-hidden className={clsx("pointer-events-none fixed inset-0 -z-10 overflow-hidden", className)}>

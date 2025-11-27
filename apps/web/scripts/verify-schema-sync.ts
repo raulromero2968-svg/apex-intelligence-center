@@ -177,7 +177,7 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
   const exts = ['.ts', '.tsx'];
   const files = walk(srcRoot, exts);
 
-  // Drizzle ORM method names and JS built-in properties to exclude from column checks
+  // Drizzle ORM method names to exclude from column checks
   const drizzleMethods = new Set([
     'findMany',
     'findFirst',
@@ -204,15 +204,6 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
     'every',
     'find',
     'includes',
-    'size', // Map/Set.size property
-    'keys',
-    'values',
-    'entries',
-    'has',
-    'get',
-    'set',
-    'clear',
-    'add',
   ]);
 
   const issues: SchemaIssue[] = [];
@@ -234,12 +225,8 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
         const col = usageMatch[1];
         const matchStart = usageMatch.index;
 
-        // Skip if it's a known Drizzle method or JS built-in property
+        // Skip if it's a known Drizzle method
         if (drizzleMethods.has(col)) continue;
-
-        // Skip if tableVar is preceded by a dot (e.g., state.cards.size)
-        // This indicates it's a property of another object, not a direct table reference
-        if (matchStart > 0 && content[matchStart - 1] === '.') continue;
 
         // Check if followed by a parenthesis (indicating a method call)
         const matchEnd = matchStart + usageMatch[0].length;
@@ -271,29 +258,7 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): SchemaIssue[] {
 }
 
 /**
- * Get the git commit timestamp for a file (when it was last modified in git)
- * Returns null if git is not available or file is not tracked
- */
-function getGitCommitTime(filePath: string): Date | null {
-  try {
-    // Get the timestamp of the last commit that modified this file
-    const result = execSync(
-      `git log -1 --format=%ct -- "${filePath}"`,
-      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
-    ).trim();
-
-    if (result) {
-      return new Date(parseInt(result, 10) * 1000);
-    }
-  } catch {
-    // Git not available or file not tracked
-  }
-  return null;
-}
-
-/**
  * Check if drizzle migrations are in sync with schema
- * Uses git commit timestamps for reliable CI/CD comparison
  */
 function verifyMigrationSync(schemaPath: string, migrationsDir: string): SchemaIssue[] {
   const issues: SchemaIssue[] = [];
@@ -307,6 +272,8 @@ function verifyMigrationSync(schemaPath: string, migrationsDir: string): SchemaI
   }
 
   try {
+    // Check if schema has been modified more recently than latest migration
+    const schemaStats = fs.statSync(schemaPath);
     const migrationFiles = fs.readdirSync(migrationsDir)
       .filter(f => f.endsWith('.sql'))
       .sort()
@@ -321,36 +288,14 @@ function verifyMigrationSync(schemaPath: string, migrationsDir: string): SchemaI
     }
 
     const latestMigration = path.join(migrationsDir, migrationFiles[0]);
+    const migrationStats = fs.statSync(latestMigration);
 
-    // Try to use git commit timestamps first (more reliable in CI)
-    const schemaGitTime = getGitCommitTime(schemaPath);
-    const migrationGitTime = getGitCommitTime(latestMigration);
-
-    if (schemaGitTime && migrationGitTime) {
-      // Use git timestamps - these are based on commit order, not checkout time
-      // Add 1 second tolerance for commits made in the same second
-      const toleranceMs = 1000;
-      if (schemaGitTime.getTime() > migrationGitTime.getTime() + toleranceMs) {
-        issues.push({
-          type: 'error',
-          message: 'Schema file modified after latest migration. Run: drizzle-kit generate',
-          file: schemaPath,
-        });
-      }
-    } else {
-      // Fallback to filesystem timestamps with tolerance for race conditions
-      const schemaStats = fs.statSync(schemaPath);
-      const migrationStats = fs.statSync(latestMigration);
-
-      // Use 5 second tolerance for filesystem timestamps to handle checkout race conditions
-      const toleranceMs = 5000;
-      if (schemaStats.mtime.getTime() > migrationStats.mtime.getTime() + toleranceMs) {
-        issues.push({
-          type: 'error',
-          message: 'Schema file modified after latest migration. Run: drizzle-kit generate',
-          file: schemaPath,
-        });
-      }
+    if (schemaStats.mtime > migrationStats.mtime) {
+      issues.push({
+        type: 'error',
+        message: 'Schema file modified after latest migration. Run: drizzle-kit generate',
+        file: schemaPath,
+      });
     }
   } catch (error) {
     issues.push({

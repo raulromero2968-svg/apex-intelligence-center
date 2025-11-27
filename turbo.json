@@ -9,17 +9,6 @@
         "NEXT_PUBLIC_*",
         "EXPO_PUBLIC_*",
         "DATABASE_URL",
-        "POSTGRES_URL",
-        "POSTGRES_PRISMA_URL",
-        "POSTGRES_URL_NON_POOLING",
-        "POSTGRES_USER",
-        "POSTGRES_HOST",
-        "POSTGRES_PASSWORD",
-        "POSTGRES_DATABASE",
-        "SUPABASE_ANON_KEY",
-        "SUPABASE_URL",
-        "SUPABASE_SERVICE_ROLE_KEY",
-        "SUPABASE_JWT_SECRET",
         "SENTRY_DSN",
         "STRIPE_SECRET_KEY"
       ]

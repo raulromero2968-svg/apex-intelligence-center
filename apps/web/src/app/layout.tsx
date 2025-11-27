@@ -2,14 +2,19 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
+import AuroraFX from '@/components/fx/AuroraFX';
+
+import BackgroundFX from '@/components/fx/BackgroundFX';
+
+import BackgroundStack from '@/components/fx/BackgroundStack';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
+import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
-import { LayoutFooter } from '@/components/footer/LayoutFooter';
-
+import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
 
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -30,6 +35,10 @@ import { fontSans } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 
 import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
+
+import { SoundProvider } from '@/contexts/SoundContext';
+
+import '@fontsource/jetbrains-mono';
 
 import '@/styles/animations.css';
 
@@ -236,41 +245,14 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-black text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
+          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
 
           fontSans.className,
 
         )}
 
       >
-
-        {/* LAYER 1: DEEP SPACE BASE (Fixed) */}
-        <div className="fixed inset-0 z-[-10] bg-[#020617]" />
-
-        {/* LAYER 2: STARFIELD (Max Visibility) */}
-        <div
-          className="fixed inset-0 z-[-9] opacity-100 mix-blend-screen pointer-events-none"
-          style={{
-            backgroundImage: "url('/images/starfield.png')",
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
-
-        {/* LAYER 3: MATRIX GRID (Bright Cyan) */}
-        <div
-          className="fixed inset-0 z-[-8] opacity-40 pointer-events-none"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(34, 211, 238, 0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(34, 211, 238, 0.15) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-        />
-
-
-
+        <SoundProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
           Skip to main content
@@ -279,6 +261,13 @@ export default function RootLayout({
 
 
 
+        {/* Permanent Equilibrium Banner - Non-dismissible */}
+
+        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
+
+          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
+
+        </div>
 
 
 
@@ -288,16 +277,45 @@ export default function RootLayout({
 
 
 
-        {/* Pinned Navigation - Fixed to top with high z-index and glassmorphism */}
-        <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-          <TopBanner />
-        </header>
+        {/* Top Banner */}
+
+        <TopBanner />
 
 
 
-        {/* Theme Toggle - Disabled temporarily (moved to footer) */}
+        {/* Starfield Galaxy Background */}
 
-        {/* <ThemeToggle /> */}
+        <StarfieldBackground />
+
+
+
+        {/* Animated Background */}
+
+        <AnimatedBackground />
+
+
+
+        {/* Aurora Background */}
+
+        <AuroraFX />
+
+
+
+        {/* Animated Background FX */}
+
+        <BackgroundFX />
+
+
+
+        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
+
+        <BackgroundStack />
+
+
+
+        {/* Theme Toggle */}
+
+        <ThemeToggle />
 
 
 
@@ -321,9 +339,11 @@ export default function RootLayout({
 
 
 
-        {/* Layout Footer - hidden on homepage */}
+        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
 
-        <LayoutFooter />
+          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
+
+        </footer>
 
 
 
@@ -386,7 +406,7 @@ export default function RootLayout({
         {/* Reality Check Modal - Triggers every 2h active session */}
 
         <RealityCheckProvider />
-
+        </SoundProvider>
       </body>
 
     </html>
