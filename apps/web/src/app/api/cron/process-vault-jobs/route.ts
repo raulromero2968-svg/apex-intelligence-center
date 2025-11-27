@@ -17,7 +17,7 @@
  * 4. Return processing stats
  *
  * Vercel Cron: Add to vercel.json crons array
- * Schedule: every 5 minutes (cron: 0/5 * * * *)
+ * Schedule: every 5 minutes
  */
 
 import { NextRequest, NextResponse } from 'next/server';

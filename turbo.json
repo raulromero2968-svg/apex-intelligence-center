@@ -27,6 +27,11 @@
         "STRIPE_SECRET_KEY"
       ]
     },
+    "@apex/knowledge-graph#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "*.d.ts"],
+      "cache": true
+    },
     "build:web": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
