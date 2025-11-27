@@ -30,7 +30,9 @@ export const HoloCardImage: FC<HoloCardImageProps> = ({
   const [showParticles, setShowParticles] = useState(false);
   const [particlesLoaded, setParticlesLoaded] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const { isMuted } = useSoundContext?.() || { isMuted: true };
+  // Safely access sound context - if it doesn't exist, default to muted
+  const soundContext = useSoundContext ? useSoundContext() : null;
+  const isMuted = soundContext?.isMuted ?? true;
 
   // Check for reduced motion preference
   useEffect(() => {

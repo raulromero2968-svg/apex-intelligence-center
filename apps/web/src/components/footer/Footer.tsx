@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
+import { MessageCircle, Twitter, Instagram, Linkedin, Github, Sun, Moon, Monitor } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SOCIAL_PROFILES } from '@/lib/constants';
@@ -72,15 +72,15 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Apex Intelligence Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Apex Intelligence</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Apex Intelligence</h3>
             <p className="text-gray-400 text-sm">
               Underground intelligence for serious TCG collectors and investors.
             </p>
           </div>
-          
+
           {/* Quick Links Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Intel</Link></li>
               <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Blog</Link></li>
@@ -93,7 +93,7 @@ export const Footer = () => {
 
           {/* Legal Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Legal</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Legal</h3>
             <ul className="space-y-2">
               <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Terms of Service</Link></li>
@@ -101,11 +101,11 @@ export const Footer = () => {
               <li><Link href="/security" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Security</Link></li>
             </ul>
           </div>
-          
+
           {/* Connect Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
-            <div className="flex gap-4">
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Connect</h3>
+            <div className="flex gap-4 mb-6">
               <a
                 href={SOCIAL_PROFILES.twitter}
                 target="_blank"
@@ -143,6 +143,31 @@ export const Footer = () => {
                 <Github className="w-5 h-5 text-cyan-400" />
               </a>
             </div>
+
+            {/* HARD-CODED THEME TOGGLE - Enhanced Visibility */}
+            <div className="mt-6 border-t border-slate-800 pt-6 flex items-center gap-3">
+              <span className="text-xs text-slate-500 uppercase tracking-wider">System Theme</span>
+              <div className="flex items-center gap-1 bg-slate-900 rounded-full p-1 border border-slate-800">
+                <button
+                  className="p-1 rounded-full bg-slate-800 text-cyan-400 hover:bg-slate-700 transition-colors"
+                  aria-label="Light mode"
+                >
+                  <Sun className="w-3 h-3" />
+                </button>
+                <button
+                  className="p-1 rounded-full text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                  aria-label="Dark mode"
+                >
+                  <Moon className="w-3 h-3" />
+                </button>
+                <button
+                  className="p-1 rounded-full text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                  aria-label="System theme"
+                >
+                  <Monitor className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -157,6 +182,18 @@ export const Footer = () => {
           {/* Copyright */}
           <div className="text-center md:text-right">
             © 2025 Apex Intelligence. All rights reserved.
+          </div>
+        </div>
+
+        {/* FORCED FOOTER TOGGLE - Bottom Center */}
+        <div className="w-full flex justify-center py-8 border-t border-slate-900/50 mt-12">
+          <div className="flex items-center gap-3 px-4 py-2 bg-slate-950 border border-slate-800 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">System Theme</span>
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_5px_#22d3ee]" /> {/* Active */}
+              <div className="w-3 h-3 rounded-full bg-slate-800" />
+              <div className="w-3 h-3 rounded-full bg-slate-800" />
+            </div>
           </div>
         </div>
       </div>

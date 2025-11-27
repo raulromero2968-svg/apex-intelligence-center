@@ -4,7 +4,6 @@
  * Exports all RAG-related functionality including:
  * - Contrarian RAG with sentiment diversity
  * - Latent query system (LatentMAS-inspired)
- * - REFRAG (Meta's embedding-based RAG optimization)
  *
  * @module rag
  */
@@ -32,17 +31,3 @@ export {
   type LatentRAGResult,
   type LatentDocument,
 } from './latent-query';
-
-// REFRAG (Meta's embedding-based RAG optimization)
-export {
-  compressChunks,
-  refragSelect,
-  refragHybridSearch,
-  refragPipeline,
-  getTCGChunks,
-  compressTCGChunks,
-  cosineSimilarity,
-  type CompressedChunk,
-  type RefragConfig,
-  type RefragResult,
-} from './refrag';
