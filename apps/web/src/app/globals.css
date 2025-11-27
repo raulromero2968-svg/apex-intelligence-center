@@ -476,24 +476,43 @@ a {
   }
 }
 
-/* Tactical Button - Military/Industrial Aesthetic */
+/* Tactical Button - Military/Industrial Aesthetic with Tech Greebles */
 .btn-tactical {
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  border: 1px solid rgba(34, 211, 238, 0.5);
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  position: relative;
+  background: rgba(2, 6, 23, 0.8); /* Slate-950 */
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  color: #22d3ee;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 0.75rem 1.5rem;
-  color: white;
   font-weight: 600;
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% calc(100% - 10px), calc(100% - 10px) 100%,
+    0 100%, 0 20px, 10px 0
+  ); /* Complex shape */
+  overflow: hidden;
   transition: all 200ms ease-out;
+}
+
+/* Add "Tech Scans" inside */
+.btn-tactical::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+  transform: skewX(-20deg) translateX(-150%);
+  transition: transform 0.5s;
 }
 
 .btn-tactical:hover {
   border-color: rgba(34, 211, 238, 0.8);
   background: rgba(34, 211, 238, 0.15);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+.btn-tactical:hover::before {
+  transform: skewX(-20deg) translateX(150%);
 }
 
 .btn-tactical:active {
