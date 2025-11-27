@@ -10,22 +10,22 @@ importers:
     dependencies:
       '@langchain/anthropic':
         specifier: ^1.0.1
-        version: 1.0.1(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(zod@4.1.12)
+        version: 1.0.1(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(zod@3.25.76)
       '@langchain/cohere':
         specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
+        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
       '@langchain/community':
         specifier: ^1.0.3
-        version: 1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(zod@4.1.12))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)
+        version: 1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(zod@3.25.76))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)
       '@langchain/core':
         specifier: ^1.0.5
-        version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))
+        version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))
       '@langchain/openai':
         specifier: ^1.1.1
-        version: 1.1.2(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(ws@8.18.3)
+        version: 1.1.2(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(ws@8.18.3)
       '@langchain/textsplitters':
         specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
+        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
       '@mdx-js/loader':
         specifier: ^3.1.1
         version: 3.1.1(webpack@5.102.1)
@@ -79,7 +79,7 @@ importers:
         version: 1.1.8
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
+        version: 0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@18.3.1)
@@ -97,7 +97,7 @@ importers:
         version: 5.10.0
       langchain:
         specifier: ^1.0.4
-        version: 1.0.5(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@4.1.12))
+        version: 1.0.5(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@3.25.76))
       lucide-react:
         specifier: ^0.553.0
         version: 0.553.0(react@18.3.1)
@@ -115,7 +115,7 @@ importers:
         version: 1.2.6
       openai:
         specifier: ^6.9.0
-        version: 6.9.1(ws@8.18.3)(zod@4.1.12)
+        version: 6.9.1(ws@8.18.3)(zod@3.25.76)
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -230,7 +230,7 @@ importers:
         version: 5.90.10(react@18.3.1)
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
+        version: 0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
       expo:
         specifier: ~51.0.0
         version: 51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
@@ -339,28 +339,31 @@ importers:
         version: link:../../packages/valuation
       '@langchain/anthropic':
         specifier: ^1.0.1
-        version: 1.0.1(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(zod@3.25.76)
+        version: 1.0.1(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(zod@4.1.12)
       '@langchain/cohere':
         specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
+        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
       '@langchain/community':
         specifier: ^1.0.3
-        version: 1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(zod@3.25.76))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)
+        version: 1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(zod@4.1.12))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)
       '@langchain/core':
         specifier: ^1.0.5
-        version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))
+        version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))
       '@langchain/openai':
         specifier: ^1.1.1
-        version: 1.1.2(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(ws@8.18.3)
+        version: 1.1.2(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(ws@8.18.3)
       '@langchain/textsplitters':
         specifier: ^1.0.0
-        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
+        version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
       '@mdx-js/loader':
         specifier: ^3.1.1
         version: 3.1.1(webpack@5.102.1)
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.5)(react@18.3.1)
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
       '@next/mdx':
         specifier: ^16.0.3
         version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
@@ -417,7 +420,7 @@ importers:
         version: 0.31.7
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
+        version: 0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@18.3.1)
@@ -441,7 +444,7 @@ importers:
         version: 5.10.0
       langchain:
         specifier: ^1.0.4
-        version: 1.0.5(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@3.25.76))
+        version: 1.0.5(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod-to-json-schema@3.24.6(zod@4.1.12))
       lucide-react:
         specifier: ^0.553.0
         version: 0.553.0(react@18.3.1)
@@ -459,7 +462,7 @@ importers:
         version: 1.2.6
       openai:
         specifier: ^6.9.0
-        version: 6.9.1(ws@8.18.3)(zod@3.25.76)
+        version: 6.9.1(ws@8.18.3)(zod@4.1.12)
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -568,7 +571,7 @@ importers:
         version: 5.63.2
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
+        version: 0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
       ioredis:
         specifier: ^5.8.2
         version: 5.8.2
@@ -605,7 +608,7 @@ importers:
         version: link:../shared
       drizzle-orm:
         specifier: ^0.29.0
-        version: 0.29.5(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(react@18.3.1)
+        version: 0.29.5(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(react@18.3.1)
       zod:
         specifier: ^3.22.4
         version: 3.25.76
@@ -656,7 +659,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: ^0.33.0
-        version: 0.33.0(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))(react@18.3.1)
+        version: 0.33.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))(react@18.3.1)
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -684,7 +687,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: ^0.44.7
-        version: 0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
+        version: 0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))
     devDependencies:
       '@types/node':
         specifier: ^24.10.1
@@ -3117,6 +3120,9 @@ packages:
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
+  '@neondatabase/serverless@0.10.4':
+    resolution: {integrity: sha512-2nZuh3VUO9voBauuh+IGYRhGU/MskWHt1IuZvHcJw6GLjDgtqj/KViKo7SIrLdGLdot7vFbiRRw+BgEy3wT9HA==}
+
   '@next/env@14.2.33':
     resolution: {integrity: sha512-CgVHNZ1fRIlxkLhIX22flAZI/HmpDaZ8vwyJ/B0SDPTBuLZ1PJ+DWMjCHhqnExfmSQzA/PbZi8OAc7PAq2w9IA==}
 
@@ -4696,6 +4702,9 @@ packages:
 
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
+
+  '@types/pg@8.11.6':
+    resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
 
   '@types/pg@8.15.5':
     resolution: {integrity: sha512-LF7lF6zWEKxuT3/OR8wAZGzkg4ENGXFNyiV/JeOt9z5B+0ZVwbql9McqX5c/WStFq1GaGso7H1AzP/qSzmlCKQ==}
@@ -9736,6 +9745,9 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
+  obuf@1.1.2:
+    resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
+
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
@@ -9991,6 +10003,10 @@ packages:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
 
+  pg-numeric@1.0.2:
+    resolution: {integrity: sha512-BM/Thnrw5jm2kKLE5uJkXqqExRUY/toLHda65XgFTBTFYZyopbKjBe29Ii3RbkvlsMoFwD+tHeGaCjjv0gHlyw==}
+    engines: {node: '>=4'}
+
   pg-pool@3.10.1:
     resolution: {integrity: sha512-Tu8jMlcX+9d8+QVzKIvM/uJtp07PKr82IUOYEphaWcoBhIYkoHpLXN3qO59nAI11ripznDsEzEv8nUxBVWajGg==}
     peerDependencies:
@@ -10002,6 +10018,10 @@ packages:
   pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
+
+  pg-types@4.1.0:
+    resolution: {integrity: sha512-o2XFanIMy/3+mThw69O8d4n1E5zsLhdO+OPqswezu7Z5ekP4hYDqlDjlmOpYMbzY2Br0ufCwJLdDIXeNVwcWFg==}
+    engines: {node: '>=10'}
 
   pg@8.16.3:
     resolution: {integrity: sha512-enxc1h0jA/aq5oSDMvqyW3q89ra6XIIDZgCX9vkMrnz5DFTw/Ny3Li2lFQ+pt3L6MCgm/5o2o8HW9hiJji+xvw==}
@@ -10108,17 +10128,36 @@ packages:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
     engines: {node: '>=4'}
 
+  postgres-array@3.0.4:
+    resolution: {integrity: sha512-nAUSGfSDGOaOAEGwqsRY27GPOea7CNipJPOA7lPbdEpx5Kg3qzdP0AaWC5MlhTWV9s4hFX39nomVZ+C4tnGOJQ==}
+    engines: {node: '>=12'}
+
   postgres-bytea@1.0.0:
     resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
     engines: {node: '>=0.10.0'}
+
+  postgres-bytea@3.0.0:
+    resolution: {integrity: sha512-CNd4jim9RFPkObHSjVHlVrxoVQXz7quwNFpz7RY1okNNme49+sVyiTvTRobiLV548Hx/hb1BG+iE7h9493WzFw==}
+    engines: {node: '>= 6'}
 
   postgres-date@1.0.7:
     resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
     engines: {node: '>=0.10.0'}
 
+  postgres-date@2.1.0:
+    resolution: {integrity: sha512-K7Juri8gtgXVcDfZttFKVmhglp7epKb1K4pgrkLxehjqkrgPhfG6OO8LHLkfaqkbpjNRnra018XwAr1yQFWGcA==}
+    engines: {node: '>=12'}
+
   postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
+
+  postgres-interval@3.0.0:
+    resolution: {integrity: sha512-BSNDnbyZCXSxgA+1f5UU2GmwhoI0aU5yMxRGO8CdFEcY2BQF9xm/7MqKnYoM1nJDk8nONNWDk9WeSmePFhQdlw==}
+    engines: {node: '>=12'}
+
+  postgres-range@1.1.4:
+    resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
   pouchdb-collections@1.0.1:
     resolution: {integrity: sha512-31db6JRg4+4D5Yzc2nqsRqsA2oOkZS8DpFav3jf/qVNBxusKa2ClkEIZ2bJNpaDbMfWtnuSq59p6Bn+CipPMdg==}
@@ -14994,7 +15033,7 @@ snapshots:
       - aws-crt
       - encoding
 
-  '@langchain/community@1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(zod@3.25.76))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)':
+  '@langchain/community@1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(zod@3.25.76))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@3.25.76))(zod@3.25.76)
       '@ibm-cloud/watsonx-ai': 1.7.3
@@ -15014,6 +15053,7 @@ snapshots:
       '@aws-sdk/credential-provider-node': 3.933.0
       '@browserbasehq/sdk': 2.6.0
       '@google-cloud/storage': 7.17.3
+      '@neondatabase/serverless': 0.10.4
       '@smithy/util-utf8': 2.3.0
       '@upstash/ratelimit': 2.0.7(@upstash/redis@1.35.6)
       '@upstash/redis': 1.35.6
@@ -15037,7 +15077,7 @@ snapshots:
       - '@opentelemetry/sdk-trace-base'
       - peggy
 
-  '@langchain/community@1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(zod@4.1.12))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)':
+  '@langchain/community@1.0.4(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-provider-node@3.933.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(zod@4.1.12))(@google-cloud/storage@7.17.3)(@ibm-cloud/watsonx-ai@1.7.3)(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@smithy/util-utf8@2.3.0)(@upstash/ratelimit@2.0.7(@upstash/redis@1.35.6))(@upstash/redis@1.35.6)(cohere-ai@7.19.0)(crypto-js@4.2.0)(discord.js@14.25.1)(fast-xml-parser@5.2.5)(firebase-admin@13.6.0)(google-auth-library@9.15.1)(ibm-cloud-sdk-core@5.4.4)(ignore@5.3.2)(ioredis@5.8.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(neo4j-driver@5.28.2)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(pg@8.16.3)(playwright@1.56.1)(ws@8.18.3)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.56.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(zod@4.1.12)
       '@ibm-cloud/watsonx-ai': 1.7.3
@@ -15057,6 +15097,7 @@ snapshots:
       '@aws-sdk/credential-provider-node': 3.933.0
       '@browserbasehq/sdk': 2.6.0
       '@google-cloud/storage': 7.17.3
+      '@neondatabase/serverless': 0.10.4
       '@smithy/util-utf8': 2.3.0
       '@upstash/ratelimit': 2.0.7(@upstash/redis@1.35.6)
       '@upstash/redis': 1.35.6
@@ -15286,6 +15327,10 @@ snapshots:
       '@emnapi/runtime': 1.7.1
       '@tybys/wasm-util': 0.10.1
     optional: true
+
+  '@neondatabase/serverless@0.10.4':
+    dependencies:
+      '@types/pg': 8.11.6
 
   '@next/env@14.2.33': {}
 
@@ -17406,6 +17451,12 @@ snapshots:
     dependencies:
       '@types/pg': 8.15.6
 
+  '@types/pg@8.11.6':
+    dependencies:
+      '@types/node': 20.19.25
+      pg-protocol: 1.10.3
+      pg-types: 4.1.0
+
   '@types/pg@8.15.5':
     dependencies:
       '@types/node': 20.19.25
@@ -19272,8 +19323,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.29.5(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(react@18.3.1):
+  drizzle-orm@0.29.5(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(react@18.3.1):
     optionalDependencies:
+      '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@types/pg': 8.15.6
       '@types/react': 19.2.5
@@ -19281,8 +19333,9 @@ snapshots:
       pg: 8.16.3
       react: 18.3.1
 
-  drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))(react@18.3.1):
+  drizzle-orm@0.33.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@types/react@19.2.5)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3))(react@18.3.1):
     optionalDependencies:
+      '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@prisma/client': 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
       '@types/pg': 8.15.6
@@ -19292,8 +19345,9 @@ snapshots:
       prisma: 6.19.0(typescript@5.9.3)
       react: 18.3.1
 
-  drizzle-orm@0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3)):
+  drizzle-orm@0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@18.3.27)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3)):
     optionalDependencies:
+      '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@prisma/client': 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
       '@types/pg': 8.15.6
@@ -19302,8 +19356,9 @@ snapshots:
       pg: 8.16.3
       prisma: 6.19.0(typescript@5.9.3)
 
-  drizzle-orm@0.44.7(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3)):
+  drizzle-orm@0.44.7(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.6)(@upstash/redis@1.35.6)(expo-sqlite@14.0.6(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(pg@8.16.3)(prisma@6.19.0(typescript@5.9.3)):
     optionalDependencies:
+      '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@prisma/client': 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
       '@types/pg': 8.15.6
@@ -21294,7 +21349,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.2(debug@4.4.3))
+      retry-axios: 2.6.0(axios@1.13.2)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -23667,6 +23722,8 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
+  obuf@1.1.2: {}
+
   ohash@2.0.11: {}
 
   on-finished@2.3.0:
@@ -23931,6 +23988,8 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
+  pg-numeric@1.0.2: {}
+
   pg-pool@3.10.1(pg@8.16.3):
     dependencies:
       pg: 8.16.3
@@ -23944,6 +24003,16 @@ snapshots:
       postgres-bytea: 1.0.0
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
+
+  pg-types@4.1.0:
+    dependencies:
+      pg-int8: 1.0.1
+      pg-numeric: 1.0.2
+      postgres-array: 3.0.4
+      postgres-bytea: 3.0.0
+      postgres-date: 2.1.0
+      postgres-interval: 3.0.0
+      postgres-range: 1.1.4
 
   pg@8.16.3:
     dependencies:
@@ -24035,13 +24104,25 @@ snapshots:
 
   postgres-array@2.0.0: {}
 
+  postgres-array@3.0.4: {}
+
   postgres-bytea@1.0.0: {}
 
+  postgres-bytea@3.0.0:
+    dependencies:
+      obuf: 1.1.2
+
   postgres-date@1.0.7: {}
+
+  postgres-date@2.1.0: {}
 
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+
+  postgres-interval@3.0.0: {}
+
+  postgres-range@1.1.4: {}
 
   pouchdb-collections@1.0.1: {}
 
@@ -24788,7 +24869,7 @@ snapshots:
 
   restructure@3.0.2: {}
 
-  retry-axios@2.6.0(axios@1.13.2(debug@4.4.3)):
+  retry-axios@2.6.0(axios@1.13.2):
     dependencies:
       axios: 1.13.2(debug@4.4.3)
 
