@@ -143,7 +143,7 @@ export class FaraClient {
 
     // Submit task to Fara-7B API
     try {
-      const response = await this.callFaraAPI('POST', '/tasks', {
+      await this.callFaraAPI('POST', '/tasks', {
         instruction: task.instruction,
         context: task.context,
         maxSteps: task.maxSteps,
