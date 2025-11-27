@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
+import { MessageCircle, Twitter, Instagram, Linkedin, Github, Sun, Moon, Monitor } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SOCIAL_PROFILES } from '@/lib/constants';
@@ -144,15 +144,29 @@ export const Footer = () => {
               </a>
             </div>
 
-            {/* Vercel-Style Theme Toggle */}
-            <div className="mt-8">
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-xs text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
-                <div className="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-cyan-500" />
-                </div>
-                <span>System Theme</span>
-                <span className="ml-1 text-slate-600">▼</span>
-              </button>
+            {/* HARD-CODED THEME TOGGLE - Enhanced Visibility */}
+            <div className="mt-6 border-t border-slate-800 pt-6 flex items-center gap-3">
+              <span className="text-xs text-slate-500 uppercase tracking-wider">System Theme</span>
+              <div className="flex items-center gap-1 bg-slate-900 rounded-full p-1 border border-slate-800">
+                <button
+                  className="p-1 rounded-full bg-slate-800 text-cyan-400 hover:bg-slate-700 transition-colors"
+                  aria-label="Light mode"
+                >
+                  <Sun className="w-3 h-3" />
+                </button>
+                <button
+                  className="p-1 rounded-full text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                  aria-label="Dark mode"
+                >
+                  <Moon className="w-3 h-3" />
+                </button>
+                <button
+                  className="p-1 rounded-full text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                  aria-label="System theme"
+                >
+                  <Monitor className="w-3 h-3" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
