@@ -137,58 +137,75 @@ export function getRetryAfter(reset: number): number {
 /**
  * Rate limiters for multi-modal endpoints (video generation, uploads, etc.)
  * More restrictive limits due to higher resource consumption
+ *
+ * Provides both the legacy .limit(userId) API for existing code
+ * and the new tiered API for future implementations
  */
+
+// Helper to create a limiter with the expected .limit() API
+const createLimiter = (
+  prefix: string,
+  limits: Record<string, number>,
+  windowSeconds: number = 60
+) => ({
+  // Legacy API: .limit(userId) - assumes free tier for compatibility
+  limit: async (userId: string) => {
+    return ratelimit(limits.free, `${prefix}:${userId}`, windowSeconds);
+  },
+  // New tiered API: .limitWithTier(userId, tier)
+  limitWithTier: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    return ratelimit(limits[tier], `${prefix}:${userId}`, windowSeconds);
+  },
+});
+
 export const multiModalRateLimiters = {
   /**
    * Video generation rate limiter
    * Free: 5/hour, Pro: 20/hour, Enterprise: 100/hour
    */
-  generateVideo: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
-    const limits: Record<string, number> = {
-      free: 5,
-      pro: 20,
-      enterprise: 100,
-    };
-    return ratelimit(limits[tier], `multimodal:video:${userId}`, 3600); // 1 hour window
-  },
+  videoGeneration: createLimiter('multimodal:video', {
+    free: 5,
+    pro: 20,
+    enterprise: 100,
+  }, 3600), // 1 hour window
 
   /**
-   * File upload rate limiter
+   * File upload rate limiter (multiModalUpload for legacy compatibility)
    * Free: 10/min, Pro: 50/min, Enterprise: unlimited
    */
-  upload: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
-    const limits: Record<string, number> = {
-      free: 10,
-      pro: 50,
-      enterprise: Infinity,
-    };
-    return ratelimit(limits[tier], `multimodal:upload:${userId}`, 60); // 1 min window
-  },
+  multiModalUpload: createLimiter('multimodal:upload', {
+    free: 10,
+    pro: 50,
+    enterprise: Infinity,
+  }, 60), // 1 min window
 
   /**
    * Image processing rate limiter
    * Free: 20/min, Pro: 100/min, Enterprise: unlimited
    */
-  imageProcess: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
-    const limits: Record<string, number> = {
-      free: 20,
-      pro: 100,
-      enterprise: Infinity,
-    };
-    return ratelimit(limits[tier], `multimodal:image:${userId}`, 60); // 1 min window
-  },
+  imageProcess: createLimiter('multimodal:image', {
+    free: 20,
+    pro: 100,
+    enterprise: Infinity,
+  }, 60), // 1 min window
 
   /**
    * Audio processing rate limiter
    * Free: 10/min, Pro: 50/min, Enterprise: unlimited
    */
-  audioProcess: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
-    const limits: Record<string, number> = {
-      free: 10,
-      pro: 50,
-      enterprise: Infinity,
-    };
-    return ratelimit(limits[tier], `multimodal:audio:${userId}`, 60); // 1 min window
+  audioProcess: createLimiter('multimodal:audio', {
+    free: 10,
+    pro: 50,
+    enterprise: Infinity,
+  }, 60), // 1 min window
+
+  // Legacy aliases for backwards compatibility
+  generateVideo: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = { free: 5, pro: 20, enterprise: 100 };
+    return ratelimit(limits[tier], `multimodal:video:${userId}`, 3600);
+  },
+  upload: async (userId: string, tier: 'free' | 'pro' | 'enterprise') => {
+    const limits: Record<string, number> = { free: 10, pro: 50, enterprise: Infinity };
+    return ratelimit(limits[tier], `multimodal:upload:${userId}`, 60);
   },
 };
-
