@@ -5,16 +5,6 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["iad1"],
-  "functions": {
-    "apps/web/src/app/api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "apps/web/app/api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/update-prices",
