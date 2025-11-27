@@ -260,13 +260,30 @@ export const users = pgTable('users', {
   breakModeActivatedBy: text('break_mode_activated_by', {
     enum: ['child', 'parent']
   }),
-  birthDate: timestamp('birth_date'),
-  isMinor: boolean('is_minor').default(false).notNull(),
-  parentalConsentGiven: boolean('parental_consent_given').default(false).notNull(),
-  parentalConsentDate: timestamp('parental_consent_date'),
-  parentalGuardianEmail: text('parental_guardian_email'),
+  // Trust Score System (13_LAUNCH_02)
+  trustScore: integer('trust_score').default(10).notNull(),
+  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
+  phoneVerified: boolean('phone_verified').default(false).notNull(),
+  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
+  walletAddress: text('wallet_address'), // Base wallet for NFT
+
+  // Family Protection Lockdown v3 (immutable constitution)
+  dateOfBirth: timestamp('date_of_birth'), // Required for age gating (13+ required)
+  monthlySpendLimit: real('monthly_spend_limit').default(50.00).notNull(), // $50/month default
+  currentMonthlySpend: real('current_monthly_spend').default(0.00).notNull(),
+  bedtimeStart: text('bedtime_start'), // HH:MM format (e.g., "22:00")
+  bedtimeEnd: text('bedtime_end'),     // HH:MM format (e.g., "07:00")
+  parentUserId: text('parent_user_id').references((): any => users.id, { onDelete: 'set null' }),
+  isMinor: boolean('is_minor').default(false).notNull(), // Auto-set for users under 18
+  coolDownUntil: timestamp('cool_down_until'), // "Take a Break" forced cooldown
+
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  bedtimeIdx: index('idx_users_bedtime').on(table.bedtimeStart, table.bedtimeEnd),
+  coolDownIdx: index('idx_users_cool_down').on(table.coolDownUntil),
+  isMinorIdx: index('idx_users_is_minor').on(table.isMinor),
+  parentIdx: index('idx_users_parent').on(table.parentUserId),
+}));
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -473,6 +490,45 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
 }));
 
 /**
+ * Market Submissions - Crowdsourced sale data from users
+ *
+ * Architecture: 13_LAUNCH_02
+ * Users submit verified sales with proof (receipt/PWCC link/Goldin link)
+ * VARC validates card identity from uploaded images
+ * Trust score system prevents spam and fake submissions
+ */
+export const marketSubmissions = pgTable('market_submissions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  price: real('price').notNull(),
+  currency: text('currency').notNull().default('USD'),
+  saleDate: timestamp('sale_date').notNull(),
+  grade: text('grade'),
+  gradingCompany: text('grading_company'),
+  certNumber: text('cert_number'),
+  proofUrl: text('proof_url').notNull(), // S3 URL or external link
+  proofType: text('proof_type', {
+    enum: ['receipt', 'auction_link', 'marketplace_screenshot']
+  }).notNull(),
+  status: text('status', {
+    enum: ['pending', 'approved', 'rejected']
+  }).default('pending').notNull(),
+  verifiedByVarc: boolean('verified_by_varc').default(false).notNull(),
+  varcConfidence: real('varc_confidence'), // 0.0-1.0
+  reviewedBy: text('reviewed_by'), // Admin user ID
+  reviewedAt: timestamp('reviewed_at'),
+  rejectionReason: text('rejection_reason'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_submissions_user').on(table.userId),
+  cardIdx: index('idx_submissions_card').on(table.cardId),
+  statusIdx: index('idx_submissions_status').on(table.status),
+  createdIdx: index('idx_submissions_created').on(table.createdAt),
+}));
+
+/**
  * Human Conception Statements - EU AI Act compliance
  */
 export const humanConceptionStatements = pgTable('human_conception_statements', {
@@ -585,6 +641,7 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   makerVotes: many(makerVotes),
   cardForensics: many(cardForensics),
   manipulationAlerts: many(manipulationAlerts),
+  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -650,6 +707,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
+  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -725,6 +783,20 @@ export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one 
 }));
 
 /**
+ * Market Submissions relations
+ */
+export const marketSubmissionsRelations = relations(marketSubmissions, ({ one }) => ({
+  user: one(users, {
+    fields: [marketSubmissions.userId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [marketSubmissions.cardId],
+    references: [cards.id],
+  }),
+}));
+
+/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -741,6 +813,46 @@ export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
   }),
   card: one(cards, {
     fields: [makerVotes.cardId],
+    references: [cards.id],
+  }),
+}));
+
+// ============================================================================
+// VAULT JOBS - Production Job Queue
+// ============================================================================
+
+/**
+ * Vault Jobs table - Production job queue for Vault content generation
+ *
+ * Replaces the legacy queue.json system with a database-backed queue.
+ * Handles high-volatility cards detected by the cron job and processes them
+ * through the community pulse collector → vault writer → MDX generator pipeline.
+ */
+export const vaultJobs = pgTable('vault_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  status: text('status', {
+    enum: ['pending', 'processing', 'completed', 'failed']
+  }).default('pending').notNull(),
+  priority: integer('priority').default(0).notNull(),
+  retryCount: integer('retry_count').default(0).notNull(),
+  errorMessage: text('error_message'),
+  communityQuotes: jsonb('community_quotes').$type<string[]>(),
+  mdxContent: text('mdx_content'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  cardIdx: index('idx_vault_jobs_card').on(table.cardId),
+  statusIdx: index('idx_vault_jobs_status').on(table.status),
+  priorityIdx: index('idx_vault_jobs_priority').on(table.priority, table.createdAt),
+}));
+
+/**
+ * Vault Jobs relations
+ */
+export const vaultJobsRelations = relations(vaultJobs, ({ one }) => ({
+  card: one(cards, {
+    fields: [vaultJobs.cardId],
     references: [cards.id],
   }),
 }));
@@ -798,40 +910,10 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
-export type VaultEvent = typeof vaultEvents.$inferSelect;
-export type NewVaultEvent = typeof vaultEvents.$inferInsert;
-
-// ============================================================================
-// FOUNDING MEMBER NFT CLAIMS
-// ============================================================================
-
-/**
- * Founding Member NFT Claims table
- *
- * Tracks founding member NFT claims to prevent duplicate claims per user
- */
-export const foundingMemberClaims = pgTable('founding_member_claims', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').references(() => users.id).notNull(),
-  walletAddress: text('wallet_address').notNull(),
-  tier: text('tier').notNull(),
-  txHash: text('tx_hash'),
-  tokenId: text('token_id'),
-  chainId: integer('chain_id'),
-  gasPaidByPaymaster: boolean('gas_paid_by_paymaster').default(false),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  // Unique constraint: one claim per user
-  userIdIdx: uniqueIndex('idx_founding_member_claims_user_id').on(table.userId),
-  // Index for wallet lookups
-  walletAddressIdx: index('idx_founding_member_claims_wallet_address').on(table.walletAddress),
-  // Index for transaction lookups
-  txHashIdx: index('idx_founding_member_claims_tx_hash').on(table.txHash),
-}));
-
-export type FoundingMemberClaim = typeof foundingMemberClaims.$inferSelect;
-export type NewFoundingMemberClaim = typeof foundingMemberClaims.$inferInsert;
+export type MarketSubmission = typeof marketSubmissions.$inferSelect;
+export type NewMarketSubmission = typeof marketSubmissions.$inferInsert;
+export type VaultJob = typeof vaultJobs.$inferSelect;
+export type NewVaultJob = typeof vaultJobs.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
