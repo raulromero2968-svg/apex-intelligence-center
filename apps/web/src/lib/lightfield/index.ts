@@ -27,6 +27,10 @@ export {
   estimateFileSizeBytes,
   getFallbackRenderParams,
   getAnaglyphViewIndices,
+  // Quilt generation API
+  generateQuiltConfig,
+  generateQuiltPreview,
+  generateQuilt,
   // Presets
   QUILT_PRESETS,
   DISPLAY_PRESETS,
@@ -34,6 +38,8 @@ export {
   type QuiltConfig,
   type QuiltPreset,
   type ViewConeConfig,
+  type GenerateQuiltInput,
+  type GenerateQuiltResult,
 } from './quilt-generator';
 
 // Display Calibration

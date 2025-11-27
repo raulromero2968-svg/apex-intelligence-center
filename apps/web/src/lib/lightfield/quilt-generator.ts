@@ -499,3 +499,123 @@ export function getAnaglyphViewIndices(config: QuiltConfig): {
     separation: separation * 2,
   };
 }
+
+// ============================================================================
+// QUILT GENERATION API
+// ============================================================================
+
+export interface GenerateQuiltInput {
+  sourceUrl: string;
+  displayModel?: string;
+  viewCount?: number;
+  quality?: 'fast' | 'standard' | 'high';
+  userId?: string;
+}
+
+export interface GenerateQuiltResult {
+  success: boolean;
+  quiltId?: string;
+  quiltUrl?: string;
+  previewUrl?: string;
+  config?: QuiltConfig;
+  error?: string;
+}
+
+/**
+ * Generate a quilt configuration from input parameters
+ */
+export function generateQuiltConfig(input: GenerateQuiltInput): QuiltConfig {
+  const { displayModel = 'portrait', viewCount, quality = 'standard' } = input;
+
+  // Get base config from display preset
+  const baseConfig = getRecommendedConfig(displayModel);
+
+  // Adjust for quality setting
+  const qualityMultipliers: Record<string, number> = {
+    fast: 0.5,
+    standard: 1.0,
+    high: 1.5,
+  };
+  const multiplier = qualityMultipliers[quality];
+
+  // Override view count if specified
+  const finalViewCount = viewCount ?? baseConfig.viewCount;
+
+  return {
+    ...baseConfig,
+    viewCount: finalViewCount,
+    viewWidth: Math.round(baseConfig.viewWidth * multiplier),
+    viewHeight: Math.round(baseConfig.viewHeight * multiplier),
+    totalWidth: Math.round(baseConfig.totalWidth * multiplier),
+    totalHeight: Math.round(baseConfig.totalHeight * multiplier),
+  };
+}
+
+/**
+ * Generate a preview image for a quilt
+ * Returns the center view of the quilt as a 2D preview
+ */
+export async function generateQuiltPreview(
+  quiltId: string
+): Promise<{ quiltId: string; previewUrl: string; thumbnailUrl?: string }> {
+  // Get the quilt asset to find its URL
+  const asset = await getQuiltAsset(quiltId);
+
+  if (!asset) {
+    throw new Error(`Quilt asset not found: ${quiltId}`);
+  }
+
+  // For now, return the center view as preview
+  // In a full implementation, this would extract the center view from the quilt texture
+  const previewUrl = asset.previewUrl || asset.quiltUrl || '';
+  const thumbnailUrl = asset.thumbnailUrl;
+
+  return {
+    quiltId,
+    previewUrl,
+    thumbnailUrl: thumbnailUrl ?? undefined,
+  };
+}
+
+/**
+ * Generate a complete quilt from a source image or 3D model
+ * This is an async operation that creates the multi-view texture atlas
+ */
+export async function generateQuilt(
+  input: GenerateQuiltInput
+): Promise<GenerateQuiltResult> {
+  try {
+    const config = generateQuiltConfig(input);
+
+    // Create a pending quilt asset record
+    const asset = await createQuiltAsset({
+      ownerId: input.userId || 'anonymous',
+      name: `Quilt from ${input.sourceUrl.split('/').pop()}`,
+      status: 'pending',
+      category: 'custom',
+      quiltUrl: '', // Will be filled after generation
+      previewUrl: input.sourceUrl, // Use source as initial preview
+      config: config as Record<string, unknown>,
+      isPublic: false,
+    });
+
+    // In a production implementation, this would:
+    // 1. Queue a background job to generate the quilt
+    // 2. Render multiple views from different angles
+    // 3. Stitch views into a quilt texture
+    // 4. Upload to storage and update the asset record
+
+    // For now, return success with the pending asset
+    return {
+      success: true,
+      quiltId: asset.id,
+      previewUrl: input.sourceUrl,
+      config,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error generating quilt',
+    };
+  }
+}
