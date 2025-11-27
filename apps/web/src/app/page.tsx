@@ -47,7 +47,7 @@ export default function HomePage() {
         {/* Hero Content (Centered) - Transparent to show starfield/matrix */}
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -107,7 +107,7 @@ export default function HomePage() {
           SECTION 2: MISSION (Card Layer 1 - z-10) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative md:sticky top-0 md:top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-3xl overflow-hidden flex items-center"
+        className="relative md:sticky top-0 md:top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-lg overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-4xl mx-auto">
@@ -121,7 +121,7 @@ export default function HomePage() {
             </div>
 
             {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
-            <div className="relative p-8 rounded-xl bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
+            <div className="relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
               {/* Cyan Scan Line - Horizontal scan on section view */}
               <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
 
@@ -191,7 +191,7 @@ export default function HomePage() {
           SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative md:sticky top-0 md:top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-3xl overflow-hidden flex items-center"
+        className="relative md:sticky top-0 md:top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-lg overflow-hidden flex items-center"
       >
         <div className="w-full px-6 md:px-12 py-16">
           {/* Section Header - Prismatic See-Through Typography */}
@@ -327,20 +327,20 @@ export default function HomePage() {
           SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
           ═══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-3xl overflow-hidden flex items-center pb-20 mb-40"
+        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-lg overflow-hidden flex items-center pb-20 mb-40"
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
-            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-10 md:p-14 text-center overflow-hidden">
+            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
               {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-2xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm" />
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
               <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
 
               <div className="relative z-10">
-                {/* Header Container - Forced Column Stack on All Screens */}
-                <div className="flex flex-col items-start gap-2 mb-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
+                {/* Header Container - Centered on All Screens */}
+                <div className="flex flex-col items-center text-center gap-4 mb-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -348,7 +348,7 @@ export default function HomePage() {
                     ALPHA ACCESS OPEN
                   </div>
 
-                  <h2 className="header-prismatic text-sheen-overlay text-3xl md:text-4xl tracking-wider cyber-street">
+                  <h2 className="font-titan-unified text-5xl md:text-6xl tracking-tight">
                     Ready for the Alpha?
                   </h2>
                 </div>

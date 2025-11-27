@@ -16,7 +16,7 @@
   }
 
   html, body {
-    background-color: var(--ink);
+    background-color: #020617 !important; /* Force Slate-950 - Meta Browser Fix */
     color: white;
     min-height: 100vh;
     /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
