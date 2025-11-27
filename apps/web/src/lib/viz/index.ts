@@ -2,6 +2,7 @@
  * Visualization Library Exports
  *
  * Quantum-inspired neural network visualizations for TCG market analysis.
+ * YouTube AI visualization for automated content generation.
  */
 
 export {
@@ -23,3 +24,15 @@ export type {
   SpiralConfig,
   QuantumVizState,
 } from './quantum-nn';
+
+// YouTube AI Visualization Module
+export {
+  generateYouTubeContent,
+  generateABTestVariants,
+  generateDailyContent,
+  type YouTubeContentRequest,
+  type YouTubeContentPackage,
+  type YouTubeScript,
+  type ThumbnailSpec,
+  type VisualizationSpec,
+} from './youtube-ai-viz';
