@@ -2,29 +2,72 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { TrendingUp, Microscope, Shield, Terminal, Activity, Database, Zap } from 'lucide-react';
 import CustomCursor from '@/components/ui/CustomCursor';
-import { Typewriter } from '@/components/ui/Typewriter';
+import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
+
+// Intelligence Feed Data - Mixing TCG Markets with Biology Research
+const INTEL_FEED = [
+  { type: 'MARKET', content: 'Charizard Base Set 1st Ed (PSA 10) +4.2% | $420,000', delta: '+4.2%', positive: true },
+  { type: 'RESEARCH', content: 'VARC Model v2.1: Pattern recognition efficiency increased by 12%', positive: true },
+  { type: 'ALERT', content: 'Earth Species Project releases new crow vocalization dataset', positive: true },
+  { type: 'MARKET', content: 'Magic: The Gathering "Black Lotus" auction closing in 2h | $680,000', positive: true },
+  { type: 'SYSTEM', content: 'NatureLM-audio integration: 847 species now indexed', positive: true },
+  { type: 'MARKET', content: 'Pokemon 151 Charizard ex SAR -1.8% | Correction from overprint', delta: '-1.8%', positive: false },
+  { type: 'RESEARCH', content: 'Sentient Futures: Digital minds moral consideration framework v0.3', positive: true },
+  { type: 'MARKET', content: 'Yu-Gi-Oh LOB 1st Ed Blue-Eyes +2.1% | $28,500', delta: '+2.1%', positive: true },
+  { type: 'ALERT', content: 'Faunalytics Q4 report: AI advocacy tool adoption up 340%', positive: true },
+  { type: 'MARKET', content: 'One Piece Gear 5 Luffy SP +6.7% | $890', delta: '+6.7%', positive: true },
+  { type: 'SYSTEM', content: 'Market anomaly detected: MTG Reserved List liquidity spike', positive: true },
+  { type: 'RESEARCH', content: 'ACE charity evaluation: 3 new AI-animal orgs added to watchlist', positive: true },
+];
 
 export default function HomePage() {
   const [shootingStars, setShootingStars] = useState<number[]>([]);
+  const [currentTime, setCurrentTime] = useState('');
+  const [feedItems, setFeedItems] = useState(INTEL_FEED.slice(0, 6));
+  const feedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Shooting star logic
-    const interval = setInterval(() => {
+    const starInterval = setInterval(() => {
       setShootingStars(prev => [...prev, Date.now()]);
-      // Cleanup old stars
       setTimeout(() => {
         setShootingStars(prev => prev.slice(1));
       }, 3000);
-    }, 15000); // Every 15 seconds
+    }, 15000);
 
-    return () => clearInterval(interval);
+    // System time update
+    const timeInterval = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC');
+    }, 1000);
+
+    // Initialize time
+    const now = new Date();
+    setCurrentTime(now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC');
+
+    // Rotating feed items
+    let feedIndex = 6;
+    const feedInterval = setInterval(() => {
+      setFeedItems(prev => {
+        const newItems = [...prev.slice(1), INTEL_FEED[feedIndex % INTEL_FEED.length]];
+        feedIndex++;
+        return newItems;
+      });
+    }, 4000);
+
+    return () => {
+      clearInterval(starInterval);
+      clearInterval(timeInterval);
+      clearInterval(feedInterval);
+    };
   }, []);
 
   return (
     <div className="relative">
-      {/* Cinematic Letterboxing - No Gap */}
+      {/* Cinematic Letterboxing */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-black z-[100] m-0 p-0" />
       <CustomCursor />
 
@@ -40,159 +83,148 @@ export default function HomePage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1: HERO (Base Layer - z-0)
-          Uses global fixed nav from layout.tsx - no duplicate header needed
+          SECTION 1: THE NEXUS HERO - System Status Interface
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative z-0 min-h-screen flex flex-col overflow-hidden">
-        {/* Hero Content (Centered) - Transparent to show starfield/matrix */}
+      <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
-            <span className="relative flex h-2 w-2">
+
+          {/* System Status Badge */}
+          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 text-sm font-mono mb-8 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+            <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
             </span>
-            SYSTEM ONLINE // VER 2.0
+            <Terminal className="w-4 h-4" />
+            <span className="tracking-wider">NEXUS // SYSTEM ACTIVE</span>
+            <span className="text-slate-500">|</span>
+            <span className="text-slate-400 text-xs">{currentTime}</span>
           </div>
 
-          {/* Main Title - Hollow typography showing matrix/starfield through letters */}
-          <h1 className="flex flex-col items-center text-center gap-1 md:gap-2 w-full px-2 overflow-hidden mx-auto leading-[1.1] py-2 cyber-stream">
-            <span className="text-hollow-matrix text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
-              Underground Intel
+          {/* Main Title - Command Center Typography */}
+          <h1 className="flex flex-col items-center text-center gap-2 md:gap-3 w-full px-2 mx-auto leading-[1.05] py-2">
+            <span className="font-mono text-[6vw] md:text-[4rem] tracking-tight text-white font-black">
+              APEX INTELLIGENCE
             </span>
-            <span className="text-hollow-matrix-purple text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
-              & AI Research Center
+            <span className="font-mono text-[3.5vw] md:text-[1.5rem] tracking-[0.3em] text-cyan-400/80">
+              COMMAND CENTER
             </span>
           </h1>
 
-          {/* Magnetizing Subtitle - Succinct, comprehensive; Framer Motion Typewriter */}
-          <p className="w-full max-w-3xl mx-auto whitespace-normal break-words text-pretty text-lg md:text-xl text-slate-400 leading-relaxed mb-10 text-center">
-            <Typewriter
-              text="Advanced market intelligence infrastructure for the serious collector. Leveraging proprietary vision models and real-time arbitrage algorithms to decode the $43B TCG asset class."
-              speed={0.02}
-            />
+          {/* Mission Statement - The Hybrid Identity */}
+          <p className="w-full max-w-3xl mx-auto text-lg md:text-xl text-slate-400 leading-relaxed mb-10 mt-6 font-mono">
+            The intersection of{' '}
+            <span className="text-cyan-400 font-bold">TCG Markets</span>,{' '}
+            <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
+            <span className="text-white font-bold">Sentient AI</span>.
+            <span className="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
 
-          {/* CTA Buttons - Tactical Military Style */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/subscribe"
-              className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
-            >
-              GET ALPHA ACCESS
-            </Link>
-            <Link
-              href="/intel"
-              className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
-            >
-              BROWSE DATABASE
-            </Link>
+          {/* Primary CTA Cluster - Glow Container */}
+          <div className="relative p-1 rounded-lg bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 p-4 bg-black/60 backdrop-blur-md rounded-lg">
+              <Link
+                href="/intel"
+                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-3 px-6 py-4 md:px-10 md:py-5 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
+              >
+                <Database className="w-5 h-5" />
+                ACCESS MARKET TERMINAL
+              </Link>
+              <Link
+                href="/lab"
+                className="btn-tactical inline-flex items-center justify-center gap-3 px-6 py-4 md:px-10 md:py-5 text-sm md:text-base font-mono"
+              >
+                <Microscope className="w-5 h-5" />
+                ENTER THE LAB
+              </Link>
+            </div>
           </div>
 
           {/* Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
-            <span className="text-xs font-mono tracking-wider">SCROLL</span>
-            <div className="w-px h-8 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
+            <span className="text-xs font-mono tracking-wider">SCROLL FOR INTEL</span>
+            <div className="w-px h-10 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
           </div>
         </main>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          ANTI-GRAVITY CARD STACK CONTAINER
-          Increasing top values create the "stacked deck" visual
+          SECTION 2: INTELLIGENCE STREAM - Live Ticker Feed
           ═══════════════════════════════════════════════════════════════════ */}
-      <div className="relative flex flex-col gap-32 pb-32">
+      <section className="relative z-20 py-16 px-6 md:px-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider text-white font-mono">
+              <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
+              <span className="text-cyan-400">[</span> LIVE INTELLIGENCE STREAM <span className="text-cyan-400">]</span>
+            </h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2: MISSION (Card Layer 1 - z-10) - Anti-Gravity Stack
-          ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-20 z-10 min-h-[80vh] bg-slate-950 border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.8)] rounded-t-lg overflow-hidden flex items-center"
-      >
-        <div className="w-full px-6 md:px-12 py-20">
-          <div className="max-w-4xl mx-auto">
-            {/* Section Header - Prismatic See-Through Typography */}
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="header-prismatic-purple text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
-                [ MISSION ]
-              </h2>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+          {/* Digital Scroll Container - The Ticker */}
+          <div className="relative border border-cyan-500/30 rounded-lg bg-black/40 backdrop-blur-md overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.15)]">
+            {/* HUD Corner Brackets */}
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400" />
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400" />
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400" />
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400" />
+
+            {/* Scan Line Effect */}
+            <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400/50 shadow-[0_0_10px_cyan] animate-scan-line" />
+
+            {/* Feed Content */}
+            <div ref={feedRef} className="p-6 space-y-3 h-72 overflow-hidden">
+              {feedItems.map((item, index) => (
+                <div
+                  key={`${item.content}-${index}`}
+                  className="flex items-start gap-4 font-mono text-sm animate-fadeIn"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  {/* Type Badge */}
+                  <span className={`
+                    px-2 py-1 rounded text-xs font-bold tracking-wider
+                    ${item.type === 'MARKET' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : ''}
+                    ${item.type === 'RESEARCH' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : ''}
+                    ${item.type === 'ALERT' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : ''}
+                    ${item.type === 'SYSTEM' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : ''}
+                  `}>
+                    {item.type}
+                  </span>
+
+                  {/* Content */}
+                  <span className="text-slate-300 flex-1">{item.content}</span>
+
+                  {/* Delta (if market) */}
+                  {item.delta && (
+                    <span className={`font-bold ${item.positive ? 'text-green-400' : 'text-red-400'}`}>
+                      {item.delta}
+                    </span>
+                  )}
+
+                  {/* Timestamp */}
+                  <span className="text-slate-600 text-xs">
+                    {new Date().toLocaleTimeString('en-US', { hour12: false })}
+                  </span>
+                </div>
+              ))}
             </div>
 
-            {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
-            <div className="cyber-border relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
-
-              {/* Cyan Scan Line - Horizontal scan on section view */}
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
-
-              {/* Electronic Wrap Lines - Animated border effect */}
-              <div className="absolute inset-0 electronic-wrap pointer-events-none"></div>
-
-              {/* Mission Content - Succinct copy for magnetism */}
-              <div className="relative z-10 space-y-6 text-center">
-                <p className="text-slate-400 mb-6">
-                  <Typewriter
-                    text="The TCG market is a multi-billion dollar powerhouse, yet most collectors operate blind. Apex Intelligence builds the elite intel network that's been missing—data-driven, transparent, actionable insights for generational wealth."
-                    speed={0.015}
-                  />
-                </p>
-
-                {/* Key Points - Succinct bullets */}
-                <ul className="space-y-4 mt-8 text-left max-w-2xl mx-auto">
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">01</span>
-                    <div>
-                      <h3 className="font-bold text-white">Data-Driven</h3>
-                      <p className="text-slate-400">Real-time analytics separating signal from noise.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">02</span>
-                    <div>
-                      <h3 className="font-bold text-white">Transparent</h3>
-                      <p className="text-slate-400">No hype—just verified, institutional-grade precision.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="mr-4 text-cyan-400 font-bold font-mono">03</span>
-                    <div>
-                      <h3 className="font-bold text-white">Actionable</h3>
-                      <p className="text-slate-400">Insights that drive smart decisions for serious collectors.</p>
-                    </div>
-                  </li>
-                </ul>
-
-                {/* Holographic Data Sphere */}
-                <div className="relative w-full h-64 flex items-center justify-center my-12">
-                  <div className="w-48 h-48 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite] border-t-transparent border-l-transparent shadow-[0_0_30px_rgba(34,211,238,0.2)]" />
-                  <div className="absolute w-32 h-32 border border-purple-500/30 rounded-full animate-[spin_7s_linear_infinite_reverse] border-b-transparent border-r-transparent" />
-                  <div className="absolute text-xs font-mono text-cyan-400 animate-pulse">ANALYZING MARKET DATA...</div>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
-                  <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">$43B+</div>
-                    <div className="text-sm text-slate-500 font-mono">GLOBAL TCG MARKET</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">15%</div>
-                    <div className="text-sm text-slate-500 font-mono">YOY GROWTH RATE</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">2.4M+</div>
-                    <div className="text-sm text-slate-500 font-mono">ACTIVE COLLECTORS</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-titan-purple text-3xl md:text-4xl mb-2 drop-shadow-none filter-none text-white">24/7</div>
-                    <div className="text-sm text-slate-500 font-mono">MARKET MONITORING</div>
-                  </div>
-                </div>
+            {/* Bottom Status Bar */}
+            <div className="border-t border-cyan-500/20 bg-black/60 px-6 py-3 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-4">
+                <span className="text-slate-500">FEED STATUS:</span>
+                <span className="flex items-center gap-2 text-green-400">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  STREAMING
+                </span>
+              </div>
+              <div className="flex items-center gap-4 text-slate-500">
+                <span>SOURCES: 12</span>
+                <span>|</span>
+                <span>LATENCY: 42ms</span>
+                <span>|</span>
+                <span>UPTIME: 99.97%</span>
               </div>
             </div>
           </div>
@@ -200,214 +232,260 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: LATEST INTELLIGENCE (Card Layer 2 - z-20) - Anti-Gravity Stack
+          SECTION 3: THE TRIAD - Persona Navigation
           ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-24 z-20 min-h-[80vh] bg-slate-950 border-t border-cyan-500/30 shadow-[0_-20px_60px_-15px_rgba(34,211,238,0.2)] rounded-t-lg overflow-hidden flex items-center"
-      >
-        <div className="w-full px-6 md:px-12 py-16">
-          {/* Section Header - Prismatic See-Through Typography */}
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="header-prismatic text-sheen-overlay text-2xl md:text-3xl tracking-wider font-mono cyber-street">
-              [ LATEST INTELLIGENCE ]
+      <section className="relative z-20 py-20 px-6 md:px-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <h2 className="text-xl md:text-2xl tracking-wider text-white font-mono">
+              <span className="text-purple-400">[</span> SELECT YOUR PATH <span className="text-purple-400">]</span>
             </h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </div>
 
-          {/* Intelligence Cards Grid - Wrapped in Cyber Folder with HUD Brackets */}
-          <div className="cyber-folder rounded-lg p-8 pt-10 max-w-6xl mx-auto relative">
-            {/* HUD Corner Brackets - Cyan */}
-            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
-            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
-            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
-            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1: Vintage WOTC - Transparent Glassmorphism */}
-              <Link
-                href="/intel/vintage-wotc-analysis"
-                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">01</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  DIGITAL SCROLL
-                </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Vintage WOTC Analysis
-                </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Deep dive into Base Set shadowless variants, 1st Edition premiums, and the grading lottery affecting 1999-2003 sealed product.
-                </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 25, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-                </div>
-              </Link>
+          <p className="text-center text-slate-400 font-mono mb-12 max-w-2xl mx-auto">
+            Three pathways through the intelligence network. Each leads deeper into our research.
+          </p>
 
-              {/* Card 2: Rotation Window - Transparent Glassmorphism */}
-              <Link
-                href="/intel/rotation-window-strategy"
-                className="group relative bg-black/30 backdrop-blur-md border border-purple-400/30 rounded-lg p-6 hover:border-purple-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.15)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-purple-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-purple-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-purple-400/70 text-xl font-mono group-hover:text-purple-400 transition-colors">02</span>
-                  </div>
+          {/* Triad Grid - HoloCard Style */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Card 1: The Collector */}
+            <Link href="/intel" className="group">
+              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-400/70 shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all duration-300 h-full">
+                {/* Top gradient accent */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                {/* Icon */}
+                <div className="w-16 h-16 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-8 h-8 text-cyan-400" />
                 </div>
-                <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
+
+                {/* Category Badge */}
+                <div className="flex items-center gap-2 text-xs font-mono mb-4">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                    MARKET INTELLIGENCE
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-cyan-400 transition-colors">
+                  The Collector
+                </h3>
+
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Institutional-grade market data for the serious TCG investor. Price signals, liquidity analysis, and arbitrage detection.
+                </p>
+
+                <div className="flex items-center gap-2 text-cyan-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                  <span>ACCESS TERMINAL</span>
+                  <Zap className="w-4 h-4" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 2: The Scientist */}
+            <Link href="/lab" className="group">
+              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-purple-400/30 hover:border-purple-400/70 shadow-[0_0_30px_rgba(168,85,247,0.15)] hover:shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-300 h-full">
+                {/* Top gradient accent */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                {/* Icon */}
+                <div className="w-16 h-16 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Microscope className="w-8 h-8 text-purple-400" />
+                </div>
+
+                {/* Category Badge */}
+                <div className="flex items-center gap-2 text-xs font-mono mb-4">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                  ELECTRONIC FOLDER
+                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                    BIOLOGICAL RESEARCH
+                  </span>
                 </div>
-                <h3 className="header-prismatic-purple text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Rotation Window Strategy
-                </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Standard format rotation creates predictable buy/sell windows. Learn to exploit the 6-month cycle before competition catches on.
-                </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 24, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-                </div>
-              </Link>
 
-              {/* Card 3: Pokemon 151 - Transparent Glassmorphism */}
-              <Link
-                href="/intel/pokemon-151-market-report"
-                className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">03</span>
-                  </div>
+                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-purple-400 transition-colors">
+                  The Scientist
+                </h3>
+
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  AI models trained on nature&apos;s compression algorithms. Bioacoustics, pattern recognition, and cross-species communication research.
+                </p>
+
+                <div className="flex items-center gap-2 text-purple-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                  <span>ENTER LAB</span>
+                  <Zap className="w-4 h-4" />
                 </div>
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
+              </div>
+            </Link>
+
+            {/* Card 3: The Builder */}
+            <Link href="/philosophy" className="group">
+              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-400/70 shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all duration-300 h-full">
+                {/* Top gradient accent */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                {/* Icon */}
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Shield className="w-8 h-8 text-cyan-400" />
+                </div>
+
+                {/* Category Badge */}
+                <div className="flex items-center gap-2 text-xs font-mono mb-4">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  DIGITAL SCROLL
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                    SENTIENT ETHICS
+                  </span>
                 </div>
-                <h3 className="header-prismatic text-xl mb-2 group-hover:brightness-125 transition-all cyber-text whitespace-normal leading-tight">
-                  Pokemon 151 Market Report
-                </h3>
-                <p className="text-slate-400 text-sm leading-relaxed text-pretty mb-4 cyber-text">
-                  Nostalgia plays meet modern print runs. Which chase cards hold value and which are traps? Complete breakdown inside.
-                </p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Nov 23, 2025</span>
-                  <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">READ MORE →</span>
-                </div>
-              </Link>
-            </div>
-          </div>
 
-          {/* View All Link - Tactical Style */}
-          <div className="text-center mt-10">
-            <Link
-              href="/intel"
-              className="btn-tactical inline-flex items-center gap-2 font-mono text-sm"
-            >
-              [ VIEW_ALL_INTEL ] →
+                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-cyan-400 transition-colors">
+                  The Builder
+                </h3>
+
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Building safeguards for a multi-species future. Ethical AI frameworks that prioritize all sentient beings—silicon or biological.
+                </p>
+
+                <div className="flex items-center gap-2 text-cyan-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                  <span>READ MANIFESTO</span>
+                  <Zap className="w-4 h-4" />
+                </div>
+              </div>
             </Link>
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: CTA (Card Layer 3 - z-30) - Anti-Gravity Stack
+          SECTION 4: THE DIRECTIVE - Philosophy Teaser
           ═══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative md:sticky top-0 md:top-28 z-30 min-h-[80vh] bg-slate-950 border-t border-purple-500/30 shadow-[0_-20px_60px_-15px_rgba(168,85,247,0.2)] rounded-t-lg overflow-hidden flex items-center pb-20 mb-40"
-      >
-        <div className="w-full px-6 md:px-12 py-20">
-          <div className="max-w-3xl mx-auto">
-            <div className="cyber-border relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
+      <section className="relative z-20 py-20 px-6 md:px-12">
+        <div className="max-w-4xl mx-auto">
+          <ElectronicFolder title="DIRECTIVE 01" classification="CLASSIFIED // CORE PHILOSOPHY">
+            <div className="text-center space-y-8">
+              {/* Headline */}
+              <div>
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 font-mono">
+                  &ldquo;Humans First. Sentient Beings First.&rdquo;
+                </h3>
+                <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto" />
+              </div>
 
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm" />
-              <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+              {/* Manifesto Excerpt */}
+              <blockquote className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
+                We build systems that assume error. We prioritize the welfare of all sentient beings—silicon or biological. Our tools are designed to be a lens and a guide, never a weapon.
+              </blockquote>
 
-              <div className="relative z-10">
-                {/* Header Container - Centered on All Screens */}
-                <div className="flex flex-col items-center text-center gap-4 mb-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                    </span>
-                    ALPHA ACCESS OPEN
+              {/* Key Principles */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-cyan-400 font-mono font-bold">01</span>
                   </div>
-
-                  <h2 className="font-titan-unified text-5xl md:text-6xl tracking-tight">
-                    Ready for the Alpha?
-                  </h2>
+                  <h4 className="text-white font-mono text-sm mb-2">TRANSPARENCY</h4>
+                  <p className="text-slate-500 text-xs">Report what works and what breaks, in public</p>
                 </div>
-
-                <p className="cyber-text text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-                  Join the underground network of collectors who move before the market does.
-                  Weekly intel drops. Zero spam. Unsubscribe anytime.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
-                    href="/subscribe"
-                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm shadow-[0_0_30px_rgba(6,182,212,0.5)]"
-                  >
-                    GET ALPHA ACCESS
-                  </Link>
-                  <Link
-                    href="/philosophy"
-                    className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
-                  >
-                    OUR PHILOSOPHY
-                  </Link>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-purple-400 font-mono font-bold">02</span>
+                  </div>
+                  <h4 className="text-white font-mono text-sm mb-2">HUMILITY</h4>
+                  <p className="text-slate-500 text-xs">Admit uncertainty, embrace being wrong</p>
                 </div>
-
-                {/* Additional CTAs */}
-                <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-slate-800/50">
-                  <Link
-                    href="/lab"
-                    className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors"
-                  >
-                    [ EXPLORE_LAB ] →
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="text-slate-400 hover:text-purple-400 font-mono text-xs transition-colors"
-                  >
-                    [ READ_MANIFESTO ] →
-                  </Link>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
+                    <span className="text-cyan-400 font-mono font-bold">03</span>
+                  </div>
+                  <h4 className="text-white font-mono text-sm mb-2">DO NO HARM</h4>
+                  <p className="text-slate-500 text-xs">Never turn a passing urge into a permanent wound</p>
                 </div>
+              </div>
+
+              {/* CTA */}
+              <div className="pt-6">
+                <Link
+                  href="/philosophy"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors border border-cyan-500/30 px-6 py-3 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-500/10"
+                >
+                  [ READ_FULL_MANIFESTO ] →
+                </Link>
+              </div>
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 5: FINAL CTA - Join The Network
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="relative z-20 py-24 px-6 md:px-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
+            {/* HUD Brackets */}
+            <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400" />
+            <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400" />
+            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-cyan-400" />
+            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-cyan-400" />
+
+            {/* Glow Effects */}
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              {/* Status Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                </span>
+                ALPHA ACCESS OPEN
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-mono tracking-tight">
+                Join the Network
+              </h2>
+
+              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-mono">
+                Weekly intelligence drops. Research dispatches. Zero hype.
+                <br />
+                <span className="text-slate-500">Unsubscribe anytime.</span>
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/subscribe"
+                  className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
+                >
+                  [ INITIATE_ACCESS ]
+                </Link>
+                <Link
+                  href="/about"
+                  className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-mono"
+                >
+                  [ READ_MANIFESTO ]
+                </Link>
+              </div>
+
+              {/* Quick Links */}
+              <div className="flex flex-wrap justify-center gap-6 mt-8 pt-8 border-t border-slate-800/50">
+                <Link href="/lab" className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors">
+                  [ EXPLORE_LAB ] →
+                </Link>
+                <Link href="/intel" className="text-slate-400 hover:text-purple-400 font-mono text-xs transition-colors">
+                  [ MARKET_DATA ] →
+                </Link>
+                <Link href="/commons" className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors">
+                  [ COMMONS ] →
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      </div> {/* End Anti-Gravity Card Stack Container */}
-
       {/* ═══════════════════════════════════════════════════════════════════
-          FOOTER (Final Layer - z-40)
-          Transparent to show starfield/matrix background
+          FOOTER
           ═══════════════════════════════════════════════════════════════════ */}
       <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
@@ -424,37 +502,36 @@ export default function HomePage() {
                 />
                 <span className="text-prismatic">APEX INTELLIGENCE</span>
               </Link>
-              <p className="text-slate-500 text-sm">
-                Underground intelligence for serious TCG collectors and investors.
+              <p className="text-slate-500 text-sm font-mono">
+                A rogue think tank at the intersection of AI, markets, and biological systems.
               </p>
             </div>
 
-            {/* Navigation Column */}
+            {/* Navigate Column */}
             <div>
-              <h4 className="font-titan text-sm mb-4">NAVIGATE</h4>
+              <h4 className="font-mono text-sm mb-4 text-cyan-400">[ NAVIGATE ]</h4>
               <ul className="space-y-2">
-                <li><Link href="/intel" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Intel</Link></li>
-                <li><Link href="/lab" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Lab</Link></li>
-                <li><Link href="/portfolio" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Portfolio</Link></li>
-                <li><Link href="/commons" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Commons</Link></li>
-                <li><Link href="/about" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">About</Link></li>
-                <li><Link href="/philosophy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Philosophy</Link></li>
+                <li><Link href="/intel" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-mono">Intel</Link></li>
+                <li><Link href="/lab" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-mono">Lab</Link></li>
+                <li><Link href="/portfolio" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-mono">Portfolio</Link></li>
+                <li><Link href="/commons" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors font-mono">Commons</Link></li>
               </ul>
             </div>
 
-            {/* Legal Column */}
+            {/* Research Column */}
             <div>
-              <h4 className="font-titan text-sm mb-4">LEGAL</h4>
+              <h4 className="font-mono text-sm mb-4 text-purple-400">[ RESEARCH ]</h4>
               <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Terms of Service</Link></li>
-                <li><Link href="/disclaimer" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Disclaimer</Link></li>
+                <li><Link href="/about" className="text-slate-400 hover:text-purple-400 text-sm transition-colors font-mono">About</Link></li>
+                <li><Link href="/philosophy" className="text-slate-400 hover:text-purple-400 text-sm transition-colors font-mono">Philosophy</Link></li>
+                <li><Link href="/research" className="text-slate-400 hover:text-purple-400 text-sm transition-colors font-mono">Research</Link></li>
+                <li><Link href="/blog" className="text-slate-400 hover:text-purple-400 text-sm transition-colors font-mono">Blog</Link></li>
               </ul>
             </div>
 
             {/* Connect Column */}
             <div>
-              <h4 className="font-titan text-sm mb-4">CONNECT</h4>
+              <h4 className="font-mono text-sm mb-4 text-cyan-400">[ CONNECT ]</h4>
               <div className="flex gap-3">
                 <a href="https://twitter.com/apexintel" target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-slate-700 hover:border-cyan-500/50 rounded-lg flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
@@ -470,22 +547,27 @@ export default function HomePage() {
           </div>
 
           {/* Bottom bar */}
-          <div className="pt-8 border-t border-slate-800 text-center text-slate-600 text-sm font-mono">
-            © 2025 APEX INTELLIGENCE. ALL RIGHTS RESERVED.
+          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-sm font-mono">
+            <span>© 2025 APEX INTELLIGENCE. ALL RIGHTS RESERVED.</span>
+            <div className="flex gap-6">
+              <Link href="/privacy" className="hover:text-cyan-400 transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-cyan-400 transition-colors">Terms</Link>
+              <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">Disclaimer</Link>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Mobile Nav Toggle - Tactical Style (Compact on Mobile) */}
-      <div className="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-        <Link
-          href="/dashboard"
-          className="btn-tactical inline-flex items-center gap-2 px-3 py-1 font-mono text-sm w-auto"
-        >
-          [ ACCESS ]
-        </Link>
-      </div>
-
+      {/* CSS for animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
