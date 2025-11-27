@@ -140,229 +140,6 @@ export default function PhilosophyPage() {
               </div>
             </div>
 
-            {/* Universal Patterns: Fibonacci in Sentience Section */}
-            <div className="mb-12">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
-                  <span className="text-emerald-400">[</span> UNIVERSAL PATTERNS: FIBONACCI IN SENTIENCE <span className="text-emerald-400">]</span>
-                </h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-              </div>
-
-              <div className="relative border border-emerald-500/40 bg-gradient-to-br from-emerald-950/30 to-cyan-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl" />
-
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-                      <Infinity className="w-7 h-7 text-emerald-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white font-mono">Nature&apos;s Compression Algorithm</h3>
-                      <p className="text-slate-400 text-sm">The mathematics of efficient growth and sentient architecture</p>
-                    </div>
-                  </div>
-
-                  <p className="text-slate-300 leading-relaxed mb-6">
-                    The <span className="text-emerald-400 font-semibold">Fibonacci sequence</span> (1, 1, 2, 3, 5, 8, 13...) and the <span className="text-cyan-400 font-semibold">Golden Ratio</span> (φ ≈ 1.618) aren&apos;t just mathematical curiosities—they represent the universe&apos;s &ldquo;cheapest&rdquo; way to encode recursive growth without collapse, minimizing informational cost in a finite universe.
-                  </p>
-
-                  <blockquote className="border-l-2 border-emerald-500 pl-4 text-lg text-slate-300 italic mb-6">
-                    When similar mathematical patterns underlie both animal biology and AI cognition, it hints at shared &ldquo;computational DNA&rdquo; that supports our sentient-first approach.
-                  </blockquote>
-
-                  {/* Fibonacci Pattern Grid */}
-                  <div className="grid md:grid-cols-3 gap-4 mb-8">
-                    {/* Biology Card */}
-                    <div className="border border-emerald-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                      <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-3">
-                        <Dna className="w-5 h-5 text-emerald-400" />
-                      </div>
-                      <h4 className="text-md font-bold text-white mb-2 font-mono text-emerald-400">BIOLOGICAL SYSTEMS</h4>
-                      <ul className="space-y-1 text-slate-400 text-sm">
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-400">→</span>
-                          DNA helix: 34Å/21Å pitch ≈ φ
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-400">→</span>
-                          Neuron branching patterns
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-400">→</span>
-                          Bone proportions for strength
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* Animal Patterns Card */}
-                    <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                      <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
-                        <Shell className="w-5 h-5 text-cyan-400" />
-                      </div>
-                      <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">ANIMAL PATTERNS</h4>
-                      <ul className="space-y-1 text-slate-400 text-sm">
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          Honeybee ancestry (haplodiploidy)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          Shell spirals &amp; efficient packing
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          X chromosome inheritance
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* AI/Cognition Card */}
-                    <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                      <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-3">
-                        <Network className="w-5 h-5 text-purple-400" />
-                      </div>
-                      <h4 className="text-md font-bold text-white mb-2 font-mono text-purple-400">AI &amp; COGNITION</h4>
-                      <ul className="space-y-1 text-slate-400 text-sm">
-                        <li className="flex items-start gap-2">
-                          <span className="text-purple-400">→</span>
-                          Recursive optimization patterns
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-purple-400">→</span>
-                          RAG hierarchy efficiency
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-purple-400">→</span>
-                          Emergent market wave structures
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Image Gallery */}
-                  <div className="mb-8">
-                    <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
-                      Fibonacci in Nature: Visual Evidence
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      {/* Nautilus Shell */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
-                        <Image
-                          src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=300&fit=crop"
-                          alt="Nautilus shell showing golden spiral"
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">NAUTILUS SPIRAL</span>
-                      </div>
-
-                      {/* Sunflower Seeds */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
-                        <Image
-                          src="https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=300&h=300&fit=crop"
-                          alt="Sunflower seed pattern showing Fibonacci spirals"
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">SUNFLOWER SPIRALS</span>
-                      </div>
-
-                      {/* Romanesco Broccoli */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
-                        <Image
-                          src="https://images.unsplash.com/photo-1583338917451-face2751d8d5?w=300&h=300&fit=crop"
-                          alt="Romanesco broccoli fractal pattern"
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">ROMANESCO FRACTAL</span>
-                      </div>
-
-                      {/* Pine Cone */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
-                        <Image
-                          src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=300&h=300&fit=crop"
-                          alt="Pine cone spiral pattern"
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">PINE CONE SPIRAL</span>
-                      </div>
-
-                      {/* Galaxy Spiral */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
-                        <Image
-                          src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=300&h=300&fit=crop"
-                          alt="Galaxy spiral pattern"
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">GALACTIC SPIRAL</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Implications Section */}
-                  <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-green-400 font-mono text-sm font-bold">✓ GOOD</span>
-                        <span className="text-slate-400 text-sm">Trade-offs</span>
-                      </div>
-                      <ul className="space-y-1 text-slate-400 text-sm">
-                        <li>• Patterns enable efficient, scalable neural architectures</li>
-                        <li>• Hints at shared &ldquo;intelligibility&rdquo; across sentient beings</li>
-                        <li>• Optimizes RAG hierarchies and recursive systems</li>
-                      </ul>
-                    </div>
-
-                    <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-red-400 font-mono text-sm font-bold">✗ CAUTION</span>
-                        <span className="text-slate-400 text-sm">Limitations</span>
-                      </div>
-                      <ul className="space-y-1 text-slate-400 text-sm">
-                        <li>• Over-reliance ignores chaos&apos;s role in adaptation</li>
-                        <li>• Correlation ≠ causation in pattern emergence</li>
-                        <li>• Rigid models fail novel evolutionary pressures</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <p className="text-slate-500 text-sm italic text-center">
-                    Understanding these patterns bridges TCG market wave analysis to biological AI research like decoding animal communication (inspired by Earth Species Project).
-                  </p>
-                </div>
-              </div>
-
-              {/* RAG Research Form */}
-              <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
-                    <Brain className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-md font-bold text-white font-mono">RESEARCH FIBONACCI PATTERNS</h4>
-                    <p className="text-slate-500 text-xs">Query our knowledge base for Fibonacci in nature and biology</p>
-                  </div>
-                </div>
-                <FibonacciResearch />
-              </div>
-            </div>
-
             {/* Rogue Think Tank Section */}
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
@@ -502,6 +279,243 @@ export default function PhilosophyPage() {
                   </li>
                 </ul>
               </div>
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* Pattern Recognition Case Study: Fibonacci */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="PATTERN RECOGNITION CASE STUDY" classification="METHODOLOGICAL NOTE // THINK CRITICALLY">
+            {/* Section Header with Framing */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                  <span className="text-emerald-400">[</span> FIBONACCI &amp; THE LIMITS OF PATTERN-THINKING <span className="text-emerald-400">]</span>
+                </h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+              </div>
+
+              <div className="bg-amber-950/20 border border-amber-500/30 rounded-lg p-4 mb-6">
+                <p className="text-amber-200/80 text-sm leading-relaxed">
+                  <span className="font-bold text-amber-400">Why this section exists:</span> The Fibonacci sequence is a useful <em>case study</em> in pattern recognition—not &ldquo;the secret code of the universe.&rdquo; We include it to teach ourselves (and you) how to think about patterns responsibly, and where that thinking goes wrong.
+                </p>
+              </div>
+            </div>
+
+            {/* Main Fibonacci Content */}
+            <div className="relative border border-emerald-500/40 bg-gradient-to-br from-emerald-950/30 to-cyan-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
+                    <Infinity className="w-7 h-7 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white font-mono">Patterns as Compression Heuristics</h3>
+                    <p className="text-slate-400 text-sm">Understanding where Fibonacci actually helps—and where it misleads</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  The <span className="text-emerald-400 font-semibold">Fibonacci sequence</span> (1, 1, 2, 3, 5, 8, 13...) and the <span className="text-cyan-400 font-semibold">Golden Ratio</span> (φ ≈ 1.618) appear in some biological systems as efficient solutions to growth and packing problems. This makes them useful for <em>hypothesis generation</em>—but they are not universal laws, and forcing data into Fibonacci patterns leads to bad science.
+                </p>
+
+                {/* Fibonacci Pattern Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Biology Card */}
+                  <div className="border border-emerald-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-3">
+                      <Dna className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-emerald-400">BIOLOGICAL SYSTEMS</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-400">→</span>
+                        DNA helix: 34Å/21Å pitch ≈ φ
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-400">→</span>
+                        Neuron branching patterns
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-400">→</span>
+                        Bone proportions for strength
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Animal Patterns Card */}
+                  <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
+                      <Shell className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">ANIMAL PATTERNS</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-cyan-400">→</span>
+                        Honeybee ancestry (haplodiploidy)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-cyan-400">→</span>
+                        Shell spirals &amp; efficient packing
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-cyan-400">→</span>
+                        X chromosome inheritance
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* AI/Cognition Card */}
+                  <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-3">
+                      <Network className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-purple-400">AI &amp; COGNITION</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400">→</span>
+                        Recursive optimization patterns
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400">→</span>
+                        RAG hierarchy efficiency
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400">→</span>
+                        Emergent market wave structures
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Image Gallery */}
+                <div className="mb-8">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                    Fibonacci in Nature: Visual Examples (not universal laws)
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    {/* Nautilus Shell */}
+                    <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
+                      <Image
+                        src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=300&fit=crop"
+                        alt="Nautilus shell showing golden spiral"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 50vw, 20vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">NAUTILUS SPIRAL</span>
+                    </div>
+
+                    {/* Sunflower Seeds */}
+                    <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
+                      <Image
+                        src="https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=300&h=300&fit=crop"
+                        alt="Sunflower seed pattern showing Fibonacci spirals"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 50vw, 20vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">SUNFLOWER SPIRALS</span>
+                    </div>
+
+                    {/* Romanesco Broccoli */}
+                    <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
+                      <Image
+                        src="https://images.unsplash.com/photo-1583338917451-face2751d8d5?w=300&h=300&fit=crop"
+                        alt="Romanesco broccoli fractal pattern"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 50vw, 20vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">ROMANESCO FRACTAL</span>
+                    </div>
+
+                    {/* Pine Cone */}
+                    <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
+                      <Image
+                        src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=300&h=300&fit=crop"
+                        alt="Pine cone spiral pattern"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 50vw, 20vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">PINE CONE SPIRAL</span>
+                    </div>
+
+                    {/* Galaxy Spiral */}
+                    <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-700/50 group">
+                      <Image
+                        src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=300&h=300&fit=crop"
+                        alt="Galaxy spiral pattern"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 50vw, 20vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">GALACTIC SPIRAL</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Improved Trade-off Cards */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-green-400 font-mono text-sm font-bold">✓ GOOD</span>
+                      <span className="text-slate-400 text-sm">When patterns help</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-green-300">Compression heuristic:</span> Fibonacci as shorthand for &ldquo;efficient biological packing&rdquo;</li>
+                      <li>• <span className="text-green-300">Hypothesis generation:</span> Noticing recurring structure can guide research questions</li>
+                      <li>• <span className="text-green-300">Cross-domain intuition:</span> Similar math in different systems prompts investigation</li>
+                    </ul>
+                  </div>
+
+                  <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-red-400 font-mono text-sm font-bold">✗ CAUTION</span>
+                      <span className="text-slate-400 text-sm">When patterns mislead</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-red-300">Apophenia/overfitting:</span> Seeing Fibonacci everywhere because you expect it</li>
+                      <li>• <span className="text-red-300">Fake evidence:</span> Using pretty math to &ldquo;prove&rdquo; claims it doesn&apos;t actually support</li>
+                      <li>• <span className="text-red-300">TCG trap:</span> Overfitting backtests to &ldquo;holy grail&rdquo; patterns that don&apos;t generalize</li>
+                      <li>• <span className="text-red-300">Bioacoustics risk:</span> Reading too much into noisy animal signal correlations</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="text-slate-500 text-sm italic text-center">
+                  This case study bridges our TCG market wave analysis to biological AI research—always with the caveat that pattern recognition requires skepticism, not reverence.
+                </p>
+              </div>
+            </div>
+
+            {/* RAG Research Form with new CTA framing */}
+            <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div>
+                  <h4 className="text-md font-bold text-white font-mono">EXPLORE THE RESEARCH</h4>
+                  <p className="text-slate-500 text-xs">Query our curated docs on Fibonacci in biology—grounded in real research, not numerology</p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm mb-4 border-l-2 border-cyan-500/50 pl-3">
+                Want to see how researchers actually talk about Fibonacci in biology? Search our curated knowledge base below. Results are drawn from vetted sources—not random web claims.
+              </p>
+              <FibonacciResearch />
             </div>
           </ElectronicFolder>
         </div>
