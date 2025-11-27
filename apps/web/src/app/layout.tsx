@@ -37,8 +37,10 @@ import './globals.css';
 
 
 // Load facts from central registry
-
 const facts = getFacts();
+
+// Resolve base URL for absolute OG image URLs (Twitter/X requires absolute URLs)
+const baseUrl = facts.links.website || 'https://www.apexintelligence.io';
 
 
 
@@ -48,7 +50,7 @@ export const metadata: Metadata = {
 
   // CRITICAL: metadataBase resolves relative URLs to absolute URLs for OG images
   // Twitter/X requires absolute URLs to fetch OG images correctly
-  metadataBase: new URL(facts.links.website || 'https://www.apexintelligence.io'),
+  metadataBase: new URL(baseUrl),
 
   // Base metadata - using facts registry
 
@@ -107,103 +109,56 @@ export const metadata: Metadata = {
 
 
   // OpenGraph metadata for rich social cards
-
+  // CRITICAL: Using explicit absolute URLs for maximum Twitter/X compatibility
   openGraph: {
-
     type: 'website',
-
     locale: 'en_US',
-
-    url: facts.links.website || 'https://www.apexintelligence.io/',
-
+    url: baseUrl,
     siteName: 'Apex Intelligence',
-
     title: 'Apex Intelligence - TCG Market Intelligence Platform',
-
-    description: 'Yu-Gi-Oh!, Lorcana, Pokémon, VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
-
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
     images: [
-
       {
-
-        url: '/api/og', // Dynamic OG image endpoint - resolved to absolute URL by metadataBase
-
+        // Primary: Dynamic OG image with explicit absolute URL for Twitter/X
+        url: `${baseUrl}/api/og`,
+        secureUrl: `${baseUrl}/api/og`,
         width: 1200,
-
         height: 630,
-
-        alt: 'Apex Intelligence TCG Platform Preview',
-
+        alt: 'Apex Intelligence - TCG Market Intelligence Platform',
         type: 'image/png',
-
       },
-
     ],
-
   },
 
   // Canonical URL for SEO
-
   alternates: {
-
-    canonical: '/',
-
+    canonical: baseUrl,
   },
 
 
 
   // Twitter Card metadata - optimized for large thumbnail display on X
-
+  // CRITICAL: Twitter requires explicit absolute URLs and summary_large_image for thumbnails
   twitter: {
-
     card: 'summary_large_image',
-
     title: 'Apex Intelligence - TCG Market Intelligence Platform',
-
-    description: 'Yu-Gi-Oh!, Lorcana, Pokémon, VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
-
-    images: ['/api/og'],
-
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
+    // Explicit absolute URL for Twitter image (most reliable for X crawlers)
+    images: [`${baseUrl}/api/og`],
     creator: facts.social.twitter || '@ApexIntel',
-
     site: facts.social.twitter || '@ApexIntel',
-
   },
 
 
 
-  // Verification tags (add actual values when available)
-
-  // verification: {
-
-  //   google: 'google-site-verification-code',
-
-  //   yandex: 'yandex-verification-code',
-
-  // },
-
-
-
   // App-specific metadata
-
   applicationName: facts.product.name || 'TCG Intelligence Center',
 
-
-
-  // Alternate languages (if internationalization is added)
-
-  // alternates: {
-
-  //   canonical: '/',
-
-  //   languages: {
-
-  //     'en-US': '/en-US',
-
-  //   },
-
-  // },
-
+  // Additional OG meta properties for broader compatibility
+  other: {
+    'og:image:width': '1200',
+    'og:image:height': '630',
+  },
 };
 
 
