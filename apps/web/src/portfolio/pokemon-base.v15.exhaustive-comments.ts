@@ -152,3 +152,4 @@ export async function baseSetFrontierV15(cardIds: string[], budget = 50000000): 
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

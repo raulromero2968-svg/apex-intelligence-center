@@ -185,3 +185,4 @@ export default function MobileNav({ links, logo }: MobileNavProps) {
     </>
   );
 }
+

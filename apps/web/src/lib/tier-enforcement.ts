@@ -132,7 +132,7 @@ export function canAccessFeature(
   feature: string
 ): boolean {
   const tierLimits = getTierLimits(tier);
-  return (tierLimits.features as readonly string[]).includes(feature);
+  return tierLimits.features.includes(feature as any);
 }
 
 /**
@@ -149,3 +149,4 @@ export function getRateLimitHeaders(
     'X-RateLimit-Reset': Math.floor(reset.getTime() / 1000).toString(),
   };
 }
+

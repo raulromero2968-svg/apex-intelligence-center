@@ -300,3 +300,4 @@ export async function cleanupOldTickets(retentionDays: number = 30): Promise<num
 
   return result.rowCount || 0;
 }
+

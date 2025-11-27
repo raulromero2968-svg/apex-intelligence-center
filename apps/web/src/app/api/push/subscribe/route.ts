@@ -6,6 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { isValidExpoPushToken } from '@/lib/push-server';
@@ -90,3 +93,4 @@ export async function POST(request: NextRequest) {
     transaction.finish();
   }
 }
+

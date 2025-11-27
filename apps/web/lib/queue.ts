@@ -248,11 +248,9 @@ export async function queueContrarianAnalysis(data: ContrarianJobData, priority?
  * Health Check
  * Verify queue connectivity and status
  */
-type QueueCounts = { waiting: number; active: number; completed: number; failed: number };
-
 export async function checkIntelligenceBusHealth(): Promise<{
   healthy: boolean;
-  queues: Record<string, QueueCounts>;
+  queues: Record<string, Record<string, number>>;
 }> {
   try {
     const [varcCounts, lampCounts, contrarianCounts] = await Promise.all([
@@ -264,9 +262,9 @@ export async function checkIntelligenceBusHealth(): Promise<{
     return {
       healthy: true,
       queues: {
-        varc: varcCounts as QueueCounts,
-        lamp: lampCounts as QueueCounts,
-        contrarian: contrarianCounts as QueueCounts,
+        varc: varcCounts,
+        lamp: lampCounts,
+        contrarian: contrarianCounts,
       },
     };
   } catch (error) {

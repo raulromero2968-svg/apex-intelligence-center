@@ -26,63 +26,46 @@ export const TopBanner = () => {
   };
 
   return (
-    <nav className="relative flex flex-col w-full bg-black/90 backdrop-blur-md border-b border-cyan-900/30 z-[100]">
-      {/* Top Row: Logo + Access Terminal Button */}
-      <div className="flex items-center justify-between px-6 md:px-12 h-14 md:h-16 gap-4 md:gap-8">
-        {/* Left: Logo/Brand */}
-        <Link href="/" className="flex items-center text-white font-bold text-sm md:text-lg tracking-widest font-mono group transition-all">
-          <Image
-            src="/images/apex-wolf-black-bg-final.png"
-            width={24}
-            height={24}
-            alt="Apex Wolf"
-            className="w-6 h-6 md:w-8 md:h-8 rounded-full mr-2 md:mr-3"
-          />
-          <span className="text-prismatic">APEX <span className="transition-colors duration-300 group-hover:text-cyan-400 group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">INTELLIGENCE</span></span>
-        </Link>
+    <nav className="flex items-center justify-between px-4 md:px-8 h-16">
+      {/* Left: Logo/Brand */}
+      <Link href="/" className="flex items-center text-white font-bold text-base md:text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
+        <Image
+          src="/images/apex-wolf-black-bg-final.png"
+          width={36}
+          height={36}
+          alt="Apex Wolf"
+          className="rounded-full mr-2 md:mr-3 w-8 h-8 md:w-10 md:h-10"
+        />
+        <span className="text-prismatic hidden sm:inline">APEX INTELLIGENCE</span>
+        <span className="text-prismatic sm:hidden">APEX</span>
+      </Link>
 
-        {/* Center: Nav Links (Desktop Only) */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-medium tracking-wide transition-colors ${
-                isActive(link.href)
-                  ? 'text-cyan-400'
-                  : 'text-slate-400 hover:text-cyan-400'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Right: Access Terminal Button - Tactical Style */}
-        <Link
-          href="/dashboard"
-          className="btn-tactical h-8 text-[10px] px-3 flex items-center justify-center border border-cyan-500/40 md:h-auto md:text-sm md:px-6 font-mono flex-shrink-0"
-        >
-          <span className="hidden md:inline">[ </span>ACCESS_TERMINAL<span className="hidden md:inline"> ]</span>
-        </Link>
-      </div>
-
-      {/* Bottom Row: Mobile Horizontal Scrollable Nav (Mobile Only) */}
-      <div className="md:hidden w-full overflow-x-auto flex items-center gap-6 px-4 py-3 scrollbar-hide border-t border-cyan-900/20 min-h-[40px] text-white z-[100]">
+      {/* Center: Nav Links (hidden on mobile) */}
+      <nav className="hidden md:flex items-center gap-6 lg:gap-8">
         {navLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className={`text-xs font-medium tracking-wide transition-colors whitespace-nowrap ${
+            className={`text-sm font-medium tracking-wide transition-colors ${
               isActive(link.href)
                 ? 'text-cyan-400'
-                : 'text-slate-400 hover:text-cyan-400'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             {link.label}
           </Link>
         ))}
-      </div>
+      </nav>
+
+      {/* Right: Access Terminal Button - Tactical Style (responsive) */}
+      <Link
+        href="/dashboard"
+        className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 font-mono text-[10px] md:text-sm"
+      >
+        <span className="hidden sm:inline">[ ACCESS_TERMINAL ]</span>
+        <span className="sm:hidden">[ TERMINAL ]</span>
+      </Link>
     </nav>
   );
 };
+

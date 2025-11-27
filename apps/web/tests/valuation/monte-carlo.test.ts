@@ -67,3 +67,4 @@ describe('Sharpe Ratio Calculation', () => {
     expect(sharpe).toBeLessThan(0);
   });
 });
+

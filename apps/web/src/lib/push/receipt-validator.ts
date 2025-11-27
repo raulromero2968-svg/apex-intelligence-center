@@ -13,7 +13,7 @@
 import { Expo, ExpoPushTicket, ExpoPushReceipt } from 'expo-server-sdk';
 import { db } from '@/db';
 import { pushTickets } from '@/db/schema';
-import { eq, inArray, and, lt } from 'drizzle-orm';
+import { eq, inArray, and, lt, sql } from 'drizzle-orm';
 
 // Singleton Expo client – safe for serverless
 const expo = new Expo({
@@ -39,7 +39,6 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
     .select({
       id: pushTickets.id,
       ticketId: pushTickets.ticketId,
-      retries: pushTickets.retries,
     })
     .from(pushTickets)
     .where(
@@ -99,13 +98,12 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
       // Error case - check if retryable
       const shouldRetry = receipt.details?.error && ['DeviceNotRegistered', 'InvalidCredentials'].includes(receipt.details.error);
 
-      const currentRetries = ticket.retries ?? 0;
       await db
         .update(pushTickets)
         .set({
           status: shouldRetry ? 'retry' : 'error',
           errorMessage: receipt.message,
-          retries: shouldRetry ? currentRetries + 1 : currentRetries,
+          retries: shouldRetry ? sql`${pushTickets.retries} + 1` : pushTickets.retries,
           updatedAt: new Date(),
         })
         .where(eq(pushTickets.id, ticket.id));
@@ -121,3 +119,4 @@ export async function validateAndRetryReceipts(): Promise<ReceiptResult[]> {
 
   return results;
 }
+

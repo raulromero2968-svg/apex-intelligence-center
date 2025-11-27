@@ -232,3 +232,4 @@ function getPopDeltaAnalysis(alert: PopDeltaAlert): string {
 
   return 'Population fluctuation within normal range. No immediate action needed.';
 }
+

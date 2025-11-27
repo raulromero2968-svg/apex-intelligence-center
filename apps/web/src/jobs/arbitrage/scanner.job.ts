@@ -361,3 +361,4 @@ export async function scanArbitrage(job: Job): Promise<ArbitrageOpportunity[]> {
   const result = await scanArbitrageWithMAKER(job);
   return result.opportunities;
 }
+

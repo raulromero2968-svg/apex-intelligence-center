@@ -27,3 +27,4 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // 100% of sessions with errors
   replaysSessionSampleRate: 0.1, // 10% of normal sessions
 });
+

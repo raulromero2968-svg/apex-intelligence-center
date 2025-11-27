@@ -26,7 +26,7 @@ describe('Push Notification System', () => {
   describe('Hybrid Push Token Selection', () => {
     it('should use FCM in production environment', async () => {
       // Mock production environment
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string } }) = {
         extra: { env: 'production' },
       };
 
@@ -47,7 +47,7 @@ describe('Push Notification System', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
-      }) as any;
+      }) as unknown as typeof fetch;
 
       const result = await getPushToken();
 
@@ -58,7 +58,7 @@ describe('Push Notification System', () => {
 
     it('should use Expo Push in development environment', async () => {
       // Mock development environment
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string; eas?: { projectId?: string } } }) = {
         extra: {
           env: 'development',
           eas: { projectId: 'test-project-id' },
@@ -79,7 +79,7 @@ describe('Push Notification System', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
-      }) as any;
+      }) as unknown as typeof fetch;
 
       const { getPushToken } = await import('../lib/push-hybrid');
       const result = await getPushToken();
@@ -90,7 +90,7 @@ describe('Push Notification System', () => {
     });
 
     it('should use Expo Push in preview environment', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string; eas?: { projectId?: string } } }) = {
         extra: {
           env: 'preview',
           eas: { projectId: 'test-project-id' },
@@ -110,7 +110,7 @@ describe('Push Notification System', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
-      }) as any;
+      }) as unknown as typeof fetch;
 
       const { getPushToken } = await import('../lib/push-hybrid');
       const result = await getPushToken();
@@ -122,7 +122,7 @@ describe('Push Notification System', () => {
 
   describe('Permission Handling', () => {
     it('should throw error when permissions are denied (FCM)', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string } }) = {
         extra: { env: 'production' },
       };
 
@@ -140,7 +140,7 @@ describe('Push Notification System', () => {
     });
 
     it('should throw error when permissions are denied (Expo)', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string } }) = {
         extra: { env: 'development' },
       };
 
@@ -162,7 +162,7 @@ describe('Push Notification System', () => {
 
   describe('Token Registration', () => {
     it('should register token with server', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string; apiUrl?: string; eas?: { projectId?: string } } }) = {
         extra: {
           env: 'development',
           apiUrl: 'http://localhost:3000',
@@ -184,7 +184,7 @@ describe('Push Notification System', () => {
         ok: true,
         json: async () => ({ success: true }),
       });
-      global.fetch = mockFetch as any;
+      global.fetch = mockFetch as unknown as typeof fetch;
 
       const { getPushToken } = await import('../lib/push-hybrid');
       await getPushToken();
@@ -200,7 +200,7 @@ describe('Push Notification System', () => {
     });
 
     it('should throw error if token registration fails', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string; apiUrl?: string; eas?: { projectId?: string } } }) = {
         extra: {
           env: 'development',
           apiUrl: 'http://localhost:3000',
@@ -219,7 +219,7 @@ describe('Push Notification System', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
         statusText: 'Internal Server Error',
-      }) as any;
+      }) as unknown as typeof fetch;
 
       const { getPushToken } = await import('../lib/push-hybrid');
 
@@ -231,7 +231,7 @@ describe('Push Notification System', () => {
 
   describe('Token Refresh', () => {
     it('should handle FCM token refresh', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string } }) = {
         extra: { env: 'production' },
       };
 
@@ -254,7 +254,7 @@ describe('Push Notification System', () => {
     });
 
     it('should not set up token refresh listener in development', async () => {
-      (Constants.expoConfig as any) = {
+      (Constants.expoConfig as { extra?: { env?: string } }) = {
         extra: { env: 'development' },
       };
 

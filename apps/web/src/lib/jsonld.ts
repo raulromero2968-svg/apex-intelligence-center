@@ -64,7 +64,7 @@ export function generateWebSiteSchema(): WithContext<WebSite> {
         '@type': 'EntryPoint',
         urlTemplate: `${facts.links.website}/search?q={search_term_string}`,
       },
-      // @ts-expect-error - query-input is a valid Schema.org property but not in schema-dts types
+      // @ts-ignore - query-input is a valid Schema.org property but not in schema-dts types
       'query-input': 'required name=search_term_string',
     },
   };
@@ -123,4 +123,5 @@ export function toScriptTag(schema: WithContext<Organization | WebSite | Softwar
 export function getFacts() {
   return facts;
 }
+
 

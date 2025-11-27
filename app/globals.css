@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cyber-darker text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    background-image:
+      radial-gradient(ellipse at top, rgba(176, 38, 255, 0.15), transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(0, 102, 255, 0.15), transparent 50%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cyber-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neon-cyan/30;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-cyan/50;
+  }
+
+  .text-glow-pink {
+    text-shadow:
+      0 0 10px rgba(255, 0, 110, 0.8),
+      0 0 20px rgba(255, 0, 110, 0.4),
+      0 0 30px rgba(255, 0, 110, 0.2);
+  }
+
+  .text-glow-cyan {
+    text-shadow:
+      0 0 10px rgba(0, 245, 255, 0.8),
+      0 0 20px rgba(0, 245, 255, 0.4),
+      0 0 30px rgba(0, 245, 255, 0.2);
+  }
+
+  .text-glow-purple {
+    text-shadow:
+      0 0 10px rgba(176, 38, 255, 0.8),
+      0 0 20px rgba(176, 38, 255, 0.4),
+      0 0 30px rgba(176, 38, 255, 0.2);
+  }
+
+  .text-glow-yellow {
+    text-shadow:
+      0 0 10px rgba(234, 179, 8, 0.8),
+      0 0 20px rgba(234, 179, 8, 0.4),
+      0 0 30px rgba(234, 179, 8, 0.2);
+  }
+
+  .glow-text-yellow {
+    text-shadow:
+      0 0 10px rgba(234, 179, 8, 0.6),
+      0 0 20px rgba(234, 179, 8, 0.3);
+  }
+
+  .holographic {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 110, 0.3) 0%,
+      rgba(0, 245, 255, 0.3) 50%,
+      rgba(176, 38, 255, 0.3) 100%
+    );
+    backdrop-filter: blur(10px);
+  }
+
+  .neon-border {
+    border: 1px solid rgba(0, 245, 255, 0.5);
+    box-shadow: 
+      0 0 10px rgba(0, 245, 255, 0.5),
+      inset 0 0 10px rgba(0, 245, 255, 0.2);
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-neon-cyan/10 border border-neon-cyan text-neon-cyan rounded-lg
+           hover:bg-neon-cyan/20 hover:shadow-neon-cyan transition-all duration-300
+           font-semibold;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-purple-500/10 border border-purple-500 text-purple-400 rounded-lg
+           hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300
+           font-semibold;
+  }
+
+  .card-cyber {
+    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20 
+           rounded-lg p-6 hover:border-neon-cyan/40 transition-all duration-300;
+  }
+}

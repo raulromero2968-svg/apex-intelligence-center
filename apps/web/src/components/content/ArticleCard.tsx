@@ -42,3 +42,4 @@ export default function ArticleCard({ a }: { a: Article }) {
     </article>
   );
 }
+

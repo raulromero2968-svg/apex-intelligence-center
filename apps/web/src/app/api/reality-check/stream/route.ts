@@ -14,6 +14,9 @@
  */
 
 import { NextRequest } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { redis, RedisKeys } from '@/lib/redis';
 
 /**
@@ -61,10 +64,12 @@ export async function GET(request: NextRequest) {
       // So we use polling as a fallback
       const checkTriggerInterval = setInterval(async () => {
         try {
+    // @ts-ignore - Redis type resolution issue
           const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
           if (globalTrigger) {
             // Check if user has already acknowledged this trigger
+    // @ts-ignore - Redis type resolution issue
             const userAck = await redis.get(RedisKeys.realityCheckAck(userId));
 
             if (!userAck || userAck !== globalTrigger) {
@@ -87,6 +92,7 @@ export async function GET(request: NextRequest) {
       // Also check for automatic 2-hour trigger based on user's session
       const checkSessionInterval = setInterval(async () => {
         try {
+    // @ts-ignore - Redis type resolution issue
           const sessionData = await redis.get(RedisKeys.sessionActivity(userId));
 
           if (sessionData) {

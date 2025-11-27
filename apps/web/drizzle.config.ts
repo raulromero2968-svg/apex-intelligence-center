@@ -17,3 +17,4 @@ export default {
     url: process.env.POSTGRES_URL || process.env.DATABASE_URL || '',
   },
 } satisfies Config;
+

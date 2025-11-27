@@ -40,6 +40,11 @@ jobs:
       - name: Verify schema sync
         run: pnpm --filter web exec tsx scripts/verify-schema-sync.ts
 
+      - name: Schema check
+        run: pnpm schema:check
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Verify Drizzle syntax
         run: pnpm verify:drizzle-syntax
 

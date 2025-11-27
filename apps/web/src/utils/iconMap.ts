@@ -7,3 +7,4 @@ export const TOOL_ICONS = {
   'sealed-analyzer': '/icons/holographic-icon-sealed-analyzer.svg',
   'tax-dashboard': '/icons/holographic-icon-tax-dashboard.svg',
 } as const;
+

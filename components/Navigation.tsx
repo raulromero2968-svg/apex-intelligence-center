@@ -1,66 +1,100 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { WolfConstellation } from '@/components/ui/WolfConstellation';
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react'
+import { useState } from 'react'
+import { IntelSearch } from './search/IntelSearch'
 
-export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+export default function Navigation() {
+  const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navItems = [
+    { href: '/', label: 'Home' },
     { href: '/intel', label: 'Intel' },
     { href: '/portfolio', label: 'Portfolio' },
-    { href: '/commons', label: 'Commons' },
     { href: '/about', label: 'About' },
     { href: '/subscribe', label: 'Subscribe' },
-  ];
+  ]
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800' : 'bg-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-
-        {/* LOGO */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 relative">
-             <WolfConstellation className="w-full h-full text-cyan-400 group-hover:scale-110 transition-transform" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-white font-black text-lg tracking-tighter leading-none">APEX</span>
-            <span className="text-cyan-500 text-[10px] tracking-[0.2em] uppercase leading-none">INTELLIGENCE</span>
-          </div>
-        </Link>
-
-        {/* DESKTOP LINKS */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-xs font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors ${pathname === item.href ? 'text-cyan-400' : 'text-slate-400'}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* TERMINAL ACCESS BUTTON */}
-        <div className="hidden md:block">
-          <Link href="/subscribe" className="px-6 py-2 border border-cyan-500/30 hover:border-cyan-500 text-cyan-400 text-[10px] font-mono uppercase tracking-widest transition-all hover:bg-cyan-950/30">
-            [ ACCESS_TERMINAL ]
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/90 border-b border-neon-cyan/20">
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-3 group">
+            <img 
+              src="/images/apex-wolf-transparent.png" 
+              alt="Apex Intelligence Logo" 
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-xl font-bold font-[family-name:var(--font-orbitron)] text-glow-cyan">
+              APEX<span className="text-neon-pink">_</span>INTELLIGENCE
+            </span>
           </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`
+                  text-sm font-medium transition-all duration-300
+                  ${pathname === item.href
+                    ? 'text-neon-cyan text-glow-cyan'
+                    : 'text-gray-300 hover:text-neon-cyan'
+                  }
+                `}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <IntelSearch />
+            <Link href="/subscribe" className="btn-primary">
+              Get Intel
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden text-neon-cyan"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 space-y-4 border-t border-neon-cyan/20">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`
+                  block text-sm font-medium transition-all duration-300
+                  ${pathname === item.href
+                    ? 'text-neon-cyan text-glow-cyan'
+                    : 'text-gray-300 hover:text-neon-cyan'
+                  }
+                `}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/subscribe"
+              className="block btn-primary text-center"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Get Intel
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
-  );
+  )
 }

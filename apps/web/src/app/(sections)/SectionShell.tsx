@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export default function SectionShell({
   title,
   kicker,
@@ -7,7 +5,7 @@ export default function SectionShell({
 }: {
   title: string;
   kicker?: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <main className="relative mx-auto max-w-6xl px-6 py-16">
@@ -28,3 +26,4 @@ export default function SectionShell({
     </main>
   );
 }
+

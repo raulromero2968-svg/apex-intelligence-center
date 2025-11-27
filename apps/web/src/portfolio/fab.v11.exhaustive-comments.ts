@@ -195,3 +195,4 @@ export async function fabLegendaryFrontier(cardIds: string[], budget = 18000000)
   // Return sorted by descending Sharpe ratio
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
 }
+

@@ -10,6 +10,7 @@ interface ResearchDialogProps {
   isOpen: boolean;
   onClose: () => void;
   initialQuery?: string;
+  onContrarianQuery?: (query: string) => void;
 }
 
 interface Source {
@@ -669,4 +670,5 @@ export default function ResearchDialog({ isOpen, onClose, initialQuery = '' }: R
     </AnimatePresence>
   );
 }
+
 

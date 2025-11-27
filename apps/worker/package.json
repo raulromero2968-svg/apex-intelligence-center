@@ -1,0 +1,32 @@
+{
+  "name": "@apex/worker",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@apex/blockchain": "workspace:*",
+    "@apex/db": "workspace:*",
+    "@apex/digital-twin": "workspace:*",
+    "@apex/shared": "workspace:*",
+    "@langchain/anthropic": "^1.0.1",
+    "@langchain/core": "^1.0.5",
+    "@sentry/nextjs": "^10.25.0",
+    "bullmq": "^5.63.2",
+    "drizzle-orm": "^0.44.7",
+    "ioredis": "^5.8.2",
+    "pg": "^8.16.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
+  }
+}
+

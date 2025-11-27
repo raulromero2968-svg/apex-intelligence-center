@@ -1,0 +1,61 @@
+# Node.js worker container
+FROM node:20-alpine AS base
+
+# Install pnpm
+RUN npm install -g pnpm@10.19.0
+
+# Dependencies stage
+FROM base AS deps
+WORKDIR /app
+
+# Copy workspace files
+COPY pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml ./
+
+# Copy package.json files
+COPY apps/worker/package.json ./apps/worker/
+COPY packages/*/package.json ./packages/*/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod=false
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+
+# Copy workspace files
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml ./
+
+# Copy source
+COPY apps/worker ./apps/worker
+COPY packages ./packages
+COPY turbo.json ./
+COPY tsconfig.json ./
+
+# Build worker
+WORKDIR /app/apps/worker
+RUN pnpm build || echo "No build script, using TypeScript directly"
+
+# Production stage
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy node_modules and packages
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+
+# Copy built worker
+COPY --from=builder /app/apps/worker ./apps/worker
+
+# Use tsx to run TypeScript directly
+RUN pnpm add -g tsx@4.20.6
+
+EXPOSE 3001
+
+CMD ["tsx", "apps/worker/src/index.ts"]
+

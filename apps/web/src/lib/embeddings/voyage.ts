@@ -195,3 +195,4 @@ export function cosineSimilarity(vecA: number[], vecB: number[]): number {
 
   return dotProduct / (normA * normB);
 }
+

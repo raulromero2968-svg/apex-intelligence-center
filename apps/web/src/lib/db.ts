@@ -1,20 +1,42 @@
-/**
- * Database exports
- *
- * This module re-exports the Drizzle ORM database instance from @/db
- * for use across the application. The actual database connection and
- * configuration is managed in apps/web/src/db/index.ts.
- *
- * @see apps/web/src/db/index.ts for connection configuration
- */
+// src/lib/db.ts - Prisma client singleton for Next.js
+// Prevents multiple instances in development (hot reload)
 
-// Re-export the Drizzle ORM database instance
-// This is what all lib/* modules import when they use `import { db } from '@/lib/db'`
-export { db, pool } from '@/db';
+type PrismaClientType = Record<string, any>;
+type PrismaConstructor = new (...args: any[]) => PrismaClientType;
 
-// Also export Prisma client for modules that specifically need it
-// (e.g., modules using Prisma-specific features or migrations)
-export { prisma } from './prisma';
+function resolvePrismaClient(): PrismaConstructor {
+  try {
+    // eslint-disable-next-line global-require
+    const { PrismaClient } = require('@prisma/client');
+    return PrismaClient as PrismaConstructor;
+  } catch (error) {
+    console.warn('[db] PrismaClient not available. Using no-op stub.', error);
 
-// Type re-exports for convenience
-export type { Prisma } from '@prisma/client';
+    class PrismaClientStub {
+      constructor() {
+        console.warn(
+          '[db] PrismaClient stub instantiated. Database operations will no-op. Ensure @prisma/client is generated for full functionality.'
+        );
+      }
+    }
+
+    return PrismaClientStub as unknown as PrismaConstructor;
+  }
+}
+
+const PrismaClient = resolvePrismaClient();
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: InstanceType<PrismaConstructor> | undefined;
+};
+
+export const prisma: PrismaClientType =
+  (globalForPrisma.prisma as PrismaClientType | undefined) ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+

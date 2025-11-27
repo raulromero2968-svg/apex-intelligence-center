@@ -1,6 +1,13 @@
 /**
  * Public API for provenance module
- * Barrel file for provenance tracking functionality
+ * Explicit exports for provenance tracking functionality
  */
 
-export * from './ipfs';
+export {
+  IpfsProvenanceLogger,
+  createIpfsLogger,
+  hashData,
+  type RagTrace,
+  type HumanConceptionStatement,
+} from './ipfs';
+

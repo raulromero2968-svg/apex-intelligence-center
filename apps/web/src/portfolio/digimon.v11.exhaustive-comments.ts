@@ -188,3 +188,4 @@ export async function digimonSecFrontier(cardIds: string[], budget = 12000000): 
   // Return sorted by descending Sharpe ratio
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
 }
+

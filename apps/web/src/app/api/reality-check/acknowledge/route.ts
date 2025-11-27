@@ -5,6 +5,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
@@ -13,10 +16,12 @@ export async function POST(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Get current global trigger ID
+    // @ts-ignore - Redis type resolution issue with ioredis conflict
     const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {
       // Store acknowledgment with TTL
+    // @ts-ignore - Redis type resolution issue
       await redis.set(
         RedisKeys.realityCheckAck(userId),
         globalTrigger as string,

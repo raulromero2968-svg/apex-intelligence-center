@@ -39,10 +39,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic routes from MDX articles
   const allArticles = await getAllArticles();
 
-  // Helper to safely parse dates
-  const safeDate = (date?: string | Date) => {
-    if (!date) return currentDate;
+  // Helper function to safely parse dates
+  const safeDate = (date?: string | Date): Date => {
     try {
+      if (!date) return currentDate;
       const d = new Date(date);
       return isNaN(d.getTime()) ? currentDate : d;
     } catch {
@@ -54,9 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = allArticles
     .filter(p => !p.frontmatter.draft && !p.frontmatter.unlisted)
     .map(p => {
-      // Try publishedAt first, then date field, then fallback to currentDate
-      const dateValue = p.frontmatter.publishedAt || (p.frontmatter as any).date;
-      const lastModified = safeDate(dateValue);
+      const lastModified = safeDate(p.frontmatter.publishedAt || p.frontmatter.date);
 
       return {
         url: `${baseUrl}/blog/${p.slug}`,
@@ -68,3 +66,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...staticRoutes, ...articles];
 }
+

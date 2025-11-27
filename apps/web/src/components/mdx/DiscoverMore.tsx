@@ -43,3 +43,4 @@ export default function DiscoverMore({ relatedPosts }: DiscoverMoreProps) {
     </div>
   );
 }
+

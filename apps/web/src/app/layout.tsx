@@ -2,15 +2,19 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
-import StarfieldFX from '@/components/fx/StarfieldFX';
+import { Analytics } from '@vercel/analytics/react';
+
+import AuroraFX from '@/components/fx/AuroraFX';
+
+import BackgroundFX from '@/components/fx/BackgroundFX';
+
+import BackgroundStack from '@/components/fx/BackgroundStack';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
-
-import { LayoutFooter } from '@/components/footer/LayoutFooter';
-
+import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -20,11 +24,9 @@ import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
 
-import { BreakModeButton } from '@/components/BreakModeButton';
-
 import ToastHost from '@/components/ToastHost';
 
-import RealityCheckProvider from '@/components/ui/RealityCheckProvider';
+import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
 import { fontSans, fontMono } from '@/lib/fonts';
 
@@ -38,10 +40,8 @@ import './globals.css';
 
 
 // Load facts from central registry
-const facts = getFacts();
 
-// Resolve base URL for absolute OG image URLs (Twitter/X requires absolute URLs)
-const baseUrl = facts.links.website || 'https://www.apexintelligence.io';
+const facts = getFacts();
 
 
 
@@ -49,9 +49,7 @@ const baseUrl = facts.links.website || 'https://www.apexintelligence.io';
 
 export const metadata: Metadata = {
 
-  // CRITICAL: metadataBase resolves relative URLs to absolute URLs for OG images
-  // Twitter/X requires absolute URLs to fetch OG images correctly
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL(facts.links.website || 'https://apexintelligence.io'),
 
   // Base metadata - using facts registry
 
@@ -110,58 +108,91 @@ export const metadata: Metadata = {
 
 
   // OpenGraph metadata for rich social cards
-  // CRITICAL: Using explicit absolute URLs for maximum Twitter/X compatibility
-  // Static thumbnail for faster CDN serving and reliable social previews
+
   openGraph: {
+
     type: 'website',
+
     locale: 'en_US',
-    url: baseUrl,
-    siteName: 'Apex Intelligence',
-    title: 'Apex Intelligence - TCG Market Intelligence Platform',
-    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
+
+    siteName: facts.product.name || 'TCG Intelligence Center',
+
+    title: facts.product.fullName || 'TCG Intelligence Center - Market Intelligence Platform',
+
+    description: facts.product.description || 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+
     images: [
+
       {
-        // Primary: Static OG thumbnail for reliable social previews
-        url: `${baseUrl}/og-thumbnail.png`,
-        secureUrl: `${baseUrl}/og-thumbnail.png`,
+
+        url: '/api/og', // Dynamic OG image endpoint
+
         width: 1200,
+
         height: 630,
-        alt: 'Apex Intelligence - TCG Market Intelligence Platform',
+
+        alt: facts.organization.tagline || 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+
         type: 'image/png',
+
       },
+
     ],
-  },
 
-  // Canonical URL for SEO
-  alternates: {
-    canonical: baseUrl,
   },
 
 
 
-  // Twitter Card metadata - optimized for large thumbnail display on X
-  // CRITICAL: Twitter requires explicit absolute URLs and summary_large_image for thumbnails
-  // Using static thumbnail for reliable X/Twitter previews
+  // Twitter Card metadata
+
   twitter: {
+
     card: 'summary_large_image',
-    title: 'Apex Intelligence - TCG Market Intelligence Platform',
-    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
-    // Static thumbnail for reliable X/Twitter crawlers
-    images: [`${baseUrl}/og-thumbnail.png`],
-    creator: facts.social.twitter || '@ApexIntel',
-    site: facts.social.twitter || '@ApexIntel',
+
+    title: facts.product.fullName || 'TCG Intelligence Center',
+
+    description: facts.product.description || 'Data-driven market analysis for TCG investors',
+
+    images: ['/api/og'],
+
+    creator: '@tcgintel',
+
   },
+
+
+
+  // Verification tags (add actual values when available)
+
+  // verification: {
+
+  //   google: 'google-site-verification-code',
+
+  //   yandex: 'yandex-verification-code',
+
+  // },
 
 
 
   // App-specific metadata
+
   applicationName: facts.product.name || 'TCG Intelligence Center',
 
-  // Additional OG meta properties for broader compatibility
-  other: {
-    'og:image:width': '1200',
-    'og:image:height': '630',
-  },
+
+
+  // Alternate languages (if internationalization is added)
+
+  // alternates: {
+
+  //   canonical: '/',
+
+  //   languages: {
+
+  //     'en-US': '/en-US',
+
+  //   },
+
+  // },
+
 };
 
 
@@ -188,6 +219,16 @@ export default function RootLayout({
 
       <head>
 
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0891b2" />
+        
+        {/* iOS PWA Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Apex Intelligence" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
         {/* JSON-LD Structured Data - Generated from facts registry */}
 
         {schemas.map((schema, index) => (
@@ -210,7 +251,7 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-black text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
+          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
 
           fontSans.variable,
 
@@ -222,26 +263,6 @@ export default function RootLayout({
 
       >
 
-        {/* LAYER 1: DEEP SPACE BASE (Fixed) */}
-        <div className="fixed inset-0 z-[-10] bg-[#020617]" />
-
-        {/* LAYER 2: STARFIELD (Animated Canvas - Cyan/Purple themed) */}
-        <StarfieldFX />
-
-        {/* LAYER 3: MATRIX GRID (Bright Cyan) */}
-        <div
-          className="fixed inset-0 z-[-8] opacity-40 pointer-events-none"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(34, 211, 238, 0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(34, 211, 238, 0.15) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-        />
-
-
-
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
           Skip to main content
@@ -250,6 +271,13 @@ export default function RootLayout({
 
 
 
+        {/* Permanent Equilibrium Banner - Non-dismissible */}
+
+        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
+
+          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
+
+        </div>
 
 
 
@@ -259,16 +287,39 @@ export default function RootLayout({
 
 
 
-        {/* Pinned Navigation - Fixed to top with high z-index and glassmorphism */}
-        <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-          <TopBanner />
-        </header>
+        {/* Top Banner */}
+
+        <TopBanner />
 
 
 
-        {/* Theme Toggle - Disabled temporarily (moved to footer) */}
+        {/* Animated Background */}
 
-        {/* <ThemeToggle /> */}
+        <AnimatedBackground />
+
+
+
+        {/* Aurora Background */}
+
+        <AuroraFX />
+
+
+
+        {/* Animated Background FX */}
+
+        <BackgroundFX />
+
+
+
+        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
+
+        <BackgroundStack />
+
+
+
+        {/* Theme Toggle */}
+
+        <ThemeToggle />
 
 
 
@@ -292,9 +343,11 @@ export default function RootLayout({
 
 
 
-        {/* Layout Footer - hidden on homepage */}
+        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
 
-        <LayoutFooter />
+          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
+
+        </footer>
 
 
 
@@ -307,12 +360,6 @@ export default function RootLayout({
         {/* Help FAB */}
 
         <HelpFAB />
-
-
-
-        {/* Break Mode Button */}
-
-        <BreakModeButton />
 
 
 
@@ -354,9 +401,13 @@ export default function RootLayout({
 
         <ToastHost />
 
-        {/* Reality Check Modal - Triggers every 2h active session */}
+        {/* PWA Install Prompt */}
 
-        <RealityCheckProvider />
+        <PwaInstallPrompt />
+
+        {/* Vercel Analytics */}
+
+        <Analytics />
 
       </body>
 
@@ -365,3 +416,4 @@ export default function RootLayout({
   );
 
 }
+

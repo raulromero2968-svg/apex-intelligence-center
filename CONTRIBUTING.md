@@ -1,7 +1,49 @@
-> **Production Equilibrium Achieved – November 19 2025**  
+> **Production Equilibrium Achieved – November 19 2025**
 > All contributions must preserve the six active guardrails and the migration requirement. Any change that breaks schema sync, barrels, LangChain safety, CI, or Sentry release integrity will be rejected.
 
 # Contributing Guide — Deploy Sanity & Pre-Push Ritual
+
+## Codebase Standards
+
+### 1. Import Order
+
+Imports must be ordered as follows:
+
+1. React imports
+2. Next.js imports
+3. External libraries
+4. Internal components (`@/components`)
+5. Internal libraries (`@/lib`)
+6. Internal utilities (`@/utils`)
+7. Stylesheets
+
+### 2. Barrel Files
+
+All modules in `src/lib/` must use a barrel file (`index.ts`) to export their public API. Do not import directly from files within these modules.
+
+**Correct**:
+```typescript
+import { db } from "@/lib/db";
+```
+
+**Incorrect**:
+```typescript
+import { db } from "@/lib/db/client";
+```
+
+### 3. Naming Conventions
+
+- **Components**: PascalCase
+- **Files**: kebab-case
+- **Variables**: camelCase
+- **Types**: PascalCase
+
+### 4. AI Agent Workflow
+
+- Always create a new feature branch from `integration`.
+- Run `pnpm build` locally before creating a pull request.
+- Create a pull request targeting the `integration` branch.
+- Do not merge your own pull requests.
 
 This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires, JS/CSS/route/media budgets, delta + library guards, env audit, and a PR "Deploy Sanity Report." The goal is boring deploys and fast, surgical fixes.
 
@@ -89,6 +131,84 @@ Apply a provided unified diff:
 pnpm patch:check    # optional
 pnpm patch:apply    # applies + runs golden loop
 ```
+
+## Pre-Commit Hooks
+
+### JavaScript/TypeScript (Husky + lint-staged)
+
+Pre-commit hooks automatically run on staged files before every commit:
+
+1. **Installation** (one-time setup):
+   ```bash
+   pnpm install
+   # Husky is configured automatically via package.json postinstall script
+   # If Husky is not installed, run: pnpm add -D husky && npx husky install
+   ```
+
+2. **What runs automatically**:
+   - `eslint --fix` on all staged `.ts`, `.tsx`, `.js`, `.jsx` files (via lint-staged)
+   - `prettier --write` on all staged files (via lint-staged)
+   - `pnpm test -- --passWithNoTests` to ensure tests pass
+   - Format check (if prettier is configured)
+
+3. **Manual execution**:
+   ```bash
+   # Run lint-staged manually
+   pnpm lint-staged
+   
+   # Or run the full pre-commit hook
+   .husky/pre-commit
+   ```
+
+4. **Bypassing hooks** (not recommended):
+   ```bash
+   git commit --no-verify
+   ```
+   ⚠️ **Warning**: Bypassing hooks may cause CI to fail. Always run hooks before pushing.
+
+5. **Expected CI behavior**:
+   - If hooks fail locally, CI will also fail
+   - All TypeScript/JavaScript files must pass linting, formatting, and tests
+   - The CI pipeline runs `pnpm lint`, `pnpm test`, and `pnpm schema:check` before build
+
+### Python Services (pre-commit)
+
+For Python services (`services/varc_service/`, `services/lamp_sim/`):
+
+1. **Installation** (one-time setup):
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+2. **What runs automatically**:
+   - `black` for code formatting
+   - `isort` for import sorting
+   - `ruff` for linting
+   - `mypy` for type checking
+
+3. **Manual execution**:
+   ```bash
+   pre-commit run --all-files
+   ```
+
+4. **Expected CI behavior**:
+   - If hooks fail locally, CI will also fail
+   - All Python files must pass formatting, linting, and type checks
+
+## Schema Synchronization
+
+The `schema:check` script validates that database migrations are in sync with the schema:
+
+```bash
+# Check for schema drift (fails if drift detected)
+pnpm schema:check
+
+# Auto-fix by running pending migrations (local only)
+pnpm schema:fix
+```
+
+**CI Integration**: The `schema:check` command runs automatically in CI before build and deployment. If schema drift is detected, the pipeline will fail.
 
 ## Runtime & Tooling
 - Node 20; `pnpm`; Next.js App Router; Vercel. All guard scripts are dependency-free.

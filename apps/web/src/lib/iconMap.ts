@@ -14,3 +14,4 @@ export const iconMap = {
 } as const;
 
 export type IconId = keyof typeof iconMap;
+

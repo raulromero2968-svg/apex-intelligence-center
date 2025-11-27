@@ -175,3 +175,4 @@ export async function getSupportedBiometrics(): Promise<string[]> {
     return [];
   }
 }
+

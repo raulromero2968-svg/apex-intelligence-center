@@ -8,6 +8,10 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -25,5 +29,11 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "scripts", "**/*.test.example.ts", "**/*.test.ts", "**/__tests__/**", "examples"]
+  "exclude": [
+    "node_modules",
+    "../mobile/**",
+    "scripts",
+    "**/*.test.example.ts",
+    "examples"
+  ]
 }

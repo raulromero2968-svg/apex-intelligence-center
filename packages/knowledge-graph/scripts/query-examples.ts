@@ -1,184 +1,238 @@
 #!/usr/bin/env tsx
 /**
- * Example Queries for Neo4j Knowledge Graph
+ * Neo4j Query Examples Script
  *
- * This script demonstrates various query patterns for the Apex Knowledge Graph,
- * including card searches, price analysis, research discovery, and concept exploration.
+ * This script demonstrates common queries against the Apex Intelligence Center
+ * knowledge graph. Use it to test your Neo4j setup and learn the query patterns.
  *
  * Usage: pnpm neo4j:query
+ *
+ * @module query-examples
  */
 
 import 'dotenv/config';
-import { createNeo4jClient, Neo4jClient } from '../src/neo4j-client';
+import neo4j, { Driver, Session } from 'neo4j-driver';
+
+interface QueryConfig {
+  uri: string;
+  username: string;
+  password: string;
+  database: string;
+}
+
+const config: QueryConfig = {
+  uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
+  username: process.env.NEO4J_USERNAME || 'neo4j',
+  password: process.env.NEO4J_PASSWORD || 'password',
+  database: process.env.NEO4J_DATABASE || 'neo4j',
+};
 
 interface QueryExample {
   name: string;
   description: string;
   query: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
 }
 
+/**
+ * Example queries demonstrating knowledge graph capabilities
+ */
 const QUERY_EXAMPLES: QueryExample[] = [
-  // Card Queries
+  // ============================================================================
+  // TCG Market Queries
+  // ============================================================================
   {
-    name: 'All Cards',
-    description: 'List all cards in the database',
+    name: 'Find High-Value Cards',
+    description: 'Find cards with recent transactions over $1000',
     query: `
-      MATCH (c:Card)
-      RETURN c.name as name, c.set as set, c.rarity as rarity, c.type as type
-      ORDER BY c.name
+      MATCH (c:Card)-[:PRICED_AT]->(t:Transaction)
+      WHERE t.price > 1000
+      RETURN c.name AS card, c.set AS set, t.price AS price, t.grading AS grading, t.date AS date
+      ORDER BY t.price DESC
       LIMIT 10
     `,
   },
   {
-    name: 'Holo Rare Cards',
-    description: 'Find all Holo Rare cards',
+    name: 'Card Price History',
+    description: 'Get price history for Charizard',
     query: `
-      MATCH (c:Card {rarity: 'Holo Rare'})
-      RETURN c.name as name, c.set as set, c.description as description
-      ORDER BY c.releaseDate
-    `,
-  },
-  {
-    name: 'Card with Price History',
-    description: 'Get price history for a specific card',
-    query: `
-      MATCH (c:Card {name: $cardName})-[:PRICED_AT]->(t:Transaction)
-      RETURN c.name as card, t.price as price, t.grading as grading,
-             t.condition as condition, t.date as date
+      MATCH (c:Card {name: 'Charizard'})-[:PRICED_AT]->(t:Transaction)
+      RETURN c.name AS card, c.set AS set, t.price AS price, t.grading AS grading, t.date AS date, t.source AS source
       ORDER BY t.date DESC
     `,
-    params: { cardName: 'Charizard' },
   },
   {
-    name: 'Average Price by Grading',
-    description: 'Calculate average card prices by grading level',
+    name: 'Price by Grading',
+    description: 'Average price by grading for a specific card',
     query: `
-      MATCH (c:Card)-[:PRICED_AT]->(t:Transaction)
-      RETURN c.name as card, t.grading as grading,
-             AVG(t.price) as avgPrice, COUNT(t) as transactionCount
+      MATCH (c:Card {name: 'Charizard'})-[:PRICED_AT]->(t:Transaction)
+      RETURN t.grading AS grading,
+             round(avg(t.price) * 100) / 100 AS avgPrice,
+             min(t.price) AS minPrice,
+             max(t.price) AS maxPrice,
+             count(t) AS transactionCount
       ORDER BY avgPrice DESC
     `,
   },
   {
-    name: 'Cards by Market',
-    description: 'Find all cards sold on a specific market',
+    name: 'Market Activity',
+    description: 'Transaction volume by marketplace',
     query: `
-      MATCH (c:Card)-[:PRICED_AT]->(t:Transaction)-[:OCCURRED_ON]->(m:Market {name: $market})
-      RETURN DISTINCT c.name as card, c.set as set, m.name as market
-      ORDER BY c.name
-    `,
-    params: { market: 'TCGPlayer' },
-  },
-
-  // Research Queries
-  {
-    name: 'All Research Papers',
-    description: 'List all research papers',
-    query: `
-      MATCH (r:Research)
-      RETURN r.title as title, r.year as year, r.venue as venue, r.citationCount as citations
-      ORDER BY r.citationCount DESC
+      MATCH (t:Transaction)-[:OCCURRED_ON]->(m:Market)
+      RETURN m.name AS market,
+             count(t) AS transactions,
+             round(sum(t.price) * 100) / 100 AS totalVolume,
+             round(avg(t.price) * 100) / 100 AS avgPrice
+      ORDER BY totalVolume DESC
     `,
   },
   {
-    name: 'Citation Network',
-    description: 'Show papers and their citations',
+    name: 'Cards on Multiple Markets',
+    description: 'Find cards sold on multiple marketplaces',
     query: `
-      MATCH (r1:Research)-[c:CITES]->(r2:Research)
-      RETURN r1.title as citingPaper, r2.title as citedPaper,
-             c.section as section, c.context as context
-    `,
-  },
-  {
-    name: 'Papers by Concept',
-    description: 'Find papers mentioning a specific concept',
-    query: `
-      MATCH (c:Concept {name: $concept})<-[:MENTIONS]-(r:Research)
-      RETURN r.title as paper, r.year as year, r.url as url
-      ORDER BY r.year DESC
-    `,
-    params: { concept: 'multi-agent systems' },
-  },
-  {
-    name: 'Most Cited Papers',
-    description: 'Find papers with the most citations in the graph',
-    query: `
-      MATCH (r:Research)
-      OPTIONAL MATCH (r)<-[:CITES]-(citing:Research)
-      WITH r, COUNT(citing) as inGraphCitations
-      RETURN r.title as title, r.citationCount as externalCitations,
-             inGraphCitations, r.year as year
-      ORDER BY inGraphCitations DESC, r.citationCount DESC
-      LIMIT 5
-    `,
-  },
-
-  // Concept Queries
-  {
-    name: 'All Concepts',
-    description: 'List all concepts by category',
-    query: `
-      MATCH (c:Concept)
-      RETURN c.name as name, c.category as category,
-             c.definition as definition, c.frequency as frequency
-      ORDER BY c.category, c.frequency DESC
-    `,
-  },
-  {
-    name: 'Related Concepts',
-    description: 'Find concepts that co-occur with a given concept',
-    query: `
-      MATCH (c1:Concept {name: $concept})-[r:CO_OCCURS_WITH]-(c2:Concept)
-      RETURN c2.name as relatedConcept, r.frequency as coOccurrenceCount
-      ORDER BY r.frequency DESC
-    `,
-    params: { concept: 'knowledge graphs' },
-  },
-  {
-    name: 'Concept Clusters',
-    description: 'Find highly connected concept clusters',
-    query: `
-      MATCH (c:Concept)-[r:CO_OCCURS_WITH]-()
-      WITH c, COUNT(r) as connections
-      WHERE connections > 0
-      RETURN c.name as concept, connections
-      ORDER BY connections DESC
+      MATCH (c:Card)-[:SOLD_ON]->(m:Market)
+      WITH c, collect(m.name) AS markets, count(m) AS marketCount
+      WHERE marketCount > 1
+      RETURN c.name AS card, c.set AS set, markets, marketCount
+      ORDER BY marketCount DESC
       LIMIT 10
     `,
   },
 
-  // Market Queries
+  // ============================================================================
+  // Research & Literature Queries
+  // ============================================================================
   {
-    name: 'All Markets',
-    description: 'List all markets with their details',
+    name: 'Recent Research Papers',
+    description: 'Find recent research papers ordered by citations',
     query: `
-      MATCH (m:Market)
-      RETURN m.name as name, m.url as url, m.region as region,
-             m.currency as currency, m.apiAvailable as hasAPI
-      ORDER BY m.name
+      MATCH (r:Research)
+      RETURN r.title AS title, r.year AS year, r.venue AS venue, r.citationCount AS citations, r.url AS url
+      ORDER BY r.year DESC, r.citationCount DESC
+      LIMIT 10
     `,
   },
   {
-    name: 'Market Activity',
-    description: 'Show transaction count by market',
+    name: 'Citation Network',
+    description: 'Find papers that cite other papers in the knowledge graph',
     query: `
-      MATCH (m:Market)<-[:OCCURRED_ON]-(t:Transaction)
-      RETURN m.name as market, COUNT(t) as transactions,
-             SUM(t.price) as totalVolume, AVG(t.price) as avgPrice
-      ORDER BY transactions DESC
+      MATCH (r1:Research)-[c:CITES]->(r2:Research)
+      RETURN r1.title AS citingPaper,
+             r2.title AS citedPaper,
+             c.context AS citationContext,
+             c.sentiment AS sentiment
+    `,
+  },
+  {
+    name: 'Most Cited Papers',
+    description: 'Find papers with the most citations (from our graph)',
+    query: `
+      MATCH (r:Research)<-[:CITES]-(citing:Research)
+      RETURN r.title AS paper, r.year AS year, count(citing) AS inGraphCitations
+      ORDER BY inGraphCitations DESC
+      LIMIT 5
+    `,
+  },
+  {
+    name: 'Papers by Keyword',
+    description: 'Find papers mentioning specific concepts',
+    query: `
+      MATCH (r:Research)-[:MENTIONS]->(c:Concept)
+      WHERE c.name = 'computer-using agent'
+      RETURN r.title AS paper, r.year AS year, r.venue AS venue
+      ORDER BY r.year DESC
     `,
   },
 
-  // Graph Statistics
+  // ============================================================================
+  // Concept & Knowledge Queries
+  // ============================================================================
   {
-    name: 'Graph Statistics',
-    description: 'Get overall graph statistics',
+    name: 'All Concepts',
+    description: 'List all concepts in the knowledge graph',
+    query: `
+      MATCH (c:Concept)
+      RETURN c.name AS concept, c.category AS category, c.definition AS definition, c.frequency AS frequency
+      ORDER BY c.frequency DESC
+    `,
+  },
+  {
+    name: 'Related Concepts',
+    description: 'Find concepts that frequently co-occur',
+    query: `
+      MATCH (c1:Concept)-[r:CO_OCCURS_WITH]-(c2:Concept)
+      RETURN c1.name AS concept1, c2.name AS concept2, r.frequency AS frequency, r.strength AS strength
+      ORDER BY r.strength DESC
+    `,
+  },
+  {
+    name: 'Concept Network',
+    description: 'Build a concept co-occurrence network for visualization',
+    query: `
+      MATCH (c:Concept)
+      OPTIONAL MATCH (c)-[r:CO_OCCURS_WITH]-(other:Concept)
+      RETURN c.name AS concept,
+             c.category AS category,
+             collect({name: other.name, strength: r.strength}) AS connections
+      ORDER BY c.frequency DESC
+    `,
+  },
+
+  // ============================================================================
+  // Agent & Contribution Queries
+  // ============================================================================
+  {
+    name: 'Active Agents',
+    description: 'List all AI agents in the system',
+    query: `
+      MATCH (a:Agent)
+      RETURN a.name AS agent, a.type AS type, a.model AS model, a.capabilities AS capabilities, a.status AS status
+      ORDER BY a.name
+    `,
+  },
+  {
+    name: 'Agent Contributions',
+    description: 'Find research papers associated with agents',
+    query: `
+      MATCH (r:Research)-[c:CONTRIBUTED_BY]->(a:Agent)
+      RETURN a.name AS agent, r.title AS paper, c.role AS role, c.action AS action
+    `,
+  },
+
+  // ============================================================================
+  // Cross-Domain Queries
+  // ============================================================================
+  {
+    name: 'Full-Text Search Cards',
+    description: 'Search cards using full-text index',
+    query: `
+      CALL db.index.fulltext.queryNodes('card_fulltext_index', 'dragon OR fire')
+      YIELD node, score
+      RETURN node.name AS card, node.set AS set, node.type AS type, score
+      ORDER BY score DESC
+      LIMIT 5
+    `,
+  },
+  {
+    name: 'Full-Text Search Research',
+    description: 'Search research papers using full-text index',
+    query: `
+      CALL db.index.fulltext.queryNodes('research_fulltext_index', 'agent automation')
+      YIELD node, score
+      RETURN node.title AS title, node.year AS year, score
+      ORDER BY score DESC
+      LIMIT 5
+    `,
+  },
+  {
+    name: 'Knowledge Graph Statistics',
+    description: 'Get overall statistics about the knowledge graph',
     query: `
       MATCH (n)
-      WITH labels(n) as nodeLabels
-      UNWIND nodeLabels as label
-      RETURN label, COUNT(*) as count
+      WITH labels(n) AS labels
+      UNWIND labels AS label
+      WITH label, count(*) AS count
+      RETURN label, count
       ORDER BY count DESC
     `,
   },
@@ -187,85 +241,214 @@ const QUERY_EXAMPLES: QueryExample[] = [
     description: 'Count relationships by type',
     query: `
       MATCH ()-[r]->()
-      RETURN type(r) as relationshipType, COUNT(r) as count
+      RETURN type(r) AS relationshipType, count(*) AS count
       ORDER BY count DESC
     `,
   },
 ];
 
-async function runQueries(): Promise<void> {
-  console.log('Apex Knowledge Graph - Query Examples');
-  console.log('='.repeat(60));
-  console.log('');
-
-  let client: Neo4jClient;
-  try {
-    client = createNeo4jClient();
-  } catch (error: any) {
-    console.error('Failed to create Neo4j client:', error.message);
-    process.exit(1);
+function formatValue(value: unknown): string {
+  if (value === null || value === undefined) {
+    return 'null';
   }
+  if (typeof value === 'object') {
+    if (Array.isArray(value)) {
+      return JSON.stringify(value.slice(0, 3)) + (value.length > 3 ? '...' : '');
+    }
+    if ('toNumber' in (value as object)) {
+      return String((value as { toNumber: () => number }).toNumber());
+    }
+    return JSON.stringify(value).slice(0, 50) + '...';
+  }
+  if (typeof value === 'string' && value.length > 60) {
+    return value.slice(0, 57) + '...';
+  }
+  return String(value);
+}
+
+async function runExampleQuery(
+  session: Session,
+  example: QueryExample
+): Promise<void> {
+  console.log(`\n${'─'.repeat(60)}`);
+  console.log(`📊 ${example.name}`);
+  console.log(`   ${example.description}`);
+  console.log(`${'─'.repeat(60)}`);
 
   try {
-    // Test connectivity
-    console.log('Testing connection...');
-    const connected = await client.verifyConnectivity();
-    if (!connected) {
-      console.error('Failed to connect to Neo4j');
-      process.exit(1);
-    }
-    console.log('Connected successfully!\n');
+    const result = await session.run(example.query, example.params || {});
 
-    // Run each query
-    for (const example of QUERY_EXAMPLES) {
-      console.log('-'.repeat(60));
-      console.log(`Query: ${example.name}`);
-      console.log(`Description: ${example.description}`);
-      if (example.params) {
-        console.log(`Parameters: ${JSON.stringify(example.params)}`);
-      }
-      console.log('');
-
-      try {
-        const results = await client.read(example.query, example.params || {});
-
-        if (results.length === 0) {
-          console.log('  (No results)\n');
-        } else {
-          // Print results in a simple table format
-          const keys = Object.keys(results[0]);
-
-          // Print header
-          console.log('  ' + keys.map(k => k.padEnd(25)).join(' | '));
-          console.log('  ' + keys.map(() => '-'.repeat(25)).join('-+-'));
-
-          // Print rows (limited to 5 for readability)
-          const displayResults = results.slice(0, 5);
-          for (const row of displayResults) {
-            const values = keys.map(k => {
-              const val = row[k];
-              const strVal = val === null ? 'null' : String(val);
-              return strVal.substring(0, 25).padEnd(25);
-            });
-            console.log('  ' + values.join(' | '));
-          }
-
-          if (results.length > 5) {
-            console.log(`  ... and ${results.length - 5} more rows`);
-          }
-          console.log(`  Total: ${results.length} rows\n`);
-        }
-      } catch (error: any) {
-        console.log(`  Error: ${error.message}\n`);
-      }
+    if (result.records.length === 0) {
+      console.log('  (No results)');
+      return;
     }
 
-    console.log('='.repeat(60));
-    console.log('Query examples completed!');
+    // Get column headers
+    const keys = result.records[0].keys;
+    const colWidths = keys.map((key) => {
+      const maxValueWidth = Math.max(
+        ...result.records.map((r) => formatValue(r.get(key)).length)
+      );
+      return Math.min(Math.max(key.length, maxValueWidth), 30);
+    });
 
-  } finally {
-    await client.close();
+    // Print header
+    const header = keys.map((key, i) => key.padEnd(colWidths[i])).join(' | ');
+    console.log(`\n  ${header}`);
+    console.log(`  ${colWidths.map((w) => '─'.repeat(w)).join('─┼─')}`);
+
+    // Print rows
+    for (const record of result.records.slice(0, 10)) {
+      const row = keys.map((key, i) => {
+        const value = formatValue(record.get(key));
+        return value.padEnd(colWidths[i]);
+      }).join(' | ');
+      console.log(`  ${row}`);
+    }
+
+    if (result.records.length > 10) {
+      console.log(`  ... and ${result.records.length - 10} more rows`);
+    }
+
+    console.log(`\n  Total: ${result.records.length} rows`);
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('no such index')) {
+      console.log('  ⚠️  Full-text index not available. Run pnpm neo4j:init first.');
+    } else {
+      console.log(`  ❌ Error: ${errorMessage}`);
+    }
   }
 }
 
-runQueries();
+async function interactiveMode(driver: Driver): Promise<void> {
+  const readline = await import('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  console.log('\n📝 Interactive Query Mode');
+  console.log('   Type a Cypher query and press Enter to execute.');
+  console.log('   Type "exit" to quit.\n');
+
+  const session = driver.session({ database: config.database });
+
+  const question = (prompt: string): Promise<string> => {
+    return new Promise((resolve) => {
+      rl.question(prompt, resolve);
+    });
+  };
+
+  try {
+    let running = true;
+    while (running) {
+      const query = await question('cypher> ');
+
+      if (query.toLowerCase() === 'exit' || query.toLowerCase() === 'quit') {
+        running = false;
+        continue;
+      }
+
+      if (!query.trim()) {
+        continue;
+      }
+
+      try {
+        const result = await session.run(query);
+
+        if (result.records.length === 0) {
+          console.log('(No results)\n');
+          continue;
+        }
+
+        const keys = result.records[0].keys;
+        for (const record of result.records) {
+          const obj: Record<string, unknown> = {};
+          keys.forEach((key) => {
+            obj[key] = record.get(key);
+          });
+          console.log(JSON.stringify(obj, null, 2));
+        }
+        console.log(`\nTotal: ${result.records.length} rows\n`);
+
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.log(`Error: ${errorMessage}\n`);
+      }
+    }
+  } finally {
+    rl.close();
+    await session.close();
+  }
+}
+
+async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  const interactive = args.includes('--interactive') || args.includes('-i');
+  const queryName = args.find((a) => !a.startsWith('-'));
+
+  console.log('='.repeat(60));
+  console.log('Apex Intelligence Center - Knowledge Graph Query Examples');
+  console.log('='.repeat(60));
+  console.log(`\nConnecting to Neo4j at ${config.uri}...`);
+
+  const driver = neo4j.driver(
+    config.uri,
+    neo4j.auth.basic(config.username, config.password)
+  );
+
+  try {
+    await driver.verifyConnectivity();
+    console.log('Connected successfully!');
+
+    if (interactive) {
+      await interactiveMode(driver);
+      return;
+    }
+
+    const session = driver.session({ database: config.database });
+
+    try {
+      if (queryName) {
+        // Run specific query
+        const example = QUERY_EXAMPLES.find(
+          (e) => e.name.toLowerCase().includes(queryName.toLowerCase())
+        );
+        if (example) {
+          await runExampleQuery(session, example);
+        } else {
+          console.log(`\nQuery "${queryName}" not found. Available queries:`);
+          QUERY_EXAMPLES.forEach((e) => console.log(`  - ${e.name}`));
+        }
+      } else {
+        // Run all queries
+        console.log(`\nRunning ${QUERY_EXAMPLES.length} example queries...\n`);
+
+        for (const example of QUERY_EXAMPLES) {
+          await runExampleQuery(session, example);
+        }
+      }
+
+      console.log('\n' + '='.repeat(60));
+      console.log('Query examples complete!');
+      console.log('='.repeat(60));
+      console.log('\nUsage:');
+      console.log('  pnpm neo4j:query                    # Run all examples');
+      console.log('  pnpm neo4j:query "price history"    # Run specific query');
+      console.log('  pnpm neo4j:query --interactive      # Interactive mode');
+
+    } finally {
+      await session.close();
+    }
+
+  } catch (error) {
+    console.error('\nQuery execution failed:', error);
+    process.exit(1);
+  } finally {
+    await driver.close();
+  }
+}
+
+main();

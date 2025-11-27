@@ -221,3 +221,4 @@ export async function getYugiohVintage(): Promise<string[]> {
 
   return result.map((c) => c.id);
 }
+

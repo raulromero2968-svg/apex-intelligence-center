@@ -5,6 +5,7 @@ export interface UserWithTier {
   id: string;
   email: string;
   tier?: string;
+  isMinor?: boolean;
   [key: string]: unknown;
 }
 
@@ -94,5 +95,52 @@ export async function getUserFromRequest(
     tier: typeof payload.tier === 'string' ? payload.tier : undefined,
     ...payload,
   };
+}
+
+/**
+ * Sign a JWT token for a user
+ * @param payload - JWT payload containing user information
+ * @param secret - JWT secret key
+ * @param expiresIn - Expiration time in seconds (default 30 days)
+ * @returns Signed JWT token
+ */
+export function signJwt(
+  payload: JwtPayload,
+  secret: string,
+  expiresIn: number = 30 * 24 * 60 * 60 // 30 days
+): string {
+  const header = { alg: 'HS256', typ: 'JWT' };
+
+  // Add expiration and issued at timestamps
+  const now = Math.floor(Date.now() / 1000);
+  const fullPayload = {
+    ...payload,
+    iat: now,
+    exp: now + expiresIn,
+  };
+
+  // Base64url encode header and payload
+  const encodedHeader = Buffer.from(JSON.stringify(header))
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  const encodedPayload = Buffer.from(JSON.stringify(fullPayload))
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  // Create signature
+  const signature = createHmac('sha256', secret)
+    .update(`${encodedHeader}.${encodedPayload}`)
+    .digest()
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
 

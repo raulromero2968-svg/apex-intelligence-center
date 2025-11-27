@@ -152,3 +152,4 @@ export async function digimonFrontierV19(cardIds: string[], budget = 18000000): 
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

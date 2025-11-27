@@ -124,3 +124,4 @@ export async function power9FrontierV15(cardIds: string[], budget = 100000000): 
   }
   return frontier.sort((a, b) => b.sharpeRatio - a.sharpeRatio);  // Descending Sharpe
 }
+

@@ -1,60 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "installCommand": "NODE_OPTIONS='--max-old-space-size=6144' pnpm install --ignore-scripts && cd apps/web && NODE_OPTIONS='--max-old-space-size=4096' pnpm exec prisma generate --schema=./prisma/schema.prisma || echo 'Prisma generate skipped'",
-  "buildCommand": "NODE_OPTIONS='--max-old-space-size=6144' pnpm turbo run build --filter=@apex/web...",
-  "outputDirectory": "apps/web/.next",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
   "framework": "nextjs",
-  "regions": ["iad1", "sfo1", "fra1"],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
-        { "key": "Cache-Control", "value": "no-store, max-age=0" }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    },
-    {
-      "source": "/_next/static/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    }
-  ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
-  ],
+  "regions": ["iad1"],
   "crons": [
     {
       "path": "/api/cron/update-prices",
-      "schedule": "0 */6 * * *"
+      "schedule": "*/5 * * * *"
     },
     {
       "path": "/api/cron/push-receipts",
       "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/cron/ethics-audit",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/ab-testing-aggregate",
-      "schedule": "0 */6 * * *"
-    },
-    {
-      "path": "/api/cron/community-refresh",
-      "schedule": "0 */4 * * *"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

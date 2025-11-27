@@ -180,3 +180,4 @@ export const intelNotes = [
     sources: 41,
   },
 ];
+

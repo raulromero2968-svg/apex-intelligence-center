@@ -16,3 +16,4 @@ test('x-cache header flips to HIT on second request', async ({ request }) => {
   console.log('cache headers:', { h1, h2 });
   expect(h2 === 'HIT' || h2 === 'MISS').toBeTruthy();
 });
+

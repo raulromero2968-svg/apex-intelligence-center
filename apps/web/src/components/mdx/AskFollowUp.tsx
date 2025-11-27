@@ -20,3 +20,4 @@ export default function AskFollowUp({ question, children }: AskFollowUpProps) {
     </div>
   );
 }
+

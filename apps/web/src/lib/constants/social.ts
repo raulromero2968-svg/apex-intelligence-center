@@ -16,3 +16,4 @@ export const SAME_AS_LINKS = [
   SOCIAL_PROFILES.instagram,
   SOCIAL_PROFILES.github,
 ] as const;
+

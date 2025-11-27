@@ -119,3 +119,4 @@ describe('extractSymbolsWithConfidence', () => {
     expect(umbreon!.confidence).toBe(1.0);
   });
 });
+

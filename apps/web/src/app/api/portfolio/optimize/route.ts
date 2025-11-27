@@ -12,6 +12,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { mtgIntegerFrontier } from '@/portfolio/mtg.v9.ultra-tight-commented';
 import { mtgReservedListFrontier } from '@/portfolio/mtg-reserved-list.v10.ultra-tight-commented';
 import { digimonIntegerFrontier } from '@/portfolio/digimon.v10.ultra-tight-commented';
@@ -548,3 +551,4 @@ export async function GET(request: NextRequest) {
     },
   });
 }
+

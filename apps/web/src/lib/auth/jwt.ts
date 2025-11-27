@@ -21,6 +21,9 @@ export interface UserWithTier {
   email: string;
   name?: string;
   subscriptionTier: SubscriptionTier;
+  accountType?: string | null;
+  breakModeUntil?: string | null;
+  breakModeActivatedBy?: string | null;
 }
 
 interface JWTPayload {
@@ -289,3 +292,4 @@ export function clearAuthCookies(headers: Headers): void {
     'refreshToken=; HttpOnly; Secure; SameSite=Strict; Path=/api/auth/refresh; Max-Age=0'
   );
 }
+

@@ -29,3 +29,4 @@ Sentry.init({
  * Used in instrumentation.ts for automatic error capture
  */
 export const onRequestError = Sentry.captureRequestError;
+

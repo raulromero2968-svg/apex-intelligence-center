@@ -1,5 +1,5 @@
 {
-  "id": "cbf823f0-4a1e-44ce-a1c3-9673bc522f34",
+  "id": "34813fb6-b957-4893-9791-8559301d474d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -290,6 +290,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(768)",
+          "primaryKey": false,
+          "notNull": false
         },
         "reasoning_trace": {
           "name": "reasoning_trace",
@@ -2190,6 +2196,12 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "sentiment": {
           "name": "sentiment",
           "type": "text",
@@ -2506,6 +2518,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(768)",
+          "primaryKey": false,
+          "notNull": false
         },
         "file_url": {
           "name": "file_url",
@@ -4214,21 +4232,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "users_parent_id_users_id_fk": {
-          "name": "users_parent_id_users_id_fk",
-          "tableFrom": "users",
-          "tableTo": "users",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "users_email_unique": {

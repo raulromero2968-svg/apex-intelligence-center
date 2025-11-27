@@ -1,4 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { cachedSearchWithMeta } from '@/lib/search';
 import { readProviderMetrics } from '@/lib/ingest-metrics';
 
@@ -56,3 +59,4 @@ export async function GET(req: Request) {
     }
   );
 }
+

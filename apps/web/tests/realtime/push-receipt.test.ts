@@ -47,7 +47,7 @@ describe('Push Receipt Validation', () => {
 
   it('should use exponential backoff for retries', async () => {
     // Test retry delays: 1min, 2min, 4min
-    const retryDelays = [1, 2, 4].map((retry) => Math.pow(2, retry - 1) * 60 * 1000);
+    const retryDelays = [1, 2, 3].map((retry) => Math.pow(2, retry - 1) * 60 * 1000);
 
     expect(retryDelays).toEqual([60000, 120000, 240000]); // 1min, 2min, 4min
   });
@@ -100,3 +100,4 @@ describe('Retry Queue Processing', () => {
     expect(mockToken.active).toBe(false);
   });
 });
+

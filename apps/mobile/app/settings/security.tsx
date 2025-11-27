@@ -158,7 +158,7 @@ export default function SecuritySettingsScreen() {
             <Text style={styles.infoTitle}>How it works</Text>
             <Text style={styles.infoText}>
               • Your biometric data never leaves your device{'\n'}
-              • Authentication is handled by your device's secure enclave{'\n'}
+              • Authentication is handled by your device&apos;s secure enclave{'\n'}
               • You can always use your password as a backup{'\n'}
               • Biometric login is reset if device hardware changes
             </Text>
@@ -168,7 +168,7 @@ export default function SecuritySettingsScreen() {
             <Text style={styles.infoTitle}>Privacy</Text>
             <Text style={styles.infoText}>
               Apex Intelligence does not store or have access to your biometric data. All
-              biometric authentication is handled securely by your device's operating system.
+              biometric authentication is handled securely by your device&apos;s operating system.
             </Text>
           </View>
         </View>

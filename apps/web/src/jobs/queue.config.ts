@@ -47,6 +47,7 @@ export const queues = {
   portfolio: new Queue('portfolio-rebalancing', defaultQueueOptions),
   notifications: new Queue('notifications', defaultQueueOptions),
   taxLot: new Queue('tax-lot-calculation', defaultQueueOptions),
+  varc: new Queue('varc-scan', defaultQueueOptions),
 } as const;
 
 /**
@@ -148,6 +149,7 @@ export async function shutdownQueues() {
     queues.portfolio.close(),
     queues.notifications.close(),
     queues.taxLot.close(),
+    queues.varc.close(),
   ]);
 
   await connection.quit();
@@ -158,3 +160,4 @@ export async function shutdownQueues() {
 // Handle process termination
 process.on('SIGTERM', shutdownQueues);
 process.on('SIGINT', shutdownQueues);
+

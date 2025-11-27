@@ -1,6 +1,7 @@
 /**
  * Public API for push module
- * Barrel file for push notification functionality
+ * Explicit exports - no barrel exports allowed
  */
 
-export * from './receipt-validator';
+export { validateAndRetryReceipts } from './receipt-validator';
+

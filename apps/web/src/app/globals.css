@@ -7,72 +7,23 @@
     --purple: #9333ea;
     --apex-cyan: #00FFFF;
     --apex-purple: #8A2BE2;
-
-    /* GOLDEN RATIO TYPOGRAPHY SCALE */
-    --font-scale-h1: clamp(2.5rem, 5vw, 4.5rem); /* Desktop 72px */
-    --font-scale-h2: clamp(1.8rem, 3vw, 3rem);   /* Desktop 48px */
-    --font-scale-h3: clamp(1.2rem, 2vw, 1.8rem); /* Desktop 28px */
-    --font-scale-body: clamp(0.875rem, 1vw, 1rem); /* Desktop 16px */
   }
 
-  html, body {
-    background: transparent; /* Transparent to reveal StarfieldFX canvas */
+  body {
+    background-color: var(--ink);
     color: white;
     min-height: 100vh;
-    /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
     overflow-x: hidden;
-    word-break: normal !important; /* STOP SPLITTING WORDS */
-    overflow-wrap: normal !important;
-    -webkit-hyphens: none;
-    hyphens: none;
   }
 
-  /* Body background transparent to allow StarfieldFX canvas to show through */
-  body {
-    margin: 0;
-    padding: 0;
-    background: transparent; /* Changed from solid color to reveal StarfieldFX */
-  }
-
-  /* FORCE NO SPLITTING - Aggressive global override */
+  /* Prevent mid-word breaking globally */
   * {
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
-  }
-
-  /* Force Headers to specific scales */
-  h1 {
-    font-size: var(--font-scale-h1);
-    line-height: 1.1;
-    word-break: keep-all;
     overflow-wrap: break-word;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -ms-hyphens: none;
+    word-break: normal;
   }
 
-  h2 {
-    font-size: var(--font-scale-h2);
-    line-height: 1.2;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -ms-hyphens: none;
-  }
-
-  h3 {
-    font-size: var(--font-scale-h3);
-    line-height: 1.3;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -ms-hyphens: none;
-  }
-
-  h4, h5, h6 {
+  /* Extra protection for headings - no hyphenation */
+  h1, h2, h3, h4, h5, h6 {
     word-break: keep-all;
     overflow-wrap: break-word;
     hyphens: none;
@@ -81,8 +32,6 @@
   }
 
   p {
-    font-size: var(--font-scale-body);
-    line-height: 1.6;
     word-break: keep-all;
     overflow-wrap: break-word;
   }
@@ -158,22 +107,29 @@
 
   /* Titan Unified - Animated Prismatic Rainbow/White/Iridescent */
   .font-titan-unified {
-    /* 1. Stroke: Keep White */
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+    /* 1. Stroke: Pure White */
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
 
-    /* 2. Fill: HIGH VIBRANCE Prismatic Gradient */
-    /* Use brighter colors (lighter stops) */
-    background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 25%, #22d3ee 50%, #e879f9 75%, #ffffff 100%);
+    /* 2. Fill: "High Key" Gradient (No dark colors) */
+    /* Sequence: White -> Cyan -> White -> Magenta -> White */
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #cffafe 25%, /* Pale Cyan */
+      #ffffff 50%,
+      #e9d5ff 75%, /* Pale Purple */
+      #ffffff 100%
+    );
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: prismatic-shift 4s linear infinite;
 
-    /* 3. Blend: Standard transparency */
+    /* 3. Glow: Use white/cyan glow, NO shadow */
     color: transparent;
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6));
 
-    /* 4. Glow: Bright text-shadow for desktop (light bloom effect) */
-    text-shadow: 0 0 5px rgba(255,255,255,0.5), 0 0 10px rgba(34,211,238,0.3);
+    /* 4. Animation: Fast shimmer */
+    animation: text-shimmer 3s linear infinite;
 
     /* 5. Layout Safety - Prevent mid-word breaks */
     overflow-wrap: normal;
@@ -190,6 +146,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  @keyframes text-shimmer {
+    to { background-position: 200% center; }
+  }
+
   @keyframes prismatic-shift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -198,21 +158,28 @@
 
   /* Titan Unified Purple Variant - Animated Prismatic */
   .font-titan-unified-purple {
-    /* 1. Stroke: Pure White, 1.5px */
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.95);
+    /* 1. Stroke: Pure White */
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
 
-    /* 2. Fill: Purple PRISMATIC Rainbow Gradient (Animated) */
-    background: linear-gradient(135deg, #ffffff 10%, #c084fc 30%, #a855f7 50%, #a5f3fc 70%, #ffffff 90%);
+    /* 2. Fill: High-Key Purple Gradient (No dark colors) */
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #e9d5ff 25%, /* Pale Purple */
+      #ffffff 50%,
+      #cffafe 75%, /* Pale Cyan */
+      #ffffff 100%
+    );
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: prismatic-shift 8s linear infinite;
 
-    /* 3. Blend: Standard transparency */
+    /* 3. Glow: Use white/purple glow, NO shadow */
     color: transparent;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
 
-    /* 4. Glow: Purple/White blend, REDUCED opacity */
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    /* 4. Animation: Fast shimmer */
+    animation: text-shimmer 3s linear infinite;
 
     /* 5. Layout Safety - Prevent mid-word breaks */
     overflow-wrap: normal;
@@ -343,11 +310,34 @@
     margin-bottom: 2rem;
   }
 
-  @media (max-width: 640px) {
-    .hollow-text {
-      font-size: 2.5rem;
-      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-    }
+  /* ═══════════════════════════════════════════════════════════════════
+     SENTINEL UI KIT - Custom Scrollbar Styles (DigitalScroll)
+     High-contrast cyberpunk scrollbars for terminal-style containers
+     ═══════════════════════════════════════════════════════════════════ */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(2, 6, 23, 0.8);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.6) 0%, rgba(34, 211, 238, 0.8) 50%, rgba(6, 182, 212, 0.6) 100%);
+    border-radius: 3px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(34, 211, 238, 0.8) 0%, rgba(6, 255, 240, 1) 50%, rgba(34, 211, 238, 0.8) 100%);
+    box-shadow: 0 0 8px rgba(6, 255, 240, 0.5);
+  }
+
+  /* Firefox scrollbar support */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(34, 211, 238, 0.6) rgba(2, 6, 23, 0.8);
   }
 }
 
@@ -552,138 +542,39 @@ a {
   }
 }
 
-/* Tactical Button - Angular Military/Industrial Aesthetic */
+/* Tactical Button - Military/Industrial Aesthetic */
 .btn-tactical {
-  position: relative;
-  background: rgba(2, 6, 23, 0.9);
-  border: 2px solid rgba(34, 211, 238, 0.4);
-  color: #22d3ee;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   padding: 0.75rem 1.5rem;
-  font-weight: 700;
-  font-family: monospace;
-  /* Sharp angular corners - minimal radius for tactical feel */
-  border-radius: 2px;
-  /* Chamfered corner cut via clip-path */
-  clip-path: polygon(
-    8px 0, 100% 0,
-    100% calc(100% - 8px), calc(100% - 8px) 100%,
-    0 100%, 0 8px
-  );
-  overflow: hidden;
-  transition: all 150ms ease-out;
-  /* Inner shadow for depth */
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-}
-
-/* Tech scan sweep effect */
-.btn-tactical::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(34, 211, 238, 0.15) 50%,
-    transparent 60%
-  );
-  transform: translateX(-150%);
-  transition: transform 0.4s ease-out;
-}
-
-/* Corner accent glyph */
-.btn-tactical::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 6px;
-  height: 6px;
-  border-top: 1px solid rgba(34, 211, 238, 0.6);
-  border-left: 1px solid rgba(34, 211, 238, 0.6);
-  pointer-events: none;
+  color: white;
+  font-weight: 600;
+  transition: all 200ms ease-out;
 }
 
 .btn-tactical:hover {
-  border-color: rgba(34, 211, 238, 0.9);
-  background: rgba(34, 211, 238, 0.12);
-  box-shadow:
-    0 0 20px rgba(34, 211, 238, 0.25),
-    0 0 40px rgba(34, 211, 238, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
-}
-
-.btn-tactical:hover::before {
-  transform: translateX(150%);
+  border-color: rgba(34, 211, 238, 0.8);
+  background: rgba(34, 211, 238, 0.15);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
 }
 
 .btn-tactical:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.3),
-    0 0 10px rgba(34, 211, 238, 0.2);
+  transform: scale(0.98);
 }
 
-.btn-tactical:focus-visible {
-  outline: 2px solid #22d3ee;
-  outline-offset: 2px;
-}
-
-.btn-tactical:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  border-color: rgba(100, 116, 139, 0.3);
-  color: rgba(100, 116, 139, 0.6);
-}
-
-.btn-tactical:disabled:hover {
-  transform: none;
-  background: rgba(2, 6, 23, 0.9);
-  box-shadow: none;
-}
-
-/* Primary variant - filled tactical button */
 .btn-tactical.btn-tactical-primary {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.95) 0%, rgba(6, 182, 212, 0.95) 100%);
-  color: #020617;
+  background: rgba(34, 211, 238, 0.9);
+  color: black;
   border-color: rgba(34, 211, 238, 1);
-  box-shadow:
-    0 2px 8px rgba(34, 211, 238, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-}
-
-.btn-tactical.btn-tactical-primary::after {
-  border-color: rgba(2, 6, 23, 0.4);
 }
 
 .btn-tactical.btn-tactical-primary:hover {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 1) 0%, rgba(6, 182, 212, 1) 100%);
-  box-shadow:
-    0 0 30px rgba(34, 211, 238, 0.5),
-    0 4px 16px rgba(34, 211, 238, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-}
-
-.btn-tactical.btn-tactical-primary:active {
-  background: linear-gradient(180deg, rgba(6, 182, 212, 1) 0%, rgba(8, 145, 178, 1) 100%);
-}
-
-/* Ghost/secondary variant */
-.btn-tactical.btn-tactical-ghost {
-  background: transparent;
-  border-color: rgba(34, 211, 238, 0.25);
-}
-
-.btn-tactical.btn-tactical-ghost:hover {
-  background: rgba(34, 211, 238, 0.08);
-  border-color: rgba(34, 211, 238, 0.5);
+  background: rgba(34, 211, 238, 1);
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 /* Cyber Folder Container */
@@ -782,104 +673,6 @@ a {
   -webkit-text-stroke: 2px white;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   HOLLOW MATRIX TYPOGRAPHY - True see-through text effect
-   Shows starfield/matrix background through the letters
-   ═══════════════════════════════════════════════════════════════════ */
-.text-hollow-matrix {
-  /* Hollow fill - completely transparent */
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-
-  /* Gradient stroke for prismatic outline effect */
-  -webkit-text-stroke: 2px transparent;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    #22d3ee 35%,
-    #a855f7 65%,
-    rgba(255, 255, 255, 0.95) 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  /* Animate the gradient */
-  animation: hollow-gradient-shift 6s ease-in-out infinite;
-
-  /* Outer glow to enhance readability */
-  filter:
-    drop-shadow(0 0 2px rgba(34, 211, 238, 0.8))
-    drop-shadow(0 0 8px rgba(34, 211, 238, 0.4))
-    drop-shadow(0 0 16px rgba(168, 85, 247, 0.3));
-
-  /* Font settings for maximum impact */
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  -webkit-font-smoothing: antialiased;
-
-  /* Layout safety */
-  display: inline-block;
-  line-height: 1.1;
-}
-
-@keyframes hollow-gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/* Purple variant of hollow matrix text */
-.text-hollow-matrix-purple {
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px transparent;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    #a855f7 35%,
-    #22d3ee 65%,
-    rgba(255, 255, 255, 0.95) 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: hollow-gradient-shift 6s ease-in-out infinite;
-  filter:
-    drop-shadow(0 0 2px rgba(168, 85, 247, 0.8))
-    drop-shadow(0 0 8px rgba(168, 85, 247, 0.4))
-    drop-shadow(0 0 16px rgba(34, 211, 238, 0.3));
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  line-height: 1.1;
-}
-
-/* True cutout text - uses mask to show background through letters */
-.text-cutout {
-  position: relative;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-  /* Subtle text glow for legibility */
-  text-shadow:
-    0 0 20px rgba(34, 211, 238, 0.6),
-    0 0 40px rgba(168, 85, 247, 0.4),
-    0 0 60px rgba(34, 211, 238, 0.2);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  display: inline-block;
-  line-height: 1.1;
-}
-
-/* Accessibility: reduce motion for hollow text animations */
-@media (prefers-reduced-motion: reduce) {
-  .text-hollow-matrix,
-  .text-hollow-matrix-purple {
-    animation: none;
-    background-position: 50% 50%;
-  }
-}
-
 /* Fallback for browsers without -webkit-text-stroke support */
 @supports not (-webkit-text-stroke: 1px black) {
 
@@ -890,10 +683,7 @@ a {
   }
 
   /* Fallback for hollow text - show solid white with glow */
-  .text-hollow-white,
-  .text-hollow-matrix,
-  .text-hollow-matrix-purple,
-  .text-cutout {
+  .text-hollow-white {
     color: white;
     -webkit-text-stroke: 0;
     text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(168, 85, 247, 0.5);
@@ -913,7 +703,7 @@ body::before {
   height: 2px;
   background: linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.3) 20%, #22d3ee 50%, rgba(34, 211, 238, 0.3) 80%, transparent 100%);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
-  animation: scan-line-sweep 8s linear forwards;
+  animation: scan-line-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
@@ -1107,44 +897,42 @@ html.light canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   CUSTOM CURSOR - Wolf Nose Design
+   CUSTOM CURSOR - Simple Ring with Glow
    ═══════════════════════════════════════════════════════════════════ */
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
+  mix-blend-mode: screen;
 }
 
 .custom-cursor-dot {
   width: 100%;
   height: 100%;
-  background-color: #22d3ee;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  /* Triangle/Nose shape */
-  box-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
+  border: 2px solid #22d3ee;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.4);
   animation: cursor-pulse 2s infinite;
-  transform: rotate(180deg); /* Flip cursor to correct orientation */
 }
 
 @keyframes cursor-pulse {
   0% {
-    transform: rotate(180deg) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 
   50% {
-    transform: rotate(180deg) scale(0.8);
-    opacity: 0.8;
+    transform: scale(0.85);
+    opacity: 0.7;
   }
 
   100% {
-    transform: rotate(180deg) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 }
@@ -1192,73 +980,45 @@ html.light canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect (Viewport-Synced)
-   Uses viewport units to ensure all text is illuminated at the same speed
+   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect
+   Uses background-clip: text to restrict sheen to text letterforms only
    ═══════════════════════════════════════════════════════════════════ */
-/* THE GLOBAL HOLO-BEAM */
 .text-sheen {
-  display: inline-block;
-  color: transparent;
-
-  /* 1. The Beam Geometry (Fixed to Screen Width) */
-  /* Width = 200% of VIEWPORT, not element */
-  background-size: 200vw 100%;
-
-  /* 2. The Beam Gradient (High Intensity White/Cyan) */
-  background-image: linear-gradient(
-    115deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.9) 48%,
-    rgba(34, 211, 238, 1) 50%,
-    rgba(255, 255, 255, 0.9) 52%,
-    transparent 60%
-  );
-
-  /* 3. The Clip */
+  position: relative;
+  /* Sheen gradient that flows across the text */
+  background: linear-gradient(to right, #22d3ee, #ffffff, #22d3ee);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
-
-  /* 4. The Animation (Locked Timing) */
-  /* Linear timing ensures constant speed */
-  animation: global-sheen-pass 8s linear infinite;
-  /* Force synchronization */
-  animation-play-state: running;
-  animation-delay: 0s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes global-sheen-pass {
-  /* Move from Far Left to Far Right in Screen Space */
-  from { background-position-x: -200vw; }
-  to { background-position-x: 200vw; }
+  color: transparent;
+  animation: sheen-flow 3s linear infinite;
 }
 
 /* Purple variant of text sheen */
 .text-sheen-purple {
-  display: inline-block;
-  color: transparent;
-  background-size: 200vw 100%;
-  background-image: linear-gradient(
-    115deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.9) 48%,
-    rgba(168, 85, 247, 1) 50%,
-    rgba(255, 255, 255, 0.9) 52%,
-    transparent 60%
-  );
+  position: relative;
+  background: linear-gradient(to right, #a855f7, #ffffff, #a855f7);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: global-sheen-pass 8s linear infinite;
-  animation-play-state: running;
-  animation-delay: 0s;
-  animation-fill-mode: forwards;
+  color: transparent;
+  animation: sheen-flow 3s linear infinite;
+}
+
+@keyframes sheen-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .text-sheen,
   .text-sheen-purple {
     animation: none;
-    background-position-x: 0vw;
+    background-position: 50% 50%;
   }
 } 
  /* Text Sheen Overlay - Works WITH existing gradient text styles */
@@ -1266,7 +1026,6 @@ html.light canvas {
 .text-sheen-overlay {
   position: relative;
   display: inline-block;
-  width: fit-content;
   isolation: isolate;
 }
 
@@ -1278,22 +1037,20 @@ html.light canvas {
   width: 50%;
   height: 100%;
   background: linear-gradient(
-    110deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.9) 45%,
-    rgba(34, 211, 238, 0.9) 50%,
-    rgba(255, 255, 255, 0.9) 55%,
-    transparent 60%
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
   );
-  animation: sheen-pass-overlay 6s ease-in-out infinite;
-  animation-delay: 0s !important;
+  transform: skewX(-25deg);
+  animation: sheen-pass-overlay 3s infinite;
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
 @keyframes sheen-pass-overlay {
   0% {
-    left: -200%;
+    left: -100%;
   }
   20% {
     left: 200%;
@@ -1401,45 +1158,4 @@ html.light canvas {
 .hud-corner-br::after {
     bottom: -2px;
     right: -2px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   CYBER CIRCUIT BORDERS - Decorative corner brackets for containers
-   ═══════════════════════════════════════════════════════════════════ */
-.cyber-border {
-  position: relative;
-}
-
-.cyber-border::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-top: 2px solid #22d3ee;
-  border-left: 2px solid #22d3ee;
-  pointer-events: none;
-}
-
-.cyber-border::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  border-bottom: 2px solid #22d3ee;
-  border-right: 2px solid #22d3ee;
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   FINAL OVERRIDE TO STOP SPLITTING
-   Prevents mid-word breaks in all text elements
-   ═══════════════════════════════════════════════════════════════════ */
-p, h1, h2, h3, h4, h5, h6, span {
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    hyphens: none !important;
 }
