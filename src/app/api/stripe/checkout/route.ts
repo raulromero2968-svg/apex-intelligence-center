@@ -20,6 +20,7 @@ import {
   handleApiError,
 } from '@/lib/errors';
 import { z } from 'zod';
+import { enforceMinorProtection } from '@/lib/compliance/minorProtection';
 
 /**
  * SECURITY: Request schema only accepts priceId
@@ -31,6 +32,10 @@ const checkoutSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    // MINOR PROTECTION: Block minors from accessing payment features
+    const minorCheck = await enforceMinorProtection(req);
+    if (minorCheck) return minorCheck;
+
     // SECURITY: Reject any request containing subscription tier fields
     const bodyText = await req.text();
     let body: any;

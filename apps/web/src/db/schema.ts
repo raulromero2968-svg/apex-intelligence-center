@@ -3,125 +3,11 @@
  *
  * This schema includes the TCG RAG system for provenance-tracked market intelligence
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
- *
- * ARCHITECTURE: Lazy Relations Pattern
- * -------------------------------------
- * To prevent circular import issues (common cause of `notNull` errors), this schema
- * follows the lazy relations pattern:
- * 1. Base tables (users, cards) are defined FIRST
- * 2. Dependent tables are defined AFTER their dependencies
- * 3. All relations are defined in a separate section AFTER all tables
- *
- * This breaks circular dependency cycles while preserving type safety.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
-
-// ============================================================================
-// CUSTOM TYPES - pgvector support
-// ============================================================================
-
-/**
- * Custom vector column type for pgvector extension
- * Properly integrates with Drizzle's type system to avoid circular import issues
- */
-const vector = customType<{ data: number[]; driverData: string; config: { dimensions: number } }>({
-  dataType(config) {
-    return `vector(${config?.dimensions ?? 1536})`;
-  },
-  toDriver(value: number[]): string {
-    return JSON.stringify(value);
-  },
-  fromDriver(value: string): number[] {
-    if (typeof value === 'string') {
-      // Handle PostgreSQL vector format: [1,2,3] or (1,2,3)
-      const cleaned = value.replace(/[\[\]()]/g, '');
-      return cleaned.split(',').map(Number);
-    }
-    return value as unknown as number[];
-  },
-});
-
-// ============================================================================
-// BASE TABLES - Define first to avoid circular references
-// ============================================================================
-
-/**
- * Users table - Base user management with Stripe subscription support
- * MUST be defined first as many other tables reference it
- */
-export const users = pgTable('users', {
-  id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  name: text('name'),
-  stripeCustomerId: text('stripe_customer_id'),
-  stripeSubscriptionId: text('stripe_subscription_id'),
-  subscriptionTier: text('subscription_tier', {
-    enum: ['free', 'pro', 'enterprise']
-  }).default('free').notNull(),
-  subscriptionStatus: text('subscription_status', {
-    enum: ['active', 'canceled', 'past_due', 'trialing']
-  }),
-  subscriptionEndsAt: timestamp('subscription_ends_at'),
-  breakModeUntil: timestamp('break_mode_until'),
-  breakModeActivatedBy: text('break_mode_activated_by', {
-    enum: ['child', 'parent']
-  }),
-  // Trust Score System (13_LAUNCH_02)
-  trustScore: integer('trust_score').default(10).notNull(),
-  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
-  phoneVerified: boolean('phone_verified').default(false).notNull(),
-  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
-  walletAddress: text('wallet_address'), // Base wallet for NFT
-  // Parent Dashboard (PROMPT_06) - Self-reference for parent-child hierarchy
-  parentId: text('parent_id'),
-  accountType: text('account_type', {
-    enum: ['parent', 'child', 'independent']
-  }).default('independent').notNull(),
-  accountFrozen: boolean('account_frozen').default(false).notNull(),
-  accountFrozenAt: timestamp('account_frozen_at'),
-  accountFrozenBy: text('account_frozen_by'), // Parent user ID
-  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
-  bedtimeStart: text('bedtime_start'), // HH:MM format
-  bedtimeEnd: text('bedtime_end'), // HH:MM format
-  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
-  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
-
-/**
- * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
- * MUST be defined early as many tables reference it
- */
-export const cards = pgTable('cards', {
-  id: text('id').primaryKey(), // cuid format
-  name: text('name').notNull(),
-  setName: text('set_name').notNull(),
-  cardNumber: text('card_number').notNull(),
-  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
-  artist: text('artist'),
-  rarity: text('rarity'),
-  tcgplayerId: integer('tcgplayer_id'),
-  scryfallId: text('scryfall_id'),
-  justTcgId: text('just_tcg_id'),
-  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
-  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
-  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
-  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
-  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
-  nameIdx: index('idx_cards_name').on(table.name),
-  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
-}));
-
-// ============================================================================
-// STANDALONE TABLES - No foreign key dependencies
-// ============================================================================
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -146,6 +32,17 @@ export const collection_items = pgTable('collection_items', {
   collection_id: uuid('collection_id').references(() => collections.id).notNull(),
   item_id: text('item_id').notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Intel items for general market data
+export const intel_items = pgTable('intel_items', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  source: text('source').notNull(),
+  data: jsonb('data').notNull(),
+  observed_at: timestamp('observed_at').notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
 /**
@@ -190,8 +87,8 @@ export const tcg_documents = pgTable('tcg_documents', {
 export const market_knowledge = pgTable('market_knowledge', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  // pgvector extension - 1536 dimensions for OpenAI text-embedding-3-large
-  embedding: vector('embedding', { dimensions: 1536 }),
+  // Vector embedding - using custom type to work around Drizzle type issues
+  embedding: sql<number[]>`vector(1536)`.notNull(),
 
   // Market sentiment (enum enforced at DB level via CHECK constraint)
   sentiment: text('sentiment', {
@@ -245,119 +142,36 @@ export const market_knowledge = pgTable('market_knowledge', {
     .on(table.created_at),
 }));
 
+// ============================================================================
+// PRODUCTION TCG MARKET DATA MODELS
+// ============================================================================
+
 /**
- * Multi-Modal Embeddings table for AI-powered video generation
- *
- * Stores multi-modal embeddings for images (CLIP) and audio (Wav2Vec2) to enable
- * RAG-based retrieval for personalized video generation. Supports hybrid search
- * for finding similar faces, poses, expressions, and voice characteristics.
- *
- * Features:
- * - Vector embeddings (512-dim for CLIP, 768-dim for Wav2Vec2)
- * - Support for both image and audio modalities
- * - User-specific embeddings for personalization
- * - File storage references (S3/local)
- * - HNSW indexing for fast similarity search
+ * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
  */
-export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // User reference for personalization
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-
-  // Modality type (image or audio)
-  type: text('type', {
-    enum: ['image', 'audio']
-  }).notNull(),
-
-  // pgvector extension - 768 dimensions for CLIP/Wav2Vec2 embeddings
-  // Dimension varies by type: image (CLIP ViT-B/32): 512, audio (Wav2Vec2): 768
-  // Using 768 to accommodate both (images will be padded/truncated if needed)
-  embedding: vector('embedding', { dimensions: 768 }),
-
-  // File storage reference (S3 URL or local path)
-  fileUrl: text('file_url').notNull(),
-
-  // Additional metadata (facial landmarks, audio features, etc.)
-  metadata: jsonb('metadata').$type<{
-    filename?: string;
-    fileSize?: number;
-    mimeType?: string;
-    duration?: number; // for audio
-    width?: number; // for images
-    height?: number; // for images
-    faceLandmarks?: any; // facial landmarks for face embeddings
-    emotionScores?: any; // emotion detection results
-    voiceCharacteristics?: any; // pitch, tone, etc.
-    [key: string]: any;
-  }>().notNull().default({}),
-
-  // Timestamps
+export const cards = pgTable('cards', {
+  id: text('id').primaryKey(), // cuid format
+  name: text('name').notNull(),
+  setName: text('set_name').notNull(),
+  cardNumber: text('card_number').notNull(),
+  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
+  artist: text('artist'),
+  rarity: text('rarity'),
+  tcgplayerId: integer('tcgplayer_id'),
+  scryfallId: text('scryfall_id'),
+  justTcgId: text('just_tcg_id'),
+  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
+  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
+  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
+  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
-  // Index on user for quick user-specific queries
-  userIdx: index('idx_multimodal_user').on(table.userId),
-  // Index on type for filtering by modality
-  typeIdx: index('idx_multimodal_type').on(table.type),
-  // Composite index for common query patterns
-  userTypeIdx: index('idx_multimodal_user_type').on(table.userId, table.type),
-  // Timestamp index for temporal queries
-  createdAtIdx: index('idx_multimodal_created_at').on(table.createdAt),
-  // HNSW index for vector similarity (created in migration)
-  // embeddingIdx: index('idx_multimodal_embedding').on(table.embedding).using('hnsw'),
+  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
+  nameIdx: index('idx_cards_name').on(table.name),
+  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
 }));
-
-/**
- * Video Generation Requests - Track video generation jobs
- *
- * Stores metadata about video generation requests including script,
- * settings, status, and output file references.
- */
-export const videoGenerationRequests = pgTable('video_generation_requests', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // User reference
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-
-  // Request parameters
-  script: text('script').notNull(),
-  setting: text('setting').notNull(), // e.g., "cyberpunk", "professional", "casual"
-  duration: integer('duration').notNull(), // in seconds
-
-  // Status tracking
-  status: text('status', {
-    enum: ['pending', 'processing', 'completed', 'failed']
-  }).default('pending').notNull(),
-
-  // Output references
-  outputUrl: text('output_url'), // S3 URL or local path to generated video
-
-  // Processing metadata
-  processingStartedAt: timestamp('processing_started_at'),
-  processingCompletedAt: timestamp('processing_completed_at'),
-  errorMessage: text('error_message'),
-
-  // RAG retrieval metadata (which embeddings were used)
-  retrievalMetadata: jsonb('retrieval_metadata').$type<{
-    imageEmbeddingIds?: string[];
-    audioEmbeddingIds?: string[];
-    similarityScores?: number[];
-    [key: string]: any;
-  }>(),
-
-  // Timestamps
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  userIdx: index('idx_video_gen_user').on(table.userId),
-  statusIdx: index('idx_video_gen_status').on(table.status),
-  createdAtIdx: index('idx_video_gen_created_at').on(table.createdAt),
-}));
-
-// ============================================================================
-// CARD-DEPENDENT TABLES - Reference cards table
-// ============================================================================
 
 /**
  * Prices table - Market prices from JustTCG, TCGPlayer, Cardmarket, etc.
@@ -426,28 +240,33 @@ export const populationReports = pgTable('population_reports', {
   uniquePop: uniqueIndex('idx_pop_unique').on(table.cardId, table.gradingCompany, table.lastUpdated),
 }));
 
-// ============================================================================
-// USER-DEPENDENT TABLES - Reference users table
-// ============================================================================
-
 /**
- * Session History - Tracks user session activity for parent monitoring
+ * Users table - Basic user management with Stripe subscription support
  */
-export const sessionHistory = pgTable('session_history', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  sessionStart: timestamp('session_start').notNull(),
-  sessionEnd: timestamp('session_end'),
-  durationMinutes: integer('duration_minutes'),
-  pagesViewed: integer('pages_viewed').default(0).notNull(),
-  cardsViewed: jsonb('cards_viewed').$type<string[]>().default([]).notNull(),
-  actionsPerformed: jsonb('actions_performed').$type<Array<{ type: string; timestamp: string; details?: any }>>().default([]).notNull(),
-  deviceInfo: jsonb('device_info').$type<{ userAgent?: string; platform?: string; isMobile?: boolean }>(),
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name'),
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  subscriptionTier: text('subscription_tier', {
+    enum: ['free', 'pro', 'enterprise']
+  }).default('free').notNull(),
+  subscriptionStatus: text('subscription_status', {
+    enum: ['active', 'canceled', 'past_due', 'trialing']
+  }),
+  subscriptionEndsAt: timestamp('subscription_ends_at'),
+  breakModeUntil: timestamp('break_mode_until'),
+  breakModeActivatedBy: text('break_mode_activated_by', {
+    enum: ['child', 'parent']
+  }),
+  birthDate: timestamp('birth_date'),
+  isMinor: boolean('is_minor').default(false).notNull(),
+  parentalConsentGiven: boolean('parental_consent_given').default(false).notNull(),
+  parentalConsentDate: timestamp('parental_consent_date'),
+  parentalGuardianEmail: text('parental_guardian_email'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => ({
-  userIdx: index('idx_session_history_user').on(table.userId),
-  sessionStartIdx: index('idx_session_history_start').on(table.sessionStart),
-}));
+});
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -462,7 +281,6 @@ export const watchlistItems = pgTable('watchlist_items', {
   triggeredAt: timestamp('triggered_at'),
   notified: boolean('notified').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdx: index('idx_watchlist_user').on(table.userId),
   cardIdx: index('idx_watchlist_card').on(table.cardId),
@@ -609,8 +427,8 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
 export const cardForensics = pgTable('card_forensics', {
   id: uuid('id').defaultRandom().primaryKey(),
   cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  // pgvector extension - 768 dimensions for CLIP ViT-L/14 embeddings
-  embedding: vector('embedding', { dimensions: 768 }),
+  // pgvector extension - stores as vector(768) for CLIP ViT-L/14
+  embedding: sql`vector(768)`,
   reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
   detectedDefects: jsonb('detected_defects').notNull().default({}),
   authenticityScore: real('authenticity_score').notNull(),
@@ -652,101 +470,6 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
   cardActiveIdx: index('idx_manipulation_card_active').on(table.cardId, table.isActive),
   severityIdx: index('idx_manipulation_severity').on(table.severity),
   detectedAtIdx: index('idx_manipulation_detected').on(table.detectedAt),
-}));
-
-/**
- * Market Submissions - Crowdsourced sale data from users
- *
- * Architecture: 13_LAUNCH_02
- * Users submit verified sales with proof (receipt/PWCC link/Goldin link)
- * VARC validates card identity from uploaded images
- * Trust score system prevents spam and fake submissions
- */
-export const marketSubmissions = pgTable('market_submissions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  price: real('price').notNull(),
-  currency: text('currency').notNull().default('USD'),
-  saleDate: timestamp('sale_date').notNull(),
-  grade: text('grade'),
-  gradingCompany: text('grading_company'),
-  certNumber: text('cert_number'),
-  proofUrl: text('proof_url').notNull(), // S3 URL or external link
-  proofType: text('proof_type', {
-    enum: ['receipt', 'auction_link', 'marketplace_screenshot']
-  }).notNull(),
-  status: text('status', {
-    enum: ['pending', 'approved', 'rejected']
-  }).default('pending').notNull(),
-  verifiedByVarc: boolean('verified_by_varc').default(false).notNull(),
-  varcConfidence: real('varc_confidence'), // 0.0-1.0
-  reviewedBy: text('reviewed_by'), // Admin user ID
-  reviewedAt: timestamp('reviewed_at'),
-  rejectionReason: text('rejection_reason'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  userIdx: index('idx_submissions_user').on(table.userId),
-  cardIdx: index('idx_submissions_card').on(table.cardId),
-  statusIdx: index('idx_submissions_status').on(table.status),
-  createdIdx: index('idx_submissions_created').on(table.createdAt),
-}));
-
-/**
- * Spend Tracking - Tracks all payment transactions for spend limit enforcement
- *
- * Implements unbreakable daily ($50) and weekly ($200) spend limits across:
- * - Stripe payments (subscriptions, one-time)
- * - On-chain payments (crypto)
- *
- * Uses rolling windows: 24h for daily, 7d for weekly
- */
-export const spendTracking = pgTable('spend_tracking', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-
-  // Transaction details
-  amountUsd: real('amount_usd').notNull(), // Normalized to USD
-  paymentType: text('payment_type', {
-    enum: ['stripe', 'onchain']
-  }).notNull(),
-
-  // Payment-specific identifiers
-  stripePaymentIntentId: text('stripe_payment_intent_id'),
-  stripeChargeId: text('stripe_charge_id'),
-  onchainTxHash: text('onchain_tx_hash'),
-  onchainNetwork: text('onchain_network'), // 'ethereum', 'polygon', etc.
-
-  // Status tracking
-  status: text('status', {
-    enum: ['pending', 'completed', 'failed', 'refunded']
-  }).notNull().default('pending'),
-
-  // Metadata
-  metadata: jsonb('metadata').$type<{
-    currency?: string;
-    originalAmount?: number;
-    usdRate?: number;
-    productId?: string;
-    description?: string;
-    [key: string]: any;
-  }>().default({}),
-
-  // Timestamps
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  completedAt: timestamp('completed_at'),
-
-}, (table) => ({
-  // Critical indexes for spend limit queries
-  userCreatedIdx: index('idx_spend_tracking_user_created').on(table.userId, table.createdAt),
-  userStatusIdx: index('idx_spend_tracking_user_status').on(table.userId, table.status),
-  stripePaymentIntentIdx: index('idx_spend_tracking_stripe_pi').on(table.stripePaymentIntentId),
-  onchainTxIdx: index('idx_spend_tracking_onchain_tx').on(table.onchainTxHash),
-  createdAtIdx: index('idx_spend_tracking_created').on(table.createdAt),
-  // Unique constraints to prevent double-counting
-  uniqueStripePayment: uniqueIndex('idx_spend_tracking_stripe_unique').on(table.stripePaymentIntentId),
-  uniqueOnchainTx: uniqueIndex('idx_spend_tracking_onchain_unique').on(table.onchainTxHash, table.onchainNetwork),
 }));
 
 /**
@@ -862,7 +585,6 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   makerVotes: many(makerVotes),
   cardForensics: many(cardForensics),
   manipulationAlerts: many(manipulationAlerts),
-  marketSubmissions: many(marketSubmissions),
 }));
 
 /**
@@ -923,33 +645,11 @@ export const holdingsRelations = relations(holdings, ({ one }) => ({
 /**
  * Users relations
  */
-export const usersRelations = relations(users, ({ one, many }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   portfolios: many(portfolios),
   alertSubscriptions: many(alertSubscriptions),
   pushSubscriptions: many(pushSubscriptions),
   watchlistItems: many(watchlistItems),
-  marketSubmissions: many(marketSubmissions),
-  sessionHistory: many(sessionHistory),
-  multiModalEmbeddings: many(multiModalEmbeddings),
-  videoGenerationRequests: many(videoGenerationRequests),
-  parentLinks: many(familyLinks, { relationName: 'parent' }),
-  childLinks: many(familyLinks, { relationName: 'child' }),
-  spendTracking: many(spendTracking),
-  parent: one(users, {
-    fields: [users.parentId],
-    references: [users.id],
-  }),
-  children: many(users),
-}));
-
-/**
- * Session History relations
- */
-export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
-  user: one(users, {
-    fields: [sessionHistory.userId],
-    references: [users.id],
-  }),
 }));
 
 /**
@@ -1025,30 +725,6 @@ export const manipulationAlertsRelations = relations(manipulationAlerts, ({ one 
 }));
 
 /**
- * Market Submissions relations
- */
-export const marketSubmissionsRelations = relations(marketSubmissions, ({ one }) => ({
-  user: one(users, {
-    fields: [marketSubmissions.userId],
-    references: [users.id],
-  }),
-  card: one(cards, {
-    fields: [marketSubmissions.cardId],
-    references: [cards.id],
-  }),
-}));
-
-/**
- * Spend Tracking relations
- */
-export const spendTrackingRelations = relations(spendTracking, ({ one }) => ({
-  user: one(users, {
-    fields: [spendTracking.userId],
-    references: [users.id],
-  }),
-}));
-
-/**
  * MAKER Tasks relations
  */
 export const makerTasksRelations = relations(makerTasks, ({ many }) => ({
@@ -1069,168 +745,6 @@ export const makerVotesRelations = relations(makerVotes, ({ one }) => ({
   }),
 }));
 
-/**
- * Multi-Modal Embeddings relations
- */
-export const multiModalEmbeddingsRelations = relations(multiModalEmbeddings, ({ one }) => ({
-  user: one(users, {
-    fields: [multiModalEmbeddings.userId],
-    references: [users.id],
-  }),
-}));
-
-/**
- * Video Generation Requests relations
- */
-export const videoGenerationRequestsRelations = relations(videoGenerationRequests, ({ one }) => ({
-  user: one(users, {
-    fields: [videoGenerationRequests.userId],
-    references: [users.id],
-  }),
-}));
-
-// ============================================================================
-// PARENT DASHBOARD TABLES
-// ============================================================================
-
-/**
- * Family Links - OAuth-based parent-child account linking
- *
- * Allows parents to link child accounts for supervision and monitoring.
- * Uses OAuth flow for secure authorization.
- */
-export const familyLinks = pgTable('family_links', {
-  id: text('id').primaryKey(),
-  parentId: text('parent_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  status: text('status', {
-    enum: ['pending', 'active', 'revoked']
-  }).default('pending').notNull(),
-  // OAuth tokens for accessing child's data
-  accessToken: text('access_token'),
-  refreshToken: text('refresh_token'),
-  tokenExpiresAt: timestamp('token_expires_at'),
-  // Child cannot revoke this link
-  childCannotRevoke: boolean('child_cannot_revoke').default(true).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  parentIdx: index('idx_family_links_parent').on(table.parentId),
-  childIdx: index('idx_family_links_child').on(table.childId),
-  statusIdx: index('idx_family_links_status').on(table.status),
-  uniqueParentChild: uniqueIndex('idx_family_links_parent_child_unique').on(table.parentId, table.childId),
-}));
-
-/**
- * Parental Controls - Per-child control settings
- *
- * Stores all parental control configurations including:
- * - Bedtime mode (disables trading during specified hours)
- * - Cool down mode (enforces waiting periods between trades)
- * - Notification controls (parent can disable child's notifications)
- */
-export const parentalControls = pgTable('parental_controls', {
-  id: text('id').primaryKey(),
-  familyLinkId: text('family_link_id').notNull().references(() => familyLinks.id, { onDelete: 'cascade' }),
-  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-
-  // Bedtime mode
-  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
-  bedtimeStart: text('bedtime_start'), // e.g., "21:00"
-  bedtimeEnd: text('bedtime_end'), // e.g., "07:00"
-  bedtimeTimezone: text('bedtime_timezone').default('America/New_York'),
-
-  // Cool down mode
-  coolDownEnabled: boolean('cool_down_enabled').default(false).notNull(),
-  coolDownMinutes: integer('cool_down_minutes').default(30), // Minutes between actions
-
-  // Notification controls
-  notificationsDisabled: boolean('notifications_disabled').default(false).notNull(),
-  disabledChannels: jsonb('disabled_channels').$type<string[]>().default([]), // ["email", "push", "discord"]
-
-  // Activity limits
-  dailyTradingLimit: integer('daily_trading_limit'), // Max trades per day
-  maxPortfolioValue: real('max_portfolio_value'), // Max USD value
-
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  childIdx: index('idx_parental_controls_child').on(table.childId),
-  familyLinkIdx: index('idx_parental_controls_family_link').on(table.familyLinkId),
-  uniqueChild: uniqueIndex('idx_parental_controls_child_unique').on(table.childId),
-}));
-
-/**
- * Child Activity History - Tracks child activity for parent monitoring
- *
- * Records all significant child activities for real-time monitoring and history review.
- */
-export const childActivityHistory = pgTable('child_activity_history', {
-  id: text('id').primaryKey(),
-  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-
-  // Activity details
-  activityType: text('activity_type').notNull(), // "login" | "trade" | "watchlist_add" | "alert_set" | "portfolio_update"
-  activityData: jsonb('activity_data').$type<Record<string, any>>().notNull(),
-
-  // Context
-  ipAddress: text('ip_address'),
-  userAgent: text('user_agent'),
-  deviceInfo: jsonb('device_info'),
-
-  // Timestamps
-  timestamp: timestamp('timestamp').defaultNow().notNull(),
-
-  // Parental control enforcement
-  blockedByBedtime: boolean('blocked_by_bedtime').default(false).notNull(),
-  blockedByCoolDown: boolean('blocked_by_cool_down').default(false).notNull(),
-
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => ({
-  childTimestampIdx: index('idx_child_activity_history_child_timestamp').on(table.childId, table.timestamp.desc()),
-  activityTypeIdx: index('idx_child_activity_history_activity_type').on(table.activityType),
-  timestampIdx: index('idx_child_activity_history_timestamp').on(table.timestamp.desc()),
-}));
-
-/**
- * Family Links relations
- */
-export const familyLinksRelations = relations(familyLinks, ({ one, many }) => ({
-  parent: one(users, {
-    fields: [familyLinks.parentId],
-    references: [users.id],
-  }),
-  child: one(users, {
-    fields: [familyLinks.childId],
-    references: [users.id],
-  }),
-  parentalControls: many(parentalControls),
-}));
-
-/**
- * Parental Controls relations
- */
-export const parentalControlsRelations = relations(parentalControls, ({ one }) => ({
-  familyLink: one(familyLinks, {
-    fields: [parentalControls.familyLinkId],
-    references: [familyLinks.id],
-  }),
-  child: one(users, {
-    fields: [parentalControls.childId],
-    references: [users.id],
-  }),
-}));
-
-/**
- * Child Activity History relations
- */
-export const childActivityHistoryRelations = relations(childActivityHistory, ({ one }) => ({
-  child: one(users, {
-    fields: [childActivityHistory.childId],
-    references: [users.id],
-  }),
-}));
-
 // ============================================================================
 // TypeScript types for better DX
 // ============================================================================
@@ -1239,6 +753,8 @@ export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;
 export type CollectionItem = typeof collection_items.$inferSelect;
 export type NewCollectionItem = typeof collection_items.$inferInsert;
+export type IntelItem = typeof intel_items.$inferSelect;
+export type NewIntelItem = typeof intel_items.$inferInsert;
 export type TcgDocument = typeof tcg_documents.$inferSelect;
 export type NewTcgDocument = typeof tcg_documents.$inferInsert;
 
@@ -1252,8 +768,6 @@ export type PopulationReport = typeof populationReports.$inferSelect;
 export type NewPopulationReport = typeof populationReports.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-export type SessionHistory = typeof sessionHistory.$inferSelect;
-export type NewSessionHistory = typeof sessionHistory.$inferInsert;
 export type WatchlistItem = typeof watchlistItems.$inferSelect;
 export type NewWatchlistItem = typeof watchlistItems.$inferInsert;
 export type Portfolio = typeof portfolios.$inferSelect;
@@ -1284,20 +798,40 @@ export type MarketKnowledge = typeof market_knowledge.$inferSelect;
 export type NewMarketKnowledge = typeof market_knowledge.$inferInsert;
 export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
 export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
-export type MarketSubmission = typeof marketSubmissions.$inferSelect;
-export type NewMarketSubmission = typeof marketSubmissions.$inferInsert;
-export type MultiModalEmbedding = typeof multiModalEmbeddings.$inferSelect;
-export type NewMultiModalEmbedding = typeof multiModalEmbeddings.$inferInsert;
-export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
-export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
-export type FamilyLink = typeof familyLinks.$inferSelect;
-export type NewFamilyLink = typeof familyLinks.$inferInsert;
-export type ParentalControl = typeof parentalControls.$inferSelect;
-export type NewParentalControl = typeof parentalControls.$inferInsert;
-export type ChildActivityHistory = typeof childActivityHistory.$inferSelect;
-export type NewChildActivityHistory = typeof childActivityHistory.$inferInsert;
-export type SpendTracking = typeof spendTracking.$inferSelect;
-export type NewSpendTracking = typeof spendTracking.$inferInsert;
+export type VaultEvent = typeof vaultEvents.$inferSelect;
+export type NewVaultEvent = typeof vaultEvents.$inferInsert;
+
+// ============================================================================
+// FOUNDING MEMBER NFT CLAIMS
+// ============================================================================
+
+/**
+ * Founding Member NFT Claims table
+ *
+ * Tracks founding member NFT claims to prevent duplicate claims per user
+ */
+export const foundingMemberClaims = pgTable('founding_member_claims', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').references(() => users.id).notNull(),
+  walletAddress: text('wallet_address').notNull(),
+  tier: text('tier').notNull(),
+  txHash: text('tx_hash'),
+  tokenId: text('token_id'),
+  chainId: integer('chain_id'),
+  gasPaidByPaymaster: boolean('gas_paid_by_paymaster').default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  // Unique constraint: one claim per user
+  userIdIdx: uniqueIndex('idx_founding_member_claims_user_id').on(table.userId),
+  // Index for wallet lookups
+  walletAddressIdx: index('idx_founding_member_claims_wallet_address').on(table.walletAddress),
+  // Index for transaction lookups
+  txHashIdx: index('idx_founding_member_claims_tx_hash').on(table.txHash),
+}));
+
+export type FoundingMemberClaim = typeof foundingMemberClaims.$inferSelect;
+export type NewFoundingMemberClaim = typeof foundingMemberClaims.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
