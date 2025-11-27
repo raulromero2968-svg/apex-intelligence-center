@@ -11,7 +11,7 @@ export const revalidate = 0;
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { childActivityHistory, familyLinks, watchlistItems, portfolios, holdings, cards } from '@/db/schema';
-import { eq, and, desc, gte } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import {
   AuthenticationError,

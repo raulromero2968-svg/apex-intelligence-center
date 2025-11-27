@@ -68,8 +68,13 @@ export async function multiModalVectorSearch(
     conditions.push(eq(multiModalEmbeddings.type, type));
   }
 
-  // Construct the query with vector similarity
-  const embeddingString = `[${embedding.join(',')}]`;
+  // Validate embedding is array of finite numbers to prevent SQL injection
+  if (!Array.isArray(embedding) || !embedding.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+    throw new Error('Invalid embedding vector: must be an array of finite numbers');
+  }
+
+  // Construct the query with vector similarity (using validated vector)
+  const vectorLiteral = `'[${embedding.join(',')}]'::vector`;
 
   const results = await db
     .select({
@@ -80,11 +85,11 @@ export async function multiModalVectorSearch(
       metadata: multiModalEmbeddings.metadata,
       createdAt: multiModalEmbeddings.createdAt,
       // Calculate cosine similarity (1 - cosine_distance)
-      similarity: sql<number>`1 - (${multiModalEmbeddings.embedding} <=> ${embeddingString}::vector)`,
+      similarity: sql<number>`1 - (${multiModalEmbeddings.embedding} <=> ${sql.raw(vectorLiteral)})`,
     })
     .from(multiModalEmbeddings)
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(sql`${multiModalEmbeddings.embedding} <=> ${embeddingString}::vector`)
+    .orderBy(sql`${multiModalEmbeddings.embedding} <=> ${sql.raw(vectorLiteral)}`)
     .limit(limit);
 
   // Filter by minimum similarity

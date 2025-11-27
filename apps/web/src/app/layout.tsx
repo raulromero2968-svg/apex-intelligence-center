@@ -2,19 +2,15 @@ import type { Metadata } from 'next';
 
 import { Toaster } from 'sonner';
 
-import AuroraFX from '@/components/fx/AuroraFX';
-
-import BackgroundFX from '@/components/fx/BackgroundFX';
-
-import BackgroundStack from '@/components/fx/BackgroundStack';
+import StarfieldFX from '@/components/fx/StarfieldFX';
 
 import { CustomCursor } from '@/components/cursor/CustomCursor';
 
 import { TopBanner } from '@/components/nav/TopBanner';
 
-import { AnimatedBackground } from '@/components/background/AnimatedBackground';
 
-import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
+import { LayoutFooter } from '@/components/footer/LayoutFooter';
+
 
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -36,24 +32,26 @@ import { cn } from '@/lib/utils';
 
 import { generateAllSchemas, toScriptTag, getFacts } from '@/lib/jsonld';
 
-import { SoundProvider } from '@/contexts/SoundContext';
-
-import '@fontsource/jetbrains-mono';
-
 import '@/styles/animations.css';
 
 import './globals.css';
 
 
 // Load facts from central registry
-
 const facts = getFacts();
+
+// Resolve base URL for absolute OG image URLs (Twitter/X requires absolute URLs)
+const baseUrl = facts.links.website || 'https://www.apexintelligence.io';
 
 
 
 // Default metadata - uses facts registry where available, with fallbacks
 
 export const metadata: Metadata = {
+
+  // CRITICAL: metadataBase resolves relative URLs to absolute URLs for OG images
+  // Twitter/X requires absolute URLs to fetch OG images correctly
+  metadataBase: new URL(baseUrl),
 
   // Base metadata - using facts registry
 
@@ -112,91 +110,58 @@ export const metadata: Metadata = {
 
 
   // OpenGraph metadata for rich social cards
-
+  // CRITICAL: Using explicit absolute URLs for maximum Twitter/X compatibility
+  // Static thumbnail for faster CDN serving and reliable social previews
   openGraph: {
-
     type: 'website',
-
     locale: 'en_US',
-
-    siteName: facts.product.name || 'TCG Intelligence Center',
-
-    title: facts.product.fullName || 'TCG Intelligence Center - Market Intelligence Platform',
-
-    description: facts.product.description || 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
-
+    url: baseUrl,
+    siteName: 'Apex Intelligence',
+    title: 'Apex Intelligence - TCG Market Intelligence Platform',
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
     images: [
-
       {
-
-        url: '/api/og', // Dynamic OG image endpoint
-
+        // Primary: Static OG thumbnail for reliable social previews
+        url: `${baseUrl}/og-thumbnail.png`,
+        secureUrl: `${baseUrl}/og-thumbnail.png`,
         width: 1200,
-
         height: 630,
-
-        alt: facts.organization.tagline || 'TCG Intelligence Center - Underground Intel For Serious Collectors',
-
+        alt: 'Apex Intelligence - TCG Market Intelligence Platform',
         type: 'image/png',
-
       },
-
     ],
+  },
 
+  // Canonical URL for SEO
+  alternates: {
+    canonical: baseUrl,
   },
 
 
 
-  // Twitter Card metadata
-
+  // Twitter Card metadata - optimized for large thumbnail display on X
+  // CRITICAL: Twitter requires explicit absolute URLs and summary_large_image for thumbnails
+  // Using static thumbnail for reliable X/Twitter previews
   twitter: {
-
     card: 'summary_large_image',
-
-    title: facts.product.fullName || 'TCG Intelligence Center',
-
-    description: facts.product.description || 'Data-driven market analysis for TCG investors',
-
-    images: ['/api/og'],
-
-    creator: '@tcgintel',
-
+    title: 'Apex Intelligence - TCG Market Intelligence Platform',
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon. VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
+    // Static thumbnail for reliable X/Twitter crawlers
+    images: [`${baseUrl}/og-thumbnail.png`],
+    creator: facts.social.twitter || '@ApexIntel',
+    site: facts.social.twitter || '@ApexIntel',
   },
-
-
-
-  // Verification tags (add actual values when available)
-
-  // verification: {
-
-  //   google: 'google-site-verification-code',
-
-  //   yandex: 'yandex-verification-code',
-
-  // },
 
 
 
   // App-specific metadata
-
   applicationName: facts.product.name || 'TCG Intelligence Center',
 
-
-
-  // Alternate languages (if internationalization is added)
-
-  // alternates: {
-
-  //   canonical: '/',
-
-  //   languages: {
-
-  //     'en-US': '/en-US',
-
-  //   },
-
-  // },
-
+  // Additional OG meta properties for broader compatibility
+  other: {
+    'og:image:width': '1200',
+    'og:image:height': '630',
+  },
 };
 
 
@@ -245,14 +210,34 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
+          'min-h-screen bg-black text-foreground antialiased cursor-none flex flex-col relative overflow-x-hidden',
 
           fontSans.className,
 
         )}
 
       >
-        <SoundProvider>
+
+        {/* LAYER 1: DEEP SPACE BASE (Fixed) */}
+        <div className="fixed inset-0 z-[-10] bg-[#020617]" />
+
+        {/* LAYER 2: STARFIELD (Animated Canvas - Cyan/Purple themed) */}
+        <StarfieldFX />
+
+        {/* LAYER 3: MATRIX GRID (Bright Cyan) */}
+        <div
+          className="fixed inset-0 z-[-8] opacity-40 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(34, 211, 238, 0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(34, 211, 238, 0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}
+        />
+
+
+
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
           Skip to main content
@@ -261,13 +246,6 @@ export default function RootLayout({
 
 
 
-        {/* Permanent Equilibrium Banner - Non-dismissible */}
-
-        <div className="fixed inset-x-0 top-0 z-[60] bg-cyan-500/10 backdrop-blur border-b border-cyan-500/40 text-center text-[10px] sm:text-xs md:text-sm text-cyan-300 font-semibold tracking-wide py-2 shadow-lg">
-
-          PRODUCTION EQUILIBRIUM ACHIEVED – NOVEMBER 19 2025
-
-        </div>
 
 
 
@@ -277,45 +255,16 @@ export default function RootLayout({
 
 
 
-        {/* Top Banner */}
-
-        <TopBanner />
-
-
-
-        {/* Starfield Galaxy Background */}
-
-        <StarfieldBackground />
+        {/* Pinned Navigation - Fixed to top with high z-index and glassmorphism */}
+        <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+          <TopBanner />
+        </header>
 
 
 
-        {/* Animated Background */}
+        {/* Theme Toggle - Disabled temporarily (moved to footer) */}
 
-        <AnimatedBackground />
-
-
-
-        {/* Aurora Background */}
-
-        <AuroraFX />
-
-
-
-        {/* Animated Background FX */}
-
-        <BackgroundFX />
-
-
-
-        {/* Additional Background Layers (Starfield, Kanji River, Shooting Squares) */}
-
-        <BackgroundStack />
-
-
-
-        {/* Theme Toggle */}
-
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
 
 
@@ -339,11 +288,9 @@ export default function RootLayout({
 
 
 
-        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
+        {/* Layout Footer - hidden on homepage */}
 
-          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
-
-        </footer>
+        <LayoutFooter />
 
 
 
@@ -406,7 +353,7 @@ export default function RootLayout({
         {/* Reality Check Modal - Triggers every 2h active session */}
 
         <RealityCheckProvider />
-        </SoundProvider>
+
       </body>
 
     </html>

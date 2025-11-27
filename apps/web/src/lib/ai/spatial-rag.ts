@@ -407,7 +407,15 @@ async function hybridSpatialSearch(
 ): Promise<Array<SpatialEmbedding & { similarity: number }>> {
   // Use pgvector for semantic similarity
   // Note: This query assumes pgvector extension is enabled
-  const vectorStr = `[${queryVector.join(',')}]`;
+
+  // Validate vector is array of numbers to prevent SQL injection
+  if (!Array.isArray(queryVector) || !queryVector.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+    throw new Error('Invalid query vector: must be an array of finite numbers');
+  }
+
+  // Format vector string and use sql.raw for the pre-validated value
+  // This is safe because we've validated all elements are finite numbers
+  const vectorLiteral = `'[${queryVector.join(',')}]'::vector`;
 
   const results = await db
     .select({
@@ -422,12 +430,12 @@ async function hybridSpatialSearch(
       metadata: spatialEmbeddings.metadata,
       createdAt: spatialEmbeddings.createdAt,
       updatedAt: spatialEmbeddings.updatedAt,
-      // Calculate cosine similarity using pgvector
-      similarity: sql<number>`1 - (embedding <=> ${vectorStr}::vector)`.as('similarity'),
+      // Calculate cosine similarity using pgvector with validated vector
+      similarity: sql<number>`1 - (embedding <=> ${sql.raw(vectorLiteral)})`.as('similarity'),
     })
     .from(spatialEmbeddings)
     .where(eq(spatialEmbeddings.contextType, contextType))
-    .orderBy(sql`embedding <=> ${vectorStr}::vector`)
+    .orderBy(sql`embedding <=> ${sql.raw(vectorLiteral)}`)
     .limit(topK);
 
   return results.map((r) => ({
