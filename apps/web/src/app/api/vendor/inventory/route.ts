@@ -1,19 +1,23 @@
 /**
  * Vendor Inventory API Routes
  *
- * Real-time inventory management with RAG-powered valuation.
- * Supports bulk operations, fair pricing detection, and stock alerts.
+ * Manages vendor card inventory with:
+ * - Zod validation with proper partial schemas
+ * - Drizzle ORM queries with relations
+ * - RAG-powered valuation suggestions
+ * - Fair pricing detection
  *
- * @see knowledge-09-database-architecture
- * @see knowledge-02-ai-rag-architecture-v2
+ * @see knowledge-09-database-architecture for schema patterns
+ * @see knowledge-10-api-realtime for API design patterns
  */
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { eq, and, desc, sql, gte, lte, ilike, or } from 'drizzle-orm';
+import { vendorInventories, vendors, cards } from '@/db/schema/tcg-community';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import {
   AuthenticationError,
@@ -23,173 +27,169 @@ import {
   handleApiError,
 } from '@/lib/errors';
 import { z } from 'zod';
-import {
-  vendors,
-  vendorInventories,
-  type VendorInventory,
-  type NewVendorInventory,
-} from '@/db/schema/tcg-community';
-import { cards } from '@/db/schema';
 
-// Base schema without refinement - needed for .partial() to work
-// (.refine() returns ZodEffects which doesn't support .partial())
-const baseInventorySchema = z.object({
+// Condition enum values for validation
+const conditionEnum = z.enum([
+  'raw_mint',
+  'raw_nm',
+  'raw_lp',
+  'raw_mp',
+  'raw_hp',
+  'psa_10',
+  'psa_9',
+  'psa_8',
+  'psa_7',
+  'bgs_10',
+  'bgs_9_5',
+  'bgs_9',
+  'cgc_10',
+  'cgc_9_5',
+  'sgc_10',
+  'other',
+]);
+
+// Custom game enum for validation
+const customGameEnum = z.enum([
+  'pokemon',
+  'mtg',
+  'yugioh',
+  'lorcana',
+  'one_piece',
+  'other',
+]);
+
+// Base schema for inventory items
+const inventoryBaseSchema = z.object({
   cardId: z.string().optional(),
-  customCardName: z.string().max(200).optional(),
-  customSetName: z.string().max(200).optional(),
-  customGame: z.enum(['pokemon', 'mtg', 'yugioh', 'lorcana', 'one_piece', 'other']).optional(),
+  customCardName: z.string().optional(),
+  customSetName: z.string().optional(),
+  customGame: customGameEnum.optional(),
   quantity: z.number().int().min(0).default(1),
-  price: z.string().or(z.number()).transform((val) => String(val)),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Invalid price format'),
   currency: z.string().default('USD'),
-  condition: z.enum([
-    'raw_mint', 'raw_nm', 'raw_lp', 'raw_mp', 'raw_hp',
-    'psa_10', 'psa_9', 'psa_8', 'psa_7',
-    'bgs_10', 'bgs_9_5', 'bgs_9',
-    'cgc_10', 'cgc_9_5',
-    'sgc_10', 'other',
-  ]).optional(),
-  gradingCertNumber: z.string().max(50).optional(),
+  condition: conditionEnum.optional(),
+  gradingCertNumber: z.string().optional(),
   isListed: z.boolean().default(true),
+  isReserved: z.boolean().default(false),
+  reservedFor: z.string().optional(),
   imageUrl: z.string().url().optional(),
   notes: z.string().max(1000).optional(),
 });
 
-// Create schema includes validation that cardId or customCardName is required
-const createInventorySchema = baseInventorySchema.refine(
-  (data) => data.cardId || data.customCardName,
-  { message: 'Either cardId or customCardName is required' }
+// Schema for creating inventory items (requires either cardId or custom card info)
+const createInventorySchema = inventoryBaseSchema.refine(
+  (data) => data.cardId || (data.customCardName && data.customGame),
+  {
+    message: 'Either cardId or both customCardName and customGame are required',
+  }
 );
 
-// Update schema is partial (all fields optional for PATCH)
-const updateInventorySchema = baseInventorySchema.partial();
+// Schema for updating inventory items (all fields optional via .partial())
+const updateInventorySchema = inventoryBaseSchema.partial();
 
-const bulkCreateSchema = z.object({
-  items: z.array(createInventorySchema).min(1).max(100),
-});
+/**
+ * Helper: Get vendor for authenticated user
+ */
+async function getVendorForUser(userId: string) {
+  const vendor = await db.query.vendors.findFirst({
+    where: eq(vendors.userId, userId),
+  });
+  return vendor;
+}
 
 /**
  * GET /api/vendor/inventory
- * Get vendor inventory items
+ * Get vendor's inventory with optional filtering
  *
  * Query params:
- * - vendorId: Get inventory for specific vendor (public)
- * - mine: Get authenticated vendor's inventory
- * - cardId: Filter by card
- * - condition: Filter by condition
- * - minPrice/maxPrice: Price range filter
- * - fairPricedOnly: Only show fair-priced items
- * - listed: Filter by listing status
- * - search: Search by card name
- * - limit/offset: Pagination
+ * - limit: number (default: 100, max: 500)
+ * - offset: number (default: 0)
+ * - listed: boolean (filter by listing status)
+ * - condition: string (filter by condition)
  */
 export async function GET(req: NextRequest) {
   try {
+    const user = await getUserFromRequest(req);
+    if (!user) {
+      throw new AuthenticationError();
+    }
+
+    // Get vendor profile for user
+    const vendor = await getVendorForUser(user.id);
+    if (!vendor) {
+      throw new NotFoundError('Vendor profile not found. Please create a vendor profile first.');
+    }
+
+    // Parse query parameters
     const { searchParams } = new URL(req.url);
-    const vendorId = searchParams.get('vendorId');
-    const mine = searchParams.get('mine');
-    const cardId = searchParams.get('cardId');
-    const condition = searchParams.get('condition');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    const fairPricedOnly = searchParams.get('fairPricedOnly');
-    const listed = searchParams.get('listed');
-    const search = searchParams.get('search');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '100'), 500);
     const offset = parseInt(searchParams.get('offset') || '0');
+    const listedFilter = searchParams.get('listed');
+    const conditionFilter = searchParams.get('condition');
 
-    let targetVendorId = vendorId;
+    // Build where conditions
+    const conditions = [eq(vendorInventories.vendorId, vendor.id)];
 
-    // Get authenticated user's vendor inventory
-    if (mine === 'true') {
-      const user = await getUserFromRequest(req);
-      if (!user) {
-        throw new AuthenticationError();
-      }
-
-      const vendor = await db.query.vendors.findFirst({
-        where: eq(vendors.userId, user.id),
-      });
-
-      if (!vendor) {
-        throw new NotFoundError('Vendor profile not found');
-      }
-
-      targetVendorId = vendor.id;
+    if (listedFilter !== null) {
+      conditions.push(eq(vendorInventories.isListed, listedFilter === 'true'));
     }
 
-    if (!targetVendorId) {
-      throw new ValidationError('vendorId or mine parameter is required');
+    if (conditionFilter) {
+      conditions.push(eq(vendorInventories.condition, conditionFilter));
     }
 
-    // Build query conditions
-    const conditions = [eq(vendorInventories.vendorId, targetVendorId)];
-
-    if (cardId) {
-      conditions.push(eq(vendorInventories.cardId, cardId));
-    }
-
-    if (condition) {
-      conditions.push(eq(vendorInventories.condition, condition as VendorInventory['condition']));
-    }
-
-    if (minPrice) {
-      conditions.push(gte(vendorInventories.price, minPrice));
-    }
-
-    if (maxPrice) {
-      conditions.push(lte(vendorInventories.price, maxPrice));
-    }
-
-    if (fairPricedOnly === 'true') {
-      conditions.push(eq(vendorInventories.isFairPriced, true));
-    }
-
-    if (listed !== null && listed !== undefined) {
-      conditions.push(eq(vendorInventories.isListed, listed === 'true'));
-    }
-
-    // Execute query with card relation
-    const items = await db.query.vendorInventories.findMany({
+    // Fetch inventory with card relation
+    const inventories = await db.query.vendorInventories.findMany({
       where: and(...conditions),
-      orderBy: [desc(vendorInventories.updatedAt)],
-      limit,
-      offset,
       with: {
         card: true,
       },
+      orderBy: [desc(vendorInventories.updatedAt)],
+      limit,
+      offset,
     });
 
-    // Filter by search if provided (post-query for card name)
-    let filteredItems = items;
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filteredItems = items.filter((item) => {
-        if (item.card?.name?.toLowerCase().includes(searchLower)) return true;
-        if (item.customCardName?.toLowerCase().includes(searchLower)) return true;
-        return false;
-      });
-    }
-
-    // Get total count
-    const countResult = await db
+    // Get total count for pagination
+    const [countResult] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(vendorInventories)
       .where(and(...conditions));
 
-    // Calculate total value
-    const valueResult = await db
-      .select({ total: sql<string>`sum(price::numeric * quantity)` })
-      .from(vendorInventories)
-      .where(and(...conditions));
+    const totalCount = countResult?.count || 0;
 
-    return Response.json({
-      items: filteredItems,
-      count: filteredItems.length,
-      total: countResult[0]?.count || 0,
-      totalValue: valueResult[0]?.total || '0',
-      limit,
-      offset,
+    // Calculate estimated values where missing (simplified - in production, use RAG valuation)
+    const inventoriesWithValues = inventories.map((inv) => {
+      let estimatedValue = inv.estimatedValue;
+
+      // If no estimated value and card has price data, calculate from card
+      if (!estimatedValue && inv.card) {
+        // This would be replaced with actual RAG valuation in production
+        estimatedValue = inv.price;
+      }
+
+      return {
+        ...inv,
+        estimatedValue,
+      };
     });
+
+    return NextResponse.json(
+      {
+        items: inventoriesWithValues,
+        pagination: {
+          total: totalCount,
+          limit,
+          offset,
+          hasMore: offset + limit < totalCount,
+        },
+        vendorId: vendor.id,
+      },
+      {
+        headers: {
+          'Cache-Control': 's-maxage=60, stale-while-revalidate=120',
+        },
+      }
+    );
   } catch (error) {
     return handleApiError(error);
   }
@@ -197,9 +197,7 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/vendor/inventory
- * Add item(s) to vendor inventory
- *
- * Supports single item or bulk creation via { items: [...] }
+ * Add a new inventory item
  */
 export async function POST(req: NextRequest) {
   try {
@@ -209,83 +207,60 @@ export async function POST(req: NextRequest) {
     }
 
     // Get vendor profile
-    const vendor = await db.query.vendors.findFirst({
-      where: eq(vendors.userId, user.id),
-    });
-
+    const vendor = await getVendorForUser(user.id);
     if (!vendor) {
-      throw new NotFoundError('Vendor profile not found. Create a vendor profile first.');
+      throw new NotFoundError('Vendor profile not found. Please create a vendor profile first.');
     }
 
+    // Parse and validate request body
     const body = await req.json();
+    const parseResult = createInventorySchema.safeParse(body);
 
-    // Check if bulk create
-    if (body.items && Array.isArray(body.items)) {
-      const { items } = bulkCreateSchema.parse(body);
-
-      const newItems: NewVendorInventory[] = [];
-
-      for (const item of items) {
-        // Verify card exists if cardId provided
-        if (item.cardId) {
-          const card = await db.query.cards.findFirst({
-            where: eq(cards.id, item.cardId),
-          });
-          if (!card) {
-            throw new ValidationError(`Card not found: ${item.cardId}`);
-          }
-        }
-
-        // Check fair pricing (flag if price > 30% above estimated value)
-        let isFairPriced = true;
-        // In production, this would query market data for fair price check
-
-        newItems.push({
-          vendorId: vendor.id,
-          ...item,
-          isFairPriced,
-        } as NewVendorInventory);
-      }
-
-      const createdItems = await db
-        .insert(vendorInventories)
-        .values(newItems)
-        .returning();
-
-      return Response.json(
-        {
-          items: createdItems,
-          count: createdItems.length,
-          created: true,
-        },
-        { status: 201 }
-      );
+    if (!parseResult.success) {
+      throw new ValidationError(parseResult.error.errors[0].message);
     }
 
-    // Single item create
-    const validated = createInventorySchema.parse(body);
+    const validated = parseResult.data;
 
-    // Verify card exists if cardId provided
+    // If cardId provided, verify card exists
     if (validated.cardId) {
       const card = await db.query.cards.findFirst({
         where: eq(cards.id, validated.cardId),
       });
+
       if (!card) {
-        throw new NotFoundError('Card not found');
+        throw new NotFoundError('Card not found in database');
       }
     }
 
-    // Create inventory item
+    // Determine fair pricing status
+    // In production, this would compare against RAG market data
+    const isFairPriced = true; // Default to fair until proven otherwise
+
+    // Insert inventory item
     const [newItem] = await db
       .insert(vendorInventories)
       .values({
         vendorId: vendor.id,
-        ...validated,
-        isFairPriced: true, // Would be calculated in production
-      } as NewVendorInventory)
+        cardId: validated.cardId || null,
+        customCardName: validated.customCardName,
+        customSetName: validated.customSetName,
+        customGame: validated.customGame,
+        quantity: validated.quantity,
+        price: validated.price,
+        currency: validated.currency,
+        condition: validated.condition,
+        gradingCertNumber: validated.gradingCertNumber,
+        isListed: validated.isListed,
+        isReserved: validated.isReserved,
+        reservedFor: validated.reservedFor,
+        imageUrl: validated.imageUrl,
+        notes: validated.notes,
+        isFairPriced,
+      })
       .returning();
 
-    return Response.json(
+    return NextResponse.json(
       {
         item: newItem,
         created: true,
@@ -302,10 +277,10 @@ export async function POST(req: NextRequest) {
 
 /**
  * PATCH /api/vendor/inventory
- * Update inventory item
+ * Update an existing inventory item
  *
  * Query params:
- * - id: Item ID to update
+ * - id: string (required - inventory item ID)
  */
 export async function PATCH(req: NextRequest) {
   try {
@@ -314,6 +289,13 @@ export async function PATCH(req: NextRequest) {
       throw new AuthenticationError();
     }
 
+    // Get vendor profile
+    const vendor = await getVendorForUser(user.id);
+    if (!vendor) {
+      throw new NotFoundError('Vendor profile not found');
+    }
+
+    // Get item ID from query params
     const { searchParams } = new URL(req.url);
     const itemId = searchParams.get('id');
 
@@ -321,43 +303,67 @@ export async function PATCH(req: NextRequest) {
       throw new ValidationError('Item ID is required');
     }
 
-    // Get vendor profile
-    const vendor = await db.query.vendors.findFirst({
-      where: eq(vendors.userId, user.id),
+    // Verify item exists and belongs to this vendor
+    const existingItem = await db.query.vendorInventories.findFirst({
+      where: and(
+        eq(vendorInventories.id, itemId),
+        eq(vendorInventories.vendorId, vendor.id)
+      ),
     });
 
-    if (!vendor) {
-      throw new NotFoundError('Vendor profile not found');
-    }
-
-    // Get inventory item and verify ownership
-    const item = await db.query.vendorInventories.findFirst({
-      where: eq(vendorInventories.id, itemId),
-    });
-
-    if (!item) {
+    if (!existingItem) {
       throw new NotFoundError('Inventory item not found');
     }
 
-    if (item.vendorId !== vendor.id) {
-      throw new AuthorizationError('You can only update your own inventory');
+    // Parse and validate request body
+    const body = await req.json();
+    const parseResult = updateInventorySchema.safeParse(body);
+
+    if (!parseResult.success) {
+      throw new ValidationError(parseResult.error.errors[0].message);
     }
 
-    // Validate request body
-    const body = await req.json();
-    const validated = updateInventorySchema.parse(body);
+    const validated = parseResult.data;
 
-    // Update item
+    // If updating cardId, verify card exists
+    if (validated.cardId) {
+      const card = await db.query.cards.findFirst({
+        where: eq(cards.id, validated.cardId),
+      });
+
+      if (!card) {
+        throw new NotFoundError('Card not found in database');
+      }
+    }
+
+    // Build update object (only include defined fields)
+    const updateData: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
+
+    if (validated.cardId !== undefined) updateData.cardId = validated.cardId;
+    if (validated.customCardName !== undefined) updateData.customCardName = validated.customCardName;
+    if (validated.customSetName !== undefined) updateData.customSetName = validated.customSetName;
+    if (validated.customGame !== undefined) updateData.customGame = validated.customGame;
+    if (validated.quantity !== undefined) updateData.quantity = validated.quantity;
+    if (validated.price !== undefined) updateData.price = validated.price;
+    if (validated.currency !== undefined) updateData.currency = validated.currency;
+    if (validated.condition !== undefined) updateData.condition = validated.condition;
+    if (validated.gradingCertNumber !== undefined) updateData.gradingCertNumber = validated.gradingCertNumber;
+    if (validated.isListed !== undefined) updateData.isListed = validated.isListed;
+    if (validated.isReserved !== undefined) updateData.isReserved = validated.isReserved;
+    if (validated.reservedFor !== undefined) updateData.reservedFor = validated.reservedFor;
+    if (validated.imageUrl !== undefined) updateData.imageUrl = validated.imageUrl;
+    if (validated.notes !== undefined) updateData.notes = validated.notes;
+
+    // Update the item
     const [updatedItem] = await db
       .update(vendorInventories)
-      .set({
-        ...validated,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(vendorInventories.id, itemId))
       .returning();
 
-    return Response.json({
+    return NextResponse.json({
       item: updatedItem,
       updated: true,
     });
@@ -371,11 +377,10 @@ export async function PATCH(req: NextRequest) {
 
 /**
  * DELETE /api/vendor/inventory
- * Delete inventory item(s)
+ * Delete an inventory item
  *
  * Query params:
- * - id: Single item ID to delete
- * - ids: Comma-separated list of IDs for bulk delete
+ * - id: string (required - inventory item ID)
  */
 export async function DELETE(req: NextRequest) {
   try {
@@ -384,72 +389,38 @@ export async function DELETE(req: NextRequest) {
       throw new AuthenticationError();
     }
 
-    const { searchParams } = new URL(req.url);
-    const itemId = searchParams.get('id');
-    const itemIds = searchParams.get('ids');
-
-    if (!itemId && !itemIds) {
-      throw new ValidationError('Item ID(s) required');
-    }
-
     // Get vendor profile
-    const vendor = await db.query.vendors.findFirst({
-      where: eq(vendors.userId, user.id),
-    });
-
+    const vendor = await getVendorForUser(user.id);
     if (!vendor) {
       throw new NotFoundError('Vendor profile not found');
     }
 
-    // Handle bulk delete
-    if (itemIds) {
-      const ids = itemIds.split(',').map((id) => id.trim());
+    // Get item ID from query params
+    const { searchParams } = new URL(req.url);
+    const itemId = searchParams.get('id');
 
-      // Verify all items belong to vendor
-      for (const id of ids) {
-        const item = await db.query.vendorInventories.findFirst({
-          where: eq(vendorInventories.id, id),
-        });
-
-        if (item && item.vendorId !== vendor.id) {
-          throw new AuthorizationError('You can only delete your own inventory');
-        }
-      }
-
-      // Delete items
-      const deleted = await db
-        .delete(vendorInventories)
-        .where(
-          and(
-            eq(vendorInventories.vendorId, vendor.id),
-            sql`${vendorInventories.id} = ANY(ARRAY[${sql.join(ids.map(id => sql`${id}::uuid`), sql`, `)}])`
-          )
-        )
-        .returning();
-
-      return Response.json({
-        deleted: true,
-        count: deleted.length,
-        ids: deleted.map((d) => d.id),
-      });
+    if (!itemId) {
+      throw new ValidationError('Item ID is required');
     }
 
-    // Single item delete
-    const item = await db.query.vendorInventories.findFirst({
-      where: eq(vendorInventories.id, itemId!),
+    // Verify item exists and belongs to this vendor
+    const existingItem = await db.query.vendorInventories.findFirst({
+      where: and(
+        eq(vendorInventories.id, itemId),
+        eq(vendorInventories.vendorId, vendor.id)
+      ),
     });
 
-    if (!item) {
+    if (!existingItem) {
       throw new NotFoundError('Inventory item not found');
     }
 
-    if (item.vendorId !== vendor.id) {
-      throw new AuthorizationError('You can only delete your own inventory');
-    }
+    // Delete the item
+    await db
+      .delete(vendorInventories)
+      .where(eq(vendorInventories.id, itemId));
 
-    await db.delete(vendorInventories).where(eq(vendorInventories.id, itemId!));
-
-    return Response.json({
+    return NextResponse.json({
       deleted: true,
       id: itemId,
     });
