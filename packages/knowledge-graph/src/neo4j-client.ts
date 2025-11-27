@@ -8,7 +8,7 @@
  * @version 1.0.0
  */
 
-import neo4j, { Driver, Session, Result, Integer } from 'neo4j-driver';
+import neo4j, { Driver, Session, QueryResult, Record as Neo4jRecord } from 'neo4j-driver';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -149,8 +149,8 @@ export class Neo4jClient {
   async read<T = any>(query: string, params: Record<string, any> = {}): Promise<T[]> {
     const session = this.getSession();
     try {
-      const result: Result = await session.run(query, params);
-      return result.records.map((record) => this.transformRecord(record));
+      const result: QueryResult = await session.run(query, params);
+      return result.records.map((record: Neo4jRecord) => this.transformRecord(record));
     } finally {
       await session.close();
     }
@@ -162,8 +162,8 @@ export class Neo4jClient {
   async write<T = any>(query: string, params: Record<string, any> = {}): Promise<T[]> {
     const session = this.getSession();
     try {
-      const result: Result = await session.run(query, params);
-      return result.records.map((record) => this.transformRecord(record));
+      const result: QueryResult = await session.run(query, params);
+      return result.records.map((record: Neo4jRecord) => this.transformRecord(record));
     } finally {
       await session.close();
     }
