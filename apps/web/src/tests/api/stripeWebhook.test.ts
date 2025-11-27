@@ -11,7 +11,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/stripe/webhook/route';
 import { getStripeClient } from '@/server/services/stripeClient';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '@apex/shared';
 
 // Mock dependencies
 vi.mock('@/server/services/stripeClient');
