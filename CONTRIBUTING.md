@@ -1,7 +1,49 @@
-> **Production Equilibrium Achieved – November 19 2025**  
+> **Production Equilibrium Achieved – November 19 2025**
 > All contributions must preserve the six active guardrails and the migration requirement. Any change that breaks schema sync, barrels, LangChain safety, CI, or Sentry release integrity will be rejected.
 
 # Contributing Guide — Deploy Sanity & Pre-Push Ritual
+
+## Codebase Standards
+
+### 1. Import Order
+
+Imports must be ordered as follows:
+
+1. React imports
+2. Next.js imports
+3. External libraries
+4. Internal components (`@/components`)
+5. Internal libraries (`@/lib`)
+6. Internal utilities (`@/utils`)
+7. Stylesheets
+
+### 2. Barrel Files
+
+All modules in `src/lib/` must use a barrel file (`index.ts`) to export their public API. Do not import directly from files within these modules.
+
+**Correct**:
+```typescript
+import { db } from "@/lib/db";
+```
+
+**Incorrect**:
+```typescript
+import { db } from "@/lib/db/client";
+```
+
+### 3. Naming Conventions
+
+- **Components**: PascalCase
+- **Files**: kebab-case
+- **Variables**: camelCase
+- **Types**: PascalCase
+
+### 4. AI Agent Workflow
+
+- Always create a new feature branch from `integration`.
+- Run `pnpm build` locally before creating a pull request.
+- Create a pull request targeting the `integration` branch.
+- Do not merge your own pull requests.
 
 This repo ships with a **Vercel Deploy Sanity Kit**: parity loop, repo tripwires, JS/CSS/route/media budgets, delta + library guards, env audit, and a PR "Deploy Sanity Report." The goal is boring deploys and fast, surgical fixes.
 
