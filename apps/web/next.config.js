@@ -12,7 +12,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true, // Bypass ESLint failure during CI builds
