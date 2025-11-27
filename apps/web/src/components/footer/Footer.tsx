@@ -184,6 +184,18 @@ export const Footer = () => {
             © 2025 Apex Intelligence. All rights reserved.
           </div>
         </div>
+
+        {/* FORCED FOOTER TOGGLE - Bottom Center */}
+        <div className="w-full flex justify-center py-8 border-t border-slate-900/50 mt-12">
+          <div className="flex items-center gap-3 px-4 py-2 bg-slate-950 border border-slate-800 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">System Theme</span>
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_5px_#22d3ee]" /> {/* Active */}
+              <div className="w-3 h-3 rounded-full bg-slate-800" />
+              <div className="w-3 h-3 rounded-full bg-slate-800" />
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );
