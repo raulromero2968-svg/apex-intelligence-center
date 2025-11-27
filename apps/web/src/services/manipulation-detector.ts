@@ -13,10 +13,7 @@ import { db } from '@/db';
 import { sales, cards, market_knowledge, manipulationAlerts, watchlistItems } from '@/db/schema';
 import { eq, and, gte, sql, desc, ilike } from 'drizzle-orm';
 import { contrarianSearch, classifySentiment } from '@/../../../lib/rag/contrarian-rag';
-// Lightweight ID generator to avoid external dependency on @paralleldrive/cuid2.
-// Safe for both Node and edge runtimes.
-const cuid = (): string =>
-  Math.random().toString(36).slice(2) + Date.now().toString(36);
+import { randomUUID } from 'crypto';
 
 export interface ManipulationAlert {
   cardId: string;
@@ -321,7 +318,7 @@ export async function scanAllCardsForManipulation(): Promise<ManipulationAlert[]
  */
 export async function saveManipulationAlert(alert: ManipulationAlert): Promise<string> {
   try {
-    const alertId = cuid();
+    const alertId = randomUUID();
 
     await db.insert(manipulationAlerts).values({
       id: alertId,

@@ -11,7 +11,7 @@
 import { db } from '@/db';
 import { manipulationAlerts } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
+import { randomUUID as createId } from 'crypto';
 import { detectManipulation, ManipulationAlert } from './manipulation-detector';
 import { sendManipulationWarningNotification } from '@/notifications';
 import { pauseAlertsForCard } from './alert-pause.service';
