@@ -375,10 +375,26 @@ export default function HomePage() {
                     GET ALPHA ACCESS
                   </Link>
                   <Link
-                    href="/about"
+                    href="/philosophy"
                     className="btn-tactical inline-flex items-center justify-center gap-2 px-4 py-2 md:px-8 md:py-4 text-[3vw] md:text-sm"
                   >
-                    LEARN MORE
+                    OUR PHILOSOPHY
+                  </Link>
+                </div>
+
+                {/* Additional CTAs */}
+                <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-slate-800/50">
+                  <Link
+                    href="/lab"
+                    className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors"
+                  >
+                    [ EXPLORE_LAB ] →
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="text-slate-400 hover:text-purple-400 font-mono text-xs transition-colors"
+                  >
+                    [ READ_MANIFESTO ] →
                   </Link>
                 </div>
               </div>
@@ -418,9 +434,11 @@ export default function HomePage() {
               <h4 className="font-titan text-sm mb-4">NAVIGATE</h4>
               <ul className="space-y-2">
                 <li><Link href="/intel" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Intel</Link></li>
+                <li><Link href="/lab" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Lab</Link></li>
                 <li><Link href="/portfolio" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Portfolio</Link></li>
                 <li><Link href="/commons" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Commons</Link></li>
                 <li><Link href="/about" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">About</Link></li>
+                <li><Link href="/philosophy" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">Philosophy</Link></li>
               </ul>
             </div>
 
