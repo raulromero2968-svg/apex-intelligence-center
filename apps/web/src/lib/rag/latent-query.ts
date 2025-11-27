@@ -559,4 +559,3 @@ export async function decompressFromLatent(
     client.release();
   }
 }
-

@@ -27,7 +27,6 @@ import {
   AgentExecutionResult,
   MultiAgentResult,
   TaskDefinition,
-  LatentMessage,
   VerificationRequest,
   VerificationResult,
   VisualCodeRequest,
@@ -38,7 +37,6 @@ import {
 import {
   generateLatentQueries,
   compressForAgentComm,
-  decompressFromLatent,
   latentRAG,
 } from '../rag/latent-query';
 
@@ -785,4 +783,3 @@ ${ragResults.documents.slice(0, 3).map((d) => `- ${d.content.slice(0, 500)}...`)
 
   return orchestrator.execute(task);
 }
-
