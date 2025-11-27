@@ -1,306 +1,410 @@
 /**
- * Agent Type Definitions
+ * Multi-Agent Framework Types
  *
- * Core types for multi-agent configuration, state management, and task results.
- * These types are used across the agent system for TCG reasoning and analysis.
+ * Type definitions for the evolved transformer multi-agent system.
+ * Inspired by Ilya Sutskever's insights on multi-agent self-play
+ * and David Shapiro's Cognitive Primitives.
  *
- * Trade-offs:
- * - GOOD: Strong typing enables IDE support and compile-time safety
- * - BAD: Type imports may add bundle size; mitigate with tree-shaking
+ * Key Concepts:
+ * - Latent communication between agents (LatentMAS)
+ * - High-dimensional reasoning (Pigeon Paradox)
+ * - Verification and consensus mechanisms
  *
- * @see multi-agent.ts for implementation
- * @see livelihood-agent.ts for extended agent types
+ * @module agents/types
  */
 
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-import type { Tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
 // ============================================================================
-// CORE AGENT TYPES
+// AGENT ROLE DEFINITIONS
 // ============================================================================
 
 /**
- * Configuration for a single agent in the multi-agent system
+ * Agent role types in the multi-agent system
  */
-export interface MultiAgentConfig {
-  /** Unique identifier for the agent */
-  name: string;
-  /** LangChain chat model instance for this agent */
-  llm: BaseChatModel;
-  /** Array of tools available to this agent */
-  tools: Tool[];
-  /** Optional system prompt for the agent */
-  systemPrompt?: string;
-  /** Optional temperature override */
-  temperature?: number;
-  /** Optional max tokens override */
-  maxTokens?: number;
-}
+export type AgentRole =
+  | 'debater'      // Analyzes market perspectives, generates arguments
+  | 'visualizer'   // Generates visual code, UI components, charts
+  | 'verifier'     // Validates claims, checks consistency (Pigeon Paradox)
+  | 'researcher'   // Deep dives into specific topics, RAG queries
+  | 'synthesizer'  // Combines insights from multiple agents
+  | 'critic';      // Provides contrarian viewpoints
 
 /**
- * State maintained across multi-agent evolution pipeline
+ * Agent status in the execution pipeline
  */
-export interface MultiAgentState {
-  /** Original query or task being processed */
-  query: string;
-  /** Optional latent query representation for RAG efficiency */
-  latent?: LatentRepresentation;
-  /** Outputs from each agent, keyed by agent name */
-  outputs: Record<string, string>;
-  /** Optional metadata for tracking */
-  metadata?: {
-    startTime?: number;
-    tokensUsed?: number;
-    userId?: string;
-  };
-}
+export type AgentStatus =
+  | 'idle'
+  | 'thinking'
+  | 'executing'
+  | 'waiting'
+  | 'completed'
+  | 'failed';
 
 /**
- * Latent representation for compressed query storage
+ * Communication mode between agents
  */
-export interface LatentRepresentation {
-  /** Vector embedding of the latent query */
-  vector: number[];
-  /** Optional metadata about the latent representation */
-  metadata?: {
-    originalQuery?: string;
-    compressed?: boolean;
-    dimensions?: number;
-  };
-}
+export type CommunicationMode =
+  | 'full_text'    // Traditional text messages
+  | 'latent'       // Compressed latent vectors (LatentMAS)
+  | 'hybrid';      // Text + latent metadata
 
 // ============================================================================
-// TASK AND RESULT TYPES
+// AGENT CONFIGURATION
 // ============================================================================
 
 /**
- * Result from a task execution
+ * Zod schema for agent configuration validation
  */
-export interface TaskResult {
-  /** Status of the task execution */
-  status: 'success' | 'failure' | 'pending' | 'processing';
-  /** Output data from the task */
-  output?: string;
-  /** Error message if status is 'failure' */
-  error?: string;
-  /** Execution metrics */
-  metrics?: {
-    executionTimeMs: number;
-    tokensUsed: number;
-    agentsInvolved: string[];
-  };
-}
+export const AgentConfigSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  role: z.enum(['debater', 'visualizer', 'verifier', 'researcher', 'synthesizer', 'critic']),
+  model: z.string().default('gpt-4-turbo'),
+  temperature: z.number().min(0).max(2).default(0.7),
+  maxTokens: z.number().default(4096),
+  systemPrompt: z.string().optional(),
+  tools: z.array(z.string()).default([]),
+  communicationMode: z.enum(['full_text', 'latent', 'hybrid']).default('hybrid'),
+  priority: z.number().default(1),
+  timeout: z.number().default(30000), // 30 seconds
+});
+
+export type AgentConfig = z.infer<typeof AgentConfigSchema>;
+
+// ============================================================================
+// AGENT STATE
+// ============================================================================
 
 /**
- * Configuration for agent-based task execution
+ * Agent state during execution
  */
-export interface AgentTaskConfig {
-  /** Unique ID for the task */
+export interface AgentState {
   id: string;
-  /** Human-readable name */
-  name: string;
-  /** Description of what this task does */
-  description?: string;
-  /** Priority level (lower = higher priority) */
-  priority?: number;
-  /** Maximum execution time in milliseconds */
-  timeoutMs?: number;
-  /** Whether to retry on failure */
-  retryOnFailure?: boolean;
-  /** Maximum retry attempts */
-  maxRetries?: number;
+  role: AgentRole;
+  status: AgentStatus;
+  lastOutput: string | null;
+  latentState: number[] | null; // Compressed state for inter-agent comm
+  context: {
+    task: string;
+    previousOutputs: Map<string, string>;
+    sharedKnowledge: Record<string, any>;
+  };
+  metrics: {
+    startTime: number;
+    endTime: number | null;
+    tokenCount: number;
+    latencyMs: number;
+  };
+  error: string | null;
 }
 
 // ============================================================================
-// TOOL TYPES
+// TASK DEFINITIONS
 // ============================================================================
 
 /**
- * Result from a tool invocation
+ * Multi-agent task types
  */
-export interface ToolResult {
-  /** Name of the tool that was invoked */
-  toolName: string;
-  /** Input provided to the tool */
-  input: string;
-  /** Output from the tool */
-  output: string;
-  /** Whether the tool execution succeeded */
+export type TaskType =
+  | 'market_analysis'      // Analyze market trends for TCG
+  | 'visual_code_gen'      // Generate/fix visual code
+  | 'visual_debug'         // Debug visual rendering issues
+  | 'price_prediction'     // Predict card prices
+  | 'sentiment_analysis'   // Analyze market sentiment
+  | 'arbitrage_scan'       // Find arbitrage opportunities
+  | 'custom';              // Custom task
+
+/**
+ * Zod schema for task definition
+ */
+export const TaskDefinitionSchema = z.object({
+  id: z.string(),
+  type: z.enum([
+    'market_analysis',
+    'visual_code_gen',
+    'visual_debug',
+    'price_prediction',
+    'sentiment_analysis',
+    'arbitrage_scan',
+    'custom',
+  ]),
+  description: z.string(),
+  input: z.record(z.any()),
+  requiredAgents: z.array(z.enum([
+    'debater', 'visualizer', 'verifier', 'researcher', 'synthesizer', 'critic',
+  ])),
+  config: z.object({
+    maxIterations: z.number().default(5),
+    consensusThreshold: z.number().default(0.8),
+    enableLatentComm: z.boolean().default(true),
+    parallelExecution: z.boolean().default(true),
+    timeout: z.number().default(120000), // 2 minutes
+  }).optional(),
+});
+
+export type TaskDefinition = z.infer<typeof TaskDefinitionSchema>;
+
+// ============================================================================
+// EXECUTION RESULTS
+// ============================================================================
+
+/**
+ * Individual agent execution result
+ */
+export interface AgentExecutionResult {
+  agentId: string;
+  role: AgentRole;
   success: boolean;
-  /** Execution duration in milliseconds */
-  durationMs?: number;
+  output: string;
+  latentVector: number[] | null;
+  confidence: number;
+  reasoning: string[];
+  citations: Array<{
+    type: string;
+    id: string;
+    content: string;
+  }>;
+  metrics: {
+    tokenCount: number;
+    latencyMs: number;
+    modelUsed: string;
+  };
+  error: string | null;
 }
 
 /**
- * Configuration for custom TCG-specific tools
+ * Multi-agent task execution result
  */
-export interface TCGToolConfig {
-  /** Tool name identifier */
-  name: string;
-  /** Human-readable description for the LLM */
-  description: string;
-  /** Whether this tool requires authentication */
-  requiresAuth?: boolean;
-  /** Rate limit per minute */
-  rateLimitPerMinute?: number;
-}
-
-// ============================================================================
-// EVOLUTION TYPES
-// ============================================================================
-
-/**
- * Result from multi-agent evolution pipeline
- */
-export interface EvolutionResult {
-  /** Final evolved output */
+export interface MultiAgentResult {
+  taskId: string;
+  taskType: TaskType;
+  success: boolean;
   finalOutput: string;
-  /** Intermediate outputs from each agent */
-  intermediateOutputs: Record<string, string>;
-  /** Whether consensus was reached among agents */
-  consensusReached: boolean;
-  /** Confidence score for the final output (0-1) */
-  confidenceScore: number;
-  /** List of agents that participated */
-  participatingAgents: string[];
-  /** Execution metrics */
-  executionMetrics: {
-    totalTimeMs: number;
+  consensus: {
+    achieved: boolean;
+    score: number;
+    disagreements: Array<{
+      agentId: string;
+      position: string;
+      confidence: number;
+    }>;
+  };
+  agentResults: AgentExecutionResult[];
+  verification: {
+    verified: boolean;
+    verifierAgentId: string;
+    issues: string[];
+    confidence: number;
+  } | null;
+  metadata: {
+    totalLatencyMs: number;
     totalTokens: number;
-    latentQueriesUsed: number;
+    iterationCount: number;
+    latentCommUsed: boolean;
   };
 }
 
-/**
- * Options for the evolution pipeline
- */
-export interface EvolutionOptions {
-  /** Maximum number of evolution iterations */
-  maxIterations?: number;
-  /** Whether to use latent query compression */
-  useLatentCompression?: boolean;
-  /** Minimum confidence threshold to accept result */
-  confidenceThreshold?: number;
-  /** Whether to include verification step */
-  includeVerification?: boolean;
-  /** User ID for personalization */
-  userId?: string;
-}
-
 // ============================================================================
-// LEGACY COMPATIBILITY TYPES
+// VISUAL CODE GENERATION TYPES
 // ============================================================================
 
 /**
- * Legacy AgentConfig type for backwards compatibility
- * @deprecated Use MultiAgentConfig instead
- */
-export type AgentConfig = {
-  id?: string;
-  name: string;
-  llm?: BaseChatModel;
-  tools?: Tool[];
-};
-
-// Re-export for convenience
-export type { BaseChatModel, Tool };
-
-// ============================================================================
-// API ROUTE COMPATIBILITY TYPES
-// ============================================================================
-
-/**
- * Task definition for multi-agent orchestration
- */
-export interface TaskDefinition {
-  /** Unique task identifier */
-  id: string;
-  /** Task type for routing */
-  type: string;
-  /** Human-readable description */
-  description: string;
-  /** Input data for the task */
-  input: Record<string, any>;
-  /** Required agent roles for execution */
-  requiredAgents: string[];
-  /** Task-specific configuration */
-  config?: {
-    maxIterations?: number;
-    consensusThreshold?: number;
-    timeoutMs?: number;
-    [key: string]: any;
-  };
-}
-
-/**
- * Request for visual code generation
+ * Visual code generation request
  */
 export interface VisualCodeRequest {
-  /** Description of the visual component to generate */
   description: string;
-  /** Type of component (e.g., 'starfield', 'chart', 'animation') */
-  componentType: string;
-  /** Target framework (e.g., 'react', 'threejs', 'canvas') */
-  framework: 'react' | 'threejs' | 'canvas' | 'svg';
-  /** Existing code to modify or extend */
+  componentType: 'starfield' | 'chart' | 'card' | 'animation' | 'custom';
+  framework: 'react' | 'three' | 'canvas' | 'svg';
   existingCode?: string;
-  /** Enable debug output */
   debugMode?: boolean;
-  /** Design constraints */
   constraints?: {
-    width?: number;
-    height?: number;
-    colors?: string[];
+    maxFileSize?: number;
     performance?: 'low' | 'medium' | 'high';
+    accessibility?: boolean;
   };
 }
 
 /**
- * Request for claim verification
+ * Visual code generation result
+ */
+export interface VisualCodeResult {
+  code: string;
+  language: 'typescript' | 'javascript';
+  componentName: string;
+  dependencies: string[];
+  explanation: string;
+  performanceNotes: string[];
+  testCases?: Array<{
+    name: string;
+    description: string;
+    code: string;
+  }>;
+}
+
+// ============================================================================
+// PIGEON PARADOX VERIFICATION
+// ============================================================================
+
+/**
+ * High-dimensional verification request (Pigeon Paradox)
+ *
+ * AI reasons in 11k+ dimensions, but humans need 3D visualization.
+ * This structure captures the verification of high-dim reasoning.
  */
 export interface VerificationRequest {
-  /** The claim to verify */
   claim: string;
-  /** Supporting evidence */
-  evidence: string | string[];
-  /** Context for verification */
-  context: string;
-  /** Specific verification criteria */
-  verificationCriteria?: string[];
+  evidence: Array<{
+    source: string;
+    content: string;
+    confidence: number;
+  }>;
+  context: {
+    domain: string;
+    timeframe?: string;
+    entities: string[];
+  };
+  verificationCriteria: Array<{
+    criterion: string;
+    weight: number;
+  }>;
 }
 
 /**
- * Task templates for common operations
+ * Verification result with human-interpretable explanation
+ */
+export interface VerificationResult {
+  verified: boolean;
+  confidence: number;
+  highDimScore: number; // Raw AI confidence
+  humanInterpretation: string; // 3D/human-understandable explanation
+  criteriaResults: Array<{
+    criterion: string;
+    passed: boolean;
+    score: number;
+    explanation: string;
+  }>;
+  warnings: string[];
+  recommendations: string[];
+}
+
+// ============================================================================
+// LATENT COMMUNICATION
+// ============================================================================
+
+/**
+ * Latent message for inter-agent communication
+ */
+export interface LatentMessage {
+  senderId: string;
+  receiverId: string | null; // null = broadcast
+  vector: number[];
+  metadata: {
+    messageType: 'instruction' | 'observation' | 'result' | 'query' | 'feedback';
+    priority: number;
+    timestamp: Date;
+    expiresAt?: Date;
+  };
+  // Optional text fallback for debugging
+  textFallback?: string;
+}
+
+/**
+ * Latent communication channel
+ */
+export interface LatentChannel {
+  taskId: string;
+  participants: string[];
+  messages: LatentMessage[];
+  sharedLatentSpace: number[][]; // Accumulated knowledge
+}
+
+// ============================================================================
+// DEFAULT AGENT CONFIGURATIONS
+// ============================================================================
+
+/**
+ * Default configurations for each agent role
+ */
+export const DEFAULT_AGENT_CONFIGS: Record<AgentRole, Partial<AgentConfig>> = {
+  debater: {
+    model: 'gpt-4-turbo',
+    temperature: 0.8,
+    systemPrompt: `You are a market analyst debater. Analyze TCG market data and form well-reasoned arguments.
+Present both bullish and bearish perspectives with evidence. Be objective and data-driven.`,
+  },
+  visualizer: {
+    model: 'gpt-4-turbo',
+    temperature: 0.6,
+    tools: ['code_execution', 'image_generation'],
+    systemPrompt: `You are a visual code generator specializing in React, Three.js, and Canvas.
+Generate clean, performant, accessible code for visual components.
+Focus on 60fps animations and GPU optimization.`,
+  },
+  verifier: {
+    model: 'gpt-4-turbo',
+    temperature: 0.3,
+    systemPrompt: `You are a verification agent implementing the Pigeon Paradox principle.
+Verify claims by checking logical consistency, evidence quality, and potential biases.
+Flag any unverifiable high-dimensional reasoning.`,
+  },
+  researcher: {
+    model: 'gpt-4-turbo',
+    temperature: 0.5,
+    tools: ['rag_search', 'web_search'],
+    systemPrompt: `You are a deep research agent. Use RAG and external sources to gather comprehensive information.
+Always cite sources and assess reliability.`,
+  },
+  synthesizer: {
+    model: 'gpt-4-turbo',
+    temperature: 0.6,
+    systemPrompt: `You are a synthesis agent. Combine insights from multiple agents into coherent, actionable intelligence.
+Resolve conflicts and highlight consensus points.`,
+  },
+  critic: {
+    model: 'gpt-4-turbo',
+    temperature: 0.9,
+    systemPrompt: `You are a contrarian critic. Challenge assumptions, identify weaknesses, and stress-test conclusions.
+Be constructively critical and suggest improvements.`,
+  },
+};
+
+// ============================================================================
+// TASK TEMPLATES
+// ============================================================================
+
+/**
+ * Pre-defined task templates for common operations
  */
 export const TASK_TEMPLATES: Record<string, Partial<TaskDefinition>> = {
   market_analysis: {
     type: 'market_analysis',
-    requiredAgents: ['debater', 'researcher', 'synthesizer'],
+    requiredAgents: ['researcher', 'debater', 'synthesizer', 'verifier'],
     config: {
       maxIterations: 3,
       consensusThreshold: 0.7,
+      enableLatentComm: true,
+      parallelExecution: true,
     },
   },
-  visual_generation: {
-    type: 'visual_generation',
-    requiredAgents: ['visualizer', 'verifier'],
+  visual_debug: {
+    type: 'visual_debug',
+    requiredAgents: ['visualizer', 'verifier', 'critic'],
     config: {
-      maxIterations: 2,
+      maxIterations: 5,
+      consensusThreshold: 0.9,
+      enableLatentComm: false,
+      parallelExecution: false,
     },
   },
-  claim_verification: {
-    type: 'claim_verification',
-    requiredAgents: ['researcher', 'verifier', 'critic'],
+  price_prediction: {
+    type: 'price_prediction',
+    requiredAgents: ['researcher', 'debater', 'critic', 'synthesizer', 'verifier'],
     config: {
-      maxIterations: 2,
+      maxIterations: 4,
       consensusThreshold: 0.8,
-    },
-  },
-  opportunity_discovery: {
-    type: 'opportunity_discovery',
-    requiredAgents: ['discoverer', 'researcher', 'synthesizer'],
-    config: {
-      maxIterations: 3,
+      enableLatentComm: true,
+      parallelExecution: true,
     },
   },
 };

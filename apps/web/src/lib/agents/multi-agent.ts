@@ -1,762 +1,788 @@
 /**
- * Multi-Agent Coordination Module
+ * Multi-Agent Framework for Evolved Transformers
  *
- * Provides agent evolution and task processing capabilities for TCG reasoning.
- * Implements a pipeline of specialized agents (debater, visualizer, verifier)
- * with latent query integration for efficient RAG operations.
+ * Implements a multi-agent system inspired by:
+ * - Ilya Sutskever: Evolved transformers via multi-agent self-play
+ * - LatentMAS (DAIR.AI): Latent space communication between agents
+ * - David Shapiro: Cognitive Primitives and Pigeon Paradox
+ * - Jensen Huang: GPU-accelerated AI inference
  *
- * Trade-offs:
- * - GOOD: Modular agents for scalability; tools extend functionality
- * - GOOD: Latent integration reduces token usage across agent chain
- * - BAD: Latency from sequential calls; parallelize in production via WebSockets
- * - BAD: Tool dependencies add complexity; mitigate with careful error handling
+ * Key Features:
+ * - Parallel agent execution with consensus
+ * - Latent communication for efficiency
+ * - Pigeon Paradox verification
+ * - Visual code generation and debugging
  *
- * @see livelihood-agent.ts for the primary agent implementation
- * @see latent-query.ts for RAG integration
+ * @module agents/multi-agent
  */
 
 import { ChatOpenAI } from '@langchain/openai';
-import { ChatAnthropic } from '@langchain/anthropic';
-import { Tool, StructuredTool } from '@langchain/core/tools';
-import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages';
-import { generateLatentQueries, type LatentQuery } from '@/lib/rag/latent-query';
-import type {
-  MultiAgentConfig,
-  MultiAgentState,
-  EvolutionResult,
-  EvolutionOptions,
-  TaskResult,
-} from './types';
-import { z } from 'zod';
+import { Pool } from 'pg';
 import * as Sentry from '@sentry/nextjs';
 
-// ============================================================================
-// CUSTOM TCG TOOLS
-// ============================================================================
-
-/**
- * TCG Valuation Tool - Provides card valuation via RAG
- */
-class TCGValuationTool extends Tool {
-  name = 'tcg-valuation';
-  description =
-    'Valuates TCG cards using market data and RAG. Input should be a card name or identifier.';
-
-  async _call(input: string): Promise<string> {
-    try {
-      // In production, this would query the RAG system for valuation data
-      // For now, return a structured placeholder response
-      const latents = await generateLatentQueries(`TCG valuation for: ${input}`, {
-        numPerspectives: 2,
-        storeInDb: false,
-      });
-
-      if (latents.length > 0) {
-        return JSON.stringify({
-          card: input,
-          estimatedValue: 'See detailed analysis',
-          confidence: 0.8,
-          factors: ['Market trends', 'Condition', 'Rarity', 'Demand'],
-          source: 'Apex Intelligence RAG',
-        });
-      }
-
-      return JSON.stringify({
-        card: input,
-        error: 'Unable to retrieve valuation data',
-        suggestion: 'Try with a more specific card name',
-      });
-    } catch (error) {
-      console.error('[TCG_VALUATION_ERROR]', error);
-      return JSON.stringify({ error: 'Valuation service temporarily unavailable' });
-    }
-  }
-}
-
-/**
- * TCG Market Trends Tool - Analyzes market patterns
- */
-class TCGMarketTrendsTool extends Tool {
-  name = 'tcg-market-trends';
-  description =
-    'Analyzes market trends for TCG categories or specific cards. Input should be a market segment or card type.';
-
-  async _call(input: string): Promise<string> {
-    try {
-      return JSON.stringify({
-        segment: input,
-        trend: 'analyzing',
-        indicators: {
-          priceMovement: 'stable',
-          volumeTrend: 'increasing',
-          sentiment: 'positive',
-        },
-        timeframe: '30 days',
-        source: 'Apex Market Analytics',
-      });
-    } catch (error) {
-      console.error('[TCG_TRENDS_ERROR]', error);
-      return JSON.stringify({ error: 'Trend analysis unavailable' });
-    }
-  }
-}
-
-/**
- * Compliance Check Tool - Validates recommendations against regulations
- */
-class ComplianceCheckTool extends Tool {
-  name = 'compliance-check';
-  description =
-    'Checks if a recommendation or action complies with relevant regulations. Input should be the recommendation text.';
-
-  async _call(input: string): Promise<string> {
-    try {
-      // Simplified compliance check
-      const hasRiskyTerms =
-        input.toLowerCase().includes('guarantee') ||
-        input.toLowerCase().includes('certain profit') ||
-        input.toLowerCase().includes('no risk');
-
-      return JSON.stringify({
-        input: input.slice(0, 100),
-        isCompliant: !hasRiskyTerms,
-        warnings: hasRiskyTerms
-          ? ['Avoid absolute guarantees', 'Include risk disclaimers']
-          : [],
-        framework: 'TCG Trading Guidelines',
-      });
-    } catch (error) {
-      console.error('[COMPLIANCE_CHECK_ERROR]', error);
-      return JSON.stringify({ isCompliant: true, warnings: ['Unable to verify compliance'] });
-    }
-  }
-}
+import {
+  AgentRole,
+  AgentConfig,
+  AgentState,
+  AgentExecutionResult,
+  MultiAgentResult,
+  TaskDefinition,
+  LatentMessage,
+  VerificationRequest,
+  VerificationResult,
+  VisualCodeRequest,
+  VisualCodeResult,
+  DEFAULT_AGENT_CONFIGS,
+  AgentConfigSchema,
+} from './types';
+import {
+  generateLatentQueries,
+  compressForAgentComm,
+  decompressFromLatent,
+  latentRAG,
+} from '../rag/latent-query';
 
 // ============================================================================
-// LLM FACTORY
+// AGENT CLASS
 // ============================================================================
 
 /**
- * Create LLM instance based on environment configuration
+ * Individual agent in the multi-agent system
  */
-function createLLM(options: { temperature?: number; maxTokens?: number } = {}) {
-  const { temperature = 0.5, maxTokens = 1500 } = options;
-  const useClaude = !!process.env.ANTHROPIC_API_KEY;
+class Agent {
+  readonly config: AgentConfig;
+  private llm: ChatOpenAI;
+  private state: AgentState;
 
-  if (useClaude) {
-    return new ChatAnthropic({
-      modelName: 'claude-3-5-sonnet-20241022',
-      temperature,
-      maxTokens,
+  constructor(config: AgentConfig) {
+    // Validate and merge with defaults
+    const roleDefaults = DEFAULT_AGENT_CONFIGS[config.role] || {};
+    this.config = AgentConfigSchema.parse({
+      ...roleDefaults,
+      ...config,
     });
-  }
 
-  return new ChatOpenAI({
-    modelName: 'gpt-4-turbo',
-    temperature,
-    maxTokens,
-  });
-}
-
-// ============================================================================
-// AGENT CONFIGURATIONS
-// ============================================================================
-
-const MULTI_AGENT_CONFIGS = {
-  debater: {
-    name: 'debater',
-    role: 'Critical Analyst',
-    systemPrompt: `You are a Critical Analyst in a multi-agent TCG intelligence system.
-Your role is to analyze queries from multiple perspectives, identify potential issues,
-and provide balanced arguments for different viewpoints.
-
-Key responsibilities:
-1. Present pros and cons of TCG strategies
-2. Challenge assumptions in user queries
-3. Identify risks and opportunities
-4. Provide evidence-based reasoning
-
-Output format: JSON with 'arguments', 'counterarguments', 'risks', and 'recommendation' fields.`,
-    temperature: 0.6,
-    maxTokens: 1200,
-    tools: [new TCGValuationTool(), new TCGMarketTrendsTool()],
-  },
-  visualizer: {
-    name: 'visualizer',
-    role: 'Insight Synthesizer',
-    systemPrompt: `You are an Insight Synthesizer in a multi-agent TCG intelligence system.
-Your role is to synthesize information from other agents and present clear, actionable insights.
-
-Key responsibilities:
-1. Distill complex analysis into clear summaries
-2. Highlight key takeaways and action items
-3. Create structured recommendations
-4. Ensure insights are practical and implementable
-
-Output format: Markdown with clear headings, bullet points, and actionable recommendations.`,
-    temperature: 0.4,
-    maxTokens: 1500,
-    tools: [],
-  },
-  verifier: {
-    name: 'verifier',
-    role: 'Quality Assurance',
-    systemPrompt: `You are a Quality Assurance agent in a multi-agent TCG intelligence system.
-Your role is to verify the accuracy and compliance of outputs from other agents.
-
-Key responsibilities:
-1. Fact-check claims and recommendations
-2. Ensure compliance with trading guidelines
-3. Identify potential errors or inconsistencies
-4. Provide a final verified response
-
-Output format: JSON with 'isVerified', 'issues', 'corrections', and 'finalResponse' fields.`,
-    temperature: 0.2,
-    maxTokens: 1000,
-    tools: [new ComplianceCheckTool()],
-  },
-};
-
-// ============================================================================
-// CORE EVOLUTION PIPELINE
-// ============================================================================
-
-/**
- * Evolves tasks via multi-agent pipeline with latent integration.
- *
- * The pipeline processes queries through specialized agents:
- * 1. Debater: Analyzes from multiple perspectives
- * 2. Visualizer: Synthesizes insights
- * 3. Verifier: Validates and produces final output
- *
- * @param task - The input task or query string
- * @param options - Evolution configuration options
- * @returns Evolution result with final output and metrics
- *
- * @example
- * ```typescript
- * const result = await multiAgentEvolve("What's the best Pokemon card to invest in?");
- * console.log(result.finalOutput);
- * ```
- */
-export async function multiAgentEvolve(
-  task: string,
-  options: EvolutionOptions = {}
-): Promise<EvolutionResult> {
-  const {
-    maxIterations = 3,
-    useLatentCompression = true,
-    confidenceThreshold = 0.7,
-    includeVerification = true,
-    userId,
-  } = options;
-
-  const startTime = Date.now();
-  let totalTokens = 0;
-  let latentQueriesUsed = 0;
-
-  try {
-    // Validate input
-    z.string().min(1).parse(task);
+    // Initialize LLM
+    this.llm = new ChatOpenAI({
+      modelName: this.config.model,
+      temperature: this.config.temperature,
+      maxTokens: this.config.maxTokens,
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Initialize state
-    const state: MultiAgentState = {
-      query: task,
-      outputs: {},
-      metadata: {
-        startTime,
-        tokensUsed: 0,
-        userId,
+    this.state = {
+      id: this.config.id,
+      role: this.config.role as AgentRole,
+      status: 'idle',
+      lastOutput: null,
+      latentState: null,
+      context: {
+        task: '',
+        previousOutputs: new Map(),
+        sharedKnowledge: {},
       },
-    };
-
-    // Generate latent queries if enabled
-    if (useLatentCompression) {
-      const latents = await generateLatentQueries(task, {
-        numPerspectives: 4,
-        storeInDb: true,
-        userId,
-      });
-
-      if (latents.length > 0) {
-        state.latent = {
-          vector: latents[0].vector,
-          metadata: latents[0].metadata,
-        };
-        latentQueriesUsed = latents.length;
-      }
-    }
-
-    // Agent pipeline execution
-    const participatingAgents: string[] = [];
-
-    // Step 1: Debater agent
-    const debaterResult = await executeAgentStep(
-      MULTI_AGENT_CONFIGS.debater,
-      state
-    );
-    state.outputs.debater = debaterResult.output;
-    totalTokens += debaterResult.tokensUsed;
-    participatingAgents.push('debater');
-
-    // Step 2: Visualizer agent
-    const visualizerResult = await executeAgentStep(
-      MULTI_AGENT_CONFIGS.visualizer,
-      state
-    );
-    state.outputs.visualizer = visualizerResult.output;
-    totalTokens += visualizerResult.tokensUsed;
-    participatingAgents.push('visualizer');
-
-    // Step 3: Verifier agent (if enabled)
-    let verifierResult: { output: string; tokensUsed: number } | null = null;
-    let consensusReached = true;
-
-    if (includeVerification) {
-      verifierResult = await executeAgentStep(
-        MULTI_AGENT_CONFIGS.verifier,
-        state
-      );
-      state.outputs.verifier = verifierResult.output;
-      totalTokens += verifierResult.tokensUsed;
-      participatingAgents.push('verifier');
-
-      // Check verification status
-      try {
-        const verificationData = JSON.parse(verifierResult.output);
-        consensusReached = verificationData.isVerified !== false;
-      } catch {
-        // If parsing fails, assume consensus reached
-        consensusReached = true;
-      }
-    }
-
-    // Calculate confidence based on agent outputs
-    const confidenceScore = calculateConfidenceScore(state, consensusReached);
-
-    // Generate final output
-    const finalOutput = generateFinalOutput(state, consensusReached);
-
-    Sentry.addBreadcrumb({
-      category: 'agent.evolution',
-      level: 'info',
-      message: `Multi-agent evolution completed`,
-      data: {
-        task: task.slice(0, 100),
-        participatingAgents,
-        totalTokens,
-        latentQueriesUsed,
-        consensusReached,
-        executionTimeMs: Date.now() - startTime,
-      },
-    });
-
-    return {
-      finalOutput,
-      intermediateOutputs: state.outputs,
-      consensusReached,
-      confidenceScore,
-      participatingAgents,
-      executionMetrics: {
-        totalTimeMs: Date.now() - startTime,
-        totalTokens,
-        latentQueriesUsed,
-      },
-    };
-  } catch (error) {
-    console.error('[MULTI_AGENT_ERROR]', error);
-    Sentry.captureException(error, {
-      tags: { component: 'multi-agent', operation: 'evolve' },
-      extra: { task: task.slice(0, 200), options },
-    });
-
-    // Return fallback response
-    return {
-      finalOutput: generateFallbackResponse(task),
-      intermediateOutputs: {},
-      consensusReached: false,
-      confidenceScore: 0.3,
-      participatingAgents: [],
-      executionMetrics: {
-        totalTimeMs: Date.now() - startTime,
-        totalTokens,
-        latentQueriesUsed,
-      },
-    };
-  }
-}
-
-/**
- * Execute a single agent step in the pipeline
- */
-async function executeAgentStep(
-  config: (typeof MULTI_AGENT_CONFIGS)[keyof typeof MULTI_AGENT_CONFIGS],
-  state: MultiAgentState
-): Promise<{ output: string; tokensUsed: number }> {
-  const llm = createLLM({
-    temperature: config.temperature,
-    maxTokens: config.maxTokens,
-  });
-
-  // Build context from previous agent outputs
-  const contextParts = [`User Query: ${state.query}`];
-
-  if (state.latent) {
-    contextParts.push(
-      `\nLatent Context: ${state.latent.metadata?.originalQuery || 'Compressed representation available'}`
-    );
-  }
-
-  // Include previous agent outputs
-  for (const [agentName, output] of Object.entries(state.outputs)) {
-    if (agentName !== config.name) {
-      contextParts.push(`\n${agentName.toUpperCase()} Output:\n${output.slice(0, 1000)}`);
-    }
-  }
-
-  contextParts.push('\nProvide your analysis in the specified format.');
-
-  const messages = [
-    new SystemMessage(config.systemPrompt),
-    new HumanMessage(contextParts.join('\n')),
-  ];
-
-  // Execute with tools if available
-  let response;
-  if (config.tools.length > 0) {
-    // For agents with tools, we'd typically use an agent executor
-    // Simplified: just invoke the LLM directly
-    response = await llm.invoke(messages);
-  } else {
-    response = await llm.invoke(messages);
-  }
-
-  const content =
-    typeof response.content === 'string'
-      ? response.content
-      : JSON.stringify(response.content);
-
-  // Estimate tokens
-  const tokensUsed = Math.ceil(
-    (config.systemPrompt.length + contextParts.join('').length + content.length) / 4
-  );
-
-  return { output: content, tokensUsed };
-}
-
-/**
- * Calculate confidence score based on agent outputs
- */
-function calculateConfidenceScore(
-  state: MultiAgentState,
-  consensusReached: boolean
-): number {
-  let confidence = 0.5; // Base confidence
-
-  // Boost confidence for each agent that provided output
-  if (state.outputs.debater) confidence += 0.15;
-  if (state.outputs.visualizer) confidence += 0.15;
-  if (state.outputs.verifier) confidence += 0.1;
-
-  // Boost for consensus
-  if (consensusReached) confidence += 0.1;
-
-  // Boost for latent query usage
-  if (state.latent) confidence += 0.05;
-
-  return Math.min(1, confidence);
-}
-
-/**
- * Generate final output from agent state
- */
-function generateFinalOutput(state: MultiAgentState, consensusReached: boolean): string {
-  // Prefer verifier output if available and verified
-  if (state.outputs.verifier) {
-    try {
-      const verifierData = JSON.parse(state.outputs.verifier);
-      if (verifierData.finalResponse) {
-        return verifierData.finalResponse;
-      }
-    } catch {
-      // Fall through to visualizer output
-    }
-  }
-
-  // Use visualizer output as primary response
-  if (state.outputs.visualizer) {
-    let output = state.outputs.visualizer;
-
-    if (!consensusReached) {
-      output += '\n\n⚠️ Note: This response may require additional verification.';
-    }
-
-    return output;
-  }
-
-  // Fallback to debater output
-  if (state.outputs.debater) {
-    return state.outputs.debater;
-  }
-
-  return generateFallbackResponse(state.query);
-}
-
-/**
- * Generate fallback response when pipeline fails
- */
-function generateFallbackResponse(task: string): string {
-  return `I apologize, but I couldn't complete the full analysis for your query: "${task.slice(0, 100)}..."
-
-Here are some general suggestions:
-- Try rephrasing your question with more specific details
-- Check our knowledge base for related topics
-- Contact support if this issue persists
-
-The Apex Intelligence team is continuously improving our multi-agent system for better results.`;
-}
-
-// ============================================================================
-// TASK PROCESSING
-// ============================================================================
-
-/**
- * Process a task through the multi-agent system
- *
- * @param task - Task description
- * @returns Task result with status and output
- */
-export async function processTask(task: string): Promise<TaskResult> {
-  const startTime = Date.now();
-
-  try {
-    const result = await multiAgentEvolve(task, {
-      useLatentCompression: true,
-      includeVerification: true,
-    });
-
-    return {
-      status: result.consensusReached ? 'success' : 'processing',
-      output: result.finalOutput,
       metrics: {
-        executionTimeMs: result.executionMetrics.totalTimeMs,
-        tokensUsed: result.executionMetrics.totalTokens,
-        agentsInvolved: result.participatingAgents,
+        startTime: 0,
+        endTime: null,
+        tokenCount: 0,
+        latencyMs: 0,
       },
+      error: null,
     };
-  } catch (error) {
-    console.error('[PROCESS_TASK_ERROR]', error);
-
-    return {
-      status: 'failure',
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-      metrics: {
-        executionTimeMs: Date.now() - startTime,
-        tokensUsed: 0,
-        agentsInvolved: [],
-      },
-    };
-  }
-}
-
-/**
- * Evolve an agent's capabilities based on feedback
- *
- * @returns Evolution status
- */
-export async function evolveAgent(): Promise<{ status: string; evolved: boolean }> {
-  // Placeholder for agent evolution logic
-  // In production, this would update agent prompts/tools based on performance
-  return {
-    status: 'evolved',
-    evolved: true,
-  };
-}
-
-// ============================================================================
-// API COMPATIBILITY FUNCTIONS
-// ============================================================================
-
-import type {
-  TaskDefinition,
-  VisualCodeRequest,
-  VerificationRequest,
-} from './types';
-
-/**
- * Multi-Agent Orchestrator class for API compatibility
- *
- * Provides a class-based interface for multi-agent task execution.
- */
-export class MultiAgentOrchestrator {
-  private pool: any;
-
-  constructor(pool: any) {
-    this.pool = pool;
   }
 
   /**
-   * Execute a task through the multi-agent system
+   * Execute agent with given input
    */
-  async execute(task: TaskDefinition): Promise<EvolutionResult> {
-    return multiAgentEvolve(task.description, {
-      maxIterations: task.config?.maxIterations,
-      confidenceThreshold: task.config?.consensusThreshold,
-      includeVerification: task.requiredAgents.includes('verifier'),
-    });
+  async execute(
+    input: string,
+    context?: Record<string, any>
+  ): Promise<AgentExecutionResult> {
+    const startTime = Date.now();
+    this.state.status = 'executing';
+    this.state.metrics.startTime = startTime;
+
+    try {
+      // Build messages
+      const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
+
+      // Add system prompt
+      if (this.config.systemPrompt) {
+        messages.push({ role: 'system', content: this.config.systemPrompt });
+      }
+
+      // Add context from previous agents if available
+      if (context?.previousOutputs) {
+        const contextStr = Object.entries(context.previousOutputs)
+          .map(([agentId, output]) => `[${agentId}]: ${output}`)
+          .join('\n\n');
+
+        if (contextStr) {
+          messages.push({
+            role: 'system',
+            content: `Previous agent outputs:\n${contextStr}`,
+          });
+        }
+      }
+
+      // Add user input
+      messages.push({ role: 'user', content: input });
+
+      // Execute LLM call
+      const response = await this.llm.invoke(messages);
+
+      const output = typeof response.content === 'string'
+        ? response.content
+        : JSON.stringify(response.content);
+
+      // Update state
+      this.state.status = 'completed';
+      this.state.lastOutput = output;
+      this.state.metrics.endTime = Date.now();
+      this.state.metrics.latencyMs = Date.now() - startTime;
+
+      // Generate latent representation if in latent mode
+      let latentVector: number[] | null = null;
+      if (this.config.communicationMode !== 'full_text') {
+        const compressed = await compressForAgentComm(output);
+        latentVector = compressed.vector;
+        this.state.latentState = latentVector;
+      }
+
+      // Parse confidence and reasoning from output
+      const { confidence, reasoning, citations } = this.parseOutput(output);
+
+      return {
+        agentId: this.config.id,
+        role: this.config.role as AgentRole,
+        success: true,
+        output,
+        latentVector,
+        confidence,
+        reasoning,
+        citations,
+        metrics: {
+          tokenCount: this.estimateTokens(input + output),
+          latencyMs: this.state.metrics.latencyMs,
+          modelUsed: this.config.model,
+        },
+        error: null,
+      };
+    } catch (error) {
+      this.state.status = 'failed';
+      this.state.error = error instanceof Error ? error.message : 'Unknown error';
+      this.state.metrics.endTime = Date.now();
+      this.state.metrics.latencyMs = Date.now() - startTime;
+
+      Sentry.captureException(error, {
+        tags: { agent: this.config.id, role: this.config.role },
+      });
+
+      return {
+        agentId: this.config.id,
+        role: this.config.role as AgentRole,
+        success: false,
+        output: '',
+        latentVector: null,
+        confidence: 0,
+        reasoning: [],
+        citations: [],
+        metrics: {
+          tokenCount: 0,
+          latencyMs: this.state.metrics.latencyMs,
+          modelUsed: this.config.model,
+        },
+        error: this.state.error,
+      };
+    }
+  }
+
+  /**
+   * Parse structured output from LLM response
+   */
+  private parseOutput(output: string): {
+    confidence: number;
+    reasoning: string[];
+    citations: Array<{ type: string; id: string; content: string }>;
+  } {
+    // Try to extract confidence score
+    const confidenceMatch = output.match(/confidence[:\s]+(\d+(?:\.\d+)?)/i);
+    const confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) / 100 : 0.7;
+
+    // Extract reasoning points (lines starting with - or *)
+    const reasoning = output
+      .split('\n')
+      .filter((line) => /^[\-\*]\s/.test(line.trim()))
+      .map((line) => line.replace(/^[\-\*]\s*/, '').trim());
+
+    // Extract citations [source:N] format
+    const citationMatches = output.matchAll(/\[source:(\d+)\]/g);
+    const citations = Array.from(citationMatches).map((match) => ({
+      type: 'source',
+      id: match[1],
+      content: '',
+    }));
+
+    return { confidence: Math.min(1, Math.max(0, confidence)), reasoning, citations };
+  }
+
+  /**
+   * Estimate token count (rough approximation)
+   */
+  private estimateTokens(text: string): number {
+    // Rough estimate: 4 characters per token
+    return Math.ceil(text.length / 4);
+  }
+
+  /**
+   * Get current state
+   */
+  getState(): AgentState {
+    return { ...this.state };
+  }
+
+  /**
+   * Update shared context
+   */
+  updateContext(key: string, value: any): void {
+    this.state.context.sharedKnowledge[key] = value;
   }
 }
 
-/**
- * Analyze market using multi-agent system (API compatibility)
- *
- * @param query - Market analysis query
- * @param _pool - Database pool
- * @returns Evolution result with market analysis
- */
-export async function analyzeMarket(
-  query: string,
-  _pool: any
-): Promise<EvolutionResult> {
-  return multiAgentEvolve(`Market analysis: ${query}`, {
-    useLatentCompression: true,
-    includeVerification: true,
-    confidenceThreshold: 0.7,
-  });
-}
+// ============================================================================
+// MULTI-AGENT ORCHESTRATOR
+// ============================================================================
 
 /**
- * Generate visual code using multi-agent system (API compatibility)
- *
- * @param request - Visual code generation request
- * @returns Generated code and metadata
+ * Orchestrates multi-agent task execution
+ */
+export class MultiAgentOrchestrator {
+  private agents: Map<string, Agent> = new Map();
+  private pool: Pool | null = null;
+
+  constructor(pool?: Pool) {
+    this.pool = pool || null;
+  }
+
+  /**
+   * Initialize agents for a task
+   */
+  initializeAgents(task: TaskDefinition): void {
+    this.agents.clear();
+
+    for (const role of task.requiredAgents) {
+      const config: AgentConfig = {
+        id: `agent_${role}_${Date.now()}`,
+        name: `${role.charAt(0).toUpperCase() + role.slice(1)} Agent`,
+        role,
+        ...DEFAULT_AGENT_CONFIGS[role],
+        model: DEFAULT_AGENT_CONFIGS[role]?.model || 'gpt-4-turbo',
+        temperature: DEFAULT_AGENT_CONFIGS[role]?.temperature || 0.7,
+        maxTokens: 4096,
+        tools: DEFAULT_AGENT_CONFIGS[role]?.tools || [],
+        communicationMode: task.config?.enableLatentComm ? 'hybrid' : 'full_text',
+        priority: 1,
+        timeout: task.config?.timeout || 30000,
+      };
+
+      this.agents.set(config.id, new Agent(config));
+    }
+  }
+
+  /**
+   * Execute multi-agent task
+   */
+  async execute(task: TaskDefinition): Promise<MultiAgentResult> {
+    const startTime = Date.now();
+
+    // Initialize agents
+    this.initializeAgents(task);
+
+    const agentResults: AgentExecutionResult[] = [];
+    let iteration = 0;
+    const maxIterations = task.config?.maxIterations || 5;
+    const consensusThreshold = task.config?.consensusThreshold || 0.8;
+
+    try {
+      // Main execution loop
+      while (iteration < maxIterations) {
+        iteration++;
+
+        // Execute agents (parallel or sequential based on config)
+        const iterationResults = task.config?.parallelExecution
+          ? await this.executeParallel(task, agentResults)
+          : await this.executeSequential(task, agentResults);
+
+        agentResults.push(...iterationResults);
+
+        // Check for consensus
+        const consensus = this.calculateConsensus(iterationResults);
+        if (consensus.score >= consensusThreshold) {
+          break;
+        }
+      }
+
+      // Run verification if verifier is present
+      let verification: MultiAgentResult['verification'] = null;
+      const verifierResult = agentResults.find((r) => r.role === 'verifier');
+      if (verifierResult) {
+        verification = {
+          verified: verifierResult.confidence >= 0.7,
+          verifierAgentId: verifierResult.agentId,
+          issues: this.extractIssues(verifierResult.output),
+          confidence: verifierResult.confidence,
+        };
+      }
+
+      // Synthesize final output
+      const finalOutput = this.synthesizeFinalOutput(agentResults, task);
+
+      // Calculate final consensus
+      const finalConsensus = this.calculateConsensus(agentResults);
+
+      return {
+        taskId: task.id,
+        taskType: task.type,
+        success: finalConsensus.achieved,
+        finalOutput,
+        consensus: finalConsensus,
+        agentResults,
+        verification,
+        metadata: {
+          totalLatencyMs: Date.now() - startTime,
+          totalTokens: agentResults.reduce((sum, r) => sum + r.metrics.tokenCount, 0),
+          iterationCount: iteration,
+          latentCommUsed: task.config?.enableLatentComm || false,
+        },
+      };
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { taskId: task.id, taskType: task.type },
+      });
+
+      return {
+        taskId: task.id,
+        taskType: task.type,
+        success: false,
+        finalOutput: `Multi-agent execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        consensus: { achieved: false, score: 0, disagreements: [] },
+        agentResults,
+        verification: null,
+        metadata: {
+          totalLatencyMs: Date.now() - startTime,
+          totalTokens: agentResults.reduce((sum, r) => sum + r.metrics.tokenCount, 0),
+          iterationCount: iteration,
+          latentCommUsed: false,
+        },
+      };
+    }
+  }
+
+  /**
+   * Execute agents in parallel
+   */
+  private async executeParallel(
+    task: TaskDefinition,
+    previousResults: AgentExecutionResult[]
+  ): Promise<AgentExecutionResult[]> {
+    const context = this.buildContext(previousResults);
+
+    const promises = Array.from(this.agents.values()).map((agent) =>
+      agent.execute(task.description, context)
+    );
+
+    return Promise.all(promises);
+  }
+
+  /**
+   * Execute agents sequentially
+   */
+  private async executeSequential(
+    task: TaskDefinition,
+    previousResults: AgentExecutionResult[]
+  ): Promise<AgentExecutionResult[]> {
+    const results: AgentExecutionResult[] = [];
+    const context = this.buildContext(previousResults);
+
+    for (const agent of this.agents.values()) {
+      // Update context with results from this iteration
+      const updatedContext = {
+        ...context,
+        previousOutputs: {
+          ...context.previousOutputs,
+          ...Object.fromEntries(results.map((r) => [r.agentId, r.output])),
+        },
+      };
+
+      const result = await agent.execute(task.description, updatedContext);
+      results.push(result);
+    }
+
+    return results;
+  }
+
+  /**
+   * Build context from previous results
+   */
+  private buildContext(results: AgentExecutionResult[]): Record<string, any> {
+    return {
+      previousOutputs: Object.fromEntries(
+        results.filter((r) => r.success).map((r) => [r.agentId, r.output])
+      ),
+    };
+  }
+
+  /**
+   * Calculate consensus among agent outputs
+   */
+  private calculateConsensus(results: AgentExecutionResult[]): {
+    achieved: boolean;
+    score: number;
+    disagreements: Array<{ agentId: string; position: string; confidence: number }>;
+  } {
+    const successfulResults = results.filter((r) => r.success);
+
+    if (successfulResults.length === 0) {
+      return { achieved: false, score: 0, disagreements: [] };
+    }
+
+    // Calculate weighted average confidence
+    const totalConfidence = successfulResults.reduce((sum, r) => sum + r.confidence, 0);
+    const avgConfidence = totalConfidence / successfulResults.length;
+
+    // Find disagreements (agents with low confidence)
+    const disagreements = successfulResults
+      .filter((r) => r.confidence < 0.5)
+      .map((r) => ({
+        agentId: r.agentId,
+        position: r.output.slice(0, 200) + '...',
+        confidence: r.confidence,
+      }));
+
+    return {
+      achieved: avgConfidence >= 0.7 && disagreements.length === 0,
+      score: avgConfidence,
+      disagreements,
+    };
+  }
+
+  /**
+   * Synthesize final output from all agent results
+   */
+  private synthesizeFinalOutput(
+    results: AgentExecutionResult[],
+    _task: TaskDefinition
+  ): string {
+    // Find synthesizer output if available
+    const synthesizerResult = results.find((r) => r.role === 'synthesizer' && r.success);
+    if (synthesizerResult) {
+      return synthesizerResult.output;
+    }
+
+    // Otherwise, combine outputs
+    const successfulOutputs = results
+      .filter((r) => r.success)
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, 3);
+
+    return successfulOutputs
+      .map((r) => `[${r.role}] (confidence: ${(r.confidence * 100).toFixed(1)}%)\n${r.output}`)
+      .join('\n\n---\n\n');
+  }
+
+  /**
+   * Extract issues from verifier output
+   */
+  private extractIssues(output: string): string[] {
+    const issuePatterns = [
+      /issue[:\s]+(.+?)(?:\n|$)/gi,
+      /warning[:\s]+(.+?)(?:\n|$)/gi,
+      /concern[:\s]+(.+?)(?:\n|$)/gi,
+      /problem[:\s]+(.+?)(?:\n|$)/gi,
+    ];
+
+    const issues: string[] = [];
+    for (const pattern of issuePatterns) {
+      const matches = output.matchAll(pattern);
+      for (const match of matches) {
+        if (match[1]) {
+          issues.push(match[1].trim());
+        }
+      }
+    }
+
+    return issues;
+  }
+}
+
+// ============================================================================
+// SPECIALIZED AGENT FUNCTIONS
+// ============================================================================
+
+/**
+ * Generate visual code using the visualizer agent
  */
 export async function generateVisualCode(
   request: VisualCodeRequest
-): Promise<{
-  code: string;
-  framework: string;
-  componentType: string;
-  metadata: {
-    generatedAt: string;
-    agentsUsed: string[];
-  };
-}> {
-  const llm = createLLM({ temperature: 0.4, maxTokens: 2000 });
+): Promise<VisualCodeResult> {
+  const agent = new Agent({
+    id: `visualizer_${Date.now()}`,
+    name: 'Visual Code Generator',
+    role: 'visualizer',
+    model: 'gpt-4-turbo',
+    temperature: 0.6,
+    maxTokens: 8192,
+    systemPrompt: `You are an expert visual code generator. Generate clean, performant code for:
+- React components with TypeScript
+- Three.js/React Three Fiber for 3D
+- Canvas 2D for high-performance animations
+- SVG for vector graphics
 
-  const prompt = `Generate a ${request.framework} component for: ${request.description}
-Component type: ${request.componentType}
-${request.constraints ? `Constraints: ${JSON.stringify(request.constraints)}` : ''}
-${request.existingCode ? `Existing code to extend:\n${request.existingCode}` : ''}
+Guidelines:
+- Use 'use client' for client components
+- Optimize for 60fps animations
+- Include proper TypeScript types
+- Add performance comments for complex operations
+- Use requestAnimationFrame for animations
 
-Output only the code, no explanations.`;
+Output format:
+\`\`\`typescript
+// Component code here
+\`\`\`
 
-  const response = await llm.invoke([
-    new SystemMessage(
-      'You are a code generator specializing in visual components. Generate clean, production-ready code.'
-    ),
-    new HumanMessage(prompt),
-  ]);
+DEPENDENCIES: package1, package2
 
-  const code =
-    typeof response.content === 'string'
-      ? response.content
-      : JSON.stringify(response.content);
+EXPLANATION:
+Brief explanation of the code
+
+PERFORMANCE_NOTES:
+- Note 1
+- Note 2`,
+    tools: [],
+    communicationMode: 'full_text',
+    priority: 1,
+    timeout: 60000,
+  });
+
+  const input = `Generate a ${request.componentType} component for ${request.framework}.
+
+Description: ${request.description}
+
+${request.existingCode ? `Existing code to improve/fix:\n\`\`\`\n${request.existingCode}\n\`\`\`` : ''}
+
+${request.debugMode ? 'This is in DEBUG mode - focus on finding and fixing issues.' : ''}
+
+Constraints:
+- Performance: ${request.constraints?.performance || 'high'}
+- Accessibility: ${request.constraints?.accessibility ? 'Required' : 'Optional'}`;
+
+  const result = await agent.execute(input);
+
+  if (!result.success) {
+    throw new Error(`Visual code generation failed: ${result.error}`);
+  }
+
+  // Parse the output
+  const codeMatch = result.output.match(/```(?:typescript|tsx|jsx|javascript)?\n([\s\S]*?)```/);
+  const code = codeMatch ? codeMatch[1].trim() : result.output;
+
+  const depsMatch = result.output.match(/DEPENDENCIES:\s*(.+)/);
+  const dependencies = depsMatch
+    ? depsMatch[1].split(',').map((d) => d.trim())
+    : [];
+
+  const explanationMatch = result.output.match(/EXPLANATION:\s*([\s\S]*?)(?:PERFORMANCE_NOTES:|$)/);
+  const explanation = explanationMatch ? explanationMatch[1].trim() : '';
+
+  const perfMatch = result.output.match(/PERFORMANCE_NOTES:\s*([\s\S]*?)$/);
+  const performanceNotes = perfMatch
+    ? perfMatch[1]
+        .split('\n')
+        .filter((line) => line.trim().startsWith('-'))
+        .map((line) => line.replace(/^-\s*/, '').trim())
+    : [];
 
   return {
     code,
-    framework: request.framework,
-    componentType: request.componentType,
-    metadata: {
-      generatedAt: new Date().toISOString(),
-      agentsUsed: ['visualizer'],
-    },
+    language: 'typescript',
+    componentName: request.componentType.charAt(0).toUpperCase() + request.componentType.slice(1),
+    dependencies,
+    explanation,
+    performanceNotes,
   };
 }
 
 /**
- * Verify claims using Pigeon Paradox principle (API compatibility)
- *
- * The Pigeon Paradox principle ensures claims are verified through
- * multiple independent perspectives to catch inconsistencies.
- *
- * @param request - Verification request
- * @returns Verification result with confidence
+ * Verify a claim using the Pigeon Paradox principle
  */
 export async function verifyWithPigeonParadox(
   request: VerificationRequest
-): Promise<{
-  isVerified: boolean;
-  confidence: number;
-  issues: string[];
-  reasoning: string;
-  verifiedClaim: string;
-}> {
-  const llm = createLLM({ temperature: 0.2, maxTokens: 1500 });
+): Promise<VerificationResult> {
+  const agent = new Agent({
+    id: `verifier_${Date.now()}`,
+    name: 'Pigeon Paradox Verifier',
+    role: 'verifier',
+    model: 'gpt-4-turbo',
+    temperature: 0.3,
+    maxTokens: 4096,
+    systemPrompt: `You are a verification agent implementing the Pigeon Paradox principle.
 
-  const evidenceStr = Array.isArray(request.evidence)
-    ? request.evidence.join('\n- ')
-    : request.evidence;
+The Pigeon Paradox: AI reasons in high-dimensional space (~11,000+ dimensions),
+but humans can only visualize 3 dimensions. Your job is to:
 
-  const prompt = `Verify the following claim using the Pigeon Paradox principle:
+1. Verify claims using logical analysis
+2. Translate high-dimensional reasoning into human-understandable terms
+3. Flag any claims that rely on patterns humans cannot verify
+4. Provide confidence scores with justification
 
-Claim: ${request.claim}
+Output format:
+VERIFIED: [true/false]
+CONFIDENCE: [0-100]
+HIGH_DIM_SCORE: [internal confidence 0-100]
+HUMAN_INTERPRETATION: [Plain language explanation]
 
-Evidence:
-- ${evidenceStr}
+CRITERIA_RESULTS:
+- [Criterion 1]: [PASS/FAIL] - [Score] - [Explanation]
+- [Criterion 2]: [PASS/FAIL] - [Score] - [Explanation]
 
-Context: ${request.context}
+WARNINGS:
+- [Warning 1]
+- [Warning 2]
 
-${request.verificationCriteria ? `Verification criteria:\n- ${request.verificationCriteria.join('\n- ')}` : ''}
+RECOMMENDATIONS:
+- [Recommendation 1]
+- [Recommendation 2]`,
+    tools: [],
+    communicationMode: 'full_text',
+    priority: 1,
+    timeout: 30000,
+  });
 
-Analyze from multiple perspectives and identify any inconsistencies or logical gaps.
-Output JSON with: isVerified (boolean), confidence (0-1), issues (array), reasoning (string), verifiedClaim (string).`;
+  const input = `Verify the following claim:
 
-  const response = await llm.invoke([
-    new SystemMessage(
-      'You are a verification expert. Analyze claims critically from multiple angles. Output valid JSON.'
-    ),
-    new HumanMessage(prompt),
-  ]);
+CLAIM: ${request.claim}
 
-  const content =
-    typeof response.content === 'string'
-      ? response.content
-      : JSON.stringify(response.content);
+DOMAIN: ${request.context.domain}
+${request.context.timeframe ? `TIMEFRAME: ${request.context.timeframe}` : ''}
+ENTITIES: ${request.context.entities.join(', ')}
 
-  try {
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const result = JSON.parse(jsonMatch[0]);
-      return {
-        isVerified: result.isVerified ?? false,
-        confidence: result.confidence ?? 0.5,
-        issues: result.issues ?? [],
-        reasoning: result.reasoning ?? 'Unable to parse reasoning',
-        verifiedClaim: result.verifiedClaim ?? request.claim,
-      };
-    }
-  } catch (error) {
-    console.error('[VERIFY_PARSE_ERROR]', error);
+EVIDENCE:
+${request.evidence.map((e, i) => `${i + 1}. [${e.source}] (confidence: ${e.confidence}): ${e.content}`).join('\n')}
+
+VERIFICATION CRITERIA:
+${request.verificationCriteria.map((c) => `- ${c.criterion} (weight: ${c.weight})`).join('\n')}`;
+
+  const result = await agent.execute(input);
+
+  if (!result.success) {
+    return {
+      verified: false,
+      confidence: 0,
+      highDimScore: 0,
+      humanInterpretation: `Verification failed: ${result.error}`,
+      criteriaResults: [],
+      warnings: ['Verification process encountered an error'],
+      recommendations: ['Retry verification or manually review'],
+    };
   }
 
-  // Fallback response
+  // Parse output
+  const output = result.output;
+
+  const verifiedMatch = output.match(/VERIFIED:\s*(true|false)/i);
+  const verified = verifiedMatch ? verifiedMatch[1].toLowerCase() === 'true' : false;
+
+  const confidenceMatch = output.match(/CONFIDENCE:\s*(\d+)/);
+  const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) / 100 : result.confidence;
+
+  const highDimMatch = output.match(/HIGH_DIM_SCORE:\s*(\d+)/);
+  const highDimScore = highDimMatch ? parseInt(highDimMatch[1]) / 100 : confidence;
+
+  const interpretationMatch = output.match(/HUMAN_INTERPRETATION:\s*(.+?)(?=\n\n|CRITERIA_RESULTS|$)/s);
+  const humanInterpretation = interpretationMatch ? interpretationMatch[1].trim() : '';
+
+  // Parse criteria results
+  const criteriaSection = output.match(/CRITERIA_RESULTS:\s*([\s\S]*?)(?=WARNINGS|$)/);
+  const criteriaResults = criteriaSection
+    ? criteriaSection[1]
+        .split('\n')
+        .filter((line) => line.trim().startsWith('-'))
+        .map((line) => {
+          const match = line.match(/-\s*\[(.+?)\]:\s*\[(PASS|FAIL)\]\s*-\s*(\d+)\s*-\s*(.+)/i);
+          if (match) {
+            return {
+              criterion: match[1],
+              passed: match[2].toUpperCase() === 'PASS',
+              score: parseInt(match[3]) / 100,
+              explanation: match[4].trim(),
+            };
+          }
+          return null;
+        })
+        .filter((r): r is NonNullable<typeof r> => r !== null)
+    : [];
+
+  // Parse warnings
+  const warningsSection = output.match(/WARNINGS:\s*([\s\S]*?)(?=RECOMMENDATIONS|$)/);
+  const warnings = warningsSection
+    ? warningsSection[1]
+        .split('\n')
+        .filter((line) => line.trim().startsWith('-'))
+        .map((line) => line.replace(/^-\s*/, '').trim())
+    : [];
+
+  // Parse recommendations
+  const recsSection = output.match(/RECOMMENDATIONS:\s*([\s\S]*?)$/);
+  const recommendations = recsSection
+    ? recsSection[1]
+        .split('\n')
+        .filter((line) => line.trim().startsWith('-'))
+        .map((line) => line.replace(/^-\s*/, '').trim())
+    : [];
+
   return {
-    isVerified: false,
-    confidence: 0.3,
-    issues: ['Unable to complete verification analysis'],
-    reasoning: 'Verification pipeline encountered an error',
-    verifiedClaim: request.claim,
+    verified,
+    confidence,
+    highDimScore,
+    humanInterpretation,
+    criteriaResults,
+    warnings,
+    recommendations,
   };
 }
 
-// ============================================================================
-// EXPORTS
-// ============================================================================
+/**
+ * Execute a market analysis using the full multi-agent system
+ */
+export async function analyzeMarket(
+  query: string,
+  pool: Pool
+): Promise<MultiAgentResult> {
+  const orchestrator = new MultiAgentOrchestrator(pool);
 
-export {
-  TCGValuationTool,
-  TCGMarketTrendsTool,
-  ComplianceCheckTool,
-  MULTI_AGENT_CONFIGS,
-};
+  // First, enhance the query with RAG
+  const ragResults = await latentRAG(query, pool, { numQueries: 3 });
+
+  // Build task with RAG context
+  const task: TaskDefinition = {
+    id: `market_analysis_${Date.now()}`,
+    type: 'market_analysis',
+    description: `${query}
+
+Context from knowledge base:
+${ragResults.documents.slice(0, 3).map((d) => `- ${d.content.slice(0, 500)}...`).join('\n')}`,
+    input: { query, ragDocuments: ragResults.documents },
+    requiredAgents: ['researcher', 'debater', 'critic', 'synthesizer', 'verifier'],
+    config: {
+      maxIterations: 3,
+      consensusThreshold: 0.7,
+      enableLatentComm: true,
+      parallelExecution: true,
+      timeout: 120000,
+    },
+  };
+
+  return orchestrator.execute(task);
+}
+
