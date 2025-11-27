@@ -46,6 +46,10 @@ const facts = getFacts();
 
 export const metadata: Metadata = {
 
+  // CRITICAL: metadataBase resolves relative URLs to absolute URLs for OG images
+  // Twitter/X requires absolute URLs to fetch OG images correctly
+  metadataBase: new URL(facts.links.website || 'https://www.apexintelligence.io'),
+
   // Base metadata - using facts registry
 
   title: {
@@ -110,23 +114,25 @@ export const metadata: Metadata = {
 
     locale: 'en_US',
 
-    siteName: facts.product.name || 'TCG Intelligence Center',
+    url: facts.links.website || 'https://www.apexintelligence.io/',
 
-    title: facts.product.fullName || 'TCG Intelligence Center - Market Intelligence Platform',
+    siteName: 'Apex Intelligence',
 
-    description: facts.product.description || 'Data-driven market analysis, real-time insights, and exclusive research for the modern TCG investor.',
+    title: 'Apex Intelligence - TCG Market Intelligence Platform',
+
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon, VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
 
     images: [
 
       {
 
-        url: '/api/og', // Dynamic OG image endpoint
+        url: '/api/og', // Dynamic OG image endpoint - resolved to absolute URL by metadataBase
 
         width: 1200,
 
         height: 630,
 
-        alt: facts.organization.tagline || 'TCG Intelligence Center - Underground Intel For Serious Collectors',
+        alt: 'Apex Intelligence TCG Platform Preview',
 
         type: 'image/png',
 
@@ -136,21 +142,31 @@ export const metadata: Metadata = {
 
   },
 
+  // Canonical URL for SEO
+
+  alternates: {
+
+    canonical: '/',
+
+  },
 
 
-  // Twitter Card metadata
+
+  // Twitter Card metadata - optimized for large thumbnail display on X
 
   twitter: {
 
     card: 'summary_large_image',
 
-    title: facts.product.fullName || 'TCG Intelligence Center',
+    title: 'Apex Intelligence - TCG Market Intelligence Platform',
 
-    description: facts.product.description || 'Data-driven market analysis for TCG investors',
+    description: 'Yu-Gi-Oh!, Lorcana, Pokémon, VARC™ Technology: Instant AI grading and authentication via photo. Smart Insights: Automated buy/sell signals based on market trends. One platform. Total clarity.',
 
     images: ['/api/og'],
 
-    creator: '@tcgintel',
+    creator: facts.social.twitter || '@ApexIntel',
+
+    site: facts.social.twitter || '@ApexIntel',
 
   },
 
