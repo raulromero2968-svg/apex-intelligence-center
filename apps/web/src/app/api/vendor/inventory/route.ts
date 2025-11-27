@@ -31,7 +31,9 @@ import {
 } from '@/db/schema/tcg-community';
 import { cards } from '@/db/schema';
 
-const createInventorySchema = z.object({
+// Base schema without refinement - needed for .partial() to work
+// (.refine() returns ZodEffects which doesn't support .partial())
+const baseInventorySchema = z.object({
   cardId: z.string().optional(),
   customCardName: z.string().max(200).optional(),
   customSetName: z.string().max(200).optional(),
@@ -50,12 +52,16 @@ const createInventorySchema = z.object({
   isListed: z.boolean().default(true),
   imageUrl: z.string().url().optional(),
   notes: z.string().max(1000).optional(),
-}).refine(
+});
+
+// Create schema includes validation that cardId or customCardName is required
+const createInventorySchema = baseInventorySchema.refine(
   (data) => data.cardId || data.customCardName,
   { message: 'Either cardId or customCardName is required' }
 );
 
-const updateInventorySchema = createInventorySchema.partial();
+// Update schema is partial (all fields optional for PATCH)
+const updateInventorySchema = baseInventorySchema.partial();
 
 const bulkCreateSchema = z.object({
   items: z.array(createInventorySchema).min(1).max(100),
