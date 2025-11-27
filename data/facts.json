@@ -3,27 +3,27 @@
   "version": "1.0.0",
   "lastUpdated": "2025-11-19",
   "organization": {
-    "name": "Apex Intelligence",
-    "legalName": "Apex Intelligence",
-    "description": "The world's first fully attribution-safe, regulation-compliant, AI-native market intelligence platform for Trading Card Games.",
+    "name": "Intranational Intel & AI Research Center",
+    "legalName": "Intranational Intel & AI Research Center",
+    "description": "A rogue think tank for AI research in biological sciences, animal welfare, and market intelligence. Building the future for all sentient beings.",
     "foundedYear": 2025,
     "headquarters": {
       "addressCountry": "United States"
     },
-    "mission": "Institutional-grade TCG market intelligence. Built for speed, accuracy, and edge.",
-    "tagline": "Underground Intel For Serious Collectors"
+    "mission": "Advancing AI research for biological sciences and animal welfare. Humans first, sentient beings first.",
+    "tagline": "Intranational Intel & AI Research Center"
   },
   "founders": [
     {
-      "name": "Apex Intelligence Team",
+      "name": "Intranational Intel Team",
       "role": "Founding Team"
     }
   ],
   "product": {
-    "name": "Apex Intelligence Center",
-    "shortName": "TCG Intelligence Center",
-    "fullName": "TCG Intelligence Center - Market Intelligence Platform",
-    "description": "Production-ready TCG investment platform with institutional-grade backtesting, risk management, and portfolio optimization spanning 32 years of market data (1993-2025).",
+    "name": "Intranational Intel & AI Research Center",
+    "shortName": "Intranational Intel",
+    "fullName": "Intranational Intel & AI Research Center",
+    "description": "A rogue think tank for AI research in biological sciences, animal welfare, and market intelligence. Building the future for all sentient beings.",
     "category": "Market Intelligence Platform",
     "targetMarket": "Trading Card Game (TCG) Investors and Collectors",
     "features": [
