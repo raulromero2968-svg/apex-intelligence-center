@@ -7,14 +7,12 @@
   "regions": ["iad1"],
   "functions": {
     "apps/web/src/app/api/**/*.ts": {
-      "memory": 4096,
-      "maxDuration": 300,
-      "runtime": "nodejs20.x"
+      "memory": 1024,
+      "maxDuration": 60
     },
     "apps/web/app/api/**/*.ts": {
-      "memory": 4096,
-      "maxDuration": 300,
-      "runtime": "nodejs20.x"
+      "memory": 1024,
+      "maxDuration": 60
     }
   },
   "crons": [

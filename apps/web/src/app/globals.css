@@ -248,6 +248,68 @@
     scrollbar-width: none;
   }
 
+  /* Sentinel UI Custom Scrollbar - Thin cyan variant */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #06b6d4, #0891b2);
+    border-radius: 3px;
+    border: 1px solid rgba(15, 23, 42, 0.5);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #22d3ee, #06b6d4);
+  }
+
+  /* Firefox scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #06b6d4 rgba(15, 23, 42, 0.5);
+  }
+
+  /* Purple variant scrollbar */
+  .scrollbar-thin-purple::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin-purple::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin-purple::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #a855f7, #9333ea);
+    border-radius: 3px;
+    border: 1px solid rgba(15, 23, 42, 0.5);
+  }
+
+  .scrollbar-thin-purple::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #c084fc, #a855f7);
+  }
+
+  .scrollbar-thin-purple {
+    scrollbar-width: thin;
+    scrollbar-color: #a855f7 rgba(15, 23, 42, 0.5);
+  }
+
+  /* Hollow Text - See-through typography with cyberpunk glow */
+  .hollow-text {
+    font-size: 4rem;
+    font-weight: bold;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
   /* ═══════════════════════════════════════════════════════════════════
      SENTINEL UI KIT - Custom Scrollbar Styles (DigitalScroll)
      High-contrast cyberpunk scrollbars for terminal-style containers

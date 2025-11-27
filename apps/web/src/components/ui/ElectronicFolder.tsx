@@ -15,6 +15,13 @@ interface ElectronicFolderProps {
 /**
  * ElectronicFolder - Digital classified dossier container
  * Use for: Structured content sections, profile displays, intel briefings
+ *
+ * Features:
+ * - Classified dossier aesthetic with tabbed header
+ * - Pulsing classification badge
+ * - Auto-generated DOC.REF identifier
+ * - APEX watermark and footer classification
+ * - Tab connector line for authentic folder look
  */
 export function ElectronicFolder({
   title,
@@ -27,39 +34,40 @@ export function ElectronicFolder({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={clsx('relative', className)}
+      className={clsx('relative font-mono', className)}
     >
-      {/* Folder Tab */}
-      <div className="relative flex items-stretch">
-        {/* Tab shape */}
+      {/* Folder Tab Row */}
+      <div className="relative flex items-end">
+        {/* Tab shape with connector */}
         <div className="relative">
           <div className="flex items-center gap-3 px-6 py-3 bg-slate-900 border border-cyan-500/40 border-b-0 rounded-t-lg">
             <FileText className="w-4 h-4 text-cyan-400" />
-            <span className="font-mono text-sm font-bold text-cyan-400 tracking-wide">
+            <span className="text-sm font-bold text-cyan-400 tracking-widest uppercase">
               {title}
             </span>
           </div>
-          {/* Tab connector */}
-          <div className="absolute -bottom-[1px] left-0 right-0 h-[1px] bg-slate-900" />
+          {/* Tab bottom connector - hides the border between tab and content */}
+          <div className="absolute -bottom-[1px] left-[1px] right-[1px] h-[1px] bg-slate-900" />
         </div>
 
+        {/* Decorative line extending from tab */}
+        <div className="flex-1 border-b border-slate-700 h-[1px] mb-[1px]" />
+
         {/* Classification badge */}
-        <div className="flex-1 flex items-center justify-end pr-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center gap-2 px-3 py-1 rounded bg-red-950/30 border border-red-500/30"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-            </span>
-            <span className="font-mono text-xs text-red-400 tracking-wider">
-              {classification}
-            </span>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center gap-2 px-3 py-1 mb-1 rounded bg-red-950/30 border border-red-500/30"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+          </span>
+          <span className="text-[10px] text-red-400 tracking-wider">
+            {classification}
+          </span>
+        </motion.div>
       </div>
 
       {/* Folder Content */}
@@ -68,13 +76,13 @@ export function ElectronicFolder({
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-cyan-500/60 via-cyan-400/80 to-cyan-500/60" />
 
         {/* Corner stamps */}
-        <div className="absolute top-4 right-4 font-mono text-[10px] text-slate-600 tracking-widest opacity-50">
+        <div className="absolute top-4 right-4 text-[10px] text-slate-600 tracking-widest opacity-50">
           DOC.REF: APX-{Math.random().toString(36).substring(2, 8).toUpperCase()}
         </div>
 
         {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-          <span className="font-mono text-[120px] font-black text-slate-800/5 tracking-widest rotate-[-15deg] select-none">
+          <span className="text-[120px] font-black text-slate-800/5 tracking-widest rotate-[-15deg] select-none">
             APEX
           </span>
         </div>
@@ -86,7 +94,7 @@ export function ElectronicFolder({
 
         {/* Bottom classification stripe */}
         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-r from-transparent via-slate-900/80 to-transparent flex items-center justify-center">
-          <span className="font-mono text-[10px] text-slate-600 tracking-[0.3em]">
+          <span className="text-[10px] text-slate-600 tracking-[0.3em]">
             HANDLE VIA APEX CHANNELS ONLY
           </span>
         </div>

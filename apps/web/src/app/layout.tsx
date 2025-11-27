@@ -28,7 +28,7 @@ import ToastHost from '@/components/ToastHost';
 
 import { PwaInstallPrompt } from '@/components/pwa/PwaInstallPrompt';
 
-import { fontSans } from '@/lib/fonts';
+import { fontSans, fontMono } from '@/lib/fonts';
 
 import { cn } from '@/lib/utils';
 
@@ -253,7 +253,11 @@ export default function RootLayout({
 
           'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
 
-          fontSans.className,
+          fontSans.variable,
+
+          fontMono.variable,
+
+          'font-sans',
 
         )}
 
