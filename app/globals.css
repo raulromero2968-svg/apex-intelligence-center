@@ -1,0 +1,406 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Background is now handled by ApexVisualEngine canvas */
+  }
+
+  .cyber-grid {
+    /* Legacy grid class - now rendered by ApexVisualEngine */
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cyber-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neon-cyan/30;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-cyan/50;
+  }
+
+  .text-glow-pink {
+    text-shadow: 0 0 10px rgba(255, 0, 110, 0.8);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.8);
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(176, 38, 255, 0.8);
+  }
+
+  .holographic {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 110, 0.3) 0%,
+      rgba(0, 245, 255, 0.3) 50%,
+      rgba(176, 38, 255, 0.3) 100%
+    );
+    backdrop-filter: blur(10px);
+  }
+
+  .neon-border {
+    border: 1px solid rgba(0, 245, 255, 0.5);
+    box-shadow:
+      0 0 10px rgba(0, 245, 255, 0.5),
+      inset 0 0 10px rgba(0, 245, 255, 0.2);
+  }
+
+  .holo-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px; /* Pokemon card radius */
+  }
+
+  .holo-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.4) 40%,
+      rgba(255, 255, 255, 0.4) 60%,
+      transparent 80%
+    );
+    background-size: 200% 200%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: overlay;
+  }
+
+  .holo-card:hover::before {
+    opacity: 1;
+    animation: holo-shine 1.5s linear infinite;
+  }
+
+  @keyframes holo-shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* HOLOGRAPHIC CARD CONTAINER EFFECT (Enhanced) */
+  .holo-card-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .holo-card-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: none;
+    pointer-events: none;
+  }
+
+  .holo-card-container:hover::after {
+    left: 200%;
+    transition: left 0.8s ease-in-out;
+  }
+
+  .holo-card-container:hover {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    transform: translateY(-5px);
+    border-color: #22d3ee;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-neon-cyan/10 border border-neon-cyan text-neon-cyan rounded-lg
+           hover:bg-neon-cyan/20 hover:shadow-neon-cyan transition-all duration-300
+           font-semibold;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-purple-500/10 border border-purple-500 text-purple-400 rounded-lg
+           hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300
+           font-semibold;
+  }
+
+  .card-cyber {
+    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20
+           rounded-lg p-6 hover:border-neon-cyan/40 transition-all duration-300;
+  }
+}
+
+/* FORCE TRANSPARENCY ON ALL PAGES */
+body, html {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Make the main page wrappers see-through glass */
+main {
+  background-color: rgba(2, 6, 23, 0.4) !important; /* slate-950 with 40% opacity */
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Ensure the Visual Engine canvas is always behind everything */
+canvas {
+  z-index: -1 !important;
+}
+
+/* Holographic card animation for Intelligence Archive */
+@keyframes holo-sweep {
+  0% {
+    transform: skewX(-20deg) translateX(-150%);
+  }
+  100% {
+    transform: skewX(-20deg) translateX(250%);
+  }
+}
+
+.holo-sweep {
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.1) 50%, transparent 80%);
+  animation: holo-sweep 2s infinite linear;
+}
+
+/* TITAN GLITCH GRADIENT (Smaller, Colored, Aggressive) */
+.glitch-gradient {
+  font-weight: 900;
+  background: linear-gradient(to right, #22d3ee, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-gradient::before,
+.glitch-gradient::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #020617; /* Match bg to hide parts */
+  color: #fff;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* The "Ghost" Glitch Layers */
+.glitch-gradient::before {
+  left: 2px;
+  text-shadow: -1px 0 #22d3ee;
+  clip-path: inset(24% 0 29% 0);
+  animation: glitch-gradient-anim 3s infinite linear alternate-reverse;
+  opacity: 0.5; /* Make visible */
+}
+
+.glitch-gradient::after {
+  left: -2px;
+  text-shadow: -1px 0 #a855f7;
+  clip-path: inset(85% 0 13% 0);
+  animation: glitch-gradient-anim 2s infinite linear alternate-reverse;
+  opacity: 0.5;
+}
+
+@keyframes glitch-gradient-anim {
+  0% { clip-path: inset(40% 0 61% 0); transform: skew(0.3deg); }
+  20% { clip-path: inset(92% 0 1% 0); transform: skew(0.1deg); }
+  40% { clip-path: inset(43% 0 1% 0); transform: skew(0.3deg); }
+  60% { clip-path: inset(25% 0 58% 0); transform: skew(0.1deg); }
+  80% { clip-path: inset(54% 0 7% 0); transform: skew(0.3deg); }
+  100% { clip-path: inset(58% 0 43% 0); transform: skew(0.1deg); }
+}
+
+/* HOLOGRAPHIC FOLDER TABS */
+.folder-tab {
+  clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+}
+
+/* HOLOGRAPHIC FOIL SHIFT ANIMATION */
+@keyframes holo-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESTORED CLEAN TYPOGRAPHY (Inter) - INSTITUTIONAL TECH
+   ═══════════════════════════════════════════════════════════ */
+
+/* Main hierarchy - Clean Inter font with professional styling */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-inter), system-ui, sans-serif; /* Back to clean */
+  font-weight: 800; /* Bold but not blocky */
+  text-transform: uppercase;
+  letter-spacing: -0.03em; /* Tight, modern spacing */
+  color: #fff;
+}
+
+/* Readable body font but technical */
+p, li, div {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* TITAN HOLLOW GLITCH (The Final Look) */
+.neon-circuit-text {
+  /* 1. Hollow Text (Stroke Only) */
+  color: transparent;
+  -webkit-text-stroke: 2px #ffffff;
+
+  /* 2. Font Settings (Clean & Aggressive) */
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+
+  /* 3. The Glow (Cyan & Purple) */
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.8)) drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
+
+  /* 4. The Pulse Animation */
+  animation: hollow-pulse 3s infinite alternate;
+}
+
+@keyframes hollow-pulse {
+  0% { filter: drop-shadow(0 0 5px #22d3ee); }
+  100% { filter: drop-shadow(0 0 20px #22d3ee) drop-shadow(0 0 40px #a855f7); }
+}
+
+/* TITAN HOLLOW GLITCH (The "Reference" Look) */
+.titan-hollow-glitch {
+  /* 1. Make it Hollow */
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+
+  /* 2. Base Font Settings */
+  font-family: var(--font-chakra), sans-serif; /* The Tech Font */
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+
+  /* 3. Dual Color Glow (Cyan + Purple) */
+  filter: drop-shadow(2px 2px 0px #a855f7) drop-shadow(-2px -2px 0px #22d3ee);
+}
+
+/* The Glitch Layers (Also Hollow) */
+.titan-hollow-glitch::before,
+.titan-hollow-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #020617; /* Matches background to hide parts */
+  color: transparent;
+  -webkit-text-stroke: 2px white;
+}
+
+/* Purple Shift Layer */
+.titan-hollow-glitch::before {
+  left: 2px;
+  text-shadow: 2px 0 #a855f7;
+  clip-path: inset(24% 0 29% 0);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+/* Cyan Shift Layer */
+.titan-hollow-glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #22d3ee;
+  clip-path: inset(85% 0 13% 0);
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+/* Reuse existing glitch keyframes */
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(40% 0 61% 0); }
+  20% { clip-path: inset(92% 0 1% 0); }
+  40% { clip-path: inset(43% 0 1% 0); }
+  60% { clip-path: inset(25% 0 58% 0); }
+  80% { clip-path: inset(54% 0 7% 0); }
+  100% { clip-path: inset(58% 0 43% 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(24% 0 29% 0); }
+  20% { clip-path: inset(54% 0 21% 0); }
+  40% { clip-path: inset(23% 0 39% 0); }
+  60% { clip-path: inset(13% 0 69% 0); }
+  80% { clip-path: inset(84% 0 2% 0); }
+  100% { clip-path: inset(1% 0 98% 0); }
+}
+
+/* Override the massive sizes globally */
+h1 {
+  font-size: 3.5rem !important; /* Was 6rem+ */
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 4.5rem !important; /* Max size on desktop */
+  }
+}
+
+/* SMOOTH VIDEO FADE */
+.video-fade {
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+/* SOFT LOOP ANIMATION FOR VIDEO */
+@keyframes fade-loop {
+  0% { opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.animate-fade-loop {
+  animation: fade-loop 8s linear infinite; /* Matches typical loop length */
+}
