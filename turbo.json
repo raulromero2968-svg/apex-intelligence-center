@@ -1,6 +1,20 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "globalDependencies": ["**/.env.*", "tsconfig.json", "tailwind.config.js"],
+  "globalEnv": [
+    "NODE_ENV",
+    "POSTGRES_URL",
+    "POSTGRES_PRISMA_URL",
+    "POSTGRES_URL_NON_POOLING",
+    "POSTGRES_USER",
+    "POSTGRES_HOST",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_DATABASE",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_JWT_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -38,6 +52,14 @@
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
+    },
+    "verify-barrels": {
+      "cache": true,
+      "outputs": []
+    },
+    "verify-schema": {
+      "cache": true,
+      "outputs": []
     },
     "db:migrate": {
       "cache": false

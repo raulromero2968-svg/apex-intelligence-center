@@ -100,12 +100,53 @@ export function getContrarianQueueEvents(): QueueEvents {
   return _contrarianQueueEvents;
 }
 
-// Backwards compatibility exports using getters
-export const varcQueue = { get: getVarcQueue } as unknown as Queue;
-export const lampQueue = { get: getLampQueue } as unknown as Queue;
-export const contrarianQueue = { get: getContrarianQueue } as unknown as Queue;
-export const varcQueueEvents = { get: getVarcQueueEvents } as unknown as QueueEvents;
-export const lampQueueEvents = { get: getLampQueueEvents } as unknown as QueueEvents;
-export const contrarianQueueEvents = { get: getContrarianQueueEvents } as unknown as QueueEvents;
+// Backwards compatibility exports using Proxy for lazy initialization
+export const varcQueue = new Proxy({} as Queue, {
+  get(_, prop) {
+    const queue = getVarcQueue();
+    const value = (queue as any)[prop];
+    return typeof value === 'function' ? value.bind(queue) : value;
+  }
+});
+
+export const lampQueue = new Proxy({} as Queue, {
+  get(_, prop) {
+    const queue = getLampQueue();
+    const value = (queue as any)[prop];
+    return typeof value === 'function' ? value.bind(queue) : value;
+  }
+});
+
+export const contrarianQueue = new Proxy({} as Queue, {
+  get(_, prop) {
+    const queue = getContrarianQueue();
+    const value = (queue as any)[prop];
+    return typeof value === 'function' ? value.bind(queue) : value;
+  }
+});
+
+export const varcQueueEvents = new Proxy({} as QueueEvents, {
+  get(_, prop) {
+    const events = getVarcQueueEvents();
+    const value = (events as any)[prop];
+    return typeof value === 'function' ? value.bind(events) : value;
+  }
+});
+
+export const lampQueueEvents = new Proxy({} as QueueEvents, {
+  get(_, prop) {
+    const events = getLampQueueEvents();
+    const value = (events as any)[prop];
+    return typeof value === 'function' ? value.bind(events) : value;
+  }
+});
+
+export const contrarianQueueEvents = new Proxy({} as QueueEvents, {
+  get(_, prop) {
+    const events = getContrarianQueueEvents();
+    const value = (events as any)[prop];
+    return typeof value === 'function' ? value.bind(events) : value;
+  }
+});
 
 
