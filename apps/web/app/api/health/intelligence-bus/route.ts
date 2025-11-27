@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import { redis, ping } from '@/server/redis/client';
-import { varcQueue, lampQueue, contrarianQueue } from '@/server/queues/bullmqClient';
-import {
-  VARC_QUEUE_NAME,
-  LAMP_QUEUE_NAME,
-  CONTRARIAN_QUEUE_NAME,
-} from '@apex/shared';
+import { ping } from '@/server/redis/client';
+import { getVarcQueue, getLampQueue, getContrarianQueue } from '@/server/queues/bullmqClient';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET() {
   const health: {
@@ -49,6 +45,7 @@ export async function GET() {
   }
 
   try {
+    const varcQueue = getVarcQueue();
     const [varcWaiting, varcActive, varcCompleted, varcFailed] = await Promise.all([
       varcQueue.getWaitingCount(),
       varcQueue.getActiveCount(),
@@ -68,6 +65,7 @@ export async function GET() {
   }
 
   try {
+    const lampQueue = getLampQueue();
     const [lampWaiting, lampActive, lampCompleted, lampFailed] = await Promise.all([
       lampQueue.getWaitingCount(),
       lampQueue.getActiveCount(),
@@ -87,6 +85,7 @@ export async function GET() {
   }
 
   try {
+    const contrarianQueue = getContrarianQueue();
     const [contrarianWaiting, contrarianActive, contrarianCompleted, contrarianFailed] = await Promise.all([
       contrarianQueue.getWaitingCount(),
       contrarianQueue.getActiveCount(),
@@ -109,4 +108,3 @@ export async function GET() {
 
   return NextResponse.json(health, { status: statusCode });
 }
-

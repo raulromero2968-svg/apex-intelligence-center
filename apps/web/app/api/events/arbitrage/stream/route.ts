@@ -31,51 +31,60 @@ export async function GET(request: NextRequest) {
         controller.enqueue(encoder.encode(message));
       };
 
-      // Subscribe to Redis channel
-      const subscriber = redis.duplicate();
-      await subscriber.connect();
+      const channel = arbitrageOpportunityChannel();
+      const subscriber = getRedisClient();
 
-      subscriber.subscribe(arbitrageOpportunityChannel(), (err) => {
-        if (err) {
-          console.error('[arbitrage-stream] Subscription error:', err);
-          sendError(err);
-        } else {
-          console.log('[arbitrage-stream] Subscribed to', arbitrageOpportunityChannel());
+      let closed = false;
+
+      const unsubscribe = () => {
+        if (!closed) {
+          closed = true;
+          subscriber.unsubscribe(channel);
+          subscriber.quit().catch(() => {
+            // Ignore errors on quit
+          });
         }
-      });
+      };
 
-      subscriber.on('message', (channel, message) => {
-        try {
-          const event: ArbitrageEvent = JSON.parse(message);
-          sendEvent(event);
-        } catch (error) {
-          console.error('[arbitrage-stream] Failed to parse message:', error);
-          sendError(error instanceof Error ? error : new Error(String(error)));
+      const timeout = setTimeout(() => {
+        controller.enqueue(encoder.encode(`event: timeout\n`));
+        controller.enqueue(
+          encoder.encode(
+            `data: ${JSON.stringify({ status: 'timeout', message: 'Connection timeout' })}\n\n`
+          )
+        );
+        unsubscribe();
+        controller.close();
+      }, 300000); // 5 minute timeout
+
+      const messageHandler = (ch: string, message: string) => {
+        if (ch === channel && !closed) {
+          try {
+            const event: ArbitrageEvent = JSON.parse(message);
+            sendEvent(event);
+          } catch (error) {
+            console.error('[arbitrage-stream] Failed to parse message:', error);
+            sendError(error instanceof Error ? error : new Error(String(error)));
+          }
         }
-      });
+      };
 
-      // Send initial connection message
-      sendEvent({
-        kind: 'arbitrage_opportunity',
-        opportunity: {
-          id: 'connection',
-          createdAt: new Date().toISOString(),
-          baseCollection: 'system',
-          edgeBps: 0,
-          estimatedProfitUsd: 0,
-          legs: [],
-          riskScore: 0,
-          status: 'open',
-        },
-      } as ArbitrageEvent);
+      await subscriber.subscribe(channel, messageHandler);
 
       // Handle client disconnect
       request.signal.addEventListener('abort', () => {
-        console.log('[arbitrage-stream] Client disconnected');
-        subscriber.unsubscribe();
-        subscriber.quit();
+        clearTimeout(timeout);
+        unsubscribe();
         controller.close();
       });
+
+      // Send initial connection message
+      controller.enqueue(encoder.encode(`event: connected\n`));
+      controller.enqueue(
+        encoder.encode(
+          `data: ${JSON.stringify({ channel })}\n\n`
+        )
+      );
     },
   });
 
