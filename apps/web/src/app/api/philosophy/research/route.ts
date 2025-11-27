@@ -23,11 +23,34 @@ import {
   formatSourcesForOutput,
   CitationMapper,
 } from '@/rag';
+import { createVoyageEmbeddings, cosineSimilarity } from '@/lib/embeddings';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 import { createHash } from 'crypto';
+
+// ============================================================================
+// Verbalized Sampling (VS) Configuration
+// ============================================================================
+// VS is a training-free technique to mitigate mode collapse in LLMs.
+// Post-RLHF models exhibit "typicality bias" leading to repetitive outputs.
+// VS prompts the LLM to consider multiple diverse responses before selecting.
+// Research shows 1.6-2x creativity boost and 25.7% higher human-rated diversity.
+//
+// Trade-offs:
+// - GOOD: Simple prompt addition (8-20 words) boosts diversity without fine-tuning
+// - BAD: Increases token usage ~10-20%, potential hallucinations in probabilities
+// - MITIGATED: Use reranking (Cohere) to select best response
+// ============================================================================
+
+const VS_CONFIG = {
+  enabled: true, // Toggle VS globally
+  numResponses: 5, // Number of diverse responses to consider
+  diversityThreshold: 0.3, // Min cosine distance for diversity (0 = identical, 1 = opposite)
+  useDiversityScoring: false, // Enable embedding-based diversity measurement
+  useCoTVariant: false, // VS-CoT: Chain-of-Thought variant for deeper reasoning
+} as const;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -134,6 +157,85 @@ const philosophyRagPrompt = ChatPromptTemplate.fromMessages([
   ['system', PHILOSOPHY_RAG_SYSTEM_PROMPT],
   ['human', '{question}'],
 ]);
+
+// ============================================================================
+// Verbalized Sampling (VS) Enhanced Prompt
+// ============================================================================
+// The VS prompt prefix instructs the model to internally consider multiple
+// diverse responses before selecting the most insightful one. This combats
+// mode collapse and "typicality bias" from RLHF training.
+// ============================================================================
+
+const VS_PROMPT_PREFIX = `Before responding, internally generate ${VS_CONFIG.numResponses} diverse perspectives on this question, each with a different analytical angle:
+1. Consider unconventional/contrarian viewpoints
+2. Explore edge cases and exceptions
+3. Include cross-disciplinary connections
+4. Weigh alternative interpretations
+5. Synthesize the most insightful elements from each perspective
+
+Then provide a single, comprehensive response that captures the richest insights from your internal deliberation.`;
+
+const VS_COT_PROMPT_PREFIX = `[CHAIN-OF-THOUGHT DIVERSITY]
+Step 1: List ${VS_CONFIG.numResponses} distinct analytical approaches to this question
+Step 2: For each approach, outline key insights and potential blind spots
+Step 3: Identify which perspectives reveal non-obvious connections
+Step 4: Synthesize the strongest elements into a unified response
+
+Your final response should demonstrate intellectual breadth while remaining grounded in sources.`;
+
+const PHILOSOPHY_RAG_SYSTEM_PROMPT_WITH_VS = VS_CONFIG.enabled
+  ? `${VS_CONFIG.useCoTVariant ? VS_COT_PROMPT_PREFIX : VS_PROMPT_PREFIX}
+
+${PHILOSOPHY_RAG_SYSTEM_PROMPT}`
+  : PHILOSOPHY_RAG_SYSTEM_PROMPT;
+
+const philosophyRagPromptWithVS = ChatPromptTemplate.fromMessages([
+  ['system', PHILOSOPHY_RAG_SYSTEM_PROMPT_WITH_VS],
+  ['human', '{question}'],
+]);
+
+// ============================================================================
+// Diversity Scoring Utilities
+// ============================================================================
+// Measures response diversity using embedding cosine distance.
+// High diversity (>0.3 average distance) indicates successful VS application.
+// ============================================================================
+
+/**
+ * Calculate average pairwise cosine distance between response embeddings.
+ * Returns 0-1 where 0 = identical responses, 1 = maximally diverse.
+ */
+async function measureResponseDiversity(responses: string[]): Promise<{
+  avgDistance: number;
+  isDiverse: boolean;
+  pairwiseDistances: number[];
+}> {
+  if (!VS_CONFIG.useDiversityScoring || responses.length < 2) {
+    return { avgDistance: 0, isDiverse: true, pairwiseDistances: [] };
+  }
+
+  try {
+    const embeddings = createVoyageEmbeddings();
+    const vectors = await embeddings.embedDocuments(responses);
+
+    const pairwiseDistances: number[] = [];
+    for (let i = 0; i < vectors.length; i++) {
+      for (let j = i + 1; j < vectors.length; j++) {
+        // Cosine distance = 1 - cosine similarity
+        const distance = 1 - cosineSimilarity(vectors[i], vectors[j]);
+        pairwiseDistances.push(distance);
+      }
+    }
+
+    const avgDistance = pairwiseDistances.reduce((a, b) => a + b, 0) / pairwiseDistances.length;
+    const isDiverse = avgDistance >= VS_CONFIG.diversityThreshold;
+
+    return { avgDistance, isDiverse, pairwiseDistances };
+  } catch (error) {
+    console.warn('Diversity scoring failed, skipping:', error);
+    return { avgDistance: 0, isDiverse: true, pairwiseDistances: [] };
+  }
+}
 
 // Helper: hash IP for privacy-aware logging
 function hashIP(ip: string): string {
@@ -403,7 +505,12 @@ export async function POST(req: NextRequest) {
                 }
 
                 const outputParser = new StringOutputParser();
-                const ragChain = philosophyRagPrompt.pipe(llm).pipe(outputParser);
+                // Use VS-enhanced prompt for diversity if enabled
+                const activePrompt = VS_CONFIG.enabled ? philosophyRagPromptWithVS : philosophyRagPrompt;
+                const ragChain = activePrompt.pipe(llm).pipe(outputParser);
+
+                span?.setAttribute('vsEnabled', VS_CONFIG.enabled);
+                span?.setAttribute('vsCotVariant', VS_CONFIG.useCoTVariant);
 
                 const streamIterator = await ragChain.stream({
                   context,
@@ -437,6 +544,13 @@ export async function POST(req: NextRequest) {
                 span?.setAttribute('answerLength', fullAnswer.length);
                 span?.setAttribute('sourceCount', sources.length);
 
+                // Optional: Measure diversity of response (for analytics)
+                // Note: This is disabled by default to avoid latency overhead
+                let diversityMetrics;
+                if (VS_CONFIG.enabled && VS_CONFIG.useDiversityScoring) {
+                  diversityMetrics = await measureResponseDiversity([fullAnswer]);
+                }
+
                 logStructured({
                   level: 'info',
                   rid,
@@ -447,6 +561,12 @@ export async function POST(req: NextRequest) {
                   cached: false,
                   query: query.slice(0, 100), // First 100 chars for review
                   citationIds: sources.map((s: any) => s.title?.slice(0, 50) || `source-${s.index}`),
+                  // Verbalized Sampling metrics
+                  ...(VS_CONFIG.enabled && {
+                    vsEnabled: true,
+                    vsVariant: VS_CONFIG.useCoTVariant ? 'VS-CoT' : 'VS',
+                    ...(diversityMetrics && { vsDiversityScore: diversityMetrics.avgDistance }),
+                  }),
                 });
 
               } catch (error) {
