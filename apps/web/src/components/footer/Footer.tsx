@@ -72,15 +72,15 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Apex Intelligence Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Apex Intelligence</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Apex Intelligence</h3>
             <p className="text-gray-400 text-sm">
               Underground intelligence for serious TCG collectors and investors.
             </p>
           </div>
-          
+
           {/* Quick Links Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Intel</Link></li>
               <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Blog</Link></li>
@@ -93,7 +93,7 @@ export const Footer = () => {
 
           {/* Legal Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Legal</h3>
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Legal</h3>
             <ul className="space-y-2">
               <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Terms of Service</Link></li>
@@ -101,11 +101,11 @@ export const Footer = () => {
               <li><Link href="/security" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm drop-shadow-none filter-none">Security</Link></li>
             </ul>
           </div>
-          
+
           {/* Connect Column */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
-            <div className="flex gap-4">
+            <h3 className="text-white font-bold tracking-wider uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.8)] text-sm mb-4">Connect</h3>
+            <div className="flex gap-4 mb-6">
               <a
                 href={SOCIAL_PROFILES.twitter}
                 target="_blank"
@@ -142,6 +142,17 @@ export const Footer = () => {
               >
                 <Github className="w-5 h-5 text-cyan-400" />
               </a>
+            </div>
+
+            {/* Vercel-Style Theme Toggle */}
+            <div className="mt-8">
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-xs text-slate-400 hover:text-white hover:border-slate-600 transition-colors">
+                <div className="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-cyan-500" />
+                </div>
+                <span>System Theme</span>
+                <span className="ml-1 text-slate-600">▼</span>
+              </button>
             </div>
           </div>
         </div>

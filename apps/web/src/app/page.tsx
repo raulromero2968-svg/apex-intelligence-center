@@ -162,6 +162,13 @@ export default function HomePage() {
                   </li>
                 </ul>
 
+                {/* Holographic Data Sphere */}
+                <div className="relative w-full h-64 flex items-center justify-center my-12">
+                  <div className="w-48 h-48 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite] border-t-transparent border-l-transparent shadow-[0_0_30px_rgba(34,211,238,0.2)]" />
+                  <div className="absolute w-32 h-32 border border-purple-500/30 rounded-full animate-[spin_7s_linear_infinite_reverse] border-b-transparent border-r-transparent" />
+                  <div className="absolute text-xs font-mono text-cyan-400 animate-pulse">ANALYZING MARKET DATA...</div>
+                </div>
+
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
                   <div className="text-center">
@@ -217,14 +224,15 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
-                <div className="mb-4 flex justify-center">
+                {/* Holo Thumbnail - Layered with Starfield */}
+                <div className="mb-4 flex justify-center relative h-20 w-20 mx-auto overflow-hidden rounded-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/50 via-slate-950 to-purple-950/50 opacity-50 animate-pulse" style={{backgroundSize: '200% 200%'}} />
                   <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Vintage WOTC Analysis"
                     width={80}
                     height={80}
-                    className="rounded-lg"
+                    className="relative z-10 mix-blend-lighten rounded-lg"
                   />
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
@@ -249,15 +257,15 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-purple-400/30 rounded-lg p-6 hover:border-purple-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.15)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
-                <div className="mb-4 flex justify-center">
+                {/* Holo Thumbnail - Layered with Starfield */}
+                <div className="mb-4 flex justify-center relative h-20 w-20 mx-auto overflow-hidden rounded-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-950/50 via-slate-950 to-cyan-950/50 opacity-50 animate-pulse" style={{backgroundSize: '200% 200%'}} />
                   <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Rotation Window Strategy"
                     width={80}
                     height={80}
-
-                    className="rounded-lg"
+                    className="relative z-10 mix-blend-lighten rounded-lg"
                   />
                 </div>
                 <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
@@ -282,15 +290,15 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Holo Thumbnail */}
-                <div className="mb-4 flex justify-center">
+                {/* Holo Thumbnail - Layered with Starfield */}
+                <div className="mb-4 flex justify-center relative h-20 w-20 mx-auto overflow-hidden rounded-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/50 via-slate-950 to-purple-950/50 opacity-50 animate-pulse" style={{backgroundSize: '200% 200%'}} />
                   <Image
                     src="/images/apex-wolf-black-bg-final.png"
                     alt="Pokemon 151 Market Report"
                     width={80}
                     height={80}
-
-                    className="rounded-lg"
+                    className="relative z-10 mix-blend-lighten rounded-lg"
                   />
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
