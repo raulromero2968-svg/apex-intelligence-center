@@ -10,14 +10,8 @@
 /coverage
 
 # next.js
-/.next/
 **/.next/
-/out/
 **/out/
-
-# turbo
-.turbo/
-**/.turbo/
 
 # production
 /build
