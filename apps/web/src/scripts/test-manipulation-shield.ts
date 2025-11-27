@@ -8,7 +8,7 @@
 
 import { db } from '@/db';
 import { cards, sales, manipulationAlerts, alertSubscriptions, users } from '@/db/schema';
-import { createId } from '@paralleldrive/cuid2';
+import { randomUUID as createId } from 'crypto';
 import { activateManipulationShield } from '../services/manipulation-shield.service';
 
 async function createMockPumpData() {
