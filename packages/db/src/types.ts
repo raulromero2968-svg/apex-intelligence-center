@@ -1,6 +1,6 @@
 import { users, watchlist, portfolio, notificationPreferences, pushTokens, pushTickets, priceHistory } from './schema';
-import { cardForensics, marketKnowledge } from './schema/index';
 
+// Base table types inferred from schema.ts
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
@@ -22,7 +22,6 @@ export type NewPushTicket = typeof pushTickets.$inferInsert;
 export type PriceHistory = typeof priceHistory.$inferSelect;
 export type NewPriceHistory = typeof priceHistory.$inferInsert;
 
-export type { CardForensics, NewCardForensics } from './schema/cardForensics';
-export type { MarketKnowledge, NewMarketKnowledge } from './schema/marketKnowledge';
+// Extended table types are re-exported from schema/index.ts via the main index.ts
 
 
