@@ -9,4 +9,4 @@
  */
 
 // JWT utilities
-export { getUserFromRequest, type UserWithTier } from './jwt';
+export { getUserFromRequest, signJwt, type UserWithTier } from './jwt';

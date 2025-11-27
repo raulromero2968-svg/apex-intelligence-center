@@ -348,3 +348,119 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
+// ============================================================================
+// Commons Page Functions (content/commons/)
+// ============================================================================
+
+const commonsDirectory = path.join(process.cwd(), '..', '..', 'content', 'commons');
+
+export interface CommonsPostFrontmatter {
+  title: string;
+  description: string;
+  date: string;
+  author: string;
+  hero?: string;
+  tags?: string[];
+  category?: string;
+}
+
+export interface CommonsPost {
+  slug: string;
+  frontmatter: CommonsPostFrontmatter;
+  content: any;
+}
+
+// Get all commons post slugs
+export async function getAllCommonsSlugs(): Promise<string[]> {
+  try {
+    const files = await readdir(commonsDirectory);
+    return files
+      .filter((file) => file.endsWith('.mdx'))
+      .map((file) => file.replace(/\.mdx$/, ''));
+  } catch (error) {
+    console.warn('Commons directory not found:', error);
+    return [];
+  }
+}
+
+// Get commons post by slug
+export async function getCommonsBySlug(slug: string): Promise<CommonsPost | null> {
+  try {
+    const filePath = path.join(commonsDirectory, `${slug}.mdx`);
+    const source = await readFile(filePath, 'utf8');
+
+    const { data: frontmatter, content } = matter(source);
+    const { content: mdxContent } = await compileMDX<CommonsPostFrontmatter>({
+      source: content,
+      components: {
+        AreaChartViz,
+        BarChartViz,
+        HeroImage,
+        AskFollowUp,
+        InteractiveLineChart,
+        ScatterPlot,
+        PublishedTime,
+        SourceBadge,
+        SourceCards,
+        TableOfContents,
+        InfoBox,
+        ImageWithCaption,
+        ShareButtons,
+        DiscoverMore,
+      },
+      options: {
+        parseFrontmatter: false,
+        scope: {
+          frontMatter: frontmatter,
+        },
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+          rehypePlugins: [],
+          useDynamicImport: true,
+        },
+      },
+    });
+
+    return {
+      slug,
+      frontmatter: frontmatter as CommonsPostFrontmatter,
+      content: mdxContent,
+    };
+  } catch (error) {
+    console.error(`Error reading commons post ${slug}:`, error);
+    return null;
+  }
+}
+
+// Get all commons posts
+export async function getAllCommonsPosts(): Promise<CommonsPost[]> {
+  try {
+    const files = await readdir(commonsDirectory);
+    const posts: CommonsPost[] = [];
+
+    for (const file of files) {
+      if (!file.endsWith('.mdx')) continue;
+
+      const slug = file.replace(/\.mdx$/, '');
+      const filePath = path.join(commonsDirectory, file);
+      const source = await readFile(filePath, 'utf8');
+
+      const { data: frontmatter } = matter(source);
+
+      posts.push({
+        slug,
+        frontmatter: frontmatter as CommonsPostFrontmatter,
+        content: null,
+      });
+    }
+
+    // Sort by date (newest first)
+    return posts.sort((a, b) => {
+      return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+    });
+  } catch (error) {
+    console.warn('Error reading commons posts:', error);
+    return [];
+  }
+}
+

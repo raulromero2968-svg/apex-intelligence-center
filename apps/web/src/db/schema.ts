@@ -669,6 +669,130 @@ export type NewMakerVote = typeof makerVotes.$inferInsert;
 export type CardForensics = typeof cardForensics.$inferSelect;
 export type NewCardForensics = typeof cardForensics.$inferInsert;
 
+// ============================================================================
+// VAULT AND FAMILY PROTECTION TABLES
+// ============================================================================
+
+/**
+ * Vault Jobs - Background processing jobs for secure data operations
+ */
+export const vaultJobs = pgTable('vault_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  type: text('type').notNull(), // 'backup' | 'restore' | 'sync' | 'export'
+  status: text('status').notNull().default('pending'), // 'pending' | 'running' | 'completed' | 'failed'
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  payload: jsonb('payload'),
+  result: jsonb('result'),
+  errorMessage: text('error_message'),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  statusIdx: index('idx_vault_jobs_status').on(table.status),
+  userIdx: index('idx_vault_jobs_user').on(table.userId),
+}));
+
+/**
+ * Family Links - Parent-child account relationships for family protection
+ */
+export const familyLinks = pgTable('family_links', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  parentId: text('parent_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('pending'), // 'pending' | 'active' | 'revoked'
+  permissions: jsonb('permissions').$type<{
+    canViewActivity: boolean;
+    canSetLimits: boolean;
+    canApproveTransactions: boolean;
+    spendingLimit?: number;
+  }>().default({}),
+  linkedAt: timestamp('linked_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  parentIdx: index('idx_family_links_parent').on(table.parentId),
+  childIdx: index('idx_family_links_child').on(table.childId),
+  uniqueLink: uniqueIndex('idx_family_links_unique').on(table.parentId, table.childId),
+}));
+
+/**
+ * Child Activity History - Activity tracking for minor protection
+ */
+export const childActivityHistory = pgTable('child_activity_history', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  activityType: text('activity_type').notNull(), // 'purchase' | 'view' | 'search' | 'bid'
+  activityData: jsonb('activity_data').notNull(),
+  flagged: boolean('flagged').default(false).notNull(),
+  flagReason: text('flag_reason'),
+  reviewedBy: text('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+  reviewedAt: timestamp('reviewed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  childIdx: index('idx_child_activity_child').on(table.childId),
+  typeIdx: index('idx_child_activity_type').on(table.activityType),
+  flaggedIdx: index('idx_child_activity_flagged').on(table.flagged),
+}));
+
+/**
+ * Manipulation Alerts - Market manipulation detection alerts
+ */
+export const manipulationAlerts = pgTable('manipulation_alerts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }),
+  alertType: text('alert_type').notNull(), // 'price_spike' | 'wash_trading' | 'pump_dump' | 'artificial_scarcity'
+  severity: text('severity').notNull().default('medium'), // 'low' | 'medium' | 'high' | 'critical'
+  confidence: real('confidence').notNull(), // 0-1 confidence score
+  details: jsonb('details').notNull(),
+  status: text('status').notNull().default('active'), // 'active' | 'acknowledged' | 'dismissed' | 'resolved'
+  acknowledgedBy: text('acknowledged_by').references(() => users.id, { onDelete: 'set null' }),
+  acknowledgedAt: timestamp('acknowledged_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at'),
+}, (table) => ({
+  cardIdx: index('idx_manipulation_alerts_card').on(table.cardId),
+  typeIdx: index('idx_manipulation_alerts_type').on(table.alertType),
+  severityIdx: index('idx_manipulation_alerts_severity').on(table.severity),
+  statusIdx: index('idx_manipulation_alerts_status').on(table.status),
+}));
+
+/**
+ * Video Generation Requests - AI video generation job tracking
+ */
+export const videoGenerationRequests = pgTable('video_generation_requests', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('pending'), // 'pending' | 'processing' | 'completed' | 'failed'
+  prompt: text('prompt').notNull(),
+  style: text('style'), // 'cinematic' | 'documentary' | 'promotional' | 'tutorial'
+  duration: integer('duration'), // seconds
+  inputAssets: jsonb('input_assets').$type<string[]>().default([]),
+  outputUrl: text('output_url'),
+  thumbnailUrl: text('thumbnail_url'),
+  metadata: jsonb('metadata'),
+  errorMessage: text('error_message'),
+  processingStartedAt: timestamp('processing_started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_video_gen_user').on(table.userId),
+  statusIdx: index('idx_video_gen_status').on(table.status),
+}));
+
+// Type exports for new tables
+export type VaultJob = typeof vaultJobs.$inferSelect;
+export type NewVaultJob = typeof vaultJobs.$inferInsert;
+export type FamilyLink = typeof familyLinks.$inferSelect;
+export type NewFamilyLink = typeof familyLinks.$inferInsert;
+export type ChildActivityHistory = typeof childActivityHistory.$inferSelect;
+export type NewChildActivityHistory = typeof childActivityHistory.$inferInsert;
+export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
+export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
+export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
+
 /**
  * Metadata structure examples by source_type:
  *

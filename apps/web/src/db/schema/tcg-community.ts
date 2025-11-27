@@ -28,6 +28,9 @@ import {
 import { relations } from 'drizzle-orm';
 import { users, cards } from '../schema';
 
+// Re-export cards for components importing from tcg-community
+export { cards } from '../schema';
+
 // ============================================================================
 // VENDOR PROFILES
 // ============================================================================
