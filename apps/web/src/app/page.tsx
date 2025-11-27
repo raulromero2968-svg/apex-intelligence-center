@@ -55,12 +55,12 @@ export default function HomePage() {
             SYSTEM ONLINE // VER 2.0
           </div>
 
-          {/* Main Title - Hollow typography showing matrix/starfield through letters */}
+          {/* Main Title - Unified typography with white stroke + gradient fill */}
           <h1 className="flex flex-col items-center text-center gap-1 md:gap-2 w-full px-2 overflow-hidden mx-auto leading-[1.1] py-2 cyber-stream">
-            <span className="text-hollow-matrix text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
+            <span className="font-titan-unified text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
               Underground Intel
             </span>
-            <span className="text-hollow-matrix-purple text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
+            <span className="font-titan-unified-purple text-sheen-overlay text-[8vw] md:text-[5rem] tracking-tighter block w-fit text-center whitespace-nowrap">
               & AI Research Center
             </span>
           </h1>
@@ -121,12 +121,7 @@ export default function HomePage() {
             </div>
 
             {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
-            <div className="cyber-border relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
-
+            <div className="relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
               {/* Cyan Scan Line - Horizontal scan on section view */}
               <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
 
@@ -166,13 +161,6 @@ export default function HomePage() {
                     </div>
                   </li>
                 </ul>
-
-                {/* Holographic Data Sphere */}
-                <div className="relative w-full h-64 flex items-center justify-center my-12">
-                  <div className="w-48 h-48 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite] border-t-transparent border-l-transparent shadow-[0_0_30px_rgba(34,211,238,0.2)]" />
-                  <div className="absolute w-32 h-32 border border-purple-500/30 rounded-full animate-[spin_7s_linear_infinite_reverse] border-b-transparent border-r-transparent" />
-                  <div className="absolute text-xs font-mono text-cyan-400 animate-pulse">ANALYZING MARKET DATA...</div>
-                </div>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-800/50">
@@ -229,13 +217,15 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">01</span>
-                  </div>
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <Image
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Vintage WOTC Analysis"
+                    width={80}
+                    height={80}
+                    className="rounded-lg"
+                  />
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
@@ -259,13 +249,16 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-purple-400/30 rounded-lg p-6 hover:border-purple-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.15)] hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-purple-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-purple-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-purple-400/70 text-xl font-mono group-hover:text-purple-400 transition-colors">02</span>
-                  </div>
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <Image
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Rotation Window Strategy"
+                    width={80}
+                    height={80}
+
+                    className="rounded-lg"
+                  />
                 </div>
                 <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
@@ -289,13 +282,16 @@ export default function HomePage() {
                 className="group relative bg-black/30 backdrop-blur-md border border-cyan-400/30 rounded-lg p-6 hover:border-cyan-400/60 hover:bg-black/40 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                {/* Minimal Geometric Pattern - Replaces wolf logo */}
-                <div className="mb-4 flex justify-center relative h-16 w-16 mx-auto">
-                  <div className="absolute inset-0 border border-cyan-400/40 rotate-45 group-hover:rotate-[55deg] transition-transform duration-500" />
-                  <div className="absolute inset-2 border border-cyan-400/30 rotate-45 group-hover:rotate-[35deg] transition-transform duration-500" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-cyan-400/70 text-xl font-mono group-hover:text-cyan-400 transition-colors">03</span>
-                  </div>
+                {/* Holo Thumbnail */}
+                <div className="mb-4 flex justify-center">
+                  <Image
+                    src="/images/apex-wolf-black-bg-final.png"
+                    alt="Pokemon 151 Market Report"
+                    width={80}
+                    height={80}
+
+                    className="rounded-lg"
+                  />
                 </div>
                 <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-3">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
@@ -335,12 +331,7 @@ export default function HomePage() {
       >
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
-            <div className="cyber-border relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
-              {/* Top Left Bracket */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
-              {/* Bottom Right Bracket */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
-
+            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm" />
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />

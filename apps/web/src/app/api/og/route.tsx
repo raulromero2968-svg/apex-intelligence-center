@@ -4,9 +4,7 @@ import { getArticleBySlug } from '@/lib/mdx';
 
 // Required because we use fs/promises for MDX → cannot run in Edge runtime
 export const runtime = 'nodejs';
-// Allow ISR caching for OG images - revalidate every hour
-// This improves performance while keeping images fresh
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic'; // OG images are always dynamic
 
 export async function GET(req: NextRequest) {
   try {
@@ -42,7 +40,7 @@ export async function GET(req: NextRequest) {
       inkLight: '#1a1f3a',
     };
 
-    const imageResponse = new ImageResponse(
+    return new ImageResponse(
       (
         <div
           style={{
@@ -190,15 +188,6 @@ export async function GET(req: NextRequest) {
         height: 630,
       }
     );
-
-    // Add caching headers for CDN and browser caching
-    // This improves performance and reduces server load
-    imageResponse.headers.set(
-      'Cache-Control',
-      'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800'
-    );
-
-    return imageResponse;
   } catch (error) {
     console.error('Error generating OG image:', error);
     return new Response('Failed to generate image', { status: 500 });

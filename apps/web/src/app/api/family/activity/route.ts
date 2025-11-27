@@ -10,8 +10,8 @@ export const revalidate = 0;
 
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
-import { childActivityHistory, familyLinks, watchlistItems, portfolios, holdings, cards } from '@/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { sessionHistory, familyLinks, watchlistItems, portfolios, holdings, cards } from '@/db/schema';
+import { eq, and, desc, gte } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import {
   AuthenticationError,
@@ -55,10 +55,10 @@ export async function GET(req: NextRequest) {
       throw new AuthorizationError('You do not have permission to view this child\'s activity');
     }
 
-    // Get child activity history
-    const activities = await db.query.childActivityHistory.findMany({
-      where: eq(childActivityHistory.childId, childId),
-      orderBy: desc(childActivityHistory.timestamp),
+    // Get session history
+    const activities = await db.query.sessionHistory.findMany({
+      where: eq(sessionHistory.childId, childId),
+      orderBy: desc(sessionHistory.timestamp),
       limit,
     });
 
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
 
     // Log the activity
     const activity = await db
-      .insert(childActivityHistory)
+      .insert(sessionHistory)
       .values({
         id: crypto.randomUUID(),
         childId: user.id,

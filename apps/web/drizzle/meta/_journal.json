@@ -15,6 +15,7 @@
       "when": 1764044189789,
       "tag": "0001_overrated_martin_li",
       "breakpoints": true
+<<<<<<< HEAD
     },
     {
       "idx": 2,
@@ -22,6 +23,8 @@
       "when": 1764218706740,
       "tag": "0002_nifty_menace",
       "breakpoints": true
+=======
+>>>>>>> origin/claude/fix-dark-mode-ui-01946xAxuUW7RnUoxqyxNsH3
     }
   ]
 }

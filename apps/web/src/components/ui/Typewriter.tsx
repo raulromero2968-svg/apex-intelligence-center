@@ -1,105 +1,59 @@
 'use client';
+import { motion } from 'framer-motion';
 
-import { motion, useReducedMotion } from 'framer-motion';
-import { useState, useEffect, useMemo } from 'react';
+export const Typewriter = ({ text, speed = 0.03 }: { text: string; speed?: number }) => {
+  // Split text into characters
+  const characters = text.split('');
 
-interface TypewriterProps {
-  text: string;
-  speed?: number;
-  className?: string;
-}
-
-export const Typewriter = ({ text, speed = 0.03, className = '' }: TypewriterProps) => {
-  // Hydration safety: only render animated content after mount
-  const [isMounted, setIsMounted] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Memoize characters array to prevent unnecessary recalculations
-  const characters = useMemo(() => text.split(''), [text]);
-
-  // Animation variants
   const container = {
-    hidden: { opacity: 1 },
-    visible: {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
       opacity: 1,
-      transition: {
-        staggerChildren: prefersReducedMotion ? 0 : speed,
-        delayChildren: prefersReducedMotion ? 0 : 0.3,
-      },
-    },
+      transition: { staggerChildren: speed, delayChildren: 0.5 * i },
+    }),
   };
 
   const child = {
     visible: {
       opacity: 1,
+      display: 'inline-block', // Fixes layout shifts
       transition: {
-        type: 'tween',
-        duration: 0.1,
+        type: 'spring',
+        damping: 12,
+        stiffness: 100,
       },
     },
     hidden: {
       opacity: 0,
+      display: 'none',
+      transition: {
+        type: 'spring',
+        damping: 12,
+        stiffness: 100,
+      },
     },
   };
 
-  // Server-side render: show full text immediately for SEO
-  if (!isMounted) {
-    return (
-      <span className={className} style={{ display: 'inline-block' }}>
-        {text}
-        <span
-          className="inline-block ml-1 w-[2px] h-[1em] bg-cyan-400 align-middle opacity-0"
-          aria-hidden="true"
-        />
-      </span>
-    );
-  }
-
-  // Client-side render with reduced motion: show full text
-  if (prefersReducedMotion) {
-    return (
-      <span className={className} style={{ display: 'inline-block' }}>
-        {text}
-        <span
-          className="inline-block ml-1 w-[2px] h-[1em] bg-cyan-400 align-middle animate-pulse"
-          aria-hidden="true"
-        />
-      </span>
-    );
-  }
-
   return (
-    <motion.span
-      className={className}
-      style={{ display: 'inline-block' }}
+    <motion.div
+      style={{ overflow: 'hidden', display: 'inline-block' }}
       variants={container}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-50px' }}
+      viewport={{ once: true }} // Only type once
     >
       {characters.map((char, index) => (
-        <motion.span
-          key={`${index}-${char}`}
-          variants={child}
-          style={{
-            whiteSpace: 'pre',
-            display: 'inline-block',
-          }}
-        >
+        <motion.span variants={child} key={index} style={{ whiteSpace: 'pre' }}>
           {char}
         </motion.span>
       ))}
-      {/* Blinking Cursor - Uses CSS animation for stability */}
-      <span
-        className="inline-block ml-1 w-[2px] h-[1em] bg-cyan-400 align-middle animate-[cursor-blink_0.8s_steps(2)_infinite]"
-        aria-hidden="true"
+      {/* Blinking Cursor */}
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+        className="inline-block ml-1 w-2 h-4 bg-cyan-400 align-middle"
       />
-    </motion.span>
+    </motion.div>
   );
 };
-
-export default Typewriter;

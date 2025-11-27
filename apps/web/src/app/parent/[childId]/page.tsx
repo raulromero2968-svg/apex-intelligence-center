@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { db } from '@/db';
-import { familyLinks, parentalControls, childActivityHistory, watchlistItems, portfolios } from '@/db/schema';
+import { familyLinks, parentalControls, sessionHistory, watchlistItems, portfolios } from '@/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { getUserFromRequest } from '@/lib/auth';
 import ParentDashboardClient from './ParentDashboardClient';
@@ -52,9 +52,9 @@ export default async function ParentDashboardPage({ params }: PageProps) {
   }
 
   // Get child's recent activity
-  const activities = await db.query.childActivityHistory.findMany({
-    where: eq(childActivityHistory.childId, childId),
-    orderBy: desc(childActivityHistory.timestamp),
+  const activities = await db.query.sessionHistory.findMany({
+    where: eq(sessionHistory.childId, childId),
+    orderBy: desc(sessionHistory.timestamp),
     limit: 50,
   });
 

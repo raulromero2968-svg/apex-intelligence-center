@@ -4,4 +4,3 @@
  */
 
 export * from './eu-ai-act';
-export * from './policy-checker';

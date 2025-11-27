@@ -1,17 +1,16 @@
 import Link from 'next/link';
 import { Mail, Shield, Zap, Bell, CheckCircle } from 'lucide-react';
-import { HoloCard } from '@/components/ui/HoloCard';
 
 export const metadata = {
-  title: "The Gate | Apex Intelligence",
+  title: "Access Terminal | Apex Intelligence",
   description: "Join the underground intelligence network. Get weekly TCG market analysis and exclusive research delivered to your inbox.",
 };
 
 export default function SubscribePage() {
   return (
-    <div className="relative min-h-screen pt-24 flex flex-col">
+    <div className="relative min-h-screen pt-24">
       {/* Hero Section */}
-      <section className="relative z-10 px-6 md:px-12 py-12">
+      <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
@@ -19,93 +18,99 @@ export default function SubscribePage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            SECURE CONNECTION // THE_GATE
+            SECURE CONNECTION // ACCESS_TERMINAL
           </div>
 
           {/* Main Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none mb-6">
             <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-              The
+              Access
             </span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
-              Gate
+              Terminal
             </span>
           </h1>
 
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-mono">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Join the underground intelligence network. Weekly alpha drops, zero spam.
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
         </div>
       </section>
 
-      {/* Subscribe Form Section - Centered */}
-      <section className="relative z-10 px-6 md:px-12 py-8 flex-1 flex items-center justify-center">
-        <div className="w-full max-w-xl">
-          <HoloCard intensity="high">
-            {/* Terminal Header */}
-            <div className="flex items-center gap-2 mb-6 text-sm font-mono text-cyan-400">
-              <div className="flex gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-red-500/80" />
-                <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                <span className="w-3 h-3 rounded-full bg-green-500/80" />
+      {/* Subscribe Form Section */}
+      <section className="relative z-10 px-6 md:px-12 py-8">
+        <div className="max-w-xl mx-auto">
+          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-2xl p-8 md:p-10 overflow-hidden">
+            {/* Glow effects */}
+            <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              {/* Terminal Header */}
+              <div className="flex items-center gap-2 mb-6 text-sm font-mono text-cyan-400">
+                <div className="flex gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                  <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                </div>
+                <span className="ml-2">apex_intel@subscribe ~ %</span>
               </div>
-              <span className="ml-2">apex_intel@gate ~ %</span>
-            </div>
 
-            <h2 className="text-2xl font-bold text-white mb-2 text-center font-mono">
-              Initiate Access Protocol
-            </h2>
-            <p className="text-slate-400 text-center mb-8">
-              Get free weekly market analysis and exclusive research delivered directly.
-            </p>
+              <h2 className="text-2xl font-bold text-white mb-2 text-center">
+                Join the Underground Network
+              </h2>
+              <p className="text-slate-400 text-center mb-8">
+                Get free weekly market analysis and exclusive research delivered directly.
+              </p>
 
-            <form className="space-y-5">
-              <div>
-                <label htmlFor="email" className="block text-sm font-mono text-cyan-400 mb-2">
-                  EMAIL_ADDRESS *
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <form className="space-y-5">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-mono text-cyan-400 mb-2">
+                    EMAIL_ADDRESS *
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      placeholder="agent@example.com"
+                      aria-label="Email address"
+                      className="w-full rounded-lg bg-slate-900/80 pl-12 pr-4 py-4 text-white placeholder-slate-500 border border-slate-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="name" className="block text-sm font-mono text-slate-500 mb-2">
+                    CODENAME (optional)
+                  </label>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    placeholder="agent@example.com"
-                    aria-label="Email address"
-                    className="w-full rounded-lg bg-slate-900/80 pl-12 pr-4 py-4 text-white placeholder-slate-500 border border-slate-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition font-mono"
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Your name"
+                    aria-label="Name (optional)"
+                    className="w-full rounded-lg bg-slate-900/80 px-4 py-4 text-white placeholder-slate-500 border border-slate-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="name" className="block text-sm font-mono text-slate-500 mb-2">
-                  CODENAME (optional)
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Your name"
-                  aria-label="Name (optional)"
-                  className="w-full rounded-lg bg-slate-900/80 px-4 py-4 text-white placeholder-slate-500 border border-slate-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition font-mono"
-                />
-              </div>
+                <button
+                  type="submit"
+                  className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-6 py-4 font-bold text-black transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
+                >
+                  [ INITIATE_ACCESS ]
+                </button>
+              </form>
 
-              <button
-                type="submit"
-                className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-6 py-4 font-bold text-black transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
-              >
-                [ INITIATE_ACCESS ]
-              </button>
-            </form>
-
-            <p className="mt-6 text-center text-sm text-slate-500 font-mono">
-              <Shield className="inline w-4 h-4 mr-1" />
-              Encrypted. No spam. Unsubscribe anytime.
-            </p>
-          </HoloCard>
+              <p className="mt-6 text-center text-sm text-slate-500 font-mono">
+                <Shield className="inline w-4 h-4 mr-1" />
+                Encrypted. No spam. Unsubscribe anytime.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -126,7 +131,7 @@ export default function SubscribePage() {
               <div className="w-14 h-14 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-4">
                 <Bell className="w-7 h-7 text-cyan-400" />
               </div>
-              <h3 className="text-white font-bold text-lg mb-2 font-mono">Weekly Intel Drops</h3>
+              <h3 className="text-white font-bold text-lg mb-2">Weekly Intel Drops</h3>
               <p className="text-sm text-slate-400">
                 Curated market analysis and actionable insights every week
               </p>
@@ -136,7 +141,7 @@ export default function SubscribePage() {
               <div className="w-14 h-14 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-7 h-7 text-purple-400" />
               </div>
-              <h3 className="text-white font-bold text-lg mb-2 font-mono">Early Access</h3>
+              <h3 className="text-white font-bold text-lg mb-2">Early Access</h3>
               <p className="text-sm text-slate-400">
                 Be first to know about market movements and opportunities
               </p>
@@ -146,7 +151,7 @@ export default function SubscribePage() {
               <div className="w-14 h-14 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-7 h-7 text-cyan-400" />
               </div>
-              <h3 className="text-white font-bold text-lg mb-2 font-mono">Exclusive Research</h3>
+              <h3 className="text-white font-bold text-lg mb-2">Exclusive Research</h3>
               <p className="text-sm text-slate-400">
                 Deep dives and analysis not published anywhere else
               </p>
@@ -176,19 +181,19 @@ export default function SubscribePage() {
             <div className="space-y-4 text-slate-300">
               <div className="flex items-start gap-3">
                 <span className="text-cyan-400 font-mono">01.</span>
-                <p><strong className="text-white font-mono">Market Pulse</strong> — Weekly summary of major TCG market movements</p>
+                <p><strong className="text-white">Market Pulse</strong> — Weekly summary of major TCG market movements</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-cyan-400 font-mono">02.</span>
-                <p><strong className="text-white font-mono">Deep Dives</strong> — In-depth analysis of specific sets, cards, or trends</p>
+                <p><strong className="text-white">Deep Dives</strong> — In-depth analysis of specific sets, cards, or trends</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-cyan-400 font-mono">03.</span>
-                <p><strong className="text-white font-mono">Alpha Alerts</strong> — Time-sensitive opportunities and market signals</p>
+                <p><strong className="text-white">Alpha Alerts</strong> — Time-sensitive opportunities and market signals</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-cyan-400 font-mono">04.</span>
-                <p><strong className="text-white font-mono">Research Reports</strong> — Data-driven analysis and forecasts</p>
+                <p><strong className="text-white">Research Reports</strong> — Data-driven analysis and forecasts</p>
               </div>
             </div>
           </div>
