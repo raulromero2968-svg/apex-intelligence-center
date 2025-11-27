@@ -122,6 +122,11 @@ export default function HomePage() {
 
             {/* Electronic Wrapping Card - Glassmorphic with cyan border lines for sci-fi confidential sleek */}
             <div className="cyber-border relative p-8 rounded-sm bg-black/20 backdrop-blur-md border border-cyan-400/30 shadow-[0_0_30px_rgba(6,182,212,0.2)] overflow-hidden">
+              {/* Top Left Bracket */}
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
+              {/* Bottom Right Bracket */}
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
+
               {/* Cyan Scan Line - Horizontal scan on section view */}
               <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_20px_cyan] animate-scan-line"></div>
 
@@ -340,6 +345,11 @@ export default function HomePage() {
         <div className="w-full px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
             <div className="cyber-border relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-sm rounded-sm p-10 md:p-14 text-center overflow-hidden">
+              {/* Top Left Bracket */}
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 z-20" />
+              {/* Bottom Right Bracket */}
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 z-20" />
+
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10 rounded-sm" />
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
