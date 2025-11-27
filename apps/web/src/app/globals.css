@@ -16,7 +16,7 @@
   }
 
   html, body {
-    background-color: #020617 !important; /* Force Slate-950 - Meta Browser Fix */
+    background: transparent; /* Transparent to reveal StarfieldFX canvas */
     color: white;
     min-height: 100vh;
     /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
@@ -27,17 +27,11 @@
     hyphens: none;
   }
 
-  /* NUCLEAR OPTION: Force Background Visibility with Matrix + Starfield COMBINED */
+  /* Body background transparent to allow StarfieldFX canvas to show through */
   body {
-    background-color: #020617 !important;
-    background-image:
-      radial-gradient(circle at center, transparent 0%, #020617 100%), /* Vignette */
-      linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px), /* Horizontal Grid */
-      linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px), /* Vertical Grid */
-      url('/images/starfield.png'); /* Stars */
-    background-size: 100% 100%, 50px 50px, 50px 50px, cover;
-    background-attachment: fixed; /* Parallax-like fix */
-    background-blend-mode: normal, screen, screen, screen;
+    margin: 0;
+    padding: 0;
+    background: transparent; /* Changed from solid color to reveal StarfieldFX */
   }
 
   /* FORCE NO SPLITTING - Aggressive global override */
@@ -285,6 +279,24 @@
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Hollow Text - See-through typography with cyberpunk glow */
+  .hollow-text {
+    font-size: 4rem;
+    font-weight: bold;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    .hollow-text {
+      font-size: 2.5rem;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    }
   }
 }
 
