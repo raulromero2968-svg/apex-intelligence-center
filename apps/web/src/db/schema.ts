@@ -1202,8 +1202,184 @@ export const childActivityHistoryRelations = relations(childActivityHistory, ({ 
 }));
 
 // ============================================================================
+// GENERAL AGENTIC MEMORY (GAM) TABLES
+// ============================================================================
+
+/**
+ * GAM Pages - Page-store for Just-in-Time memory retrieval
+ *
+ * Stores full session history as "pages" with lightweight memos for efficient retrieval.
+ * Supports vector search for semantic memory lookup and BM25-style keyword search.
+ *
+ * Architecture based on GAM paper:
+ * - Offline: Memorizer compresses sessions into memos + stores full pages
+ * - Online: Researcher iteratively plans/searches/reflects to retrieve relevant context
+ *
+ * Features:
+ * - Vector embeddings (1536-dim) for semantic similarity search
+ * - Session metadata for context-aware retrieval
+ * - AI agent assignment for multi-AI orchestration
+ * - Reliability scoring for quality filtering
+ */
+export const gamPages = pgTable('gam_pages', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // Lightweight memo summary for fast retrieval
+  memo: text('memo').notNull(),
+
+  // Full page content (session history as JSON)
+  page: jsonb('page').$type<{
+    session: string;
+    history: string;
+    context?: Record<string, any>;
+    entities?: string[];
+    timestamp?: string;
+  }>().notNull(),
+
+  // Vector embedding for semantic search (OpenAI text-embedding-3-large)
+  embedding: vector('embedding', { dimensions: 1536 }),
+
+  // Session metadata
+  sessionId: text('session_id'), // Optional link to source session
+  agentId: text('agent_id'), // Which AI agent created this (claude, gpt, gemini, apex)
+
+  // Quality metrics
+  reliabilityScore: real('reliability_score').default(0.5), // 0.0-1.0
+  accessCount: integer('access_count').default(0), // Track usage for caching
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at'), // Optional TTL for cache cleanup
+}, (table) => ({
+  // HNSW index for vector similarity (created in migration)
+  // Index on agent for multi-AI filtering
+  agentIdx: index('idx_gam_pages_agent').on(table.agentId),
+  // Index on session for session-based retrieval
+  sessionIdx: index('idx_gam_pages_session').on(table.sessionId),
+  // Index on reliability for quality filtering
+  reliabilityIdx: index('idx_gam_pages_reliability').on(table.reliabilityScore),
+  // Timestamp index for temporal queries
+  createdAtIdx: index('idx_gam_pages_created_at').on(table.createdAt),
+}));
+
+/**
+ * GAM Research Sessions - Track researcher agent iterations
+ *
+ * Records the planning/search/reflection cycles for explainability
+ * and RL reward computation.
+ */
+export const gamResearchSessions = pgTable('gam_research_sessions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // Request that triggered research
+  request: text('request').notNull(),
+
+  // Initial memory context
+  initialMemory: text('initial_memory'),
+
+  // Research iterations (planning, search, integration, reflection)
+  iterations: jsonb('iterations').$type<Array<{
+    depth: number;
+    plan: string;
+    tools: string[];
+    retrievedPageIds: string[];
+    integration: string;
+    reflection: {
+      isComplete: boolean;
+      missing?: string;
+      confidence: number;
+    };
+  }>>().default([]),
+
+  // Final integrated result
+  result: text('result'),
+
+  // Metrics for RL optimization
+  metrics: jsonb('metrics').$type<{
+    totalDepth: number;
+    pagesRetrieved: number;
+    latencyMs: number;
+    tokenCount?: number;
+    perplexity?: number;
+    f1Score?: number;
+  }>(),
+
+  // Status tracking
+  status: text('status', {
+    enum: ['in_progress', 'completed', 'failed']
+  }).default('in_progress').notNull(),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  completedAt: timestamp('completed_at'),
+}, (table) => ({
+  statusIdx: index('idx_gam_research_status').on(table.status),
+  createdAtIdx: index('idx_gam_research_created_at').on(table.createdAt),
+}));
+
+/**
+ * GAM RL Training Data - Store training samples for PPO optimization
+ *
+ * Records task-reward pairs for offline RL policy training.
+ */
+export const gamRLTrainingData = pgTable('gam_rl_training_data', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // Task description
+  task: text('task').notNull(),
+
+  // Session history context
+  history: text('history'),
+
+  // Generated response
+  response: text('response'),
+
+  // Rewards (negative perplexity + task-specific rewards)
+  rewards: jsonb('rewards').$type<{
+    perplexity: number;
+    f1Score?: number;
+    userRating?: number;
+    composite: number;
+  }>(),
+
+  // Model used
+  model: text('model').default('gpt-4o-mini'),
+
+  // Whether this sample has been used in training
+  trained: boolean('trained').default(false),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  trainedIdx: index('idx_gam_rl_trained').on(table.trained),
+  createdAtIdx: index('idx_gam_rl_created_at').on(table.createdAt),
+}));
+
+/**
+ * GAM Pages relations
+ */
+export const gamPagesRelations = relations(gamPages, ({ many }) => ({
+  // Could link to research sessions that used this page
+}));
+
+/**
+ * GAM Research Sessions relations
+ */
+export const gamResearchSessionsRelations = relations(gamResearchSessions, ({ many }) => ({
+  // Future: link to pages used
+}));
+
+// ============================================================================
 // TypeScript types for better DX
 // ============================================================================
+
+export type GamPage = typeof gamPages.$inferSelect;
+export type NewGamPage = typeof gamPages.$inferInsert;
+export type GamResearchSession = typeof gamResearchSessions.$inferSelect;
+export type NewGamResearchSession = typeof gamResearchSessions.$inferInsert;
+export type GamRLTrainingData = typeof gamRLTrainingData.$inferSelect;
+export type NewGamRLTrainingData = typeof gamRLTrainingData.$inferInsert;
 
 export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;
