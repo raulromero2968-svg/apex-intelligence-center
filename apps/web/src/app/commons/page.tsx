@@ -1,196 +1,212 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Book, Shield, Sparkles } from 'lucide-react';
-import RouteTransition from '@/layout/RouteTransition';
-import { NoteOnHeroes } from '@/components/commons/NoteOnHeroes';
-import { ShadowReflexTest } from '@/components/commons/ShadowReflexTest';
-import { FoundersOath } from '@/components/commons/FoundersOath';
+import { getAllCommonsPosts } from "@/lib/mdx";
+import { Calendar, Clock, BookOpen, Sparkles } from 'lucide-react';
+import { DigitalScroll } from '@/components/ui/DigitalScroll';
+import { HoloCard } from '@/components/ui/HoloCard';
 
-/**
- * Apex Commons - The User Journey
- *
- * This page implements the "Skeptical Builder" user journey:
- * 1. Discovery (Hero) - The hook that feels different
- * 2. Landing (Note on Heroes) - The vibe check that lowers defenses
- * 3. Engagement (Shadow Reflex Test) - Immediate, useful value
- * 4. Deepening (Founder's Oath) - The honest connection
- * 5. Retention (Subscribe) - The invitation to return
- */
-export default function CommonsPage() {
-  const [email, setEmail] = useState('');
+export const metadata = {
+  title: "Apex Commons | Essays on Building Better Systems",
+  description: "A public commons for better systems. Essays for builders who know they've been both harmed and harmful.",
+};
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Integrate with actual subscription service
-    console.log('Subscribe:', email);
-    setEmail('');
-  };
+export default async function CommonsPage() {
+  const allPosts = await getAllCommonsPosts();
 
   return (
-    <RouteTransition>
-      <div className="min-h-screen">
-        <main className="space-y-0">
-          {/* Phase 1: Discovery - The Hook */}
-          <section className="relative min-h-[90vh] flex items-center justify-center px-4 overflow-hidden">
-            {/* Transmutation gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-purple-950/20 to-cyan-950/20" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(0,0,0,0))]" />
+    <div className="relative min-h-screen pt-24">
+      {/* Hero Section */}
+      <section className="relative z-10 px-6 md:px-12 py-16">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            </span>
+            PUBLIC ARCHIVE // THE_TERMINAL
+          </div>
 
-            {/* Animated background elements */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          {/* Main Title */}
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none mb-6">
+            <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+              The
+            </span>
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-600">
+              Terminal
+            </span>
+          </h1>
+
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8 font-mono">
+            A public commons for better systems. Essays for builders who know they&apos;ve been both harmed and harmful.
+            <span className="inline-block w-3 h-5 bg-purple-400 ml-1 animate-pulse align-middle" />
+          </p>
+        </div>
+      </section>
+
+      {/* Note on Heroes Card */}
+      <section className="relative z-10 px-6 md:px-12 pb-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="relative border border-purple-500/40 bg-gradient-to-br from-purple-950/40 to-cyan-950/40 backdrop-blur-sm rounded-xl p-6 overflow-hidden">
+            {/* Glow effect */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10 flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-2 font-mono">
+                  Note on Heroes
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Admire the work. Don&apos;t worship the person. We&apos;re building systems that assume human error, not systems that demand human perfection.
+                </p>
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8 px-6">
-              {/* Status badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium backdrop-blur-sm">
+      {/* Essays Section with DigitalScroll */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <span className="text-purple-400">[</span> ESSAYS <span className="text-purple-400">]</span>
+            </h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+          </div>
+
+          {/* Essays Grid wrapped in DigitalScroll */}
+          {allPosts.length > 0 ? (
+            <DigitalScroll height="h-[70vh]">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 px-2">
+                {allPosts.map((post) => {
+                  const publishDate = new Date(post.frontmatter.publishedAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  });
+
+                  return (
+                    <Link
+                      key={post.slug}
+                      href={`/commons/${post.slug}`}
+                      className="group relative overflow-hidden rounded-xl border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/60 hover:shadow-lg hover:shadow-purple-500/10"
+                    >
+                      {/* Top accent line */}
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                      {/* Card Content */}
+                      <div className="p-6">
+                        {/* Header */}
+                        <div className="mb-4">
+                          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30 mb-3 font-mono">
+                            {post.frontmatter.category}
+                          </div>
+                          <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2">
+                            {post.frontmatter.title}
+                          </h3>
+                          {post.frontmatter.subtitle && (
+                            <p className="mt-2 text-sm text-slate-400 line-clamp-2">
+                              {post.frontmatter.subtitle}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Meta */}
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 font-mono">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{publishDate}</span>
+                          </div>
+                          {post.readingTime && (
+                            <>
+                              <span>•</span>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                <span>{post.readingTime.text}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Tags */}
+                        {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {post.frontmatter.tags.slice(0, 3).map((tag: string) => (
+                              <span
+                                key={tag}
+                                className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2 py-1 text-xs text-cyan-300 font-mono"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Read more */}
+                        <div className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 transition-colors font-mono">
+                          READ_MORE <span className="group-hover:translate-x-1 inline-block transition-transform">→</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </DigitalScroll>
+          ) : (
+            /* Empty State */
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center mx-auto mb-6">
+                <BookOpen className="w-10 h-10 text-slate-600" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 font-mono">No Essays Yet</h3>
+              <p className="text-slate-400 mb-6">The commons is being prepared. Check back soon.</p>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors"
+              >
+                <span>←</span> RETURN_TO_BASE
+              </Link>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section with HoloCard */}
+      <section className="relative z-10 px-6 md:px-12 py-20">
+        <div className="max-w-xl mx-auto">
+          <HoloCard intensity="medium">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                 </span>
-                A Public Commons for Better Systems
+                CONTRIBUTE TO THE COMMONS
               </div>
 
-              {/* Hero text */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-                <span className="text-white">Build Tools,</span>
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-orange-400">
-                  Not Temples
-                </span>
-              </h1>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-mono">
+                Want to Stay Updated?
+              </h2>
 
-              <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                A library of frameworks for people tired of tech savior narratives.
-                For builders who are wary of cults and afraid of building harmful systems.
+              <p className="text-slate-400 mb-8 max-w-md mx-auto">
+                Get notified when new essays drop. Join the network.
               </p>
 
-              {/* Key differentiator */}
-              <div className="pt-8 space-y-6">
-                <div className="inline-flex flex-col sm:flex-row gap-4">
-                  <Link
-                    href="#note-on-heroes"
-                    className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold px-8 py-4 rounded-lg transition-all shadow-lg shadow-cyan-500/20"
-                  >
-                    <Shield className="w-5 h-5" />
-                    See Our Values
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-
-                  <Link
-                    href="#shadow-reflex"
-                    className="inline-flex items-center justify-center gap-2 bg-slate-900/50 hover:bg-slate-800/80 border border-slate-700 hover:border-slate-600 text-white font-medium px-8 py-4 rounded-lg transition-all backdrop-blur-sm"
-                  >
-                    <Sparkles className="w-5 h-5 text-cyan-400" />
-                    Try a Tool (Free)
-                  </Link>
-                </div>
-
-                <p className="text-sm text-slate-500 italic">
-                  No gurus. No worship. Just honest tools for a healing nation.
-                </p>
-              </div>
-
-              {/* Social proof reimagined */}
-              <div className="flex flex-wrap gap-8 justify-center pt-12 border-t border-slate-800/50 max-w-2xl mx-auto">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                    Open Source
-                  </div>
-                  <div className="text-sm text-slate-500">All frameworks are public</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-orange-400">
-                    No Paywalls
-                  </div>
-                  <div className="text-sm text-slate-500">Tools are free to use</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-cyan-400">
-                    Anti-Idolatry
-                  </div>
-                  <div className="text-sm text-slate-500">Admire work, not people</div>
-                </div>
-              </div>
+              <Link
+                href="/subscribe"
+                className="inline-flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-400 text-white font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:shadow-[0_0_50px_rgba(147,51,234,0.8)] font-mono"
+              >
+                [ GET_ALPHA_ACCESS ]
+              </Link>
             </div>
-          </section>
-
-          {/* Phase 2: Landing - The Vibe Check (Note on Heroes) */}
-          <div id="note-on-heroes" className="scroll-mt-20">
-            <NoteOnHeroes />
-          </div>
-
-          {/* Phase 3: Engagement - The Tool (Shadow Reflex Test) */}
-          <div id="shadow-reflex" className="scroll-mt-20">
-            <ShadowReflexTest />
-          </div>
-
-          {/* Phase 4: Deepening - The Oath */}
-          <div id="founders-oath" className="scroll-mt-20">
-            <FoundersOath />
-          </div>
-
-          {/* Phase 5: Retention - The Return */}
-          <section className="relative max-w-4xl mx-auto px-6 py-24">
-            <div className="relative border border-slate-700/50 rounded-2xl bg-gradient-to-br from-slate-900/80 to-slate-800/50 backdrop-blur-sm p-12 md:p-16 text-center space-y-8 overflow-hidden">
-              {/* Ambient glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-orange-500/5 rounded-2xl" />
-
-              <div className="relative z-10 space-y-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 mx-auto">
-                  <Book className="w-8 h-8 text-cyan-400" />
-                </div>
-
-                <h2 className="text-3xl md:text-4xl font-bold text-white">
-                  Join the Commons
-                </h2>
-
-                <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                  Get updates when we add new tools, frameworks, and essays.
-                  We send useful content, not hype. Unsubscribe anytime.
-                </p>
-
-                <form onSubmit={handleSubscribe} className="max-w-md mx-auto space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      className="flex-1 px-4 py-3 rounded-lg bg-slate-900/80 border border-slate-700 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                    />
-                    <button
-                      type="submit"
-                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold px-8 py-3 rounded-lg transition-all shadow-lg shadow-cyan-500/20"
-                    >
-                      Subscribe
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <p className="text-xs text-slate-500">
-                    No spam. No guru worship. Just tools for building better systems.
-                  </p>
-                </form>
-
-                {/* Return promise */}
-                <div className="pt-8 border-t border-slate-700/50">
-                  <p className="text-sm text-slate-400 italic">
-                    Return when your team is in crisis. Return when you need to design a safety policy.
-                    Return when you need the language for repair.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Footer spacing */}
-          <div className="h-24" />
-        </main>
-      </div>
-    </RouteTransition>
+          </HoloCard>
+        </div>
+      </section>
+    </div>
   );
 }

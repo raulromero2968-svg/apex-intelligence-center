@@ -1,5 +1,6 @@
 // apps/web/src/app/philosophy/page.tsx
 import { Metadata } from 'next';
+import PhilosophyResearchForm from './PhilosophyResearchForm';
 
 export const metadata: Metadata = {
   title: 'Our Philosophy | Apex Intelligence',
@@ -31,6 +32,22 @@ export default function PhilosophyPage() {
         <p>
           As we evolve from TCG-focused intelligence to a full AI research center for biological sciences, we maintain transparency, precision, and a cyberpunk edge. No hype, just verified insights. Join us in building a future where AI serves all sentient life.
         </p>
+
+        {/* Sentient Rights Frameworks Section */}
+        <h2 className="text-2xl font-bold text-cyan-400 mt-10 mb-4">Sentient Rights Frameworks</h2>
+        <p>
+          Building on our philosophy, we advocate for sentient rights frameworks that protect both animals and potential AI sentience. These include legal models like the Artificial Welfare Act, which draws from animal welfare laws to safeguard digital consciousness. We also support tools like the Animal Harm Audit to mitigate biases in AI that overlook animal welfare.
+        </p>
+        <p>
+          Key principles: Prevent harm from AI systems (e.g., automated farming), address speciesism in training data, and plan for distributed sentience in AI. Our RAG research integrates these to generate ethical insights, ensuring AI benefits all sentient beings without exploitation.
+        </p>
+
+        {/* RAG-Powered Philosophy Research Section */}
+        <h2 className="text-2xl font-bold text-cyan-400 mt-10 mb-4">RAG-Powered Philosophy Research</h2>
+        <p className="mb-6">
+          Explore AI-generated insights on our philosophy using our optimized RAG system. Enter a query below to research ethical AI, sentient rights, and animal welfare frameworks:
+        </p>
+        <PhilosophyResearchForm />
       </div>
     </div>
   );
