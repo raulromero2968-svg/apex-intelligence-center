@@ -13,7 +13,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripeClient } from '@/server/services/stripeClient';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '@apex/shared';
 import { getUserFromRequest } from '@/lib/auth';
 import { db } from '@/db';
 import { users } from '@/db/schema';
