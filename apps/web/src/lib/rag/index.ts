@@ -54,3 +54,17 @@ export {
   type ColBERTConfig,
   type ColBERTIndexResult,
 } from './colbert';
+
+// Query Router Module - Adaptive RAG routing
+export {
+  routeQuery,
+  adaptiveRetrievalRAG,
+  getRetrievalConfig,
+  type QueryType,
+} from './query-router';
+
+// Self-Reflective RAG Module - Context sufficiency checks
+export {
+  selfReflectiveRAG,
+  analyzeContextCoverage,
+} from './self-reflective';
