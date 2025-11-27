@@ -4,3 +4,4 @@
  */
 
 export * from './rag-fusion';
+export * from './latent-query';
