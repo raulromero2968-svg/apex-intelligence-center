@@ -100,9 +100,6 @@ const defaultQueueOptions: Omit<QueueOptions, 'connection'> = {
       count: 500, // Keep last 500 failed jobs for debugging
       age: 7 * 24 * 3600, // Remove after 7 days
     },
-
-    // Timeout
-    timeout: 5 * 60 * 1000, // 5 minutes max per job
   },
 };
 
@@ -253,7 +250,7 @@ export async function queueContrarianAnalysis(data: ContrarianJobData, priority?
  */
 export async function checkIntelligenceBusHealth(): Promise<{
   healthy: boolean;
-  queues: Record<string, { waiting: number; active: number; completed: number; failed: number }>;
+  queues: Record<string, Record<string, number>>;
 }> {
   try {
     const [varcCounts, lampCounts, contrarianCounts] = await Promise.all([

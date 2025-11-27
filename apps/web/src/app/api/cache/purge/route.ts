@@ -1,5 +1,8 @@
 import { revalidateTag } from '@/lib/cache';
 
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
+
 /**
  * Cache purge API
  * Requires ADMIN_CACHE_KEY for authentication

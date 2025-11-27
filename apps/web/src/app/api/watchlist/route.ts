@@ -9,9 +9,6 @@
  * All limits enforced server-side with zero trust.
  */
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { watchlistItems, users, cards } from '@/db/schema';
@@ -26,6 +23,11 @@ import {
   handleApiError,
 } from '@/lib/errors';
 import { z } from 'zod';
+
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const createWatchlistSchema = z.object({
   cardId: z.string().min(1, 'Card ID is required'),

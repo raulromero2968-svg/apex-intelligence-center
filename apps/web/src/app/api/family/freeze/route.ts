@@ -10,6 +10,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { getUserFromRequest } from '@/lib/auth/jwt';

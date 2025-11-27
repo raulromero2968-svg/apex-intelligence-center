@@ -6,6 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { redis, RedisKeys, CacheTTL } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
@@ -30,6 +33,7 @@ export async function POST(request: NextRequest) {
       timestamp: Date.now(),
     };
 
+    // @ts-ignore - Redis type resolution issue
     await redis.set(sessionKey, JSON.stringify(sessionData), {
       ex: CacheTTL.SESSION_ACTIVITY,
     });

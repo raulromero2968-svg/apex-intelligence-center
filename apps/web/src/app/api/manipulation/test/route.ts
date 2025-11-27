@@ -6,6 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { activateManipulationShield, ManipulationAlert } from '@/services/manipulation-detector';
 import { db } from '@/db';
 import { cards } from '@/db/schema';

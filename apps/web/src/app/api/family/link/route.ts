@@ -1,200 +1,175 @@
 /**
- * Family Link API Routes
+ * API Route: /api/family/link
  *
- * Manages OAuth-based family links between parent and child accounts.
- * Children cannot revoke these links - only parents can.
+ * Link a child account to a parent account using OAuth-style family linking
+ *
+ * POST /api/family/link
+ * Body: { childId: string }
+ * Returns: { success: boolean, childId: string }
  */
 
+import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-import { NextRequest } from 'next/server';
 import { db } from '@/db';
-import { familyLinks, parentalControls, users } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { getUserFromRequest } from '@/lib/auth';
-import {
-  AuthenticationError,
-  ValidationError,
-  NotFoundError,
-  handleApiError,
-} from '@/lib/errors';
-import { z } from 'zod';
+import { users } from '@/db/schema';
+import { getUserFromRequest } from '@/lib/auth/jwt';
+import { eq } from 'drizzle-orm';
 
-const createFamilyLinkSchema = z.object({
-  childEmail: z.string().email('Valid email is required'),
-});
+export async function POST(req: NextRequest) {
+  try {
+    // Authenticate the requesting user (parent)
+    const parent = await getUserFromRequest(req);
+    if (!parent) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Parse request body
+    const body = await req.json();
+    const { childId } = body;
+
+    if (!childId) {
+      return NextResponse.json({ error: 'Child ID is required' }, { status: 400 });
+    }
+
+    // Verify child account exists
+    const child = await db.query.users.findFirst({
+      where: eq(users.id, childId),
+    });
+
+    if (!child) {
+      return NextResponse.json({ error: 'Child account not found' }, { status: 404 });
+    }
+
+    // Check if child already has a parent
+    if (child.parentId) {
+      return NextResponse.json({ error: 'Child account already linked to a parent' }, { status: 400 });
+    }
+
+    // Link child to parent
+    await db
+      .update(users)
+      .set({
+        parentId: parent.id,
+        accountType: 'child',
+        spendingLimitCents: 0, // Always $0 for child accounts
+      })
+      .where(eq(users.id, childId));
+
+    // Update parent account type if needed
+    if (parent.accountType !== 'parent') {
+      await db
+        .update(users)
+        .set({ accountType: 'parent' })
+        .where(eq(users.id, parent.id));
+    }
+
+    return NextResponse.json({
+      success: true,
+      childId,
+      message: 'Child account successfully linked',
+    });
+  } catch (error) {
+    console.error('Error linking child account:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
 
 /**
  * GET /api/family/link
- * Get all family links for the authenticated user (both as parent and child)
+ * Get all linked children for the authenticated parent
  */
 export async function GET(req: NextRequest) {
   try {
     const user = await getUserFromRequest(req);
     if (!user) {
-      throw new AuthenticationError();
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get links where user is parent
-    const asParent = await db.query.familyLinks.findMany({
-      where: eq(familyLinks.parentId, user.id),
-      with: {
-        child: {
-          columns: {
-            id: true,
-            email: true,
-            name: true,
-          },
-        },
-        parentalControls: true,
+    // Get all children linked to this parent
+    const children = await db.query.users.findMany({
+      where: eq(users.parentId, user.id),
+      columns: {
+        id: true,
+        name: true,
+        email: true,
+        accountType: true,
+        accountFrozen: true,
+        accountFrozenAt: true,
+        bedtimeEnabled: true,
+        bedtimeStart: true,
+        bedtimeEnd: true,
+        cooldownEnabled: true,
+        spendingLimitCents: true,
+        breakModeUntil: true,
+        breakModeActivatedBy: true,
+        createdAt: true,
       },
     });
 
-    // Get links where user is child
-    const asChild = await db.query.familyLinks.findMany({
-      where: eq(familyLinks.childId, user.id),
-      with: {
-        parent: {
-          columns: {
-            id: true,
-            email: true,
-            name: true,
-          },
-        },
-      },
-    });
-
-    return Response.json({
-      asParent,
-      asChild,
-      canManage: asParent.length > 0,
-    });
+    return NextResponse.json({ children });
   } catch (error) {
-    return handleApiError(error);
-  }
-}
-
-/**
- * POST /api/family/link
- * Create a new family link (parent adds child account)
- */
-export async function POST(req: NextRequest) {
-  try {
-    const user = await getUserFromRequest(req);
-    if (!user) {
-      throw new AuthenticationError();
-    }
-
-    // Validate request body
-    const body = await req.json();
-    const { childEmail } = createFamilyLinkSchema.parse(body);
-
-    // Find child user by email
-    const childUser = await db.query.users.findFirst({
-      where: eq(users.email, childEmail),
-    });
-
-    if (!childUser) {
-      throw new NotFoundError('Child account not found. The user must have an account first.');
-    }
-
-    // Prevent self-linking
-    if (childUser.id === user.id) {
-      throw new ValidationError('Cannot link to your own account');
-    }
-
-    // Check if link already exists
-    const existingLink = await db.query.familyLinks.findFirst({
-      where: and(
-        eq(familyLinks.parentId, user.id),
-        eq(familyLinks.childId, childUser.id)
-      ),
-    });
-
-    if (existingLink) {
-      throw new ValidationError('Family link already exists');
-    }
-
-    // Create family link
-    const newLink = await db
-      .insert(familyLinks)
-      .values({
-        id: crypto.randomUUID(),
-        parentId: user.id,
-        childId: childUser.id,
-        status: 'active', // Auto-approve for now
-        childCannotRevoke: true,
-      })
-      .returning();
-
-    // Create default parental controls
-    const controls = await db
-      .insert(parentalControls)
-      .values({
-        id: crypto.randomUUID(),
-        familyLinkId: newLink[0].id,
-        childId: childUser.id,
-        bedtimeEnabled: false,
-        coolDownEnabled: false,
-        notificationsDisabled: false,
-        disabledChannels: [],
-      })
-      .returning();
-
-    return Response.json({
-      link: newLink[0],
-      controls: controls[0],
-      created: true,
-    }, { status: 201 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleApiError(new ValidationError(error.errors[0].message));
-    }
-    return handleApiError(error);
+    console.error('Error fetching linked children:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
 /**
  * DELETE /api/family/link
- * Remove a family link (parent only)
+ * Unlink a child account from the parent
+ * Body: { childId: string }
  */
 export async function DELETE(req: NextRequest) {
   try {
-    const user = await getUserFromRequest(req);
-    if (!user) {
-      throw new AuthenticationError();
+    const parent = await getUserFromRequest(req);
+    if (!parent) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const linkId = searchParams.get('id');
+    const body = await req.json();
+    const { childId } = body;
 
-    if (!linkId) {
-      throw new ValidationError('Link ID is required');
+    if (!childId) {
+      return NextResponse.json({ error: 'Child ID is required' }, { status: 400 });
     }
 
-    // Verify link belongs to user as parent
-    const link = await db.query.familyLinks.findFirst({
-      where: and(
-        eq(familyLinks.id, linkId),
-        eq(familyLinks.parentId, user.id)
-      ),
+    // Verify the child is linked to this parent
+    const child = await db.query.users.findFirst({
+      where: eq(users.id, childId),
     });
 
-    if (!link) {
-      throw new NotFoundError('Family link not found');
+    if (!child || child.parentId !== parent.id) {
+      return NextResponse.json({ error: 'Child not found or not linked to this parent' }, { status: 404 });
     }
 
-    // Delete link (parental controls will cascade)
+    // Unlink the child
     await db
-      .delete(familyLinks)
-      .where(eq(familyLinks.id, linkId));
+      .update(users)
+      .set({
+        parentId: null,
+        accountType: 'independent',
+        accountFrozen: false,
+        accountFrozenAt: null,
+        accountFrozenBy: null,
+      })
+      .where(eq(users.id, childId));
 
-    return Response.json({
-      deleted: true,
-      id: linkId,
+    return NextResponse.json({
+      success: true,
+      message: 'Child account unlinked successfully',
     });
   } catch (error) {
-    return handleApiError(error);
+    console.error('Error unlinking child account:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

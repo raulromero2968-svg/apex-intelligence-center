@@ -13,6 +13,16 @@
         "STRIPE_SECRET_KEY"
       ]
     },
+    "build:web": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "SENTRY_DSN",
+        "STRIPE_SECRET_KEY"
+      ]
+    },
     "lint": {
       "dependsOn": ["^lint"],
       "outputs": []

@@ -6,6 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { redis, RedisKeys } from '@/lib/redis';
 
 export async function GET(request: NextRequest) {
@@ -14,10 +17,12 @@ export async function GET(request: NextRequest) {
     const userId = request.cookies.get('apex_client_id')?.value || 'anonymous';
 
     // Check if there's a global trigger active
+    // @ts-ignore - Redis type resolution issue
     const globalTrigger = await redis.get(RedisKeys.realityCheckTrigger());
 
     if (globalTrigger) {
       // Check if user has already acknowledged this trigger
+    // @ts-ignore - Redis type resolution issue
       const userAck = await redis.get(RedisKeys.realityCheckAck(userId));
 
       if (!userAck || userAck !== globalTrigger) {

@@ -12,6 +12,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
 import { backtestModernMtg } from '@/backtest/modern-mtg.v5';
 import { backtestYugiohLob } from '@/backtest/yugioh-lob.v5';
 import { backtestYugiohFull } from '@/backtest/yugioh-full.v8';

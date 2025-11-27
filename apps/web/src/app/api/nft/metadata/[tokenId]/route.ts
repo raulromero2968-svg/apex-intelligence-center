@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Force dynamic rendering - do not attempt static analysis during build
+export const dynamic = 'force-dynamic';
+
 /**
  * NFT Metadata API Endpoint
  *
