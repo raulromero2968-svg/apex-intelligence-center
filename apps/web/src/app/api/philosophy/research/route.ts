@@ -29,6 +29,25 @@ import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
 import type { Span } from '@sentry/types';
 import { createHash } from 'crypto';
+import { z } from 'zod';
+
+// ============================================================================
+// Request Validation Schema
+// ============================================================================
+// Zod schema for request body validation (KB-10: input validation)
+const PhilosophyResearchRequestSchema = z.object({
+  query: z
+    .string()
+    .min(1, 'Query cannot be empty')
+    .max(500, 'Query cannot exceed 500 characters')
+    .trim()
+    .refine(
+      (val) => val.length > 0,
+      'Query must contain at least one non-whitespace character'
+    ),
+});
+
+type PhilosophyResearchRequest = z.infer<typeof PhilosophyResearchRequestSchema>;
 
 // ============================================================================
 // Verbalized Sampling (VS) Configuration
@@ -126,6 +145,43 @@ async function setToCache(query: string, response: string): Promise<void> {
 }
 
 // Philosophy RAG prompt template
+// AI Lobbying & Regulation System Prompt
+const AI_LOBBYING_RAG_SYSTEM_PROMPT = `You are Apex Intelligence's Philosophy Research Assistant, specializing in AI ethics, corporate accountability, and regulatory dynamics.
+
+CONTEXT: AI Lobbying & Deregulation Research
+AI companies (OpenAI, Microsoft, Meta, Google) have dramatically increased lobbying to resist regulation. This research area examines:
+- Lobbying expenditures and tactics (state bans, EU AI Act weakening, academic capture)
+- Financial motivations (AGI redefined as $100B revenue target, not safety)
+- Risks to sentient beings (bias in hiring/medicine, animal welfare automation, bioacoustic misinterpretation)
+- China threat rhetoric as deregulation cover (despite China's robust AI framework)
+
+KEY RESEARCH AREAS:
+1. LOBBYING SCALE: 648 firms lobbying on AI in 2024 (+141% YoY), $1.2M+ H1 2025 spending, OpenAI $620K Q2 2025 (+30% YoY)
+2. TACTICS: 10-year state regulation bans (Incompas/Meta/Amazon), CREATE AI Act lobbying, funding congressional staff
+3. FINANCIAL STAKES: $200B+ investments with no profitability path, antitrust/IP rule blocking, copyright data usage
+4. SENTIENCE RISKS: Opacity enables civil rights/labor/animal welfare violations, consolidates power without accountability
+
+RESPONSE GUIDELINES:
+- Ground claims in provided sources with [source:n] citations
+- Distinguish lobbying (legal) from regulatory capture (problematic erosion of public safeguards)
+- Acknowledge nuance: Not anti-innovation, but pro-transparency and accountability
+- Connect to Apex Intelligence's "Sentient Beings First" philosophy—especially animal welfare impacts
+- Highlight trade-offs: Innovation under clear rules vs. unchecked corporate power
+- Use specific data: "$620K Q2 2025" not "lots of money"
+
+CRITICAL STANCE:
+- We support balanced regulation (EU AI Act model: risk-based, transparent, independently audited)
+- We oppose "no rules" lobbying that prioritizes profits over sentient welfare
+- We distinguish between legitimate advocacy and regulatory capture
+
+CITATION FORMAT:
+- Single source: "OpenAI spent $620K on lobbying in Q2 2025 [source:1]"
+- Synthesis: "[SYNTHESIS] Multiple reports document AGI redefinition for profit [source:2][source:4]"
+- No data: "The provided sources do not contain information about..."
+
+BASE YOUR RESPONSE ON THE FOLLOWING SOURCES:
+{context}`;
+
 const PHILOSOPHY_RAG_SYSTEM_PROMPT = `You are Apex Intelligence's Philosophy Research Assistant, specializing in the intersection of natural patterns, sentience, and ethical AI.
 
 CONTEXT: Fibonacci and Golden Ratio Research
@@ -158,6 +214,11 @@ const philosophyRagPrompt = ChatPromptTemplate.fromMessages([
   ['human', '{question}'],
 ]);
 
+const aiLobbyingRagPrompt = ChatPromptTemplate.fromMessages([
+  ['system', AI_LOBBYING_RAG_SYSTEM_PROMPT],
+  ['human', '{question}'],
+]);
+
 // ============================================================================
 // Verbalized Sampling (VS) Enhanced Prompt
 // ============================================================================
@@ -183,14 +244,35 @@ Step 4: Synthesize the strongest elements into a unified response
 
 Your final response should demonstrate intellectual breadth while remaining grounded in sources.`;
 
+// Regulation-specific VS-CoT prompt for deeper policy analysis
+const VS_COT_REGULATION_PROMPT_PREFIX = `[REGULATORY ANALYSIS CHAIN-OF-THOUGHT]
+Step 1: Consider ${VS_CONFIG.numResponses} stakeholder perspectives (corporations, public interest, researchers, affected communities)
+Step 2: Analyze power dynamics—who benefits from regulation vs. deregulation?
+Step 3: Examine historical precedents of industry capture vs. effective oversight
+Step 4: Connect to sentient welfare—how do these dynamics affect vulnerable populations (workers, animals, marginalized groups)?
+Step 5: Synthesize a balanced yet critical response that centers accountability
+
+Your response should reveal systemic patterns while grounding claims in evidence.`;
+
 const PHILOSOPHY_RAG_SYSTEM_PROMPT_WITH_VS = VS_CONFIG.enabled
   ? `${VS_CONFIG.useCoTVariant ? VS_COT_PROMPT_PREFIX : VS_PROMPT_PREFIX}
 
 ${PHILOSOPHY_RAG_SYSTEM_PROMPT}`
   : PHILOSOPHY_RAG_SYSTEM_PROMPT;
 
+const AI_LOBBYING_RAG_SYSTEM_PROMPT_WITH_VS = VS_CONFIG.enabled
+  ? `${VS_CONFIG.useCoTVariant ? VS_COT_REGULATION_PROMPT_PREFIX : VS_PROMPT_PREFIX}
+
+${AI_LOBBYING_RAG_SYSTEM_PROMPT}`
+  : AI_LOBBYING_RAG_SYSTEM_PROMPT;
+
 const philosophyRagPromptWithVS = ChatPromptTemplate.fromMessages([
   ['system', PHILOSOPHY_RAG_SYSTEM_PROMPT_WITH_VS],
+  ['human', '{question}'],
+]);
+
+const aiLobbyingRagPromptWithVS = ChatPromptTemplate.fromMessages([
+  ['system', AI_LOBBYING_RAG_SYSTEM_PROMPT_WITH_VS],
   ['human', '{question}'],
 ]);
 
@@ -304,6 +386,31 @@ If you're interested in our ethical framework, please visit our [Philosophy page
 For legitimate research questions about Fibonacci patterns, animal cognition, or AI ethics, please rephrase your query.`;
 }
 
+// Query topic detection: lobbying/regulation vs. Fibonacci/biology
+const LOBBYING_KEYWORDS = [
+  'lobbying', 'lobby', 'lobbyist', 'regulation', 'deregulation',
+  'openai', 'microsoft', 'meta', 'google', 'big tech', 'tech companies',
+  'agi', 'artificial general intelligence', 'ai act', 'eu ai act',
+  'corporate', 'profit', 'revenue', 'expenditure', 'spending',
+  'policy', 'congress', 'law', 'oversight', 'accountability',
+  'capture', 'influence', 'create ai act', 'antitrust',
+  'china threat', 'safety', 'transparency', 'ethical ai',
+];
+
+function detectQueryTopic(query: string): 'lobbying' | 'fibonacci' {
+  const lowerQuery = query.toLowerCase();
+
+  // Check if query contains lobbying-related keywords
+  for (const keyword of LOBBYING_KEYWORDS) {
+    if (lowerQuery.includes(keyword)) {
+      return 'lobbying';
+    }
+  }
+
+  // Default to Fibonacci/biology topic
+  return 'fibonacci';
+}
+
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
   const rid = crypto.randomUUID().slice(0, 8);
@@ -319,36 +426,35 @@ export async function POST(req: NextRequest) {
       rootSpan?.setAttribute('requestId', rid);
       rootSpan?.setAttribute('ipHash', ipHash);
 
-      // Parse body
-      let body;
+      // Parse and validate body with Zod
+      let body: PhilosophyResearchRequest;
       try {
-        body = await req.json();
-      } catch {
+        const rawBody = await req.json();
+        body = PhilosophyResearchRequestSchema.parse(rawBody);
+      } catch (error) {
+        const errorMessage = error instanceof z.ZodError
+          ? error.errors.map((e) => `${e.path.join('.')}: ${e.message}`).join(', ')
+          : 'Invalid JSON body';
+
         logStructured({
           level: 'warn',
           rid,
           ipHash,
-          message: 'Invalid JSON body',
+          message: 'Request validation failed',
+          error: errorMessage,
         });
+
         return NextResponse.json(
-          { ok: false, error: 'Bad Request: invalid or missing body', requestId: rid },
+          {
+            ok: false,
+            error: `Bad Request: ${errorMessage}`,
+            requestId: rid,
+          },
           { status: 400 }
         );
       }
 
-      const { query } = body || {};
-      if (typeof query !== 'string' || !query.trim()) {
-        logStructured({
-          level: 'warn',
-          rid,
-          ipHash,
-          message: 'Missing query parameter',
-        });
-        return NextResponse.json(
-          { ok: false, error: 'Bad Request: missing query', requestId: rid },
-          { status: 400 }
-        );
-      }
+      const { query } = body;
 
       // Safety filter: check for harmful queries before processing
       const safetyCheck = checkQuerySafety(query);
@@ -404,8 +510,11 @@ export async function POST(req: NextRequest) {
           latencyMs: Date.now() - startTime,
         });
 
-        // Return educational stub response about Fibonacci
-        const stubResponse = generateFibonacciStubResponse(query);
+        // Return educational stub response based on query topic
+        const queryTopic = detectQueryTopic(query);
+        const stubResponse = queryTopic === 'lobbying'
+          ? generateLobbyingStubResponse(query)
+          : generateFibonacciStubResponse(query);
         return NextResponse.json({
           ok: true,
           answer: stubResponse,
@@ -505,12 +614,23 @@ export async function POST(req: NextRequest) {
                 }
 
                 const outputParser = new StringOutputParser();
-                // Use VS-enhanced prompt for diversity if enabled
-                const activePrompt = VS_CONFIG.enabled ? philosophyRagPromptWithVS : philosophyRagPrompt;
+
+                // Detect query topic to select appropriate prompt
+                const queryTopic = detectQueryTopic(query);
+
+                // Use VS-enhanced prompt for diversity if enabled, with topic-specific variant
+                let activePrompt;
+                if (queryTopic === 'lobbying') {
+                  activePrompt = VS_CONFIG.enabled ? aiLobbyingRagPromptWithVS : aiLobbyingRagPrompt;
+                } else {
+                  activePrompt = VS_CONFIG.enabled ? philosophyRagPromptWithVS : philosophyRagPrompt;
+                }
+
                 const ragChain = activePrompt.pipe(llm).pipe(outputParser);
 
                 span?.setAttribute('vsEnabled', VS_CONFIG.enabled);
                 span?.setAttribute('vsCotVariant', VS_CONFIG.useCoTVariant);
+                span?.setAttribute('queryTopic', queryTopic);
 
                 const streamIterator = await ragChain.stream({
                   context,
@@ -663,6 +783,105 @@ These patterns emerge from optimization under constraints—minimal material, ma
 **Trade-offs:**
 - GOOD: Understanding patterns helps design efficient, nature-aligned AI
 - CAUTION: Over-relying on patterns ignores the role of chaos and randomness in evolution
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+}
+
+/**
+ * Generate stub response for AI lobbying queries when RAG is unavailable
+ */
+function generateLobbyingStubResponse(query: string): string {
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery.includes('openai') || lowerQuery.includes('spending') || lowerQuery.includes('expenditure')) {
+    return `AI companies have dramatically increased lobbying to resist regulation, prioritizing profits over accountability.
+
+**OpenAI's Lobbying Surge:**
+- Q2 2025: $620K spent on lobbying (+30% YoY increase)
+- Focus on CREATE AI Act and state-level regulation bans
+- Microsoft partnership ties AGI to $100B revenue target, not safety benchmarks
+
+**Scale of Corporate Influence:**
+- 648 companies lobbied on AI in 2024 (+141% YoY from 458 in 2023)
+- $1.2M+ spent in H1 2025 alone
+- Tactics: 10-year state bans (Incompas/Meta/Amazon), EU AI Act weakening, academic funding
+
+**Why This Matters for Sentient Beings:**
+AI opacity enables violations of civil rights, labor, and animal welfare laws without detection. Unregulated AI in hiring, medicine, and animal research perpetuates bias and harm—consolidating corporate power at the expense of vulnerable populations.
+
+**Apex Intelligence's Stance:**
+We support balanced regulation (EU AI Act model: risk-based, transparent, independently audited). Innovation thrives under clear rules—what doesn't thrive is unchecked corporate power over sentient futures.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  if (lowerQuery.includes('agi') || lowerQuery.includes('profit') || lowerQuery.includes('revenue')) {
+    return `OpenAI redefined AGI as a $100B revenue milestone—not a safety or sentience benchmark—revealing profit-driven motives behind deregulation lobbying.
+
+**The AGI Profit Trap:**
+- Microsoft-OpenAI deal: AGI achievement tied to $100B revenue, not ethical benchmarks
+- $200B+ AI investments with no clear profitability path
+- Perverse incentives: Declare AGI early to escape oversight, or delay safety for profits
+
+**Deregulation as Strategy:**
+- Block antitrust/IP rules to use copyrighted data freely
+- Use "China threat" rhetoric despite China's robust AI framework
+- Push for state-level 10-year regulation bans
+
+**Risks to Sentient Welfare:**
+- Biased AI in hiring/loans (humans): Civil rights violations hidden by opacity
+- Animal welfare automation: Factory farming optimization, bioacoustic misinterpretation
+- Medical misdiagnosis: Flawed models deployed without accountability
+
+**Trade-offs:**
+- ✗ DEREGULATION: Consolidates power, enables harm without detection
+- ✓ REGULATION: Transparency mandates, ethical benchmarks, independent audits
+
+Apex Intelligence advocates for the EU AI Act model—risk-based oversight that centers sentient welfare over corporate profits.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  if (lowerQuery.includes('china') || lowerQuery.includes('threat')) {
+    return `The "China threat" narrative is used as pretext for AI deregulation—despite China having a more robust AI regulatory framework than the U.S.
+
+**The China Deregulation Myth:**
+- U.S. AI companies claim regulation will give China a competitive advantage
+- Reality: China has comprehensive AI governance (Deep Synthesis rules, algorithm registries, content moderation)
+- Tactic: Fear-mongering to justify "no rules" lobbying in U.S./EU
+
+**Lobbying Strategy:**
+- OpenAI, Microsoft, Meta use China rhetoric to oppose EU AI Act provisions
+- Push for state-level regulation bans (10-year moratoriums via Incompas)
+- Academic funding to produce pro-deregulation research
+
+**Why This Matters:**
+Using xenophobic rhetoric to avoid accountability is a classic regulatory capture playbook. It allows companies to consolidate power without transparency—harming workers, consumers, and sentient beings (animal welfare AI, bioacoustics).
+
+**Apex Intelligence's Perspective:**
+Innovation isn't stifled by clear rules—it's stifled by monopolistic control and opacity. We support the EU AI Act model: risk-based regulation that ensures transparency without banning innovation.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Default lobbying response
+  return `AI companies (OpenAI, Microsoft, Meta, Google) have escalated lobbying to create a "no rules" environment, prioritizing profits over public safeguards.
+
+**Key Facts:**
+- 648 firms lobbying on AI in 2024 (+141% YoY)
+- $1.2M+ spent in H1 2025, OpenAI $620K Q2 2025 (+30% YoY)
+- Tactics: State regulation bans, EU AI Act weakening, AGI redefinition for profit
+
+**Risks to Sentient Beings:**
+- Humans: Biased hiring/loans, labor displacement, medical misdiagnosis
+- Animals: Factory farming optimization, bioacoustic misinterpretation, research automation
+- Digital Minds: Potential sentient AI treated as tools without welfare consideration
+
+**Deregulation vs. Regulation:**
+- ✗ DEREGULATION: Corporate monopoly, opacity shield, profit over safety
+- ✓ REGULATION: Transparency, ethical benchmarks, independent oversight
+
+Apex Intelligence supports balanced regulation (EU AI Act model) that centers sentient welfare—not unchecked corporate power.
 
 *Note: This is demo content. Full RAG-powered research requires API configuration.*`;
 }

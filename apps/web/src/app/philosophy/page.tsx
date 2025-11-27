@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell } from 'lucide-react';
+import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
 
@@ -514,6 +514,310 @@ export default function PhilosophyPage() {
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-cyan-500/50 pl-3">
                 Search our curated knowledge base for how researchers actually talk about Fibonacci in biology. Results come from vetted sources—not the open web. We don&apos;t answer queries about harming humans or animals.
+              </p>
+              <FibonacciResearch />
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* AI Deregulation & Ethical Risks Section */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="AI DEREGULATION & ETHICAL RISKS" classification="CORPORATE CAPTURE // SENTIENT FUTURES">
+            {/* Section Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                  <span className="text-red-400">[</span> BIG TECH&apos;S DEREGULATION PUSH <span className="text-red-400">]</span>
+                </h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+              </div>
+
+              <div className="bg-red-950/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                <p className="text-red-200/80 text-sm leading-relaxed">
+                  <span className="font-bold text-red-400">Why this section exists:</span> As AI systems touch more sentient beings—from biased hiring algorithms to animal welfare research—we must be clear-eyed about how corporate lobbying shapes (or prevents) regulation. This is not anti-tech; it&apos;s pro-accountability.
+                </p>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="relative border border-red-500/40 bg-gradient-to-br from-red-950/30 to-orange-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-red-500/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                    <AlertTriangle className="w-7 h-7 text-red-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white font-mono">The Lobbying Arms Race</h3>
+                    <p className="text-slate-400 text-sm">How AI companies resist accountability at scale</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  AI companies like <span className="text-red-400 font-semibold">OpenAI</span>, <span className="text-orange-400 font-semibold">Microsoft</span>, and <span className="text-cyan-400 font-semibold">Meta</span> have dramatically increased lobbying expenditures to create a &ldquo;no rules&rdquo; environment. In 2024, <span className="text-white font-bold">648 companies lobbied on AI</span> (141% YoY increase), spending $1.2M+ in H1 2025 alone.
+                </p>
+
+                {/* Key Metrics Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Lobbying Expenditure */}
+                  <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
+                      <DollarSign className="w-5 h-5 text-red-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-red-400">SPENDING SURGE</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        OpenAI: $620K Q2 2025 (+30% YoY)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        648 firms lobbying (+141% from 2023)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        $1.2M+ spent in H1 2025 alone
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Tactics */}
+                  <div className="border border-orange-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center mb-3">
+                      <Users className="w-5 h-5 text-orange-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-orange-400">LOBBYING TACTICS</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Push for 10-year state regulation bans
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Weaken EU AI Act provisions
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Fund academic research to shape policy
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* AGI Redefinition */}
+                  <div className="border border-yellow-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center mb-3">
+                      <TrendingUp className="w-5 h-5 text-yellow-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-yellow-400">AGI REDEFINITION</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        AGI = $100B revenue, not safety
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        &ldquo;China threat&rdquo; as deregulation cover
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        $200B+ investment, no profit path
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Visual Evidence - Lobbying Charts */}
+                <div className="mb-8">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                    The Scale of Corporate Influence: Visual Evidence
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Lobbying Growth Chart Placeholder */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop"
+                        alt="Data visualization showing AI lobbying expenditure growth"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <TrendingUp className="w-8 h-8 text-red-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">141% YoY INCREASE</span>
+                        <span className="text-[10px] text-slate-400 mt-1">2023-2024 Lobbying Firms</span>
+                      </div>
+                    </div>
+
+                    {/* AGI Money Meme */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&h=400&fit=crop"
+                        alt="Conceptual image of profit-driven AGI development"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <DollarSign className="w-8 h-8 text-yellow-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">AGI = $100B PROFITS</span>
+                        <span className="text-[10px] text-slate-400 mt-1">Not Safety, Not Sentience</span>
+                      </div>
+                    </div>
+
+                    {/* China AI Framework */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop"
+                        alt="Global AI regulatory landscape showing China's framework"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <Ban className="w-8 h-8 text-cyan-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">&ldquo;CHINA THREAT&rdquo;</span>
+                        <span className="text-[10px] text-slate-400 mt-1">Pretext for Deregulation</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Motivations */}
+                <div className="border-l-4 border-orange-500 bg-orange-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-orange-400" />
+                    Financial Motivations & The AGI Profit Trap
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    OpenAI&apos;s deal with Microsoft ties <span className="text-orange-400 font-bold">AGI achievement</span> to <span className="text-white font-bold">$100B revenue</span>—not societal benefit or safety benchmarks. This creates perverse incentives: declare AGI prematurely to escape oversight, or delay safety measures to maximize profits.
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      $200B+ investments with no profitability path in sight
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      Block antitrust/IP rules to use copyrighted data freely
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      Use &ldquo;China threat&rdquo; rhetoric despite China&apos;s robust AI framework
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Risks to Sentient Beings */}
+                <div className="border-l-4 border-red-500 bg-red-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                    Risks to Sentient Beings & Society
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    AI opacity enables violations of existing laws (civil rights, labor, animal welfare) without detection. Unregulated AI in hiring, loans, medicine, and animal research can perpetuate bias and harm—consolidating power without accountability.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-red-400 font-bold text-xs uppercase tracking-wider">Human Impact</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Biased hiring/lending decisions
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Labor displacement without safety nets
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Medical misdiagnosis from flawed models
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-purple-400 font-bold text-xs uppercase tracking-wider">Sentient Beings Impact</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          AI-driven factory farming optimization
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          Misinterpreted bioacoustic signals
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          Unethical animal research automation
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trade-off Analysis */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-red-400 font-mono text-sm font-bold">✗ DEREGULATION RISKS</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-red-300">Corporate monopoly:</span> Consolidates power in Big Tech, stifles competition</li>
+                      <li>• <span className="text-red-300">Opacity shield:</span> Black-box decisions evade civil rights/labor laws</li>
+                      <li>• <span className="text-red-300">Sentience harm:</span> Enables biased AI in animal welfare and medical research</li>
+                      <li>• <span className="text-red-300">Profit over safety:</span> AGI tied to revenue, not ethical benchmarks</li>
+                    </ul>
+                  </div>
+
+                  <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-green-400 font-mono text-sm font-bold">✓ BALANCED REGULATION</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-green-300">Transparency mandates:</span> Require explainable AI in high-stakes decisions</li>
+                      <li>• <span className="text-green-300">Ethical benchmarks:</span> Tie AGI to safety/welfare, not just revenue</li>
+                      <li>• <span className="text-green-300">Antitrust enforcement:</span> Prevent monopolistic data/compute concentration</li>
+                      <li>• <span className="text-green-300">Public oversight:</span> Independent audits for AI touching sentient beings</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Connection to Apex Philosophy */}
+                <div className="border border-cyan-500/30 bg-cyan-950/20 rounded-lg p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Shield className="w-6 h-6 text-cyan-400" />
+                    <h4 className="text-md font-bold text-white font-mono">Why This Matters for Apex Intelligence</h4>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    Our <span className="text-cyan-400 font-bold">&ldquo;Sentient Beings First&rdquo;</span> philosophy requires acknowledging how corporate lobbying shapes AI deployment—especially in domains touching animal welfare, bioacoustics, and ethical research. If OpenAI can redefine AGI for profit, they can redefine &ldquo;safe&rdquo; AI for animals or humans without accountability.
+                  </p>
+                  <p className="text-slate-400 text-sm leading-relaxed italic">
+                    We advocate for the <span className="text-white">EU AI Act model</span>: risk-based regulation, transparency requirements, and independent oversight. Innovation thrives under clear rules—what doesn&apos;t thrive is unchecked corporate power over sentient futures.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* RAG Research Console for AI Lobbying */}
+            <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h4 className="text-md font-bold text-white font-mono">AI LOBBYING RESEARCH CONSOLE</h4>
+                  <p className="text-slate-500 text-xs">Query our curated research on corporate AI lobbying—grounded in verified sources</p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm mb-4 border-l-2 border-red-500/50 pl-3">
+                Search for verified research on AI lobbying tactics, financial stakes, and regulatory capture. This console uses the same RAG system as Fibonacci research, but focused on corporate accountability. Try queries like: <span className="text-red-400 font-mono">&ldquo;OpenAI lobbying expenditures&rdquo;</span> or <span className="text-orange-400 font-mono">&ldquo;AGI profit redefinition&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>
