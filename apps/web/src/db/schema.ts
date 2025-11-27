@@ -1112,11 +1112,11 @@ export const parentalControls = pgTable('parental_controls', {
 }));
 
 /**
- * Session History - Tracks child activity for parent monitoring
+ * Child Activity History - Tracks child activity for parent monitoring
  *
  * Records all significant child activities for real-time monitoring and history review.
  */
-export const sessionHistory = pgTable('session_history', {
+export const childActivityHistory = pgTable('child_activity_history', {
   id: text('id').primaryKey(),
   childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 
@@ -1138,9 +1138,9 @@ export const sessionHistory = pgTable('session_history', {
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
-  childTimestampIdx: index('idx_session_history_child_timestamp').on(table.childId, table.timestamp.desc()),
-  activityTypeIdx: index('idx_session_history_activity_type').on(table.activityType),
-  timestampIdx: index('idx_session_history_timestamp').on(table.timestamp.desc()),
+  childTimestampIdx: index('idx_child_activity_history_child_timestamp').on(table.childId, table.timestamp.desc()),
+  activityTypeIdx: index('idx_child_activity_history_activity_type').on(table.activityType),
+  timestampIdx: index('idx_child_activity_history_timestamp').on(table.timestamp.desc()),
 }));
 
 /**
@@ -1173,11 +1173,11 @@ export const parentalControlsRelations = relations(parentalControls, ({ one }) =
 }));
 
 /**
- * Session History relations
+ * Child Activity History relations
  */
-export const sessionHistoryRelations = relations(sessionHistory, ({ one }) => ({
+export const childActivityHistoryRelations = relations(childActivityHistory, ({ one }) => ({
   child: one(users, {
-    fields: [sessionHistory.childId],
+    fields: [childActivityHistory.childId],
     references: [users.id],
   }),
 }));
@@ -1245,8 +1245,8 @@ export type FamilyLink = typeof familyLinks.$inferSelect;
 export type NewFamilyLink = typeof familyLinks.$inferInsert;
 export type ParentalControl = typeof parentalControls.$inferSelect;
 export type NewParentalControl = typeof parentalControls.$inferInsert;
-export type SessionHistory = typeof sessionHistory.$inferSelect;
-export type NewSessionHistory = typeof sessionHistory.$inferInsert;
+export type ChildActivityHistory = typeof childActivityHistory.$inferSelect;
+export type NewChildActivityHistory = typeof childActivityHistory.$inferInsert;
 export type SpendTracking = typeof spendTracking.$inferSelect;
 export type NewSpendTracking = typeof spendTracking.$inferInsert;
 
