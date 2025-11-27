@@ -125,12 +125,18 @@ export async function memorizer(
       timestamp: new Date().toISOString(),
     };
 
+    // Validate embedding is array of finite numbers
+    if (!Array.isArray(emb) || !emb.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+      throw new Error('Invalid embedding vector');
+    }
+    const embeddingLiteral = `'[${emb.join(',')}]'::vector`;
+
     const result = await db.execute(sql`
       INSERT INTO gam_pages (memo, page, embedding, agent_id, reliability_score)
       VALUES (
         ${memo},
         ${JSON.stringify(pageData)}::jsonb,
-        ${`[${emb.join(',')}]`}::vector,
+        ${sql.raw(embeddingLiteral)},
         ${validated.agentId || null},
         ${0.5}
       )
@@ -174,6 +180,12 @@ async function vectorSearch(
   const db = await getDb();
   const queryEmb = await getEmbeddings(config).embedQuery(query);
 
+  // Validate embedding is array of finite numbers to prevent SQL injection
+  if (!Array.isArray(queryEmb) || !queryEmb.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+    throw new Error('Invalid query embedding vector');
+  }
+  const vectorLiteral = `'[${queryEmb.join(',')}]'::vector`;
+
   const agentClause = agentFilter && agentFilter !== 'all'
     ? sql`AND agent_id = ${agentFilter}`
     : sql``;
@@ -183,12 +195,12 @@ async function vectorSearch(
       id,
       memo,
       page,
-      1 - (embedding <=> ${`[${queryEmb.join(',')}]`}::vector) as score
+      1 - (embedding <=> ${sql.raw(vectorLiteral)}) as score
     FROM gam_pages
     WHERE embedding IS NOT NULL
       AND reliability_score >= ${config.minReliabilityScore}
       ${agentClause}
-    ORDER BY embedding <=> ${`[${queryEmb.join(',')}]`}::vector
+    ORDER BY embedding <=> ${sql.raw(vectorLiteral)}
     LIMIT ${topK}
   `);
 
