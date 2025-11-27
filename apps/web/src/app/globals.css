@@ -7,17 +7,82 @@
     --purple: #9333ea;
     --apex-cyan: #00FFFF;
     --apex-purple: #8A2BE2;
+
+    /* GOLDEN RATIO TYPOGRAPHY SCALE */
+    --font-scale-h1: clamp(2.5rem, 5vw, 4.5rem); /* Desktop 72px */
+    --font-scale-h2: clamp(1.8rem, 3vw, 3rem);   /* Desktop 48px */
+    --font-scale-h3: clamp(1.2rem, 2vw, 1.8rem); /* Desktop 28px */
+    --font-scale-body: clamp(0.875rem, 1vw, 1rem); /* Desktop 16px */
   }
 
-  body {
-    background-color: var(--ink);
+  html, body {
+    background: transparent; /* Transparent to reveal StarfieldFX canvas */
     color: white;
     min-height: 100vh;
+    /* GLOBAL OVERFLOW & WORD-BREAK CONTROL */
     overflow-x: hidden;
+    word-break: normal !important; /* STOP SPLITTING WORDS */
+    overflow-wrap: normal !important;
+    -webkit-hyphens: none;
+    hyphens: none;
   }
 
-  /* Prevent mid-word breaking on headings and paragraphs */
-  h1, h2, h3, h4, h5, h6, p {
+  /* Body background transparent to allow StarfieldFX canvas to show through */
+  body {
+    margin: 0;
+    padding: 0;
+    background: transparent; /* Changed from solid color to reveal StarfieldFX */
+  }
+
+  /* FORCE NO SPLITTING - Aggressive global override */
+  * {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  /* Force Headers to specific scales */
+  h1 {
+    font-size: var(--font-scale-h1);
+    line-height: 1.1;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h2 {
+    font-size: var(--font-scale-h2);
+    line-height: 1.2;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h3 {
+    font-size: var(--font-scale-h3);
+    line-height: 1.3;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  h4, h5, h6 {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+
+  p {
+    font-size: var(--font-scale-body);
+    line-height: 1.6;
     word-break: keep-all;
     overflow-wrap: break-word;
   }
@@ -91,27 +156,32 @@
     z-index: 10;
   }
 
-  /* Titan Unified - White Stroke + Gradient Fill (Guaranteed Consistency) */
+  /* Titan Unified - Animated Prismatic Rainbow/White/Iridescent */
   .font-titan-unified {
-    /* 1. The Stroke (White) - Visible on all lines, thinner on mobile */
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.9);
+    /* 1. Stroke: Keep White */
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
 
-    /* 2. The Fill (Gradient) - Vibrant prismatic */
-    background: linear-gradient(135deg, #ffffff 0%, #22d3ee 40%, #a855f7 80%, #22d3ee 100%);
+    /* 2. Fill: HIGH VIBRANCE Prismatic Gradient */
+    /* Use brighter colors (lighter stops) */
+    background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 25%, #22d3ee 50%, #e879f9 75%, #ffffff 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
+    animation: prismatic-shift 4s linear infinite;
 
-    /* 3. Transparent fill to show gradient through stroke */
+    /* 3. Blend: Standard transparency */
     color: transparent;
 
-    /* 4. The Glow (Reduced on mobile for performance) */
-    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.7)) drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+    /* 4. Glow: Bright text-shadow for desktop (light bloom effect) */
+    text-shadow: 0 0 5px rgba(255,255,255,0.5), 0 0 10px rgba(34,211,238,0.3);
 
-    /* 5. Layout Safety - Allow wrapping on mobile */
-    white-space: normal;
-    overflow-wrap: break-word;
+    /* 5. Layout Safety - Prevent mid-word breaks */
+    overflow-wrap: normal;
     word-break: keep-all;
+    white-space: normal;
     display: inline-block;
+    padding-bottom: 0.1em;
+    line-height: 1.1;
 
     /* 6. Font Settings */
     font-weight: 900;
@@ -120,40 +190,43 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Desktop enhancement for Titan Unified */
-  @media (min-width: 768px) {
-    .font-titan-unified {
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-      filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.9)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
-      white-space: nowrap;
-    }
+  @keyframes prismatic-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  /* Titan Unified Purple Variant */
+  /* Titan Unified Purple Variant - Animated Prismatic */
   .font-titan-unified-purple {
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.9);
-    background: linear-gradient(135deg, #ffffff 0%, #a855f7 40%, #22d3ee 80%, #a855f7 100%);
+    /* 1. Stroke: Pure White, 1.5px */
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.95);
+
+    /* 2. Fill: Purple PRISMATIC Rainbow Gradient (Animated) */
+    background: linear-gradient(135deg, #ffffff 10%, #c084fc 30%, #a855f7 50%, #a5f3fc 70%, #ffffff 90%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
+    animation: prismatic-shift 8s linear infinite;
+
+    /* 3. Blend: Standard transparency */
     color: transparent;
-    filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.7)) drop-shadow(0 0 8px rgba(34, 211, 238, 0.4));
-    white-space: normal;
-    overflow-wrap: break-word;
+
+    /* 4. Glow: Purple/White blend, REDUCED opacity */
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+
+    /* 5. Layout Safety - Prevent mid-word breaks */
+    overflow-wrap: normal;
     word-break: keep-all;
+    white-space: normal;
     display: inline-block;
+    padding-bottom: 0.1em;
+    line-height: 1.1;
+
+    /* 6. Font Settings */
     font-weight: 900;
     letter-spacing: -0.02em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Desktop enhancement for Titan Unified Purple */
-  @media (min-width: 768px) {
-    .font-titan-unified-purple {
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-      filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.9)) drop-shadow(0 0 12px rgba(34, 211, 238, 0.6));
-      white-space: nowrap;
-    }
   }
 
   /* Ethereal Scroll Transition - Lightsaber Effect */
@@ -206,6 +279,24 @@
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Hollow Text - See-through typography with cyberpunk glow */
+  .hollow-text {
+    font-size: 4rem;
+    font-weight: bold;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    .hollow-text {
+      font-size: 2.5rem;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    }
   }
 }
 
@@ -410,35 +501,43 @@ a {
   }
 }
 
-/* Tactical Button - Military/Industrial Aesthetic with Mobile Responsiveness */
+/* Tactical Button - Military/Industrial Aesthetic with Tech Greebles */
 .btn-tactical {
-  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-  border: 1px solid rgba(34, 211, 238, 0.5);
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  position: relative;
+  background: rgba(2, 6, 23, 0.8); /* Slate-950 */
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  color: #22d3ee;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.5rem 1rem;
-  color: white;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1.5rem;
   font-weight: 600;
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% calc(100% - 10px), calc(100% - 10px) 100%,
+    0 100%, 0 20px, 10px 0
+  ); /* Complex shape */
+  overflow: hidden;
   transition: all 200ms ease-out;
-  font-size: 0.75rem;
 }
 
-/* Desktop enhancement for tactical button */
-@media (min-width: 768px) {
-  .btn-tactical {
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-    letter-spacing: 0.1em;
-    padding: 0.75rem 1.5rem;
-    font-size: inherit;
-  }
+/* Add "Tech Scans" inside */
+.btn-tactical::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+  transform: skewX(-20deg) translateX(-150%);
+  transition: transform 0.5s;
 }
 
 .btn-tactical:hover {
   border-color: rgba(34, 211, 238, 0.8);
   background: rgba(34, 211, 238, 0.15);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+.btn-tactical:hover::before {
+  transform: skewX(-20deg) translateX(150%);
 }
 
 .btn-tactical:active {
@@ -582,7 +681,7 @@ body::before {
   height: 2px;
   background: linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.3) 20%, #22d3ee 50%, rgba(34, 211, 238, 0.3) 80%, transparent 100%);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
-  animation: scan-line-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: scan-line-sweep 8s linear forwards;
   z-index: 9999;
   pointer-events: none;
   opacity: 0;
@@ -798,21 +897,22 @@ html.light canvas {
   /* Triangle/Nose shape */
   box-shadow: 0 0 10px #22d3ee, 0 0 20px #22d3ee;
   animation: cursor-pulse 2s infinite;
+  transform: rotate(180deg); /* Flip cursor to correct orientation */
 }
 
 @keyframes cursor-pulse {
   0% {
-    transform: scale(1);
+    transform: rotate(180deg) scale(1);
     opacity: 1;
   }
 
   50% {
-    transform: scale(0.8);
+    transform: rotate(180deg) scale(0.8);
     opacity: 0.8;
   }
 
   100% {
-    transform: scale(1);
+    transform: rotate(180deg) scale(1);
     opacity: 1;
   }
 }
@@ -860,43 +960,125 @@ html.light canvas {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HOLOGRAPHIC SHEEN - For Header
+   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect (Viewport-Synced)
+   Uses viewport units to ensure all text is illuminated at the same speed
    ═══════════════════════════════════════════════════════════════════ */
+/* THE GLOBAL HOLO-BEAM */
 .text-sheen {
-  position: relative;
-  overflow: hidden;
+  display: inline-block;
+  color: transparent;
+
+  /* 1. The Beam Geometry (Fixed to Screen Width) */
+  /* Width = 200% of VIEWPORT, not element */
+  background-size: 200vw 100%;
+
+  /* 2. The Beam Gradient (High Intensity White/Cyan) */
+  background-image: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 48%,
+    rgba(34, 211, 238, 1) 50%,
+    rgba(255, 255, 255, 0.9) 52%,
+    transparent 60%
+  );
+
+  /* 3. The Clip */
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  /* 4. The Animation (Locked Timing) */
+  /* Linear timing ensures constant speed */
+  animation: global-sheen-pass 8s linear infinite;
+  /* Force synchronization */
+  animation-play-state: running;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
 }
 
-.text-sheen::after {
+@keyframes global-sheen-pass {
+  /* Move from Far Left to Far Right in Screen Space */
+  from { background-position-x: -200vw; }
+  to { background-position-x: 200vw; }
+}
+
+/* Purple variant of text sheen */
+.text-sheen-purple {
+  display: inline-block;
+  color: transparent;
+  background-size: 200vw 100%;
+  background-image: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 48%,
+    rgba(168, 85, 247, 1) 50%,
+    rgba(255, 255, 255, 0.9) 52%,
+    transparent 60%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: global-sheen-pass 8s linear infinite;
+  animation-play-state: running;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-sheen,
+  .text-sheen-purple {
+    animation: none;
+    background-position-x: 0vw;
+  }
+} 
+ /* Text Sheen Overlay - Works WITH existing gradient text styles */
+/* Uses pseudo-element with mix-blend-mode to add sheen without conflicting backgrounds */
+.text-sheen-overlay {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  isolation: isolate;
+}
+
+.text-sheen-overlay::after {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(to right,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%);
-  transform: skewX(-25deg);
-  animation: sheen-pass 3s infinite;
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.9) 45%,
+    rgba(34, 211, 238, 0.9) 50%,
+    rgba(255, 255, 255, 0.9) 55%,
+    transparent 60%
+  );
+  animation: sheen-pass-overlay 6s ease-in-out infinite;
+  animation-delay: 0s !important;
   pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
-@keyframes sheen-pass {
+@keyframes sheen-pass-overlay {
   0% {
-    left: -100%;
+    left: -200%;
   }
-
   20% {
     left: 200%;
   }
-
   100% {
     left: 200%;
   }
-} 
- /* ═══════════════════════════════════════════════════════════════════
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-sheen-overlay::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    HUD CONTAINER - Tactical/Military UI
    ═══════════════════════════════════════════════════════════════════ */
 .hud-container {
@@ -987,4 +1169,45 @@ html.light canvas {
 .hud-corner-br::after {
     bottom: -2px;
     right: -2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CYBER CIRCUIT BORDERS - Decorative corner brackets for containers
+   ═══════════════════════════════════════════════════════════════════ */
+.cyber-border {
+  position: relative;
+}
+
+.cyber-border::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid #22d3ee;
+  border-left: 2px solid #22d3ee;
+  pointer-events: none;
+}
+
+.cyber-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid #22d3ee;
+  border-right: 2px solid #22d3ee;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FINAL OVERRIDE TO STOP SPLITTING
+   Prevents mid-word breaks in all text elements
+   ═══════════════════════════════════════════════════════════════════ */
+p, h1, h2, h3, h4, h5, h6, span {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
 }
