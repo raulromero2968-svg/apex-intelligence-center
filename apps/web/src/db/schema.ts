@@ -3,11 +3,125 @@
  *
  * This schema includes the TCG RAG system for provenance-tracked market intelligence
  * Production-ready models for Card, Price, Sale, PopulationReport, Portfolio, Arbitrage, etc.
+ *
+ * ARCHITECTURE: Lazy Relations Pattern
+ * -------------------------------------
+ * To prevent circular import issues (common cause of `notNull` errors), this schema
+ * follows the lazy relations pattern:
+ * 1. Base tables (users, cards) are defined FIRST
+ * 2. Dependent tables are defined AFTER their dependencies
+ * 3. All relations are defined in a separate section AFTER all tables
+ *
+ * This breaks circular dependency cycles while preserving type safety.
  */
 
-import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, jsonb, timestamp, uuid, index, uniqueIndex, integer, real, serial, check, customType } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
+
+// ============================================================================
+// CUSTOM TYPES - pgvector support
+// ============================================================================
+
+/**
+ * Custom vector column type for pgvector extension
+ * Properly integrates with Drizzle's type system to avoid circular import issues
+ */
+const vector = customType<{ data: number[]; driverData: string; config: { dimensions: number } }>({
+  dataType(config) {
+    return `vector(${config?.dimensions ?? 1536})`;
+  },
+  toDriver(value: number[]): string {
+    return JSON.stringify(value);
+  },
+  fromDriver(value: string): number[] {
+    if (typeof value === 'string') {
+      // Handle PostgreSQL vector format: [1,2,3] or (1,2,3)
+      const cleaned = value.replace(/[\[\]()]/g, '');
+      return cleaned.split(',').map(Number);
+    }
+    return value as unknown as number[];
+  },
+});
+
+// ============================================================================
+// BASE TABLES - Define first to avoid circular references
+// ============================================================================
+
+/**
+ * Users table - Base user management with Stripe subscription support
+ * MUST be defined first as many other tables reference it
+ */
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name'),
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  subscriptionTier: text('subscription_tier', {
+    enum: ['free', 'pro', 'enterprise']
+  }).default('free').notNull(),
+  subscriptionStatus: text('subscription_status', {
+    enum: ['active', 'canceled', 'past_due', 'trialing']
+  }),
+  subscriptionEndsAt: timestamp('subscription_ends_at'),
+  breakModeUntil: timestamp('break_mode_until'),
+  breakModeActivatedBy: text('break_mode_activated_by', {
+    enum: ['child', 'parent']
+  }),
+  // Trust Score System (13_LAUNCH_02)
+  trustScore: integer('trust_score').default(10).notNull(),
+  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
+  phoneVerified: boolean('phone_verified').default(false).notNull(),
+  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
+  walletAddress: text('wallet_address'), // Base wallet for NFT
+  // Parent Dashboard (PROMPT_06) - Self-reference for parent-child hierarchy
+  parentId: text('parent_id'),
+  accountType: text('account_type', {
+    enum: ['parent', 'child', 'independent']
+  }).default('independent').notNull(),
+  accountFrozen: boolean('account_frozen').default(false).notNull(),
+  accountFrozenAt: timestamp('account_frozen_at'),
+  accountFrozenBy: text('account_frozen_by'), // Parent user ID
+  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
+  bedtimeStart: text('bedtime_start'), // HH:MM format
+  bedtimeEnd: text('bedtime_end'), // HH:MM format
+  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
+  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+/**
+ * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
+ * MUST be defined early as many tables reference it
+ */
+export const cards = pgTable('cards', {
+  id: text('id').primaryKey(), // cuid format
+  name: text('name').notNull(),
+  setName: text('set_name').notNull(),
+  cardNumber: text('card_number').notNull(),
+  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
+  artist: text('artist'),
+  rarity: text('rarity'),
+  tcgplayerId: integer('tcgplayer_id'),
+  scryfallId: text('scryfall_id'),
+  justTcgId: text('just_tcg_id'),
+  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
+  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
+  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
+  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
+  nameIdx: index('idx_cards_name').on(table.name),
+  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
+}));
+
+// ============================================================================
+// STANDALONE TABLES - No foreign key dependencies
+// ============================================================================
 
 // Collections table for user-curated content
 export const collections = pgTable('collections', {
@@ -32,7 +146,6 @@ export const collection_items = pgTable('collection_items', {
   collection_id: uuid('collection_id').references(() => collections.id).notNull(),
   item_id: text('item_id').notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
 /**
@@ -77,8 +190,8 @@ export const tcg_documents = pgTable('tcg_documents', {
 export const market_knowledge = pgTable('market_knowledge', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  // Vector embedding - using custom type to work around Drizzle type issues
-  embedding: sql<number[]>`vector(1536)`.notNull(),
+  // pgvector extension - 1536 dimensions for OpenAI text-embedding-3-large
+  embedding: vector('embedding', { dimensions: 1536 }),
 
   // Market sentiment (enum enforced at DB level via CHECK constraint)
   sentiment: text('sentiment', {
@@ -157,11 +270,10 @@ export const multiModalEmbeddings = pgTable('multi_modal_embeddings', {
     enum: ['image', 'audio']
   }).notNull(),
 
-  // Vector embedding - dimension varies by type:
-  // - image (CLIP ViT-B/32): 512 dimensions
-  // - audio (Wav2Vec2): 768 dimensions
+  // pgvector extension - 768 dimensions for CLIP/Wav2Vec2 embeddings
+  // Dimension varies by type: image (CLIP ViT-B/32): 512, audio (Wav2Vec2): 768
   // Using 768 to accommodate both (images will be padded/truncated if needed)
-  embedding: sql<number[]>`vector(768)`.notNull(),
+  embedding: vector('embedding', { dimensions: 768 }),
 
   // File storage reference (S3 URL or local path)
   fileUrl: text('file_url').notNull(),
@@ -244,35 +356,8 @@ export const videoGenerationRequests = pgTable('video_generation_requests', {
 }));
 
 // ============================================================================
-// PRODUCTION TCG MARKET DATA MODELS
+// CARD-DEPENDENT TABLES - Reference cards table
 // ============================================================================
-
-/**
- * Cards table - Core entity for all TCG cards across Pokemon, MTG, YuGiOh, etc.
- */
-export const cards = pgTable('cards', {
-  id: text('id').primaryKey(), // cuid format
-  name: text('name').notNull(),
-  setName: text('set_name').notNull(),
-  cardNumber: text('card_number').notNull(),
-  game: text('game').notNull(), // "pokemon" | "mtg" | "yugioh" | "lorcana"
-  artist: text('artist'),
-  rarity: text('rarity'),
-  tcgplayerId: integer('tcgplayer_id'),
-  scryfallId: text('scryfall_id'),
-  justTcgId: text('just_tcg_id'),
-  apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
-  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage
-  isManipulated: boolean('is_manipulated').default(false), // Market manipulation flag
-  manipulationReason: text('manipulation_reason'), // Reason for manipulation flag
-  lastFlaggedAt: timestamp('last_flagged_at'), // When manipulation was last detected
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
-  nameIdx: index('idx_cards_name').on(table.name),
-  uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
-}));
 
 /**
  * Prices table - Market prices from JustTCG, TCGPlayer, Cardmarket, etc.
@@ -290,7 +375,6 @@ export const prices = pgTable('prices', {
   cgcBlackLabel: real('cgc_black_label'),
   bgs95: real('bgs95'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardDateIdx: index('idx_prices_card_date').on(table.cardId, table.date),
   sourceDateIdx: index('idx_prices_source_date').on(table.source, table.date),
@@ -313,7 +397,6 @@ export const sales = pgTable('sales', {
   imageUrls: jsonb('image_urls'),
   sellerUsername: text('seller_username'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardSaleDateIdx: index('idx_sales_card_date').on(table.cardId, table.saleDate),
   sourceDateIdx: index('idx_sales_source_date').on(table.source, table.saleDate),
@@ -337,55 +420,15 @@ export const populationReports = pgTable('population_reports', {
   growthRate90d: real('growth_rate_90d'), // computed
   sourceUrl: text('source_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   cardCompanyIdx: index('idx_pop_card_company').on(table.cardId, table.gradingCompany),
   deltaIdx: index('idx_pop_delta').on(table.delta30d),
   uniquePop: uniqueIndex('idx_pop_unique').on(table.cardId, table.gradingCompany, table.lastUpdated),
 }));
 
-/**
- * Users table - Basic user management with Stripe subscription support
- */
-export const users = pgTable('users', {
-  id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  name: text('name'),
-  stripeCustomerId: text('stripe_customer_id'),
-  stripeSubscriptionId: text('stripe_subscription_id'),
-  subscriptionTier: text('subscription_tier', {
-    enum: ['free', 'pro', 'enterprise']
-  }).default('free').notNull(),
-  subscriptionStatus: text('subscription_status', {
-    enum: ['active', 'canceled', 'past_due', 'trialing']
-  }),
-  subscriptionEndsAt: timestamp('subscription_ends_at'),
-  breakModeUntil: timestamp('break_mode_until'),
-  breakModeActivatedBy: text('break_mode_activated_by', {
-    enum: ['child', 'parent']
-  }),
-  // Trust Score System (13_LAUNCH_02)
-  trustScore: integer('trust_score').default(10).notNull(),
-  dataPoints: integer('data_points').default(0).notNull(), // For $APEX airdrop
-  phoneVerified: boolean('phone_verified').default(false).notNull(),
-  nftMinted: boolean('nft_minted').default(false).notNull(), // Founding Member NFT
-  walletAddress: text('wallet_address'), // Base wallet for NFT
-  // Parent Dashboard (PROMPT_06)
-  parentId: text('parent_id').references((): any => users.id, { onDelete: 'cascade' }),
-  accountType: text('account_type', {
-    enum: ['parent', 'child', 'independent']
-  }).default('independent').notNull(),
-  accountFrozen: boolean('account_frozen').default(false).notNull(),
-  accountFrozenAt: timestamp('account_frozen_at'),
-  accountFrozenBy: text('account_frozen_by'), // Parent user ID
-  bedtimeEnabled: boolean('bedtime_enabled').default(false).notNull(),
-  bedtimeStart: text('bedtime_start'), // HH:MM format
-  bedtimeEnd: text('bedtime_end'), // HH:MM format
-  cooldownEnabled: boolean('cooldown_enabled').default(true).notNull(),
-  spendingLimitCents: integer('spending_limit_cents').default(0).notNull(), // Always $0 for child accounts
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+// ============================================================================
+// USER-DEPENDENT TABLES - Reference users table
+// ============================================================================
 
 /**
  * Session History - Tracks user session activity for parent monitoring
@@ -565,8 +608,8 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
 export const cardForensics = pgTable('card_forensics', {
   id: uuid('id').defaultRandom().primaryKey(),
   cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
-  // pgvector extension - stores as vector(768) for CLIP ViT-L/14
-  embedding: sql`vector(768)`,
+  // pgvector extension - 768 dimensions for CLIP ViT-L/14 embeddings
+  embedding: vector('embedding', { dimensions: 768 }),
   reasoningTrace: jsonb('reasoning_trace').notNull().default({}),
   detectedDefects: jsonb('detected_defects').notNull().default({}),
   authenticityScore: real('authenticity_score').notNull(),
@@ -1188,186 +1231,8 @@ export const childActivityHistoryRelations = relations(childActivityHistory, ({ 
 }));
 
 // ============================================================================
-// GENERAL AGENTIC MEMORY (GAM) TABLES
-// ============================================================================
-
-/**
- * GAM Pages - Page-store for Just-in-Time memory retrieval
- *
- * Stores full session history as "pages" with lightweight memos for efficient retrieval.
- * Supports vector search for semantic memory lookup and BM25-style keyword search.
- *
- * Architecture based on GAM paper:
- * - Offline: Memorizer compresses sessions into memos + stores full pages
- * - Online: Researcher iteratively plans/searches/reflects to retrieve relevant context
- *
- * Features:
- * - Vector embeddings (1536-dim) for semantic similarity search
- * - Session metadata for context-aware retrieval
- * - AI agent assignment for multi-AI orchestration
- * - Reliability scoring for quality filtering
- */
-export const gamPages = pgTable('gam_pages', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // Lightweight memo summary for fast retrieval
-  memo: text('memo').notNull(),
-
-  // Full page content (session history as JSON)
-  page: jsonb('page').$type<{
-    session: string;
-    history: string;
-    context?: Record<string, any>;
-    entities?: string[];
-    timestamp?: string;
-  }>().notNull(),
-
-  // Vector embedding for semantic search (OpenAI text-embedding-3-large)
-  embedding: vector('embedding', { dimensions: 1536 }),
-
-  // Session metadata
-  sessionId: text('session_id'), // Optional link to source session
-  agentId: text('agent_id'), // Which AI agent created this (claude, gpt, gemini, apex)
-
-  // Quality metrics
-  reliabilityScore: real('reliability_score').default(0.5), // 0.0-1.0
-  accessCount: integer('access_count').default(0), // Track usage for caching
-
-  // Timestamps
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  expiresAt: timestamp('expires_at'), // Optional TTL for cache cleanup
-}, (table) => ({
-  // HNSW index for vector similarity (created in migration)
-  // Index on agent for multi-AI filtering
-  agentIdx: index('idx_gam_pages_agent').on(table.agentId),
-  // Index on session for session-based retrieval
-  sessionIdx: index('idx_gam_pages_session').on(table.sessionId),
-  // Index on reliability for quality filtering
-  reliabilityIdx: index('idx_gam_pages_reliability').on(table.reliabilityScore),
-  // Timestamp index for temporal queries
-  createdAtIdx: index('idx_gam_pages_created_at').on(table.createdAt),
-}));
-
-/**
- * GAM Research Sessions - Track researcher agent iterations
- *
- * Records the planning/search/reflection cycles for explainability
- * and RL reward computation.
- */
-export const gamResearchSessions = pgTable('gam_research_sessions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // Request that triggered research
-  request: text('request').notNull(),
-
-  // Initial memory context
-  initialMemory: text('initial_memory'),
-
-  // Research iterations (planning, search, integration, reflection)
-  iterations: jsonb('iterations').$type<Array<{
-    depth: number;
-    plan: string;
-    tools: string[];
-    retrievedPageIds: string[];
-    integration: string;
-    reflection: {
-      isComplete: boolean;
-      missing?: string;
-      confidence: number;
-    };
-  }>>().default([]),
-
-  // Final integrated result
-  result: text('result'),
-
-  // Metrics for RL optimization
-  metrics: jsonb('metrics').$type<{
-    totalDepth: number;
-    pagesRetrieved: number;
-    latencyMs: number;
-    tokenCount?: number;
-    perplexity?: number;
-    f1Score?: number;
-  }>(),
-
-  // Status tracking
-  status: text('status', {
-    enum: ['in_progress', 'completed', 'failed']
-  }).default('in_progress').notNull(),
-
-  // Timestamps
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  completedAt: timestamp('completed_at'),
-}, (table) => ({
-  statusIdx: index('idx_gam_research_status').on(table.status),
-  createdAtIdx: index('idx_gam_research_created_at').on(table.createdAt),
-}));
-
-/**
- * GAM RL Training Data - Store training samples for PPO optimization
- *
- * Records task-reward pairs for offline RL policy training.
- */
-export const gamRLTrainingData = pgTable('gam_rl_training_data', {
-  id: uuid('id').defaultRandom().primaryKey(),
-
-  // Task description
-  task: text('task').notNull(),
-
-  // Session history context
-  history: text('history'),
-
-  // Generated response
-  response: text('response'),
-
-  // Rewards (negative perplexity + task-specific rewards)
-  rewards: jsonb('rewards').$type<{
-    perplexity: number;
-    f1Score?: number;
-    userRating?: number;
-    composite: number;
-  }>(),
-
-  // Model used
-  model: text('model').default('gpt-4o-mini'),
-
-  // Whether this sample has been used in training
-  trained: boolean('trained').default(false),
-
-  // Timestamps
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  trainedIdx: index('idx_gam_rl_trained').on(table.trained),
-  createdAtIdx: index('idx_gam_rl_created_at').on(table.createdAt),
-}));
-
-/**
- * GAM Pages relations
- */
-export const gamPagesRelations = relations(gamPages, ({ many }) => ({
-  // Could link to research sessions that used this page
-}));
-
-/**
- * GAM Research Sessions relations
- */
-export const gamResearchSessionsRelations = relations(gamResearchSessions, ({ many }) => ({
-  // Future: link to pages used
-}));
-
-// ============================================================================
 // TypeScript types for better DX
 // ============================================================================
-
-export type GamPage = typeof gamPages.$inferSelect;
-export type NewGamPage = typeof gamPages.$inferInsert;
-export type GamResearchSession = typeof gamResearchSessions.$inferSelect;
-export type NewGamResearchSession = typeof gamResearchSessions.$inferInsert;
-export type GamRLTrainingData = typeof gamRLTrainingData.$inferSelect;
-export type NewGamRLTrainingData = typeof gamRLTrainingData.$inferInsert;
 
 export type Collection = typeof collections.$inferSelect;
 export type NewCollection = typeof collections.$inferInsert;
@@ -1466,8 +1331,3 @@ export type NewSpendTracking = typeof spendTracking.$inferInsert;
  *   unique_id: "tcgplayer_article_12345"
  * }
  */
-
-// ============================================================================
-// AI SCIENTIST PHASE 1 SCHEMA EXPORTS
-// ============================================================================
-export * from './schema/ai-scientist';
