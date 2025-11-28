@@ -98,8 +98,12 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-{/* Sleek Neon Line Separator */}
-          <div className="w-full max-w-md mx-auto mb-12">
+{/* Diamond and Neon Line Separator */}
+          <div className="flex flex-col items-center gap-2 mb-12">
+            {/* Top Diamond - Prismatic/Holographic */}
+            <span className="text-holographic text-lg animate-pulse drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">◆</span>
+            
+            <div className="w-full max-w-md mx-auto">
             <div className="relative h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent">
               {/* Animated glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent blur-sm animate-pulse" />
@@ -110,6 +114,7 @@ export default function HomePage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                 </span>
               </div>
+            </div>
             </div>
           </div>
 
@@ -132,14 +137,9 @@ export default function HomePage() {
 
           </p>
 
-          {/* Primary CTA Cluster - Prismatic Border Container */}
-          <div className="relative rounded-lg overflow-hidden mb-6">
-            {/* Prismatic Holographic Border */}
-            <div className="absolute inset-0 rounded-lg p-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-border-rotate">
-              <div className="absolute inset-[3px] rounded-lg bg-black/60 backdrop-blur-md" />
-            </div>
-            
-            <div className="relative flex flex-col sm:flex-row gap-4 p-4 bg-black/60 backdrop-blur-md rounded-lg">
+          {/* Primary CTA Cluster - Glow Container */}
+          <div className="relative p-1 rounded-lg bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 p-4 bg-black/60 backdrop-blur-md rounded-lg">
               <Link
                 href="/intel"
                 className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-3 px-6 py-4 md:px-10 md:py-5 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
@@ -159,7 +159,6 @@ export default function HomePage() {
 
           {/* Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
-            <span className="text-xs font-mono tracking-wider">SCROLL FOR INTEL</span>
             <div className="w-px h-10 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
           </div>
         </main>
@@ -447,13 +446,7 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <ScrollReveal>
       <section className="relative z-20 py-24 px-6 md:px-12"><div className="max-w-3xl mx-auto">
-          <div className="relative rounded-xl overflow-hidden">
-            {/* Prismatic Holographic Border */}
-            <div className="absolute inset-0 rounded-xl p-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-border-rotate">
-              <div className="absolute inset-[3px] rounded-xl bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md" />
-            </div>
-            
-            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
+          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
             {/* HUD Brackets */}
             <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400" />
             <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400" />
@@ -522,7 +515,6 @@ export default function HomePage() {
 
 
 
-      {/* CSS for animations */}
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
