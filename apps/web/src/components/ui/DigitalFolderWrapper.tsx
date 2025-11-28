@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 
 interface DigitalFolderWrapperProps {
   title: string;
@@ -9,6 +9,26 @@ interface DigitalFolderWrapperProps {
 }
 
 export default function DigitalFolderWrapper({ title, subtitle, children }: DigitalFolderWrapperProps) {
+  const [scrollPercent, setScrollPercent] = useState(0);
+  const [lineCount, setLineCount] = useState(0);
+
+  useEffect(() => {
+    // Update line count on mount
+    setLineCount(document.querySelectorAll('p').length);
+
+    // Update scroll percent on scroll
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight > 0) {
+        setScrollPercent(Math.round((window.scrollY / scrollHeight) * 100));
+      }
+    };
+
+    handleScroll(); // Initial value
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="relative w-full max-w-5xl mx-auto">
       {/* Terminal Header */}
@@ -34,7 +54,7 @@ export default function DigitalFolderWrapper({ title, subtitle, children }: Digi
       <div className="border border-cyan-500/20 border-t-0 bg-gradient-to-br from-slate-950/90 to-slate-900/90 backdrop-blur-md rounded-b-lg overflow-hidden">
         {/* Scanline Overlay */}
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_50%,rgba(6,182,212,0.02)_50%)] bg-[length:100%_4px] opacity-30" />
-        
+
         {/* Content with Explicit Spacing */}
         <div className="relative px-8 md:px-12 py-12">
           {/* Title Section */}
@@ -59,9 +79,9 @@ export default function DigitalFolderWrapper({ title, subtitle, children }: Digi
 
         {/* Terminal Footer */}
         <div className="border-t border-cyan-500/30 bg-black/40 px-6 py-2 flex items-center justify-between text-xs text-slate-500 font-mono">
-          <span>SCROLL: ▼ {typeof window !== 'undefined' && Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100)}%</span>
+          <span>SCROLL: ▼ {scrollPercent}%</span>
           <span>ENCODING: UTF-8</span>
-          <span>LINES: {typeof document !== 'undefined' && document.querySelectorAll('p').length}</span>
+          <span>LINES: {lineCount}</span>
         </div>
       </div>
     </div>
