@@ -118,7 +118,7 @@ export default function DashboardPage() {
                     <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
                       TCG
                     </span>
-                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_40px_rgba(168,85,247,0.4)]">
+                    <span className="block text-holographic drop-shadow-[0_0_40px_rgba(168,85,247,0.4)]">
                       Science
                     </span>
                   </h1>

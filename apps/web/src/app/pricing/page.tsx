@@ -93,7 +93,7 @@ const tiers = [
       'Custom analytics',
     ],
     cta: 'Contact Sales',
-    ctaLink: '/contact',
+    ctaLink: 'https://apexomnis.io',
     icon: Rocket,
     color: 'pink',
     gradient: 'from-pink-500 to-rose-500',
@@ -277,13 +277,15 @@ export default function PricingPage() {
               Our team is here to help you choose the right tier for your needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact"
+              <a
+                href="https://apexomnis.io"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-mono"
               >
                 [ CONTACT_SALES ]
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </a>
               <Link
                 href="/dashboard"
                 className="inline-flex items-center justify-center gap-2 bg-slate-900/50 hover:bg-slate-800/50 border border-cyan-500/30 hover:border-cyan-400/60 text-white font-medium px-8 py-4 rounded-lg transition-all backdrop-blur-sm font-mono"
