@@ -11,11 +11,11 @@ interface HoloCardProps {
 }
 
 /**
- * HoloCard - High-emphasis glassmorphism container with ethereal fading edges
+ * HoloCard - High-emphasis glassmorphism container with truly soft fading edges
  * Use for: Subscription forms, CTAs, featured content
  *
  * Features:
- * - Soft, fading ethereal edges for true holographic effect
+ * - CSS mask gradient for authentic soft, fading edges
  * - Animated breathing border with cyan/purple gradient
  * - Corner accent brackets (Intel aesthetic)
  * - Scanline overlay effect
@@ -32,21 +32,18 @@ export function HoloCard({
       glowSize: 'shadow-[0_0_30px_rgba(6,182,212,0.15)]',
       scanlineOpacity: 'opacity-[0.02]',
       breathingOpacity: 'opacity-20',
-      fadeSize: 'blur-[6px]',
     },
     medium: {
       borderOpacity: 'border-cyan-500/30',
       glowSize: 'shadow-[0_0_50px_rgba(6,182,212,0.25)]',
       scanlineOpacity: 'opacity-[0.03]',
       breathingOpacity: 'opacity-30',
-      fadeSize: 'blur-[8px]',
     },
     high: {
       borderOpacity: 'border-cyan-400/40',
       glowSize: 'shadow-[0_0_70px_rgba(6,182,212,0.4)]',
       scanlineOpacity: 'opacity-[0.04]',
       breathingOpacity: 'opacity-50',
-      fadeSize: 'blur-[10px]',
     },
   };
 
@@ -72,43 +69,45 @@ export function HoloCard({
         )}
       />
 
-      {/* Animated Breathing Border Gradient with soft fade */}
-      <div
+      {/* Main Container with CSS mask for soft edges */}
+      <div 
         className={clsx(
-          'absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 rounded-2xl',
-          config.fadeSize,
-          'group-hover:opacity-75 transition duration-1000 group-hover:duration-200',
-          'animate-breathing',
-          config.breathingOpacity
+          'relative overflow-hidden rounded-2xl',
+          'bg-slate-950/90 backdrop-blur-xl',
+          'border',
+          config.borderOpacity,
+          config.glowSize
         )}
-      />
+        style={{
+          // CSS mask creates truly soft, fading edges
+          maskImage: `
+            radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
+            linear-gradient(black, black)
+          `,
+          maskComposite: 'intersect',
+          WebkitMaskImage: `
+            radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
+            radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
+            linear-gradient(black, black)
+          `,
+          WebkitMaskComposite: 'source-in',
+        }}
+      >
+        {/* Animated Breathing Border Gradient */}
+        <div
+          className={clsx(
+            'absolute -inset-[1px] bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 rounded-2xl blur-sm',
+            'group-hover:opacity-75 transition duration-1000 group-hover:duration-200',
+            'animate-breathing pointer-events-none',
+            config.breathingOpacity
+          )}
+        />
 
-      {/* Fading edge overlay - creates the soft ethereal holographic border */}
-      <div className="absolute -inset-0.5 rounded-2xl overflow-hidden pointer-events-none">
-        {/* Top edge fade - softer and wider */}
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-cyan-400/15 via-cyan-400/5 to-transparent blur-lg" />
-        {/* Bottom edge fade - softer and wider */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-purple-400/15 via-purple-400/5 to-transparent blur-lg" />
-        {/* Left edge fade - softer and wider */}
-        <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-cyan-400/15 via-cyan-400/5 to-transparent blur-lg" />
-        {/* Right edge fade - softer and wider */}
-        <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-purple-400/15 via-purple-400/5 to-transparent blur-lg" />
-        
-        {/* Corner glows for extra ethereal effect - softer */}
-        <div className="absolute top-0 left-0 w-20 h-20 bg-cyan-400/15 rounded-full blur-2xl" />
-        <div className="absolute top-0 right-0 w-20 h-20 bg-purple-400/15 rounded-full blur-2xl" />
-        <div className="absolute bottom-0 left-0 w-20 h-20 bg-purple-400/15 rounded-full blur-2xl" />
-        <div className="absolute bottom-0 right-0 w-20 h-20 bg-pink-400/15 rounded-full blur-2xl" />
-      </div>
-
-      {/* Main Container */}
-      <div className={clsx(
-        'relative overflow-hidden rounded-2xl',
-        'bg-slate-950/90 backdrop-blur-xl',
-        'border',
-        config.borderOpacity,
-        config.glowSize
-      )}>
         {/* Scanline Effect */}
         <div
           className={clsx(
@@ -130,7 +129,7 @@ export function HoloCard({
         <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-purple-400/50 pointer-events-none shadow-[0_0_12px_rgba(168,85,247,0.5)]" />
         <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-pink-400/50 pointer-events-none shadow-[0_0_12px_rgba(236,72,153,0.5)]" />
 
-        {/* Ambient glow spots - softer */}
+        {/* Ambient glow spots */}
         <div className="absolute -top-24 -right-24 w-56 h-56 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-56 h-56 bg-purple-500/8 rounded-full blur-3xl pointer-events-none" />
 
