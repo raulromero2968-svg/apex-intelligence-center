@@ -8,6 +8,16 @@ export {
   type RagFusionParams,
 } from './rag-fusion';
 
+export {
+  bostromProbFusion,
+  mapToTCGOutcomes,
+  calculateExpectedValue,
+  bayesianUpdate,
+  type BostromProbabilities,
+  type BostromFusionParams,
+  type TCGSimulationOutcome,
+} from './bostrom-probabilities';
+
 // ============================================================================
 // EGGROLL RAG-FUSION - Gradient-free evolution for simulation markets
 // ============================================================================

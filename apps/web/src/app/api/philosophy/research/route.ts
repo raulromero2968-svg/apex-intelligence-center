@@ -24,6 +24,8 @@ import {
   CitationMapper,
 } from '@/rag';
 import { createVoyageEmbeddings, cosineSimilarity } from '@/lib/embeddings';
+import { bostromProbFusion, mapToTCGOutcomes, type BostromProbabilities } from '@/lib/rag/bostrom-probabilities';
+import { quickAlignCheck } from '@/lib/security-auth';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
@@ -832,10 +834,47 @@ export async function POST(req: NextRequest) {
                   controller.enqueue(encoder.encode(finalChunk));
                 }
 
+                // Calculate Bostrom probabilities for simulation theory queries
+                let bostromProbabilities: BostromProbabilities | null = null;
+                if (queryTopic === 'simulation' && llm) {
+                  try {
+                    // FHI alignment check before calculating probabilities
+                    const authHeader = req.headers.get('authorization');
+                    if (quickAlignCheck(authHeader, query)) {
+                      bostromProbabilities = await bostromProbFusion({
+                        query,
+                        context,
+                        llm,
+                      });
+                      span?.setAttribute('bostromProbsCalculated', true);
+                      span?.setAttribute('bostromSimulationProb', bostromProbabilities.simulation);
+                    } else {
+                      span?.setAttribute('bostromProbsBlocked', true);
+                    }
+                  } catch (bostromError) {
+                    // Log but don't fail the request
+                    console.warn('Bostrom probability calculation failed:', bostromError);
+                    span?.setAttribute('bostromProbsError', true);
+                  }
+                }
+
                 // Append sources
                 sources = formatSourcesForOutput(dedupedSources);
+
+                // Include Bostrom probabilities in output for simulation queries
+                const outputData: {
+                  sources: typeof sources;
+                  bostromProbabilities?: BostromProbabilities;
+                  tcgOutcomes?: ReturnType<typeof mapToTCGOutcomes>;
+                } = { sources };
+
+                if (bostromProbabilities) {
+                  outputData.bostromProbabilities = bostromProbabilities;
+                  outputData.tcgOutcomes = mapToTCGOutcomes(bostromProbabilities);
+                }
+
                 controller.enqueue(
-                  encoder.encode(`\n\n__SOURCES__\n${JSON.stringify(sources)}`)
+                  encoder.encode(`\n\n__SOURCES__\n${JSON.stringify(outputData)}`)
                 );
 
                 // Cache the successful response
@@ -866,6 +905,14 @@ export async function POST(req: NextRequest) {
                     vsEnabled: true,
                     vsVariant: VS_CONFIG.useCoTVariant ? 'VS-CoT' : 'VS',
                     ...(diversityMetrics && { vsDiversityScore: diversityMetrics.avgDistance }),
+                  }),
+                  // Bostrom trilemma probability metrics
+                  ...(bostromProbabilities && {
+                    bostromProbsCalculated: true,
+                    bostromExtinction: bostromProbabilities.extinction,
+                    bostromAvoidance: bostromProbabilities.avoidance,
+                    bostromSimulation: bostromProbabilities.simulation,
+                    bostromCorrigibilityCapped: bostromProbabilities.corrigibilityCapped,
                   }),
                 });
 
