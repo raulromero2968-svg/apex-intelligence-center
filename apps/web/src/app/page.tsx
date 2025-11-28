@@ -98,21 +98,18 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-{/* System Status Badge - Diamond Sigil Design */}
-          <div className="flex flex-col items-center gap-2 mb-8">
-            {/* Top Diamond - Prismatic/Holographic */}
-            <span className="text-holographic text-lg animate-pulse drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">◆</span>
-
-            {/* Main Status Bar */}
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 font-mono shadow-[0_0_30px_rgba(6,182,212,0.2)] relative">
-              <Terminal className="w-4 h-4" />
-              <span className="tracking-widest font-bold text-sm">NEXUS</span>
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </span>
-              <span className="tracking-widest font-bold text-sm">ONLINE</span>
-              <Activity className="w-4 h-4" />
+{/* Sleek Neon Line Separator */}
+          <div className="w-full max-w-md mx-auto mb-12">
+            <div className="relative h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent">
+              {/* Animated glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent blur-sm animate-pulse" />
+              {/* Center dot indicator */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                </span>
+              </div>
             </div>
           </div>
 

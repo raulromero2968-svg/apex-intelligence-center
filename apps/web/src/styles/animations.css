@@ -214,3 +214,22 @@
 .animate-pulse-slide-reverse {
   animation: pulse-slide-reverse 3s ease-in-out infinite 1.5s;
 }
+
+/* Scan Line Animation for Headers */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(400%);
+    opacity: 0;
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s ease-in-out infinite;
+}

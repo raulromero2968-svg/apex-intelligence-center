@@ -82,6 +82,21 @@ export default function LiveScatter({
           <div className="h-64 bg-black/40 rounded-lg border border-cyan-500/20 p-2">
             <ResponsiveContainer>
               <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                {/* SVG Definitions for gradients and effects */}
+                <defs>
+                  <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#00d9ff" />
+                    <stop offset="50%" stopColor="#a855f7" />
+                    <stop offset="100%" stopColor="#ec4899" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 217, 255, 0.15)" />
                 <XAxis
                   type="number"
@@ -111,7 +126,38 @@ export default function LiveScatter({
                     borderRadius: "4px",
                   }}
                 />
-                <Scatter name="Cards" data={data} fill="#00d9ff" />
+                {/* Multiple colored scatter layers for colorful effect */}
+                <Scatter 
+                  name="Cards" 
+                  data={data} 
+                  fill="url(#colorGradient)"
+                  shape={(props: any) => {
+                    const { cx, cy, payload } = props;
+                    // Vary color based on position
+                    const hue = (payload.x + payload.y) % 360;
+                    const colors = [
+                      '#00d9ff', // cyan
+                      '#a855f7', // purple
+                      '#ec4899', // pink
+                      '#f59e0b', // amber
+                      '#10b981', // emerald
+                      '#3b82f6', // blue
+                    ];
+                    const color = colors[Math.floor((payload.x + payload.y) / 30) % colors.length];
+                    return (
+                      <circle 
+                        cx={cx} 
+                        cy={cy} 
+                        r={payload.z / 3} 
+                        fill={color}
+                        fillOpacity={0.7}
+                        stroke={color}
+                        strokeWidth={1}
+                        filter="url(#glow)"
+                      />
+                    );
+                  }}
+                />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
