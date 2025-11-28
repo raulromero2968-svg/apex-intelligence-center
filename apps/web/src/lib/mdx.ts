@@ -356,12 +356,14 @@ const commonsDirectory = path.join(process.cwd(), 'src', 'content', 'commons');
 
 export interface CommonsPostFrontmatter {
   title: string;
-  description: string;
-  date: string;
+  subtitle?: string;
+  description?: string;
+  publishedAt: string;
   author: string;
-  hero?: string;
+  heroImage?: string;
   tags?: string[];
   category?: string;
+  readingTime?: string;
 }
 
 export interface CommonsPost {
@@ -456,7 +458,7 @@ export async function getAllCommonsPosts(): Promise<CommonsPost[]> {
 
     // Sort by date (newest first)
     return posts.sort((a, b) => {
-      return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+      return new Date(b.frontmatter.publishedAt).getTime() - new Date(a.frontmatter.publishedAt).getTime();
     });
   } catch (error) {
     console.warn('Error reading commons posts:', error);
