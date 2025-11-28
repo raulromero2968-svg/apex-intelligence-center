@@ -11,7 +11,7 @@ const Interactive3DWolf = dynamic(
 );
 import RouteTransition from "@/layout/RouteTransition";
 import SearchBar from "@/components/search/SearchBar";
-import HorizontalCarousel from "@/components/HorizontalCarousel";
+
 import ContentCard from "@/components/ContentCard";
 import { ElectronicFolder } from "@/components/ui/ElectronicFolder";
 import { DigitalScroll } from "@/components/ui/DigitalScroll";
@@ -240,11 +240,11 @@ export default function DashboardPage() {
                       </p>
                     </div>
                     
-                    <HorizontalCarousel>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {feedItems.map((item) => (
                         <ContentCard key={`${item.kind}-${item.slug}`} {...item} />
                       ))}
-                    </HorizontalCarousel>
+                    </div>
                   </div>
                 </DigitalScroll>
               </ElectronicFolder>
