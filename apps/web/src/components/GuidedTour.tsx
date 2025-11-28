@@ -32,6 +32,10 @@ const steps: Step[] = [
   },
 ];
 
+// Optimal engagement timing: 210 seconds (3.5 minutes)
+// Based on UX research showing users are most receptive to guidance after initial exploration
+const TOUR_DELAY_MS = 210000; // 3.5 minutes
+
 export default function GuidedTour() {
   const [run, setRun] = useState(false);
   const [hasSeenTour, setHasSeenTour] = useState(true);
@@ -43,8 +47,9 @@ export default function GuidedTour() {
     const tourCompleted = localStorage.getItem('apex_tour_completed');
     if (!tourCompleted) {
       setHasSeenTour(false);
-      // Delay to ensure DOM elements are ready
-      setTimeout(() => setRun(true), 1000);
+      // Delay to allow user to explore before showing tour
+      // 3.5 minutes is optimal for engagement without being intrusive
+      setTimeout(() => setRun(true), TOUR_DELAY_MS);
     }
   }, []);
 
@@ -81,40 +86,83 @@ export default function GuidedTour() {
       callback={handleJoyrideCallback}
       styles={{
         options: {
-          primaryColor: '#00FFFF',
-          textColor: '#ffffff',
-          backgroundColor: '#1a1a2e',
-          overlayColor: 'rgba(0, 0, 0, 0.7)',
+          primaryColor: '#06b6d4', // Cyan
+          textColor: '#e2e8f0', // Slate-200
+          backgroundColor: '#0f172a', // Slate-900
+          overlayColor: 'rgba(0, 0, 0, 0.85)',
           zIndex: 10000,
-          arrowColor: '#1a1a2e',
+          arrowColor: '#0f172a',
         },
         tooltip: {
           borderRadius: 12,
-          padding: 20,
+          padding: 24,
+          border: '2px solid rgba(6, 182, 212, 0.3)', // Cyan border
+          boxShadow: '0 0 40px rgba(6, 182, 212, 0.3), 0 0 80px rgba(168, 85, 247, 0.2)', // Cyan/purple glow
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', // Gradient background
+          fontFamily: 'var(--font-sans)',
+        },
+        tooltipContent: {
+          padding: '8px 0',
+          fontSize: '15px',
+          lineHeight: '1.6',
+          color: '#cbd5e1', // Slate-300
+        },
+        tooltipTitle: {
+          fontSize: '18px',
+          fontWeight: 700,
+          color: '#06b6d4', // Cyan
+          marginBottom: '8px',
+          textShadow: '0 0 10px rgba(6, 182, 212, 0.5)',
         },
         buttonNext: {
-          backgroundColor: '#00FFFF',
-          color: '#000',
+          backgroundColor: '#06b6d4', // Cyan
+          color: '#0f172a', // Dark text
           borderRadius: 8,
-          padding: '8px 16px',
+          padding: '10px 20px',
           fontSize: 14,
-          fontWeight: 600,
+          fontWeight: 700,
+          border: 'none',
+          boxShadow: '0 0 20px rgba(6, 182, 212, 0.4)',
+          transition: 'all 0.3s ease',
+          fontFamily: 'var(--font-mono)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
         },
         buttonBack: {
-          color: '#00FFFF',
-          marginRight: 10,
+          color: '#a855f7', // Purple
+          marginRight: 12,
+          fontSize: 14,
+          fontWeight: 600,
+          fontFamily: 'var(--font-mono)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
         },
         buttonSkip: {
-          color: '#ffffff80',
+          color: '#64748b', // Slate-500
+          fontSize: 13,
+          fontWeight: 500,
+        },
+        beacon: {
+          inner: '#06b6d4',
+          outer: 'rgba(6, 182, 212, 0.3)',
+        },
+        beaconInner: {
+          backgroundColor: '#06b6d4',
+        },
+        beaconOuter: {
+          backgroundColor: 'rgba(6, 182, 212, 0.3)',
+          border: '2px solid #06b6d4',
+        },
+        spotlight: {
+          borderRadius: 8,
         },
       }}
       locale={{
-        last: 'Finish',
+        last: '[ FINISH ]',
         skip: 'Skip Tour',
-        next: 'Next',
-        back: 'Back',
+        next: '[ NEXT ]',
+        back: '[ BACK ]',
       }}
     />
   );
 }
-
