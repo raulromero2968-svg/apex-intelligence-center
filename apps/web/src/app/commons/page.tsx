@@ -167,14 +167,11 @@ function EssayCard({ post }: { post: any }) {
       {/* Hero/Thumbnail Image */}
       {(post.frontmatter.thumbnail || post.frontmatter.heroImage) && (
         <div className="relative w-full h-48 overflow-hidden border-b border-cyan-900/30">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={post.frontmatter.thumbnail || post.frontmatter.heroImage}
             alt={post.frontmatter.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority={false}
-            unoptimized
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {/* Cyberpunk Overlay Effect */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
