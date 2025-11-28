@@ -32,7 +32,7 @@ export const CardViewer = () => {
             polar={[-Math.PI / 3, Math.PI / 3]}
             azimuth={[-Math.PI / 1.4, Math.PI / 2]}
           >
-            <HolographicCard imageUrl="/placeholder-card.jpg" />
+            <HolographicCard imageUrl="/images/charizard-cgc10.jpg" />
           </PresentationControls>
 
           <Environment preset="city" />
