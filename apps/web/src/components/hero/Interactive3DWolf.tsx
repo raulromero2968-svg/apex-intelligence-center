@@ -322,27 +322,7 @@ function WolfHead() {
 
 export default function Interactive3DWolf() {
   return (
-    <div 
-      className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden"
-      style={{
-        maskImage: `
-          radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-          linear-gradient(black, black)
-        `,
-        maskComposite: 'intersect',
-        WebkitMaskImage: `
-          radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-          radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-          linear-gradient(black, black)
-        `,
-        WebkitMaskComposite: 'source-in',
-      }}
-    >
+    <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
       {/* Prismatic glowing backdrop */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-cyan-500/10 blur-3xl animate-breathing" />
       

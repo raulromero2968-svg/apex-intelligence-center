@@ -11,9 +11,6 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
 import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 
-// Static import for cosmic banner - ensures image is bundled into build
-import cosmicHeroBanner from '../../public/images/cosmic-hero-banner.png';
-
 // Intelligence Feed Data - Mixing TCG Markets with Biology Research
 const INTEL_FEED = [
   { type: 'MARKET', content: 'Charizard Base Set 1st Ed (PSA 10) +4.2% | $420,000', delta: '+4.2%', positive: true },
@@ -100,35 +97,8 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
-          {/* Cosmic Ethereal Hero Banner - Full Height */}
-          <div className="w-full mx-auto mb-16 relative">
-            <div className="relative overflow-hidden">
-              {/* Cosmic Banner Image - Full Hero Height */}
-              <div className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
-                <Image
-                  src={cosmicHeroBanner}
-                  alt="Cosmic ethereal landscape with holographic jellyfish, moon, and mystical trees"
-                  placeholder="blur"
-                  priority
-                  className="w-full h-full object-cover object-center"
-                />
-                {/* Bottom gradient fade - water flowing into site effect */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-slate-900/40 to-slate-950 pointer-events-none" />
-              </div>
-
-              {/* Scanline effect overlay */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-[0.03]"
-                style={{
-                  backgroundImage: `linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%)`,
-                  backgroundSize: '100% 4px',
-                }}
-              />
-            </div>
-          </div>
-
           {/* Sleek Neon Line Separator with Diamond */}
-          <div className="w-full max-w-md mx-auto mb-12">
+          <div className="w-full max-w-md mx-auto mb-12 mt-8">
             <div className="relative h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent">
               {/* Animated glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent blur-sm animate-pulse" />
