@@ -14,11 +14,32 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    // 1. Modern Formats: Prioritize AVIF, fall back to WebP
+    formats: ['image/avif', 'image/webp'],
+
+    // 2. Device Sizes: Breakpoints for responsive generation (aligned with Tailwind)
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+
+    // 3. Image Sizes: For use in 'sizes' prop when not 'fill'
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+
+    // 4. Quality: Bumped to 80 for art-heavy platform while AVIF keeps file size down
+    quality: 80,
+
+    // 5. Remote Patterns: Strict security for external images
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'apexintelligence.io',
+      },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.vercel.app',
       },
     ],
   },
