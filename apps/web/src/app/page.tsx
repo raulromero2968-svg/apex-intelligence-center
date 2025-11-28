@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import { TrendingUp, Microscope, Shield, Terminal, Activity, Database, Zap } from 'lucide-react';
 import CustomCursor from '@/components/ui/CustomCursor';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
+import DigitalScroll from '@/components/DigitalScroll';
 
 // Intelligence Feed Data - Mixing TCG Markets with Biology Research
 const INTEL_FEED = [
@@ -155,9 +156,9 @@ export default function HomePage() {
           {/* Section Header */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider text-white font-mono">
+            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider font-mono">
               <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
-              <span className="text-cyan-400">[</span> LIVE INTELLIGENCE STREAM <span className="text-cyan-400">]</span>
+              <span className="text-holographic">[ LIVE INTELLIGENCE STREAM ]</span>
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
           </div>
@@ -239,8 +240,8 @@ export default function HomePage() {
           {/* Section Header */}
           <div className="flex items-center gap-4 mb-4">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h2 className="text-xl md:text-2xl tracking-wider text-white font-mono">
-              <span className="text-purple-400">[</span> SELECT YOUR PATH <span className="text-purple-400">]</span>
+            <h2 className="text-xl md:text-2xl tracking-wider font-mono">
+              <span className="text-holographic">[ SELECT YOUR PATH ]</span>
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </div>
@@ -249,8 +250,9 @@ export default function HomePage() {
             Three pathways through the intelligence network. Each leads deeper into our research.
           </p>
 
-          {/* Triad Grid - HoloCard Style */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <DigitalScroll>
+            {/* Triad Grid - HoloCard Style */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             {/* Card 1: The Collector */}
             <Link href="/intel" className="group">
@@ -353,7 +355,8 @@ export default function HomePage() {
                 </div>
               </div>
             </Link>
-          </div>
+            </div>
+          </DigitalScroll>
         </div>
       </section>
 
@@ -442,7 +445,7 @@ export default function HomePage() {
                 ALPHA ACCESS OPEN
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-mono tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-mono tracking-tight text-holographic">
                 Join the Network
               </h2>
 
