@@ -4,7 +4,8 @@ import { Calendar, Clock, BookOpen, Sparkles } from 'lucide-react';
 import { ElectronicFolder } from '../../../../../components/ui/ElectronicFolder';
 import { DigitalScroll } from '../../../../../components/ui/DigitalScroll';
 import { HoloCard } from '../../../../../components/ui/HoloCard';
-import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
+import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
+import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 
 export const metadata = {
   title: "Apex Commons | Essays on Building Better Systems",

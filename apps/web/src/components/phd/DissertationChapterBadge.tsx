@@ -65,5 +65,4 @@ export function DissertationChapterBadge({
   );
 }
 
-// Re-export constants for convenience
-export { DISSERTATION_CHAPTERS } from './constants';
+// Note: Import DISSERTATION_CHAPTERS directly from './constants' instead of this file

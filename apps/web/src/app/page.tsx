@@ -8,7 +8,8 @@ import CustomCursor from '@/components/ui/CustomCursor';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import DigitalScroll from '@/components/DigitalScroll';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
+import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
+import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 
 // Intelligence Feed Data - Mixing TCG Markets with Biology Research
 const INTEL_FEED = [

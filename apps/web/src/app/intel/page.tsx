@@ -5,7 +5,8 @@ import { intelNotes } from "@/content/seed";
 import StarfieldFX from "@/components/fx/StarfieldFX";
 import { Activity, TrendingUp, Database, Radio, Eye, Zap } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
+import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
+import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 
 export default function IntelPage() {
   return (

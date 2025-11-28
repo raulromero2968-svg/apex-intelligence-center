@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Rocket, Globe, BarChart3, Activity, Target, Sparkles, Box } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
-import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
+import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
+import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 import type { Metadata } from 'next';
 
 export const revalidate = 3600;
