@@ -132,9 +132,14 @@ export default function HomePage() {
 
           </p>
 
-          {/* Primary CTA Cluster - Glow Container */}
-          <div className="relative p-1 rounded-lg bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 mb-6">
-            <div className="flex flex-col sm:flex-row gap-4 p-4 bg-black/60 backdrop-blur-md rounded-lg">
+          {/* Primary CTA Cluster - Prismatic Border Container */}
+          <div className="relative rounded-lg overflow-hidden mb-6">
+            {/* Prismatic Holographic Border */}
+            <div className="absolute inset-0 rounded-lg p-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-border-rotate">
+              <div className="absolute inset-[3px] rounded-lg bg-black/60 backdrop-blur-md" />
+            </div>
+            
+            <div className="relative flex flex-col sm:flex-row gap-4 p-4 bg-black/60 backdrop-blur-md rounded-lg">
               <Link
                 href="/intel"
                 className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-3 px-6 py-4 md:px-10 md:py-5 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
@@ -442,7 +447,13 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <ScrollReveal>
       <section className="relative z-20 py-24 px-6 md:px-12"><div className="max-w-3xl mx-auto">
-          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
+          <div className="relative rounded-xl overflow-hidden">
+            {/* Prismatic Holographic Border */}
+            <div className="absolute inset-0 rounded-xl p-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-border-rotate">
+              <div className="absolute inset-[3px] rounded-xl bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md" />
+            </div>
+            
+            <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
             {/* HUD Brackets */}
             <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400" />
             <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400" />
@@ -503,6 +514,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>

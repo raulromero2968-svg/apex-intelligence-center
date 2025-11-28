@@ -1786,3 +1786,26 @@ html.light canvas {
   background-size: 200% 100%;
   animation: orb-shimmer 3s ease-in-out infinite;
 }
+
+/* Prismatic Border Rotation Animation */
+@keyframes border-rotate {
+  0% {
+    background: linear-gradient(0deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+  }
+  25% {
+    background: linear-gradient(90deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+  }
+  50% {
+    background: linear-gradient(180deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+  }
+  75% {
+    background: linear-gradient(270deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+  }
+  100% {
+    background: linear-gradient(360deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+  }
+}
+
+.animate-border-rotate {
+  animation: border-rotate 3s linear infinite;
+}
