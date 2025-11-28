@@ -118,29 +118,7 @@ export default function DashboardPage() {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent animate-scan-slow" />
             </div>
 
-            {/* Container with soft fading edges around entire section */}
-            <div 
-              className="w-full max-w-7xl relative"
-              style={{
-                maskImage: `
-                  radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-                  linear-gradient(black, black)
-                `,
-                maskComposite: 'intersect',
-                WebkitMaskImage: `
-                  radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-                  radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-                  linear-gradient(black, black)
-                `,
-                WebkitMaskComposite: 'source-in',
-              }}
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full items-center relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center relative z-10">
               {/* Left Column: Terminal Header */}
               <div className="space-y-8">
                 {/* Status Badge */}
@@ -229,7 +207,6 @@ export default function DashboardPage() {
               {/* Right Column: Interactive 3D Wolf */}
               <div className="flex justify-center lg:justify-end">
                 <Interactive3DWolf />
-              </div>
               </div>
             </div>
           </section>
