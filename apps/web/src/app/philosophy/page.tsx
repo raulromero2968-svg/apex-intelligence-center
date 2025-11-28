@@ -1,14 +1,46 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban } from 'lucide-react';
+import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Rocket, Globe, BarChart3, Activity, Target } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
+import type { Metadata } from 'next';
 
 export const revalidate = 3600;
 
-export const metadata = {
+// Dynamic OG metadata for simulation markets (KB-07 SEO patterns)
+export const metadata: Metadata = {
   title: "Our Philosophy | Apex Intelligence",
-  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance.",
+  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance. Explore our simulation markets for Bostrom-inspired existential scenario modeling.",
+  openGraph: {
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Explore TCG as cosmic prediction simulations. Bostrom-inspired existential scenarios with EGGROLL-trained models.',
+    images: [
+      {
+        url: '/og/philosophy-simulation.png',
+        width: 1200,
+        height: 630,
+        alt: 'Apex Intelligence Philosophy - Simulation Markets & Bostrom Trilemma',
+      },
+    ],
+    type: 'website',
+    siteName: 'Apex Intelligence',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Cosmic think tank: TCG sandbox for Bostrom-inspired prediction markets.',
+    images: ['/og/philosophy-simulation.png'],
+  },
+  keywords: [
+    'simulation hypothesis',
+    'Bostrom trilemma',
+    'prediction markets',
+    'EGGROLL training',
+    'existential risk',
+    'TCG market intelligence',
+    'AI ethics',
+    'longtermism',
+  ],
 };
 
 export default function PhilosophyPage() {
@@ -818,6 +850,226 @@ export default function PhilosophyPage() {
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-red-500/50 pl-3">
                 Search for verified research on AI lobbying tactics, financial stakes, and regulatory capture. This console uses the same RAG system as Fibonacci research, but focused on corporate accountability. Try queries like: <span className="text-red-400 font-mono">&ldquo;OpenAI lobbying expenditures&rdquo;</span> or <span className="text-orange-400 font-mono">&ldquo;AGI profit redefinition&rdquo;</span>
+              </p>
+              <FibonacciResearch />
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* Simulation Markets Section - Cosmic Think Tank */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="SIMULATION MARKETS" classification="COSMIC THINK TANK // BOSTROM PROTOCOLS">
+            {/* Section Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                  <span className="text-indigo-400">[</span> PREDICTION MARKETS FOR EXISTENTIAL SCENARIOS <span className="text-indigo-400">]</span>
+                </h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+              </div>
+
+              <div className="bg-indigo-950/20 border border-indigo-500/30 rounded-lg p-4 mb-6">
+                <p className="text-indigo-200/80 text-sm leading-relaxed">
+                  <span className="font-bold text-indigo-400">Why this section exists:</span> We use TCG market intelligence as a <em>sandbox</em> for testing prediction models on Bostrom-inspired existential scenarios. This bridges practical market forecasting with philosophical inquiry about humanity&apos;s potential futures.
+                </p>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="relative border border-indigo-500/40 bg-gradient-to-br from-indigo-950/30 to-purple-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center">
+                    <Globe className="w-7 h-7 text-indigo-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white font-mono">Cosmic Think Tank Infrastructure</h3>
+                    <p className="text-slate-400 text-sm">TCG sandbox for Bostrom-inspired prediction markets</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  Our <span className="text-indigo-400 font-semibold">Simulation Markets</span> extend Apex Intelligence from TCG market analysis to a cosmic think tank. We model existential scenarios using <span className="text-cyan-400 font-semibold">EGGROLL-trained</span> prediction models—gradient-free, integer-weight evolution for stable, low-hallucination forecasts.
+                </p>
+
+                {/* Bostrom Trilemma Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Simulation */}
+                  <div className="border border-indigo-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center mb-3">
+                      <Cpu className="w-5 h-5 text-indigo-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-indigo-400">SIMULATION</h4>
+                    <p className="text-slate-400 text-sm mb-2">Bostrom&apos;s simulation hypothesis</p>
+                    <ul className="space-y-1 text-slate-400 text-xs">
+                      <li className="flex items-start gap-2">
+                        <span className="text-indigo-400">→</span>
+                        Ancestor simulation probability
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-indigo-400">→</span>
+                        Computational substrate limits
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Posthuman */}
+                  <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
+                      <Rocket className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">POSTHUMAN</h4>
+                    <p className="text-slate-400 text-sm mb-2">Transformation beyond current humanity</p>
+                    <ul className="space-y-1 text-slate-400 text-xs">
+                      <li className="flex items-start gap-2">
+                        <span className="text-cyan-400">→</span>
+                        AGI alignment scenarios
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-cyan-400">→</span>
+                        Enhancement/merger paths
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Flourishing */}
+                  <div className="border border-emerald-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-3">
+                      <Target className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-emerald-400">FLOURISHING</h4>
+                    <p className="text-slate-400 text-sm mb-2">Positive long-term futures</p>
+                    <ul className="space-y-1 text-slate-400 text-xs">
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-400">→</span>
+                        Sustainable cosmic expansion
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-400">→</span>
+                        Multi-species coordination
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* EGGROLL Training Section */}
+                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-indigo-400" />
+                    EGGROLL Training Methodology
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    <span className="text-indigo-400 font-bold">EGGROLL</span> (Evolutionary Gradient-free Gradient-like Rollout) enables stable prediction models without traditional backpropagation—using integer-weight evolution for reduced hallucinations.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-indigo-400 font-bold text-xs uppercase tracking-wider">Advantages</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Low compute (no gradients)
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Stable integer-weight representations
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Reduced hallucinations in forecasts
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-orange-400 font-bold text-xs uppercase tracking-wider">Trade-offs</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Less precise than full backprop
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Best for initial models
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Fine-tune with LoRA for precision
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Prediction Markets Integration */}
+                <div className="border-l-4 border-cyan-500 bg-cyan-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-cyan-400" />
+                    Prediction Markets Integration
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    We integrate with major prediction market platforms for real-time probability calibration:
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-cyan-400 font-bold text-sm">Manifold</span>
+                      <p className="text-slate-500 text-xs mt-1">Play-money markets for calibration training</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-purple-400 font-bold text-sm">Polymarket</span>
+                      <p className="text-slate-500 text-xs mt-1">Crypto-based real-stakes forecasts</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-emerald-400 font-bold text-sm">Kalshi</span>
+                      <p className="text-slate-500 text-xs mt-1">CFTC-regulated event contracts</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ethical Framework */}
+                <div className="border border-emerald-500/30 bg-emerald-950/20 rounded-lg p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Shield className="w-6 h-6 text-emerald-400" />
+                    <h4 className="text-md font-bold text-white font-mono">FHI Longtermism Alignment</h4>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    Our simulation markets align with the <span className="text-emerald-400 font-bold">Future of Humanity Institute&apos;s</span> longtermist ethics:
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Flourishing focus:</span> Simulations explore positive futures, not just doom scenarios</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Manipulation safeguards:</span> KB-05 JWT/MFA authentication prevents market gaming</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Sentient welfare:</span> Consider digital minds in simulations as potential moral patients</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* RAG Research Console for Simulation Markets */}
+            <div className="border border-indigo-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-indigo-400" />
+                </div>
+                <div>
+                  <h4 className="text-md font-bold text-white font-mono">SIMULATION MARKETS RESEARCH CONSOLE</h4>
+                  <p className="text-slate-500 text-xs">Query our knowledge base on Bostrom scenarios, EGGROLL training, and prediction markets</p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm mb-4 border-l-2 border-indigo-500/50 pl-3">
+                Search for research on simulation hypothesis, prediction market mechanics, and existential scenario modeling. Try queries like: <span className="text-indigo-400 font-mono">&ldquo;Bostrom trilemma&rdquo;</span> or <span className="text-cyan-400 font-mono">&ldquo;EGGROLL training methodology&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>
