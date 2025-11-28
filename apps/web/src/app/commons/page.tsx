@@ -158,13 +158,24 @@ function EssayCard({ post }: { post: any }) {
   return (
     <Link
       href={`/commons/${post.slug}`}
-      className="group relative overflow-hidden rounded-xl border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/60 hover:shadow-lg hover:shadow-purple-500/10"
+      className="group relative overflow-hidden rounded-xl border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/60 hover:shadow-lg hover:shadow-purple-500/10 flex flex-col"
     >
       {/* Top accent line */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
+      {/* Hero/Thumbnail Image */}
+      {(post.frontmatter.thumbnail || post.frontmatter.heroImage) && (
+        <div className="relative w-full h-48 overflow-hidden">
+          <img
+            src={post.frontmatter.thumbnail || post.frontmatter.heroImage}
+            alt={post.frontmatter.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      )}
+
       {/* Card Content */}
-      <div className="p-6">
+      <div className="p-6 flex-1">
         {/* Header */}
         <div className="mb-4">
           <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30 mb-3 font-mono">
