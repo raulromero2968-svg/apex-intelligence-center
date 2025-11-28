@@ -124,11 +124,13 @@ export default function PricingPage() {
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">
-            <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] mb-2">
               Choose Your
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 drop-shadow-[0_0_40px_rgba(168,85,247,0.4)]">
-              Access Level
+            <span className="block">
+              <span className="text-holographic drop-shadow-[0_0_40px_rgba(168,85,247,0.4)]">
+                Access Level
+              </span>
             </span>
           </h1>
 

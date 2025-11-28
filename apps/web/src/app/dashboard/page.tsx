@@ -87,9 +87,10 @@ export default function DashboardPage() {
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section - Terminal Style Header */}
           <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden relative">
-            {/* Scanline Effect */}
+            {/* Purple Prismatic Tint Background */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent animate-scan-slow" />
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-slate-900/50 to-cyan-900/20" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent animate-scan-slow" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl items-center relative z-10">
@@ -133,7 +134,7 @@ export default function DashboardPage() {
                 <p className="text-lg text-slate-400 max-w-xl leading-relaxed border-l-2 border-cyan-500/30 pl-4">
                   Premium TCG market analysis, data-driven insights, and exclusive intelligence.
                   <span className="block mt-2 text-cyan-400/80 font-mono text-sm">
-                    Morning Brew meets the underground—delivered to your inbox.
+                    Alpha signals from the underground—delivered to your inbox.
                   </span>
                 </p>
 
@@ -232,7 +233,7 @@ export default function DashboardPage() {
                 title="LATEST INSIGHTS" 
                 classification="BLOG // ANALYSIS"
               >
-                <div className="grid gap-6 md:grid-cols-3 not-prose">
+                <div className="grid gap-6 md:grid-cols-3 not-prose py-4">
                   {blogPosts
                     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
                     .slice(0, 3)
