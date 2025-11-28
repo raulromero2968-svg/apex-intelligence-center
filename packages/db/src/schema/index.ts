@@ -21,5 +21,20 @@ export {
   type NewDigitalTwinToken,
 } from './digitalTwinTokens';
 
+// Simulation Theory & Prediction Markets (Bostrom-inspired)
+export {
+  simulationModels,
+  predictionMarkets,
+  simulationInsights,
+  simulationStatusEnum,
+  trilemmaOutcomeEnum,
+  type SimulationModel,
+  type NewSimulationModel,
+  type PredictionMarket,
+  type NewPredictionMarket,
+  type SimulationInsight,
+  type NewSimulationInsight,
+} from './simulationModels';
+
 
 
