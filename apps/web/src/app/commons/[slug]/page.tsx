@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getCommonsBySlug, getAllCommonsSlugs } from '@/lib/mdx';
 import { Clock, Calendar, User, BookOpen, ArrowLeft, Terminal } from 'lucide-react';
+import { ShareButtons } from '@/components/content/ShareButtons';
 
 interface CommonsPageProps {
   params: { slug: string };
@@ -85,8 +86,19 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
 
       {/* Digital Scroll Container */}
       <article className="max-w-5xl mx-auto px-6 relative z-10">
-        {/* Terminal Header */}
-        <div className="border border-cyan-500/40 bg-gradient-to-br from-cyan-950/20 to-purple-950/20 backdrop-blur-sm rounded-t-xl overflow-hidden">
+        {/* Terminal Header with Prismatic Pulse Border */}
+        <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/20 to-purple-950/20 backdrop-blur-sm rounded-t-xl overflow-hidden">
+          {/* Prismatic Pulse Effect - Outer Edges */}
+          <div className="absolute inset-0 pointer-events-none z-20">
+            {/* Top Edge */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60 animate-pulse-slide" />
+            {/* Right Edge */}
+            <div className="absolute top-0 right-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-purple-400 to-transparent opacity-60 animate-pulse-slide-vertical" />
+            {/* Bottom Edge */}
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60 animate-pulse-slide-reverse" />
+            {/* Left Edge */}
+            <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-purple-400 to-transparent opacity-60 animate-pulse-slide-vertical-reverse" />
+          </div>
           {/* Terminal Title Bar */}
           <div className="bg-black/60 border-b border-cyan-500/30 px-6 py-3 flex items-center gap-3">
             <Terminal className="w-5 h-5 text-cyan-400" />
@@ -107,6 +119,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 fill
                 className="object-cover"
                 priority
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               
@@ -215,11 +228,18 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
             </Suspense>
           </div>
 
-          {/* Terminal Footer */}
+          {/* Terminal Footer with Share Actions */}
           <div className="bg-black/60 border-t border-cyan-500/30 px-6 py-4">
-            <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
-              <span>END_OF_DOCUMENT</span>
-              <span className="text-cyan-400">[ SCROLL: 100% ]</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+              <span className="text-slate-500">END_OF_DOCUMENT</span>
+              
+              {/* Share Actions */}
+              <ShareButtons 
+                title={post.frontmatter.title}
+                subtitle={post.frontmatter.subtitle}
+              />
+              
+              <span className="text-cyan-400 text-[10px]">[ SCROLL: 100% ]</span>
             </div>
           </div>
         </div>

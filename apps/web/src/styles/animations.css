@@ -159,3 +159,58 @@
 .animate-electric-flow {
   animation: electric-flow 4s ease-in-out infinite;
 }
+
+/* Vertical and Reverse Pulse Animations for Essay Border */
+@keyframes pulse-slide-vertical {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-slide-vertical-reverse {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-slide-reverse {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-slide-vertical {
+  animation: pulse-slide-vertical 3s ease-in-out infinite;
+}
+
+.animate-pulse-slide-vertical-reverse {
+  animation: pulse-slide-vertical-reverse 3s ease-in-out infinite 0.75s;
+}
+
+.animate-pulse-slide-reverse {
+  animation: pulse-slide-reverse 3s ease-in-out infinite 1.5s;
+}

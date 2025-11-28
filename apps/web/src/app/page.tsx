@@ -112,8 +112,6 @@ export default function HomePage() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
               </span>
               <span className="tracking-widest font-bold text-sm">ONLINE</span>
-              <span className="text-cyan-400/40">|</span>
-              <span className="tracking-wide text-xs text-cyan-400/70">{currentTime}</span>
               <Activity className="w-4 h-4" />
             </div>
 
