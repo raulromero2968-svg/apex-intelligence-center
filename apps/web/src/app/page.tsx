@@ -102,18 +102,18 @@ export default function HomePage() {
 
           {/* Main Title - Command Center Typography */}
           <h1 className="flex flex-col items-center text-center gap-2 md:gap-3 w-full px-2 mx-auto leading-[1.05] py-2">
-            <span className="font-mono text-[6vw] md:text-[4rem] tracking-tight text-white font-black">
-              APEX INTELLIGENCE
+            <span className="font-mono text-[5vw] md:text-[3.5rem] tracking-tight text-white font-black">
+              INTRANATIONAL INTEL
             </span>
             <span className="font-mono text-[3.5vw] md:text-[1.5rem] tracking-[0.3em] text-cyan-400/80">
-              COMMAND CENTER
+              & AI RESEARCH CENTER
             </span>
           </h1>
 
           {/* Mission Statement - The Hybrid Identity */}
           <p className="w-full max-w-3xl mx-auto text-lg md:text-xl text-slate-400 leading-relaxed mb-10 mt-6 font-mono">
             The intersection of{' '}
-            <span className="text-cyan-400 font-bold">TCG Markets</span>,{' '}
+            <span className="text-cyan-400 font-bold">Simulation Markets</span>,{' '}
             <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
             <span className="text-white font-bold">Sentient AI</span>.
             <span className="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />

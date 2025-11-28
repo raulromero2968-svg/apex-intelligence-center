@@ -36,8 +36,8 @@ export const TopBanner = () => {
           alt="Apex Wolf"
           className="rounded-full mr-2 md:mr-3 w-8 h-8 md:w-10 md:h-10"
         />
-        <span className="text-prismatic hidden sm:inline">APEX INTELLIGENCE</span>
-        <span className="text-prismatic sm:hidden">APEX</span>
+        <span className="text-prismatic hidden sm:inline">INTRANATIONAL INTEL</span>
+        <span className="text-prismatic sm:hidden">INTEL</span>
       </Link>
 
       {/* Center: Nav Links (hidden on mobile) */}
