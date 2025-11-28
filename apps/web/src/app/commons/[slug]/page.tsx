@@ -120,6 +120,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 className="object-cover"
                 sizes="(max-width: 1280px) 100vw, 1280px"
                 priority
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               

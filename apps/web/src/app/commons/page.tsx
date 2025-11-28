@@ -174,6 +174,7 @@ function EssayCard({ post }: { post: any }) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}
+            unoptimized
           />
           {/* Cyberpunk Overlay Effect */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
