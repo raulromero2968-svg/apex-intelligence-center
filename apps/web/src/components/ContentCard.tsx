@@ -35,7 +35,7 @@ export default function ContentCard(props: Props) {
     >
       {/* Hero Image - Perplexity Style */}
       {props.imageUrl && (
-        <div className="relative w-full h-48 overflow-hidden">
+        <div className="relative w-full h-52 overflow-hidden">
           <Image
             src={props.imageUrl}
             alt={props.title}
@@ -64,13 +64,13 @@ export default function ContentCard(props: Props) {
         )}
 
         {/* Title */}
-        <h3 className="text-lg font-bold leading-snug text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
+        <h3 className="text-lg font-bold leading-snug text-white group-hover:text-cyan-400 transition-colors line-clamp-3">
           {props.title}
         </h3>
 
         {/* Excerpt */}
         {props.excerpt && (
-          <p className="text-sm text-white/70 line-clamp-3 leading-relaxed">
+          <p className="text-sm text-white/70 line-clamp-4 leading-relaxed">
             {props.excerpt}
           </p>
         )}

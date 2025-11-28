@@ -5,7 +5,7 @@ type Props = {
   cardWidth?: number; // px; controls scroll step
 };
 
-export default function HorizontalCarousel({ children, cardWidth = 320 }: Props) {
+export default function HorizontalCarousel({ children, cardWidth = 380 }: Props) {
 
   return (
     <div className="relative">
