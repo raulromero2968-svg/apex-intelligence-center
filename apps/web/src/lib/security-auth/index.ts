@@ -53,3 +53,38 @@ export {
   validateSessionSecurity,
   needsReauthentication,
 } from './defense-auth';
+
+// FHI Corrigibility (KB-05 Security + Simulation Integration)
+export {
+  fhiCorrigible,
+  verifySimulationToken,
+  generateSimulationToken,
+  isHarmfulOutcome,
+  isHighStakeOutcome,
+  isSessionFresh,
+  getEthicalDisclaimer,
+  SIMULATION_LIMITS,
+  type SimulationClaims,
+  type CorrigibilityResult,
+} from './fhi-corr';
+
+// FHI Alignment for Simulation Security
+export {
+  // Types
+  type FHIAlignmentResult,
+  type SimulationOutcome,
+  type FHIUserClaims,
+  type AlignmentCheckContext,
+
+  // JWT Verification
+  verifyFHIToken,
+  extractUserClaims,
+
+  // Alignment Checks
+  alignFHISimulation,
+  quickAlignCheck,
+
+  // Corrigibility Helpers
+  getResponseModifier,
+  hashOutcome,
+} from './fhi-alignment';
