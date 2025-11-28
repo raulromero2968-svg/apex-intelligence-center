@@ -11,11 +11,11 @@ interface HoloCardProps {
 }
 
 /**
- * HoloCard - High-emphasis glassmorphism container with truly soft fading edges
+ * HoloCard - High-emphasis glassmorphism container with sharp edges
  * Use for: Subscription forms, CTAs, featured content
  *
  * Features:
- * - CSS mask gradient for authentic soft, fading edges
+ * - Sharp, defined borders (no soft fading)
  * - Animated breathing border with cyan/purple gradient
  * - Corner accent brackets (Intel aesthetic)
  * - Scanline overlay effect
@@ -69,7 +69,7 @@ export function HoloCard({
         )}
       />
 
-      {/* Main Container with CSS mask for soft edges */}
+      {/* Main Container - SHARP EDGES (no CSS mask) */}
       <div 
         className={clsx(
           'relative overflow-hidden rounded-2xl',
@@ -78,25 +78,6 @@ export function HoloCard({
           config.borderOpacity,
           config.glowSize
         )}
-        style={{
-          // CSS mask creates truly soft, fading edges
-          maskImage: `
-            radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-            linear-gradient(black, black)
-          `,
-          maskComposite: 'intersect',
-          WebkitMaskImage: `
-            radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
-            radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
-            linear-gradient(black, black)
-          `,
-          WebkitMaskComposite: 'source-in',
-        }}
       >
         {/* Animated Breathing Border Gradient */}
         <div

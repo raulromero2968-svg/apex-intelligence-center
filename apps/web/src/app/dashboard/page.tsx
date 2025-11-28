@@ -92,8 +92,28 @@ export default function DashboardPage() {
         <main className="container mx-auto px-4 py-8 space-y-16">
           {/* Hero Section - Terminal Style Header */}
           <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 md:px-20 overflow-hidden relative">
-            {/* Purple Prismatic Tint Background */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Purple Prismatic Tint Background with Soft Fading Edges */}
+            <div 
+              className="absolute inset-0 pointer-events-none overflow-hidden"
+              style={{
+                maskImage: `
+                  radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
+                  linear-gradient(black, black)
+                `,
+                maskComposite: 'intersect',
+                WebkitMaskImage: `
+                  radial-gradient(ellipse 100% 100% at 50% 0%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 50% 100%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 0% 50%, black 60%, transparent 100%),
+                  radial-gradient(ellipse 100% 100% at 100% 50%, black 60%, transparent 100%),
+                  linear-gradient(black, black)
+                `,
+                WebkitMaskComposite: 'source-in',
+              }}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-slate-900/50 to-cyan-900/20" />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent animate-scan-slow" />
             </div>
