@@ -102,10 +102,10 @@ export default function HomePage() {
 
           {/* Main Title - Command Center Typography */}
           <h1 className="flex flex-col items-center text-center gap-2 md:gap-3 w-full px-2 mx-auto leading-[1.05] py-2">
-            <span className="font-mono text-[5vw] md:text-[3.5rem] tracking-tight text-white font-black">
+            <span className="font-mono text-[5vw] md:text-[3.5rem] tracking-tight font-black text-holographic">
               INTRANATIONAL INTEL
             </span>
-            <span className="font-mono text-[3.5vw] md:text-[1.5rem] tracking-[0.3em] text-cyan-400/80">
+            <span className="font-mono text-[3.5vw] md:text-[1.5rem] tracking-[0.3em] text-holographic">
               & AI RESEARCH CENTER
             </span>
           </h1>

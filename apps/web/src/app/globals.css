@@ -1159,3 +1159,90 @@ html.light canvas {
     bottom: -2px;
     right: -2px;
 }
+
+  /* Holographic Title with White Border and Scanning Slash */
+  .text-holographic {
+    position: relative;
+    display: inline-block;
+    
+    /* White border/stroke */
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+    
+    /* Prismatic gradient fill */
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #00ffff 20%,
+      #ffffff 40%,
+      #ff00ff 60%,
+      #00ffff 80%,
+      #ffffff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    
+    /* Holographic glow */
+    filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.6)) 
+            drop-shadow(0 0 24px rgba(255, 0, 255, 0.4));
+    
+    /* Shimmer animation */
+    animation: holographic-shimmer 4s linear infinite;
+    
+    /* Font settings */
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scanning slash effect overlay */
+  .text-holographic::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -100%;
+    width: 50%;
+    height: 120%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 255, 255, 0.3) 45%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 0, 255, 0.3) 55%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    animation: holographic-scan 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes holographic-shimmer {
+    to { 
+      background-position: 200% center; 
+    }
+  }
+
+  @keyframes holographic-scan {
+    0% {
+      left: -100%;
+    }
+    50% {
+      left: 150%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .text-holographic {
+      animation: none;
+    }
+    .text-holographic::before {
+      animation: none;
+      display: none;
+    }
+  }
