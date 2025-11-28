@@ -21,11 +21,14 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
       imageUrl,
       (loadedTexture) => {
         loadedTexture.colorSpace = THREE.SRGBColorSpace;
+        console.log('✅ Charizard texture loaded successfully!', loadedTexture);
         setTexture(loadedTexture);
       },
-      undefined,
+      (progress) => {
+        console.log('Loading Charizard texture:', (progress.loaded / progress.total * 100).toFixed(0) + '%');
+      },
       (error) => {
-        console.error('Error loading Charizard texture:', error);
+        console.error('❌ Error loading Charizard texture:', error);
       }
     );
   }, [imageUrl]);
@@ -34,31 +37,10 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
   useFrame((state, delta) => {
     if (meshRef.current) {
       if (!hovered) {
-        meshRef.current.rotation.y += delta * 0.1;
+        meshRef.current.rotation.y += delta * 0.2;
       }
     }
   });
-
-  // Create materials array for box geometry faces
-  // Box faces: [right, left, top, bottom, front, back]
-  const materials = [
-    // Right (index 0)
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
-    // Left (index 1)
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
-    // Top (index 2)
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
-    // Bottom (index 3)
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
-    // Front (index 4) - This is where we put the Charizard image
-    new THREE.MeshStandardMaterial({ 
-      map: texture, 
-      roughness: 0.3, 
-      metalness: 0.1 
-    }),
-    // Back (index 5)
-    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
-  ];
 
   return (
     <Float
@@ -72,9 +54,17 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
         onPointerOut={() => setHover(false)}
         castShadow
         receiveShadow
-        material={materials}
       >
-        <boxGeometry args={[2.5, 3.5, 0.05]} />
+        {/* Use plane geometry for simple texture display */}
+        <planeGeometry args={[2.5, 3.5]} />
+        
+        <meshStandardMaterial 
+          map={texture}
+          side={THREE.DoubleSide}
+          roughness={0.3}
+          metalness={0.1}
+          transparent={false}
+        />
       </mesh>
     </Float>
   );
