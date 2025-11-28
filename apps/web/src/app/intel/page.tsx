@@ -13,7 +13,7 @@ export default function IntelPage() {
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-white mb-4">Intelligence Center</h1>
+          <h1 className="text-4xl font-bold text-holographic mb-4">Intelligence Center</h1>
           <p className="text-slate-400 max-w-2xl">
             Real-time optical analysis and market velocity tracking.
             Inspect assets with our <span className="text-cyan-400">VARC-3D</span> rendering engine.

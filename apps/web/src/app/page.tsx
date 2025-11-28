@@ -455,7 +455,7 @@ export default function HomePage() {
             <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
 
-            <div className="relative z-10">
+            <div className="relative z-10 text-center">
               {/* Status Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
                 <span className="relative flex h-2 w-2">

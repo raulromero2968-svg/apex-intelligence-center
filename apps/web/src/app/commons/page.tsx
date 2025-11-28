@@ -29,7 +29,7 @@ export default async function CommonsPage() {
 
           {/* Main Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none mb-6">
-            <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <span className="block text-holographic">
               Apex
             </span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-600">
