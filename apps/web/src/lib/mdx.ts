@@ -356,18 +356,27 @@ const commonsDirectory = path.join(process.cwd(), 'src', 'content', 'commons');
 
 export interface CommonsPostFrontmatter {
   title: string;
-  description: string;
-  date: string;
-  author: string;
-  hero?: string;
+  subtitle?: string;
+  description?: string;
+  publishedAt: string;
+  date?: string; // Legacy support
+  author?: string;
+  heroImage?: string;
+  hero?: string; // Legacy support
   tags?: string[];
   category?: string;
+  readingTime?: string;
 }
 
 export interface CommonsPost {
   slug: string;
   frontmatter: CommonsPostFrontmatter;
   content: any;
+  readingTime?: {
+    text: string;
+    minutes: number;
+    words: number;
+  };
 }
 
 // Get all commons post slugs
@@ -389,9 +398,17 @@ export async function getCommonsBySlug(slug: string): Promise<CommonsPost | null
     const filePath = path.join(commonsDirectory, `${slug}.mdx`);
     const source = await readFile(filePath, 'utf8');
 
-    const { data: frontmatter, content } = matter(source);
+    const { data: frontmatter, content: rawContent } = matter(source);
+
+    // Calculate reading time
+    const readingTimeData = {
+      text: `${calculateReadTime(rawContent)} min read`,
+      minutes: calculateReadTime(rawContent),
+      words: rawContent.trim().split(/\s+/).length,
+    };
+
     const { content: mdxContent } = await compileMDX<CommonsPostFrontmatter>({
-      source: content,
+      source: rawContent,
       components: {
         AreaChartViz,
         BarChartViz,
@@ -425,6 +442,7 @@ export async function getCommonsBySlug(slug: string): Promise<CommonsPost | null
       slug,
       frontmatter: frontmatter as CommonsPostFrontmatter,
       content: mdxContent,
+      readingTime: readingTimeData,
     };
   } catch (error) {
     console.error(`Error reading commons post ${slug}:`, error);
