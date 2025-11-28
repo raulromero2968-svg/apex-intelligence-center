@@ -86,7 +86,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
 
       {/* Two-Column Layout: Content + Sidebar */}
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8">
           {/* Main Content Column */}
           <article className="min-w-0">
         {/* Terminal Header with Prismatic Pulse Border */}
@@ -274,8 +274,8 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 <Image
                   src="/images/cosmic-essay-sidebar.png"
                   alt="Cosmic ethereal landscape"
-                  width={300}
-                  height={800}
+                  width={450}
+                  height={1200}
                   className="w-full h-auto object-cover"
                 />
                 {/* Gradient overlay for cohesion */}
