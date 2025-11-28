@@ -681,6 +681,8 @@ export const vaultJobs = pgTable('vault_jobs', {
   type: text('type').notNull(), // 'backup' | 'restore' | 'sync' | 'export'
   status: text('status').notNull().default('pending'), // 'pending' | 'running' | 'completed' | 'failed'
   userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }), // TCG card reference for card-specific jobs
+  priority: integer('priority').default(5), // Job priority (1-10, lower = higher priority)
   payload: jsonb('payload'),
   result: jsonb('result'),
   errorMessage: text('error_message'),
@@ -691,6 +693,8 @@ export const vaultJobs = pgTable('vault_jobs', {
 }, (table) => ({
   statusIdx: index('idx_vault_jobs_status').on(table.status),
   userIdx: index('idx_vault_jobs_user').on(table.userId),
+  cardIdx: index('idx_vault_jobs_card').on(table.cardId),
+  priorityIdx: index('idx_vault_jobs_priority').on(table.priority),
 }));
 
 /**
@@ -724,6 +728,7 @@ export const childActivityHistory = pgTable('child_activity_history', {
   childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   activityType: text('activity_type').notNull(), // 'purchase' | 'view' | 'search' | 'bid'
   activityData: jsonb('activity_data').notNull(),
+  timestamp: timestamp('timestamp').defaultNow().notNull(), // Activity time for time-based queries
   flagged: boolean('flagged').default(false).notNull(),
   flagReason: text('flag_reason'),
   reviewedBy: text('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
@@ -733,6 +738,7 @@ export const childActivityHistory = pgTable('child_activity_history', {
   childIdx: index('idx_child_activity_child').on(table.childId),
   typeIdx: index('idx_child_activity_type').on(table.activityType),
   flaggedIdx: index('idx_child_activity_flagged').on(table.flagged),
+  timestampIdx: index('idx_child_activity_timestamp').on(table.timestamp),
 }));
 
 /**
@@ -746,6 +752,8 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
   confidence: real('confidence').notNull(), // 0-1 confidence score
   details: jsonb('details').notNull(),
   status: text('status').notNull().default('active'), // 'active' | 'acknowledged' | 'dismissed' | 'resolved'
+  isActive: boolean('is_active').default(true).notNull(), // Alert status for filtering active alerts
+  detectedAt: timestamp('detected_at').defaultNow().notNull(), // Detection time for sorting
   acknowledgedBy: text('acknowledged_by').references(() => users.id, { onDelete: 'set null' }),
   acknowledgedAt: timestamp('acknowledged_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -755,6 +763,8 @@ export const manipulationAlerts = pgTable('manipulation_alerts', {
   typeIdx: index('idx_manipulation_alerts_type').on(table.alertType),
   severityIdx: index('idx_manipulation_alerts_severity').on(table.severity),
   statusIdx: index('idx_manipulation_alerts_status').on(table.status),
+  isActiveIdx: index('idx_manipulation_alerts_active').on(table.isActive),
+  detectedAtIdx: index('idx_manipulation_alerts_detected').on(table.detectedAt),
 }));
 
 /**
