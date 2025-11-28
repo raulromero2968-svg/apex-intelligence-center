@@ -84,11 +84,8 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
         </Link>
       </div>
 
-      {/* Two-Column Layout: Content + Sidebar */}
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8">
-          {/* Main Content Column */}
-          <article className="min-w-0">
+      {/* Digital Scroll Container */}
+      <article className="max-w-5xl mx-auto px-6 relative z-10">
         {/* Terminal Header with Prismatic Pulse Border */}
         <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/20 to-purple-950/20 backdrop-blur-sm rounded-t-xl overflow-hidden">
           {/* Prismatic Pulse Effect - Outer Edges */}
@@ -245,8 +242,8 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           </div>
         </div>
 
-          {/* Footer Navigation */}
-          <Suspense fallback={null}>
+        {/* Footer Navigation */}
+        <Suspense fallback={null}>
           <div className="mt-12 pt-8 border-t border-cyan-500/20">
             <div className="flex flex-col items-center gap-6">
               <div className="text-center">
@@ -263,28 +260,8 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
               </div>
             </div>
           </div>
-          </Suspense>
-          </article>
-
-          {/* Sidebar Column - Cosmic Image */}
-          <aside className="hidden lg:block relative">
-            <div className="sticky top-24 space-y-6">
-              {/* Cosmic Sidebar Image */}
-              <div className="relative overflow-hidden rounded-xl border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-                <Image
-                  src="/images/cosmic-essay-sidebar.png?v=2"
-                  alt="Cosmic ethereal landscape"
-                  width={450}
-                  height={1200}
-                  className="w-full h-auto object-cover"
-                />
-                {/* Gradient overlay for cohesion */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 pointer-events-none" />
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
+        </Suspense>
+      </article>
     </div>
   );
 }
