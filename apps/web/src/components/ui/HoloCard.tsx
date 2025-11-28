@@ -89,20 +89,7 @@ export function HoloCard({
           )}
         />
 
-        {/* Scanline Effect */}
-        <div
-          className={clsx(
-            'absolute inset-0 pointer-events-none rounded-2xl overflow-hidden',
-            config.scanlineOpacity
-          )}
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
-              linear-gradient(90deg, rgba(6,182,212,0.06), rgba(168,85,247,0.02), rgba(236,72,153,0.06))
-            `,
-            backgroundSize: '100% 4px, 3px 100%',
-          }}
-        />
+        {/* Scanline Effect - Removed for cleaner look */}
 
         {/* Corner Accents - Intel/HUD aesthetic with soft glow */}
         <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400/50 pointer-events-none shadow-[0_0_12px_rgba(6,182,212,0.5)]" />

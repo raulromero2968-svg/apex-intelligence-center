@@ -175,7 +175,7 @@ export default function PortfolioPage() {
             <span className="block text-holographic">
               Portfolio
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
+            <span className="block text-white">
               Archive
             </span>
           </h1>
