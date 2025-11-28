@@ -46,3 +46,19 @@ export {
   type RefragConfig,
   type RefragResult,
 } from './refrag';
+
+// ============================================================================
+// EGGROLL RAG-Fusion Integration (KB-02)
+// Re-exported from apps/web for convenience
+// ============================================================================
+
+/**
+ * EGGROLL RAG-Fusion combines gradient-free evolution with RAG for stable
+ * simulation predictions. Key features:
+ * - Integer-weight (1-10) variants for interpretable confidence
+ * - SVD approximations for 20% compute efficiency
+ * - POST-Agency for corrigible value adaptation
+ * - Deep utopia framing for posthuman scenarios
+ *
+ * @see apps/web/src/lib/rag/eggroll-fusion.ts for full implementation
+ */
