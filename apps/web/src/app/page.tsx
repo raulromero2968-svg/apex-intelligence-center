@@ -90,8 +90,15 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-          {/* System Status Badge */}
-          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 text-sm font-mono mb-8 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+          {/* System Status Badge - Ornate with Sigils */}
+          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 text-sm font-mono mb-8 shadow-[0_0_30px_rgba(6,182,212,0.2)] relative">
+            {/* Left Sigil */}
+            <svg className="w-5 h-5 text-cyan-500/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2 L12 22 M2 12 L22 12" />
+              <circle cx="12" cy="12" r="3" fill="currentColor" />
+            </svg>
+            
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
@@ -100,6 +107,12 @@ export default function HomePage() {
             <span className="tracking-wider">NEXUS // SYSTEM ACTIVE</span>
             <span className="text-slate-500">|</span>
             <span className="text-slate-400 text-xs">{currentTime}</span>
+            
+            {/* Right Sigil */}
+            <svg className="w-5 h-5 text-cyan-500/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <polygon points="12,2 22,12 12,22 2,12" />
+              <circle cx="12" cy="12" r="4" fill="currentColor" />
+            </svg>
           </div>
 
           {/* Main Title - Command Center Typography */}

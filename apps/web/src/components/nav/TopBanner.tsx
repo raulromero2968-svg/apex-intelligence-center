@@ -26,7 +26,7 @@ export const TopBanner = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-4 md:px-8 h-16">
+    <nav className="flex items-center justify-between px-4 md:px-8 h-16 bg-black/90 backdrop-blur-sm border-b border-cyan-500/20">
       {/* Left: Logo/Brand */}
       <Link href="/" className="flex items-center text-white font-bold text-base md:text-xl tracking-tight font-mono hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">
         <Image
@@ -36,8 +36,8 @@ export const TopBanner = () => {
           alt="Apex Wolf"
           className="rounded-full mr-2 md:mr-3 w-8 h-8 md:w-10 md:h-10"
         />
-        <span className="text-prismatic hidden sm:inline">INTRANATIONAL INTEL</span>
-        <span className="text-prismatic sm:hidden">INTEL</span>
+        <span className="text-prismatic hidden sm:inline">APEX INTELLIGENCE</span>
+        <span className="text-prismatic sm:hidden">APEX</span>
       </Link>
 
       {/* Center: Nav Links (hidden on mobile) */}
