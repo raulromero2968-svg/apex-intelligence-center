@@ -8,6 +8,9 @@ export {
   type RagFusionParams,
 } from './rag-fusion';
 
+// ============================================================================
+// Bostrom Probabilities (KB-02 Simulation Markets)
+// ============================================================================
 export {
   bostromProbFusion,
   mapToTCGOutcomes,
@@ -31,6 +34,21 @@ export {
   createEggrollGenerator,
   detectBostromScenario,
 } from './eggroll-fusion';
+
+// ============================================================================
+// EGGROLL Low-Rank Fusion - Gradient-free evolution for Bostrom predictions
+// ============================================================================
+export {
+  eggrollLowRankFusion,
+  quickBostromPrediction,
+  isEggrollRelevantQuery,
+  performLowRankEvolution,
+  type EggrollLowRankConfig,
+  type EggrollFusionResult,
+  type LowRankEvolutionResult,
+  type ScoredVariant,
+  DEFAULT_EGGROLL_CONFIG,
+} from './eggroll-low-rank';
 
 // Bostrom Trilemma Probability (KB-02 EGGROLL Integration)
 export {
