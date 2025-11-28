@@ -103,3 +103,59 @@
     border-color: currentColor;
   }
 }
+
+/* Holographic Electrical Pulse Animations */
+@keyframes pulse-slide {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-slide-delayed {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes electric-flow {
+  0% {
+    transform: translateX(-50%) scaleX(0.8);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(0%) scaleX(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(50%) scaleX(0.8);
+    opacity: 0.2;
+  }
+}
+
+.animate-pulse-slide {
+  animation: pulse-slide 3s ease-in-out infinite;
+}
+
+.animate-pulse-slide-delayed {
+  animation: pulse-slide-delayed 3s ease-in-out infinite 0.5s;
+}
+
+.animate-electric-flow {
+  animation: electric-flow 4s ease-in-out infinite;
+}

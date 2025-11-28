@@ -27,7 +27,13 @@ export const TopBanner = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-4 md:px-8 h-16 bg-black/90 backdrop-blur-sm border-b border-cyan-500/20">
+    <nav className="relative flex items-center justify-between px-4 md:px-8 h-16 bg-black/90 backdrop-blur-sm border-b border-cyan-500/20">
+      {/* Holographic Electrical Pulse at Bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60 animate-pulse-slide" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-40 animate-pulse-slide-delayed" />
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 opacity-30 blur-sm animate-electric-flow" />
+      </div>
       {/* Left: Logo/Brand */}
       <Link href="/" className="flex items-center text-white font-bold text-base md:text-xl tracking-tight font-mono transition-all">
         <Image

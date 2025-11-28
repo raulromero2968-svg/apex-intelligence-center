@@ -2,9 +2,10 @@
 
 @layer base {
   :root {
-    --ink: #0a0e1a;
-    --navy: #0f1729;
-    --deep-navy: #080d1a;
+    --ink: #020408;
+    --navy: #0a1628;
+    --deep-navy: #050a15;
+    --darker-navy: #020408;
     --cyan: #00d9ff;
     --purple: #9333ea;
     --apex-cyan: #00FFFF;
@@ -12,7 +13,7 @@
   }
 
   body {
-    background: radial-gradient(ellipse at top, #1a1f3a 0%, #0f1729 50%, #080d1a 100%);
+    background: radial-gradient(ellipse at top, #0a1628 0%, #050a15 50%, #020408 100%);
     color: white;
     min-height: 100vh;
     overflow-x: hidden;

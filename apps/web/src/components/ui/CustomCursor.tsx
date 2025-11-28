@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function CustomCursor() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -38,13 +37,8 @@ export default function CustomCursor() {
                 transform: 'translate(-50%, -50%)',
             }}
         >
-            <Image
-                src="/images/apex-wolf-black-bg-final.png"
-                alt="Wolf Cursor"
-                width={24}
-                height={24}
-                className="w-6 h-6 rounded-full rotate-180"
-            />
+            {/* Simple cyan dot cursor */}
+            <div className="w-3 h-3 rounded-full bg-cyan-400/80 border border-cyan-300/60 shadow-[0_0_10px_rgba(34,211,238,0.6)]" />
         </div>
     );
 }

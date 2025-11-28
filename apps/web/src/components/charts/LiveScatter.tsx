@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveContainer, ScatterChart, CartesianGrid, XAxis, YAxis, Tooltip, Scatter, ZAxis } from "recharts";
 import { useReducedMotion } from "framer-motion";
+import { Activity } from "lucide-react";
 
 type Point = { x: number; y: number; z: number };
 
@@ -42,48 +43,102 @@ export default function LiveScatter({
   }, [rnd, reduced]);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="mb-3">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-sm text-white/70">{subtitle}</p>
+    <div className="relative">
+      {/* Cyberpunk Terminal Wrapper */}
+      <div className="relative border border-cyan-500/40 bg-gradient-to-br from-slate-950/90 to-slate-900/90 backdrop-blur-sm rounded-xl overflow-hidden">
+        {/* Corner Brackets */}
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400 z-10" />
+        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400 z-10" />
+        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400 z-10" />
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400 z-10" />
+
+        {/* Scanline Effect */}
+        <div className="absolute inset-0 pointer-events-none z-10 opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/20 to-transparent animate-scan" />
+        </div>
+
+        {/* Terminal Header */}
+        <div className="border-b border-cyan-500/30 bg-black/60 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-cyan-400" />
+            <span className="text-cyan-400 font-mono text-xs tracking-wider">LIVE_INTEL_FEED</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+            </span>
+            <span className="text-cyan-400 text-xs font-mono">STREAMING</span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 relative z-0">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-white font-mono">{title}</h3>
+            <p className="text-sm text-cyan-400/80 font-mono">{subtitle}</p>
+          </div>
+          
+          <div className="h-64 bg-black/40 rounded-lg border border-cyan-500/20 p-2">
+            <ResponsiveContainer>
+              <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 217, 255, 0.15)" />
+                <XAxis
+                  type="number"
+                  dataKey="x"
+                  name="Score"
+                  unit=""
+                  tick={{ fill: "rgba(0, 217, 255, 0.8)", fontSize: 11, fontFamily: "monospace" }}
+                  stroke="rgba(0, 217, 255, 0.3)"
+                />
+                <YAxis
+                  type="number"
+                  dataKey="y"
+                  name="Return"
+                  unit="%"
+                  tick={{ fill: "rgba(0, 217, 255, 0.8)", fontSize: 11, fontFamily: "monospace" }}
+                  stroke="rgba(0, 217, 255, 0.3)"
+                />
+                <ZAxis type="number" dataKey="z" range={[30, 160]} />
+                <Tooltip
+                  cursor={{ strokeDasharray: "3 3" }}
+                  contentStyle={{
+                    background: "rgba(5, 10, 21, 0.95)",
+                    border: "1px solid rgba(0, 217, 255, 0.4)",
+                    color: "#00d9ff",
+                    fontFamily: "monospace",
+                    fontSize: "12px",
+                    borderRadius: "4px",
+                  }}
+                />
+                <Scatter name="Cards" data={data} fill="#00d9ff" />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Footer Tip */}
+          <div className="mt-4 border-t border-cyan-500/20 pt-3">
+            <p className="text-xs text-slate-400 font-mono">
+              Tip for teens: dots higher and to the right often mean stronger potential—but bigger swings. Start small, track
+              results, and let data be your coach.
+            </p>
+          </div>
+        </div>
       </div>
-      <div className="h-64">
-        <ResponsiveContainer>
-          <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-            <XAxis
-              type="number"
-              dataKey="x"
-              name="Score"
-              unit=""
-              tick={{ fill: "rgba(255,255,255,0.7)" }}
-            />
-            <YAxis
-              type="number"
-              dataKey="y"
-              name="Return"
-              unit="%"
-              tick={{ fill: "rgba(255,255,255,0.7)" }}
-            />
-            <ZAxis type="number" dataKey="z" range={[30, 160]} />
-            <Tooltip
-              cursor={{ strokeDasharray: "3 3" }}
-              contentStyle={{
-                background: "rgba(17,24,39,0.9)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                color: "#fff",
-              }}
-            />
-            <Scatter name="Cards" data={data} fill="#22d3ee" />
-          </ScatterChart>
-        </ResponsiveContainer>
-      </div>
-      <p className="mt-3 text-xs text-white/60">
-        Tip for teens: dots higher and to the right often mean stronger potential—but bigger swings. Start small, track
-        results, and let data be your coach.
-      </p>
+
+      <style jsx>{`
+        @keyframes scan {
+          0% {
+            transform: translateY(-100%);
+          }
+          100% {
+            transform: translateY(100%);
+          }
+        }
+        .animate-scan {
+          animation: scan 8s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
-
-
