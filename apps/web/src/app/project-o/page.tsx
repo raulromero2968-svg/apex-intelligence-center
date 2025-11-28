@@ -2,6 +2,8 @@ import OtcOrderBookTable from '@/components/projectO/OtcOrderBookTable';
 import WhitelistPriceChart from '@/components/projectO/WhitelistPriceChart';
 import DiscordSentimentFeed from '@/components/projectO/DiscordSentimentFeed';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Project O Intelligence | Apex Intelligence',
   description: 'Real-time OTC order book, whitelist price feed, and Discord sentiment for Project O',

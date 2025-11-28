@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import SectionShell from "../(sections)/SectionShell";
 import ArticleCard from "@/components/content/ArticleCard";
@@ -11,7 +11,7 @@ import ContrarianToggle from "@/components/research/ContrarianToggle";
 import ContrarianResultView from "@/components/research/ContrarianResultView";
 import { researchReports } from "@/content/seed";
 
-export default function ResearchPage() {
+function ResearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isResearchDialogOpen, setIsResearchDialogOpen] = useState(false);
@@ -138,3 +138,10 @@ export default function ResearchPage() {
   );
 }
 
+export default function ResearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>}>
+      <ResearchPageContent />
+    </Suspense>
+  );
+}
