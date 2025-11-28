@@ -91,3 +91,21 @@ export {
   type AlignmentResponse,
   type SimulationAlignmentContext,
 } from './align-prompt';
+
+// ============================================================================
+// EGGROLL Variant System - Integer-weight evolution for stable predictions
+// ============================================================================
+export {
+  eggrollFusion,
+  eggrollTcgSimulation,
+  eggrollBostromPrediction,
+  eggrollFusionSimple,
+  type EggrollVariant as EggrollVariantType,
+  type EggrollConfig as EggrollVariantConfig,
+  type EggrollResult as EggrollVariantResult,
+} from './eggroll-variant';
+
+// ============================================================================
+// POST-Agency + Corrigibility Exports (KB-05 Integration)
+// ============================================================================
+export type { PostAgencyConfig, SVDConfig } from './eggroll-fusion';
