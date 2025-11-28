@@ -194,10 +194,10 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
               <div className="prose prose-invert prose-lg max-w-none font-mono
                 prose-headings:text-cyan-300 prose-headings:font-bold prose-headings:font-mono
                 prose-h1:text-4xl prose-h1:mt-0 prose-h1:mb-8 prose-h1:text-holographic prose-h1:hidden
-                prose-h2:text-2xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-cyan-500/30
-                prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-purple-300
+                prose-h2:text-2xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:pb-4 prose-h2:border-b prose-h2:border-cyan-500/30
+                prose-h3:text-xl prose-h3:mt-12 prose-h3:mb-6 prose-h3:text-purple-300
                 prose-h4:text-lg prose-h4:mt-8 prose-h4:mb-3
-                prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-base
+                prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-8 prose-p:text-base prose-p:mt-4
                 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 hover:prose-a:underline prose-a:transition-colors
                 prose-strong:text-white prose-strong:font-bold
                 prose-em:text-slate-200 prose-em:italic

@@ -4,7 +4,7 @@ import { CardViewer } from "@/components/three/CardViewer";
 import { intelNotes } from "@/content/seed";
 import StarfieldFX from "@/components/fx/StarfieldFX";
 import { Activity, TrendingUp, Database, Radio, Eye, Zap } from "lucide-react";
-import ScrollReveal from "@/components/ScrollReveal";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 export default function IntelPage() {
   return (
