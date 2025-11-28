@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getAllCommonsPosts } from "@/lib/mdx";
 import { Calendar, Clock, BookOpen, Sparkles } from 'lucide-react';
 import { ElectronicFolder } from '../../../../../components/ui/ElectronicFolder';
@@ -165,12 +166,17 @@ function EssayCard({ post }: { post: any }) {
 
       {/* Hero/Thumbnail Image */}
       {(post.frontmatter.thumbnail || post.frontmatter.heroImage) && (
-        <div className="relative w-full h-48 overflow-hidden">
-          <img
+        <div className="relative w-full h-48 overflow-hidden border-b border-cyan-900/30">
+          <Image
             src={post.frontmatter.thumbnail || post.frontmatter.heroImage}
             alt={post.frontmatter.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={false}
           />
+          {/* Cyberpunk Overlay Effect */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
         </div>
       )}
 
