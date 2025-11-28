@@ -100,31 +100,11 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
-          {/* Cosmic Ethereal Hero Banner */}
-          <div className="w-full max-w-7xl mx-auto mb-16 relative">
-            <div 
-              className="relative overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_0_60px_rgba(6,182,212,0.2)]"
-              style={{
-                maskImage: `
-                  radial-gradient(ellipse 120% 120% at 50% 0%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 50% 100%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 0% 50%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 100% 50%, black 70%, transparent 100%),
-                  linear-gradient(black, black)
-                `,
-                maskComposite: 'intersect',
-                WebkitMaskImage: `
-                  radial-gradient(ellipse 120% 120% at 50% 0%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 50% 100%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 0% 50%, black 70%, transparent 100%),
-                  radial-gradient(ellipse 120% 120% at 100% 50%, black 70%, transparent 100%),
-                  linear-gradient(black, black)
-                `,
-                WebkitMaskComposite: 'source-in',
-              }}
-            >
-              {/* Cosmic Banner Image */}
-              <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
+          {/* Cosmic Ethereal Hero Banner - Full Height */}
+          <div className="w-full mx-auto mb-16 relative">
+            <div className="relative overflow-hidden">
+              {/* Cosmic Banner Image - Full Hero Height */}
+              <div className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
                 <Image
                   src={cosmicHeroBanner}
                   alt="Cosmic ethereal landscape with holographic jellyfish, moon, and mystical trees"
@@ -132,8 +112,8 @@ export default function HomePage() {
                   priority
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 pointer-events-none" />
+                {/* Bottom gradient fade - water flowing into site effect */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-slate-900/40 to-slate-950 pointer-events-none" />
               </div>
 
               {/* Scanline effect overlay */}
@@ -144,12 +124,6 @@ export default function HomePage() {
                   backgroundSize: '100% 4px',
                 }}
               />
-
-              {/* Corner brackets */}
-              <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-cyan-400/60" />
-              <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-purple-400/60" />
-              <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-purple-400/60" />
-              <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-pink-400/60" />
             </div>
           </div>
 
