@@ -99,7 +99,27 @@ export default function HomePage() {
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
           {/* Cosmic Ethereal Hero Banner */}
           <div className="w-full max-w-7xl mx-auto mb-16 relative">
-            <div className="relative overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_0_60px_rgba(6,182,212,0.2)]">
+            <div 
+              className="relative overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_0_60px_rgba(6,182,212,0.2)]"
+              style={{
+                maskImage: `
+                  radial-gradient(ellipse 120% 120% at 50% 0%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 50% 100%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 0% 50%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 100% 50%, black 70%, transparent 100%),
+                  linear-gradient(black, black)
+                `,
+                maskComposite: 'intersect',
+                WebkitMaskImage: `
+                  radial-gradient(ellipse 120% 120% at 50% 0%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 50% 100%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 0% 50%, black 70%, transparent 100%),
+                  radial-gradient(ellipse 120% 120% at 100% 50%, black 70%, transparent 100%),
+                  linear-gradient(black, black)
+                `,
+                WebkitMaskComposite: 'source-in',
+              }}
+            >
               {/* Cosmic Banner Image */}
               <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
                 <Image
