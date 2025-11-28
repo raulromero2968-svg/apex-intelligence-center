@@ -4,3 +4,18 @@ packages:
 
 ignoredBuiltDependencies:
   - esbuild
+
+# Approved native module build scripts (KB-04/KB-05 patterns)
+# These packages require compilation for native bindings
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - bcrypt
+  - '@sentry/cli'
+  - '@vercel/speed-insights'
+  - dtrace-provider
+  - prisma
+  - protobufjs
+  - msgpackr-extract
+  - '@firebase/util'
+  - unrs-resolver

@@ -2,7 +2,7 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { appRouter } from '@/server/api/root';
 import { createContext } from '@/server/api/init';
 import { NextRequest } from 'next/server';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '@/server/logger';
 
 const logger = createLogger('web', 'trpc-handler');
 

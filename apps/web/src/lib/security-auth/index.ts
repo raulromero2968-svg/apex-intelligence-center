@@ -53,3 +53,64 @@ export {
   validateSessionSecurity,
   needsReauthentication,
 } from './defense-auth';
+
+// FHI Corrigibility (KB-05 Security + Simulation Integration)
+export {
+  fhiCorrigible,
+  verifySimulationToken,
+  generateSimulationToken,
+  isHarmfulOutcome,
+  isHighStakeOutcome,
+  isSessionFresh,
+  getEthicalDisclaimer,
+  SIMULATION_LIMITS,
+  type SimulationClaims,
+  type CorrigibilityResult,
+} from './fhi-corr';
+
+// FHI Alignment for Simulation Security
+export {
+  // Types
+  type FHIAlignmentResult,
+  type SimulationOutcome,
+  type FHIUserClaims,
+  type AlignmentCheckContext,
+
+  // JWT Verification
+  verifyFHIToken,
+  extractUserClaims,
+
+  // Alignment Checks
+  alignFHISimulation,
+  quickAlignCheck,
+
+  // Corrigibility Helpers
+  getResponseModifier,
+  hashOutcome,
+} from './fhi-alignment';
+
+// POST-Agency Corrigibility (Thornley Framework)
+export {
+  // Types
+  type PostAgencyClaims,
+  type PostAgencyResult,
+  type PosteriorUpdateRequest,
+
+  // Constants
+  DEFAULT_RECURSION_CAP,
+  MAX_RECURSION_CAP,
+  TIER_RECURSION_CAPS,
+
+  // JWT Verification
+  verifyPostAgencyToken,
+  generatePostAgencyToken,
+
+  // Alignment Checks
+  postAgencyAlign,
+  quickPostAgencyCheck,
+
+  // Utility Functions
+  getPostAgencyDisclaimer,
+  getRemainingRecursion,
+  requiresPostAgency,
+} from './post-agency';

@@ -340,3 +340,102 @@ model HistoricalExodiaSnapshot {
   @@index([date, exodiaPieceId])
   @@index([exodiaPieceId, date])
 }
+
+// ============================================================================
+// SIMULATION MARKETS (KB-09 pgvector for prediction embeddings)
+// ============================================================================
+// Cosmic think tank simulation infrastructure for Bostrom-inspired
+// prediction markets. Uses TCG as sandbox for existential scenario modeling.
+
+// Simulation models with pgvector embeddings for similarity search (KB-09 patterns)
+model SimulationModel {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String   // e.g., "TCG Market Posthuman Scenario"
+  description     String?  @db.Text
+  tcgCardId       String?  // Optional link to TCG card for sandbox testing
+
+  // Prediction output
+  prediction      Float    // Simulated probability or value (0-1 for probabilities)
+  confidence      Float    @default(0.5) // Model confidence in prediction
+
+  // EGGROLL-inspired training metadata (gradient-free, integer-weight)
+  eggrollGeneration Int    @default(1) // Evolution generation number
+  eggrollFitness    Float  @default(0) // Fitness score from evolutionary training
+
+  // pgvector embedding for similarity search (KB-09)
+  // Uses 1536-dim for OpenAI text-embedding-3-large compatibility
+  embedding       Unsupported("vector(1536)")?
+
+  // Status and metadata
+  status          String   @default("active") // "active" | "archived" | "training"
+
+  // Relations
+  markets         PredictionMarket[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([tcgCardId])
+}
+
+// Prediction markets for simulation outcomes (Manifold/Polymarket/Kalshi-inspired)
+model PredictionMarket {
+  id              String   @id @default(cuid())
+  simulationId    String
+  simulation      SimulationModel @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+
+  // Market configuration
+  outcome         String   // e.g., "posthuman", "extinction", "flourishing"
+  description     String?  @db.Text
+
+  // Market state
+  probability     Float    // Current probability (0-1)
+  volume          Float    @default(0) // Total trading volume
+  liquidity       Float    @default(0) // Market liquidity pool
+
+  // Bostrom trilemma categorization (existential scenario types)
+  scenarioType    String?  // "simulation" | "posthuman" | "extinction" | "stagnation"
+
+  // FHI longtermism alignment (ethical safeguards, KB-05)
+  ethicsScore     Float    @default(0.5) // 0-1 ethical alignment score
+  auditTrail      Json?    // Compliance audit trail for manipulation prevention
+
+  // Resolution
+  resolved        Boolean  @default(false)
+  resolvedAt      DateTime?
+  resolvedOutcome Boolean? // true = outcome occurred, false = did not occur
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([simulationId])
+  @@index([outcome])
+  @@index([scenarioType])
+  @@index([resolved])
+}
+
+// Simulation market trades (for audit trail and manipulation detection)
+model SimulationTrade {
+  id              String   @id @default(cuid())
+  userId          String
+  marketId        String
+
+  // Trade details
+  direction       String   // "buy" | "sell"
+  shares          Float    // Number of shares traded
+  price           Float    // Price per share at trade time
+
+  // Manipulation detection (KB-05 security)
+  ipHash          String?  // Hashed IP for rate-limiting abuse detection
+  suspicious      Boolean  @default(false) // Flagged for review
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([marketId])
+  @@index([suspicious])
+  @@index([createdAt])
+}

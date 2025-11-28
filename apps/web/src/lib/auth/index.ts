@@ -17,3 +17,6 @@ export {
   type UserWithTier,
 } from './jwt';
 
+// Re-export signJwt from root auth module for registration flow
+export { signJwt } from '../../../../../src/lib/auth/jwt';
+

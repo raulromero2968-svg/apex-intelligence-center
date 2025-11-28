@@ -5,10 +5,6 @@ import { varcCompletedChannel } from '@apex/shared';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-if (!process.env.REDIS_URL) {
-  throw new Error('REDIS_URL environment variable is required');
-}
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ jobId: string }> }

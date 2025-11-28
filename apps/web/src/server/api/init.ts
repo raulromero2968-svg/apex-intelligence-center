@@ -2,7 +2,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import { NextRequest } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { randomUUID } from 'crypto';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '@/server/logger';
 
 const logger = createLogger('web', 'trpc');
 

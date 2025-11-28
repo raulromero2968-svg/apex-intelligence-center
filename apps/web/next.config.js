@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // Enable gzip compression for static assets (KB-07: 20-30% faster loads)
+  compress: true,
   eslint: {
     // Disable ESLint during production builds on Vercel
     ignoreDuringBuilds: true,
@@ -19,12 +21,6 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // Bypass ESLint failure during CI builds
-  },
-  typescript: {
-    ignoreBuildErrors: true, // Bypass React type mismatch from library conflicts
   },
   transpilePackages: ['@apex/ui', '@apex/db'],
   experimental: {

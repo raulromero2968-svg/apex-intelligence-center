@@ -1,14 +1,46 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell } from 'lucide-react';
+import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Rocket, Globe, BarChart3, Activity, Target, Sparkles, Box } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
+import type { Metadata } from 'next';
 
 export const revalidate = 3600;
 
-export const metadata = {
+// Dynamic OG metadata for simulation markets (KB-07 SEO patterns)
+export const metadata: Metadata = {
   title: "Our Philosophy | Apex Intelligence",
-  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance.",
+  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance. Explore our simulation markets for Bostrom-inspired existential scenario modeling.",
+  openGraph: {
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Explore TCG as cosmic prediction simulations. Bostrom-inspired existential scenarios with EGGROLL-trained models.',
+    images: [
+      {
+        url: '/og/philosophy-simulation.png',
+        width: 1200,
+        height: 630,
+        alt: 'Apex Intelligence Philosophy - Simulation Markets & Bostrom Trilemma',
+      },
+    ],
+    type: 'website',
+    siteName: 'Apex Intelligence',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Cosmic think tank: TCG sandbox for Bostrom-inspired prediction markets.',
+    images: ['/og/philosophy-simulation.png'],
+  },
+  keywords: [
+    'simulation hypothesis',
+    'Bostrom trilemma',
+    'prediction markets',
+    'EGGROLL training',
+    'existential risk',
+    'TCG market intelligence',
+    'AI ethics',
+    'longtermism',
+  ],
 };
 
 export default function PhilosophyPage() {
@@ -514,6 +546,611 @@ export default function PhilosophyPage() {
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-cyan-500/50 pl-3">
                 Search our curated knowledge base for how researchers actually talk about Fibonacci in biology. Results come from vetted sources—not the open web. We don&apos;t answer queries about harming humans or animals.
+              </p>
+              <FibonacciResearch />
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* AI Deregulation & Ethical Risks Section */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="AI DEREGULATION & ETHICAL RISKS" classification="CORPORATE CAPTURE // SENTIENT FUTURES">
+            {/* Section Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                  <span className="text-red-400">[</span> BIG TECH&apos;S DEREGULATION PUSH <span className="text-red-400">]</span>
+                </h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+              </div>
+
+              <div className="bg-red-950/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                <p className="text-red-200/80 text-sm leading-relaxed">
+                  <span className="font-bold text-red-400">Why this section exists:</span> As AI systems touch more sentient beings—from biased hiring algorithms to animal welfare research—we must be clear-eyed about how corporate lobbying shapes (or prevents) regulation. This is not anti-tech; it&apos;s pro-accountability.
+                </p>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="relative border border-red-500/40 bg-gradient-to-br from-red-950/30 to-orange-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-red-500/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                    <AlertTriangle className="w-7 h-7 text-red-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white font-mono">The Lobbying Arms Race</h3>
+                    <p className="text-slate-400 text-sm">How AI companies resist accountability at scale</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  AI companies like <span className="text-red-400 font-semibold">OpenAI</span>, <span className="text-orange-400 font-semibold">Microsoft</span>, and <span className="text-cyan-400 font-semibold">Meta</span> have dramatically increased lobbying expenditures to create a &ldquo;no rules&rdquo; environment. In 2024, <span className="text-white font-bold">648 companies lobbied on AI</span> (141% YoY increase), spending $1.2M+ in H1 2025 alone.
+                </p>
+
+                {/* Key Metrics Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Lobbying Expenditure */}
+                  <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
+                      <DollarSign className="w-5 h-5 text-red-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-red-400">SPENDING SURGE</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        OpenAI: $620K Q2 2025 (+30% YoY)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        648 firms lobbying (+141% from 2023)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-400">→</span>
+                        $1.2M+ spent in H1 2025 alone
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Tactics */}
+                  <div className="border border-orange-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center mb-3">
+                      <Users className="w-5 h-5 text-orange-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-orange-400">LOBBYING TACTICS</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Push for 10-year state regulation bans
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Weaken EU AI Act provisions
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-orange-400">→</span>
+                        Fund academic research to shape policy
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* AGI Redefinition */}
+                  <div className="border border-yellow-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center mb-3">
+                      <TrendingUp className="w-5 h-5 text-yellow-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-yellow-400">AGI REDEFINITION</h4>
+                    <ul className="space-y-1 text-slate-400 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        AGI = $100B revenue, not safety
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        &ldquo;China threat&rdquo; as deregulation cover
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-yellow-400">→</span>
+                        $200B+ investment, no profit path
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Visual Evidence - Lobbying Charts */}
+                <div className="mb-8">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                    The Scale of Corporate Influence: Visual Evidence
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Lobbying Growth Chart Placeholder */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop"
+                        alt="Data visualization showing AI lobbying expenditure growth"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <TrendingUp className="w-8 h-8 text-red-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">141% YoY INCREASE</span>
+                        <span className="text-[10px] text-slate-400 mt-1">2023-2024 Lobbying Firms</span>
+                      </div>
+                    </div>
+
+                    {/* AGI Money Meme */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&h=400&fit=crop"
+                        alt="Conceptual image of profit-driven AGI development"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <DollarSign className="w-8 h-8 text-yellow-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">AGI = $100B PROFITS</span>
+                        <span className="text-[10px] text-slate-400 mt-1">Not Safety, Not Sentience</span>
+                      </div>
+                    </div>
+
+                    {/* China AI Framework */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-700/50 group bg-slate-900/80">
+                      <Image
+                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop"
+                        alt="Global AI regulatory landscape showing China's framework"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                        <Ban className="w-8 h-8 text-cyan-400 mb-2" />
+                        <span className="text-xs text-white/90 font-mono text-center font-bold">&ldquo;CHINA THREAT&rdquo;</span>
+                        <span className="text-[10px] text-slate-400 mt-1">Pretext for Deregulation</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Motivations */}
+                <div className="border-l-4 border-orange-500 bg-orange-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-orange-400" />
+                    Financial Motivations & The AGI Profit Trap
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    OpenAI&apos;s deal with Microsoft ties <span className="text-orange-400 font-bold">AGI achievement</span> to <span className="text-white font-bold">$100B revenue</span>—not societal benefit or safety benchmarks. This creates perverse incentives: declare AGI prematurely to escape oversight, or delay safety measures to maximize profits.
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      $200B+ investments with no profitability path in sight
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      Block antitrust/IP rules to use copyrighted data freely
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400">•</span>
+                      Use &ldquo;China threat&rdquo; rhetoric despite China&apos;s robust AI framework
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Risks to Sentient Beings */}
+                <div className="border-l-4 border-red-500 bg-red-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                    Risks to Sentient Beings & Society
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    AI opacity enables violations of existing laws (civil rights, labor, animal welfare) without detection. Unregulated AI in hiring, loans, medicine, and animal research can perpetuate bias and harm—consolidating power without accountability.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-red-400 font-bold text-xs uppercase tracking-wider">Human Impact</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Biased hiring/lending decisions
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Labor displacement without safety nets
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400">→</span>
+                          Medical misdiagnosis from flawed models
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-purple-400 font-bold text-xs uppercase tracking-wider">Sentient Beings Impact</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          AI-driven factory farming optimization
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          Misinterpreted bioacoustic signals
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-purple-400">→</span>
+                          Unethical animal research automation
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trade-off Analysis */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-red-400 font-mono text-sm font-bold">✗ DEREGULATION RISKS</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-red-300">Corporate monopoly:</span> Consolidates power in Big Tech, stifles competition</li>
+                      <li>• <span className="text-red-300">Opacity shield:</span> Black-box decisions evade civil rights/labor laws</li>
+                      <li>• <span className="text-red-300">Sentience harm:</span> Enables biased AI in animal welfare and medical research</li>
+                      <li>• <span className="text-red-300">Profit over safety:</span> AGI tied to revenue, not ethical benchmarks</li>
+                    </ul>
+                  </div>
+
+                  <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-green-400 font-mono text-sm font-bold">✓ BALANCED REGULATION</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-green-300">Transparency mandates:</span> Require explainable AI in high-stakes decisions</li>
+                      <li>• <span className="text-green-300">Ethical benchmarks:</span> Tie AGI to safety/welfare, not just revenue</li>
+                      <li>• <span className="text-green-300">Antitrust enforcement:</span> Prevent monopolistic data/compute concentration</li>
+                      <li>• <span className="text-green-300">Public oversight:</span> Independent audits for AI touching sentient beings</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Connection to Apex Philosophy */}
+                <div className="border border-cyan-500/30 bg-cyan-950/20 rounded-lg p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Shield className="w-6 h-6 text-cyan-400" />
+                    <h4 className="text-md font-bold text-white font-mono">Why This Matters for Apex Intelligence</h4>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    Our <span className="text-cyan-400 font-bold">&ldquo;Sentient Beings First&rdquo;</span> philosophy requires acknowledging how corporate lobbying shapes AI deployment—especially in domains touching animal welfare, bioacoustics, and ethical research. If OpenAI can redefine AGI for profit, they can redefine &ldquo;safe&rdquo; AI for animals or humans without accountability.
+                  </p>
+                  <p className="text-slate-400 text-sm leading-relaxed italic">
+                    We advocate for the <span className="text-white">EU AI Act model</span>: risk-based regulation, transparency requirements, and independent oversight. Innovation thrives under clear rules—what doesn&apos;t thrive is unchecked corporate power over sentient futures.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* RAG Research Console for AI Lobbying */}
+            <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h4 className="text-md font-bold text-white font-mono">AI LOBBYING RESEARCH CONSOLE</h4>
+                  <p className="text-slate-500 text-xs">Query our curated research on corporate AI lobbying—grounded in verified sources</p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm mb-4 border-l-2 border-red-500/50 pl-3">
+                Search for verified research on AI lobbying tactics, financial stakes, and regulatory capture. This console uses the same RAG system as Fibonacci research, but focused on corporate accountability. Try queries like: <span className="text-red-400 font-mono">&ldquo;OpenAI lobbying expenditures&rdquo;</span> or <span className="text-orange-400 font-mono">&ldquo;AGI profit redefinition&rdquo;</span>
+              </p>
+              <FibonacciResearch />
+            </div>
+          </ElectronicFolder>
+        </div>
+      </section>
+
+      {/* Simulation Theory & Markets Section */}
+      <section className="relative z-10 px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          <ElectronicFolder title="SIMULATION THEORY & MARKETS" classification="COSMIC THINK TANK // BOSTROM FRAMEWORK">
+            {/* Section Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                  <span className="text-violet-400">[</span> BOSTROM&apos;S TRILEMMA &amp; PREDICTION MARKETS <span className="text-violet-400">]</span>
+                </h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+              </div>
+
+              <div className="bg-violet-950/20 border border-violet-500/30 rounded-lg p-4 mb-6">
+                <p className="text-violet-200/80 text-sm leading-relaxed">
+                  <span className="font-bold text-violet-400">Why this section exists:</span> Nick Bostrom&apos;s simulation argument provides a philosophical framework for thinking about uncertainty, prediction, and the future of intelligence. We apply these concepts to TCG markets as &ldquo;simulation markets&rdquo;—not as metaphysics, but as a rigorous approach to prediction under uncertainty.
+                </p>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="relative border border-violet-500/40 bg-gradient-to-br from-violet-950/30 to-indigo-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center">
+                    <Box className="w-7 h-7 text-violet-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white font-mono">The Simulation Argument</h3>
+                    <p className="text-slate-400 text-sm">Bostrom&apos;s 2003 trilemma and its implications</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  Nick Bostrom&apos;s <span className="text-violet-400 font-semibold">simulation argument</span> presents a trilemma: either (1) civilizations go extinct before reaching a posthuman stage, (2) posthumans have no interest in running ancestor simulations, or (3) we are almost certainly in a simulation. If posthuman civilizations run simulations, the probability we&apos;re in one approaches <span className="text-white font-bold">99.9%</span>.
+                </p>
+
+                {/* Trilemma Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  {/* Extinction Scenario */}
+                  <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
+                      <AlertTriangle className="w-5 h-5 text-red-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-red-400">EXTINCTION</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">
+                      Civilizations go extinct before reaching posthuman stage. In markets: collapse scenarios, mass delisting, regulatory shutdown.
+                    </p>
+                  </div>
+
+                  {/* No Simulation Scenario */}
+                  <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
+                      <BarChart3 className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">NO SIMULATION</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">
+                      Posthumans choose not to run simulations. In markets: stable but uninnovative, flat growth, consolidation phases.
+                    </p>
+                  </div>
+
+                  {/* In Simulation Scenario */}
+                  <div className="border border-violet-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
+                    <div className="w-10 h-10 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center mb-3">
+                      <Sparkles className="w-5 h-5 text-violet-400" />
+                    </div>
+                    <h4 className="text-md font-bold text-white mb-2 font-mono text-violet-400">IN SIMULATION</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">
+                      We&apos;re in a simulation. In markets: outlier events, exponential growth, &ldquo;black swan&rdquo; breakouts.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Future of Humanity Connection */}
+                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-indigo-400" />
+                    Future of Humanity Institute &amp; Cosmos Institute
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    The <span className="text-indigo-400 font-bold">Future of Humanity Institute</span> (FHI), founded by Bostrom in 2005, pioneered existential risk research and AI alignment. After FHI&apos;s closure in 2024, organizations like <span className="text-violet-400 font-bold">Cosmos Institute</span> continue the work—emphasizing &ldquo;philosopher-builders&rdquo; for AI flourishing.
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-indigo-400">•</span>
+                      FHI contributions: Existential risk frameworks, AI safety research, whole brain emulation
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-indigo-400">•</span>
+                      Bostrom&apos;s 2025 warnings: AI superintelligence and unemployment/dignity crises
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-indigo-400">•</span>
+                      Cosmos Institute approach: Building systems that promote flourishing
+                    </li>
+                  </ul>
+                </div>
+
+                {/* EGGROLL Training Section */}
+                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-indigo-400" />
+                    EGGROLL Training Methodology
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    <span className="text-indigo-400 font-bold">EGGROLL</span> (Evolutionary Gradient-free Gradient-like Rollout) enables stable prediction models without traditional backpropagation—using integer-weight evolution for reduced hallucinations.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-indigo-400 font-bold text-xs uppercase tracking-wider">Advantages</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Low compute (no gradients)
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Stable integer-weight representations
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Reduced hallucinations in forecasts
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-orange-400 font-bold text-xs uppercase tracking-wider">Trade-offs</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Less precise than full backprop
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Best for initial models
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Fine-tune with LoRA for precision
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Simulation Markets Application */}
+                <div className="border-l-4 border-violet-500 bg-violet-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <Cpu className="w-5 h-5 text-violet-400" />
+                    TCG Simulation Markets
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    We apply Bostrom&apos;s framework to TCG markets as <span className="text-violet-400 font-bold">simulation markets</span>—treating market prediction like simulated scenarios. Like fantasy football or prediction markets (PredictionStrike, DraftSharks), users can explore outcomes in a virtual environment.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-violet-400 font-bold text-xs uppercase tracking-wider">Methodology</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-violet-400">→</span>
+                          Monte Carlo simulations for price distributions
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-violet-400">→</span>
+                          RAG-Fusion for market context retrieval
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-violet-400">→</span>
+                          Confidence intervals, not point estimates
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-cyan-400 font-bold text-xs uppercase tracking-wider">Benchmarks</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-cyan-400">→</span>
+                          MTBBench: 9-11% accuracy gains with tools
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-cyan-400">→</span>
+                          EGGROLL: Evolution-based gradient-free training
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-cyan-400">→</span>
+                          Multimodal agents for sequential decisions
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Prediction Markets Integration */}
+                <div className="border-l-4 border-cyan-500 bg-cyan-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-cyan-400" />
+                    Prediction Markets Integration
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    We integrate with major prediction market platforms for real-time probability calibration:
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-cyan-400 font-bold text-sm">Manifold</span>
+                      <p className="text-slate-500 text-xs mt-1">Play-money markets for calibration training</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-purple-400 font-bold text-sm">Polymarket</span>
+                      <p className="text-slate-500 text-xs mt-1">Crypto-based real-stakes forecasts</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-emerald-400 font-bold text-sm">Kalshi</span>
+                      <p className="text-slate-500 text-xs mt-1">CFTC-regulated event contracts</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trade-off Analysis */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-green-400 font-mono text-sm font-bold">✓ GOOD</span>
+                      <span className="text-slate-400 text-sm">When simulation thinking helps</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-green-300">Uncertainty framework:</span> Forces explicit probability thinking</li>
+                      <li>• <span className="text-green-300">Outlier detection:</span> &ldquo;Simulation&rdquo; scenarios flag black swans</li>
+                      <li>• <span className="text-green-300">Prediction accuracy:</span> Tool-using agents show 9-11% gains</li>
+                      <li>• <span className="text-green-300">Engagement:</span> Fantasy-market model increases user participation</li>
+                    </ul>
+                  </div>
+
+                  <div className="border border-amber-500/30 bg-amber-950/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-amber-400 font-mono text-sm font-bold">⚠ CAUTION</span>
+                      <span className="text-slate-400 text-sm">When simulation thinking misleads</span>
+                    </div>
+                    <ul className="space-y-2 text-slate-400 text-sm">
+                      <li>• <span className="text-amber-300">Unfalsifiability:</span> Simulation hypothesis can&apos;t be empirically tested</li>
+                      <li>• <span className="text-amber-300">Compute costs:</span> Complex models require significant resources</li>
+                      <li>• <span className="text-amber-300">Overconfidence:</span> Probability estimates can create false precision</li>
+                      <li>• <span className="text-amber-300">Ethical risks:</span> Prediction markets can enable manipulation</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Ethical Framework */}
+                <div className="border border-emerald-500/30 bg-emerald-950/20 rounded-lg p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Shield className="w-6 h-6 text-emerald-400" />
+                    <h4 className="text-md font-bold text-white font-mono">FHI Longtermism Alignment</h4>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    Our simulation markets align with the <span className="text-emerald-400 font-bold">Future of Humanity Institute&apos;s</span> longtermist ethics:
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Flourishing focus:</span> Simulations explore positive futures, not just doom scenarios</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Manipulation safeguards:</span> JWT/MFA authentication prevents market gaming</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Sentient welfare:</span> Consider digital minds in simulations as potential moral patients</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-slate-500 text-sm italic text-center mt-6">
+                  Apex Intelligence uses simulation theory as a <em>framework</em> for prediction under uncertainty—not metaphysics. We ground all predictions in empirical data while acknowledging the limits of any model.
+                </p>
+              </div>
+            </div>
+
+            {/* RAG Research Console for Simulation Theory */}
+            <div className="border border-violet-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-violet-400" />
+                </div>
+                <div>
+                  <h4 className="text-md font-bold text-white font-mono">SIMULATION THEORY RESEARCH CONSOLE</h4>
+                  <p className="text-slate-500 text-xs">Query our curated research on simulation theory, EGGROLL training, FHI, and prediction markets</p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm mb-4 border-l-2 border-violet-500/50 pl-3">
+                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, EGGROLL methodology, or prediction markets. Try queries like: <span className="text-violet-400 font-mono">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-mono">&ldquo;EGGROLL training methodology&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>

@@ -21,5 +21,39 @@ export {
   type NewDigitalTwinToken,
 } from './digitalTwinTokens';
 
+// Simulation Theory & Prediction Markets (Bostrom-inspired)
+export {
+  simulationModels,
+  predictionMarkets,
+  simulationInsights,
+  simulationStatusEnum,
+  trilemmaOutcomeEnum,
+  type SimulationModel,
+  type NewSimulationModel,
+  type PredictionMarket,
+  type NewPredictionMarket,
+  type SimulationInsight,
+  type NewSimulationInsight,
+} from './simulationModels';
+
+// FHI Alignment & POST-Agency Data (KB-09 Migration)
+export {
+  alignmentData,
+  postAgencyUpdates,
+  alignmentAuditLog,
+  alignmentStatusEnum,
+  corrigibilityLevelEnum,
+  postAgencyUpdateTypeEnum,
+  type AlignmentData,
+  type NewAlignmentData,
+  type PostAgencyUpdate,
+  type NewPostAgencyUpdate,
+  type AlignmentAuditLogEntry,
+  type NewAlignmentAuditLogEntry,
+  type AlignmentStatus,
+  type CorrigibilityLevel,
+  type PostAgencyUpdateType,
+} from './alignmentData';
+
 
 

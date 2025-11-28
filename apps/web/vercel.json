@@ -4,6 +4,7 @@
   "installCommand": "pnpm install",
   "buildCommand": "NODE_OPTIONS='--max-old-space-size=4096' pnpm turbo build --filter=@apex/web...",
   "devCommand": "pnpm turbo dev",
+  "outputDirectory": ".next",
   "framework": "nextjs",
   "regions": ["iad1", "sfo1", "fra1"],
   "headers": [

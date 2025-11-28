@@ -8,7 +8,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { createLogger } from '@apex/shared/logger';
+import { createLogger } from '@apex/shared';
 
 const logger = createLogger('web', 'error-handler');
 

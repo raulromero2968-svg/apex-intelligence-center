@@ -89,11 +89,13 @@ export const cards = pgTable('cards', {
   scryfallId: text('scryfall_id'),
   justTcgId: text('just_tcg_id'),
   apexScore: real('apex_score'), // 0-100 composite score (price velocity + pop delta + liquidity)
+  sevenDayGainPercent: real('seven_day_gain_percent'), // 7-day price gain percentage for analytics/sorting
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   gameApexIdx: index('idx_cards_game_apex').on(table.game, table.apexScore),
   nameIdx: index('idx_cards_name').on(table.name),
+  sevenDayGainIdx: index('idx_cards_seven_day_gain').on(table.sevenDayGainPercent),
   uniqueCard: uniqueIndex('idx_cards_unique').on(table.name, table.setName, table.cardNumber, table.game),
 }));
 
@@ -171,6 +173,7 @@ export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   name: text('name'),
+  parentId: text('parent_id'), // For family hierarchies; optional reference to parent user
   stripeCustomerId: text('stripe_customer_id'),
   subscriptionTier: text('subscription_tier', {
     enum: ['free', 'pro', 'enterprise']
@@ -180,7 +183,9 @@ export const users = pgTable('users', {
   }),
   subscriptionEndsAt: timestamp('subscription_ends_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  parentIdIdx: index('idx_users_parent').on(table.parentId),
+}));
 
 /**
  * Watchlist Items - User price alerts with tiered limits
@@ -322,11 +327,18 @@ export const arbitrageOpportunities = pgTable('arbitrage_opportunities', {
   riskAdjustedSpreadPct: real('risk_adjusted_spread_pct').notNull(),
   liquidity: integer('liquidity').notNull(),
   shippingCost: real('shipping_cost'),
+  baseCollection: text('base_collection'), // Base collection string for filtering
+  status: text('status').default('open'), // Status: 'open' | 'closed' | 'expired'
+  edgeBps: integer('edge_bps'), // Basis points edge
+  estimatedProfitUsd: real('estimated_profit_usd'), // USD profit estimate
   detectedAt: timestamp('detected_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(), // Timestamp for queries
   expiresAt: timestamp('expires_at').notNull(),
 }, (table) => ({
   spreadExpiresIdx: index('idx_arb_spread_expires').on(table.spreadPct, table.expiresAt),
   cardIdx: index('idx_arb_card').on(table.cardId),
+  statusIdx: index('idx_arb_status').on(table.status),
+  createdAtIdx: index('idx_arb_created').on(table.createdAt),
 }));
 
 /**
@@ -656,6 +668,140 @@ export type MakerVote = typeof makerVotes.$inferSelect;
 export type NewMakerVote = typeof makerVotes.$inferInsert;
 export type CardForensics = typeof cardForensics.$inferSelect;
 export type NewCardForensics = typeof cardForensics.$inferInsert;
+
+// ============================================================================
+// VAULT AND FAMILY PROTECTION TABLES
+// ============================================================================
+
+/**
+ * Vault Jobs - Background processing jobs for secure data operations
+ */
+export const vaultJobs = pgTable('vault_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  type: text('type').notNull(), // 'backup' | 'restore' | 'sync' | 'export'
+  status: text('status').notNull().default('pending'), // 'pending' | 'running' | 'completed' | 'failed'
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }), // TCG card reference for card-specific jobs
+  priority: integer('priority').default(5), // Job priority (1-10, lower = higher priority)
+  payload: jsonb('payload'),
+  result: jsonb('result'),
+  errorMessage: text('error_message'),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  statusIdx: index('idx_vault_jobs_status').on(table.status),
+  userIdx: index('idx_vault_jobs_user').on(table.userId),
+  cardIdx: index('idx_vault_jobs_card').on(table.cardId),
+  priorityIdx: index('idx_vault_jobs_priority').on(table.priority),
+}));
+
+/**
+ * Family Links - Parent-child account relationships for family protection
+ */
+export const familyLinks = pgTable('family_links', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  parentId: text('parent_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('pending'), // 'pending' | 'active' | 'revoked'
+  permissions: jsonb('permissions').$type<{
+    canViewActivity: boolean;
+    canSetLimits: boolean;
+    canApproveTransactions: boolean;
+    spendingLimit?: number;
+  }>().default({}),
+  linkedAt: timestamp('linked_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  parentIdx: index('idx_family_links_parent').on(table.parentId),
+  childIdx: index('idx_family_links_child').on(table.childId),
+  uniqueLink: uniqueIndex('idx_family_links_unique').on(table.parentId, table.childId),
+}));
+
+/**
+ * Child Activity History - Activity tracking for minor protection
+ */
+export const childActivityHistory = pgTable('child_activity_history', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  childId: text('child_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  activityType: text('activity_type').notNull(), // 'purchase' | 'view' | 'search' | 'bid'
+  activityData: jsonb('activity_data').notNull(),
+  timestamp: timestamp('timestamp').defaultNow().notNull(), // Activity time for time-based queries
+  flagged: boolean('flagged').default(false).notNull(),
+  flagReason: text('flag_reason'),
+  reviewedBy: text('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+  reviewedAt: timestamp('reviewed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  childIdx: index('idx_child_activity_child').on(table.childId),
+  typeIdx: index('idx_child_activity_type').on(table.activityType),
+  flaggedIdx: index('idx_child_activity_flagged').on(table.flagged),
+  timestampIdx: index('idx_child_activity_timestamp').on(table.timestamp),
+}));
+
+/**
+ * Manipulation Alerts - Market manipulation detection alerts
+ */
+export const manipulationAlerts = pgTable('manipulation_alerts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  cardId: text('card_id').references(() => cards.id, { onDelete: 'cascade' }),
+  alertType: text('alert_type').notNull(), // 'price_spike' | 'wash_trading' | 'pump_dump' | 'artificial_scarcity'
+  severity: text('severity').notNull().default('medium'), // 'low' | 'medium' | 'high' | 'critical'
+  confidence: real('confidence').notNull(), // 0-1 confidence score
+  details: jsonb('details').notNull(),
+  status: text('status').notNull().default('active'), // 'active' | 'acknowledged' | 'dismissed' | 'resolved'
+  isActive: boolean('is_active').default(true).notNull(), // Alert status for filtering active alerts
+  detectedAt: timestamp('detected_at').defaultNow().notNull(), // Detection time for sorting
+  acknowledgedBy: text('acknowledged_by').references(() => users.id, { onDelete: 'set null' }),
+  acknowledgedAt: timestamp('acknowledged_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at'),
+}, (table) => ({
+  cardIdx: index('idx_manipulation_alerts_card').on(table.cardId),
+  typeIdx: index('idx_manipulation_alerts_type').on(table.alertType),
+  severityIdx: index('idx_manipulation_alerts_severity').on(table.severity),
+  statusIdx: index('idx_manipulation_alerts_status').on(table.status),
+  isActiveIdx: index('idx_manipulation_alerts_active').on(table.isActive),
+  detectedAtIdx: index('idx_manipulation_alerts_detected').on(table.detectedAt),
+}));
+
+/**
+ * Video Generation Requests - AI video generation job tracking
+ */
+export const videoGenerationRequests = pgTable('video_generation_requests', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('pending'), // 'pending' | 'processing' | 'completed' | 'failed'
+  prompt: text('prompt').notNull(),
+  style: text('style'), // 'cinematic' | 'documentary' | 'promotional' | 'tutorial'
+  duration: integer('duration'), // seconds
+  inputAssets: jsonb('input_assets').$type<string[]>().default([]),
+  outputUrl: text('output_url'),
+  thumbnailUrl: text('thumbnail_url'),
+  metadata: jsonb('metadata'),
+  errorMessage: text('error_message'),
+  processingStartedAt: timestamp('processing_started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_video_gen_user').on(table.userId),
+  statusIdx: index('idx_video_gen_status').on(table.status),
+}));
+
+// Type exports for new tables
+export type VaultJob = typeof vaultJobs.$inferSelect;
+export type NewVaultJob = typeof vaultJobs.$inferInsert;
+export type FamilyLink = typeof familyLinks.$inferSelect;
+export type NewFamilyLink = typeof familyLinks.$inferInsert;
+export type ChildActivityHistory = typeof childActivityHistory.$inferSelect;
+export type NewChildActivityHistory = typeof childActivityHistory.$inferInsert;
+export type ManipulationAlert = typeof manipulationAlerts.$inferSelect;
+export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
+export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
+export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
 
 /**
  * Metadata structure examples by source_type:
