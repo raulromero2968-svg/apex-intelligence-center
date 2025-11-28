@@ -86,15 +86,16 @@ export {
 // ============================================================================
 // MULTI-MODAL RAG - Vector search for images and audio
 // ============================================================================
-export {
-  type MultiModalSearchResult,
-  type MultiModalSearchOptions,
-  multiModalVectorSearch,
-  hybridMultiModalSearch,
-  getUserEmbeddings,
-  findSimilarFaces,
-  findSimilarVoices,
-} from './multi-modal';
+// TEMPORARILY DISABLED - missing multiModalEmbeddings table in schema
+// export {
+//   type MultiModalSearchResult,
+//   type MultiModalSearchOptions,
+//   multiModalVectorSearch,
+//   hybridMultiModalSearch,
+//   getUserEmbeddings,
+//   findSimilarFaces,
+//   findSimilarVoices,
+// } from './multi-modal';
 
 // ============================================================================
 // EXPERIMENTAL CHAINS - Not exported in production
