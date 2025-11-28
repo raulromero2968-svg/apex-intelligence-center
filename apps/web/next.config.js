@@ -23,10 +23,7 @@ const nextConfig = {
     // 3. Image Sizes: For use in 'sizes' prop when not 'fill'
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
 
-    // 4. Quality: Bumped to 80 for art-heavy platform while AVIF keeps file size down
-    quality: 80,
-
-    // 5. Remote Patterns: Strict security for external images
+    // 4. Remote Patterns: Strict security for external images
     remotePatterns: [
       {
         protocol: 'https',
