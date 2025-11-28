@@ -1,147 +1,173 @@
-import { MessageCircle, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
+'use client';
+
 import Link from 'next/link';
-import { SOCIAL_PROFILES } from '@/lib/constants';
+import Image from 'next/image';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export const Footer = () => {
   return (
-    <footer 
-      className="relative mt-20 border-t border-cyan-500/20"
-      style={{
-        background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 20%, rgba(0, 0, 0, 0.9) 100%)',
-      }}
-      role="contentinfo"
-    >
-      {/* Connect to Collectr */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="relative max-w-2xl mx-auto">
-          {/* Card with stronger background */}
-          <div 
-            className="relative z-10 rounded-2xl p-10 border border-cyan-500/30"
-            style={{
-              background: 'linear-gradient(135deg, rgba(6, 78, 99, 0.85) 0%, rgba(88, 28, 135, 0.85) 100%)',
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 20px 60px rgba(0, 255, 255, 0.15)',
-            }}
-          >
-            {/* Collectr content */}
-            <div className="flex flex-col items-center text-center">
-              {/* Icon */}
-              <div className="w-16 h-16 rounded-full bg-cyan-500/20 flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-              </div>
-              
-              <h2 className="text-3xl font-bold text-white mb-4">Connect to Collectr</h2>
-              
-              <p className="text-gray-300 mb-6 max-w-lg">
-                Already using Collectr for portfolio tracking? Import your portfolio to unlock personalized market insights and AI-powered recommendations based on your actual collection.
-              </p>
-              
-              {/* Integration Coming Soon */}
-              <div className="flex items-center gap-2 text-cyan-400 mb-6">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <span className="text-sm">Integration Coming Soon</span>
-              </div>
-              
-              <p className="text-gray-400 text-sm mb-8 max-w-md">
-                We&apos;re partnering with Collectr to bring you seamless portfolio sync. Join our waitlist to be notified when this feature launches.
-              </p>
-              
-              <button className="bg-transparent hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500 font-semibold px-8 py-3 rounded-lg transition-all">
-                Join Waitlist
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Apex Intelligence Column */}
-          <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Apex Intelligence</h3>
-            <p className="text-gray-400 text-sm">
-              Underground intelligence for serious TCG collectors and investors.
+    <footer className="relative z-40 border-t border-cyan-500/20 bg-slate-950/80 backdrop-blur-sm">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          {/* Column 1: Brand & Description */}
+          <div className="md:col-span-1">
+            <Link 
+              href="/" 
+              className="flex items-center text-white font-bold text-base tracking-tight font-mono mb-4 hover:text-cyan-400 transition-colors group"
+            >
+              <Image
+                src="/images/apex-wolf-black-bg-final.png"
+                width={32}
+                height={32}
+                alt="Intranational Intel Logo"
+                className="rounded-full mr-2 group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]"
+              />
+              <span className="text-sm">INTRANATIONAL INTEL</span>
+            </Link>
+            <p className="text-slate-500 text-xs font-mono leading-relaxed">
+              A cosmic think tank at the intersection of AI, markets, and biological systems.
             </p>
           </div>
-          
-          {/* Quick Links Column */}
+
+          {/* Column 2: Navigate */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Quick Links</h3>
+            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ NAVIGATE ]</h4>
             <ul className="space-y-2">
-              <li><Link href="/intel" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Intel</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Blog</Link></li>
-              <li><Link href="/about" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">About</Link></li>
-              <li><Link href="/community" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Community</Link></li>
-              <li><Link href="/tutorial" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">New to Apex?</Link></li>
-              <li><Link href="/apex-omnis-studios" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Apex Omnis Studios</Link></li>
+              <li>
+                <Link 
+                  href="/intel" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Intel
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/lab" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Lab
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/portfolio" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Portfolio
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/commons" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Commons
+                </Link>
+              </li>
             </ul>
           </div>
-          
-          {/* Legal Column */}
+
+          {/* Column 3: Research */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Legal</h3>
+            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ RESEARCH ]</h4>
             <ul className="space-y-2">
-              <li><Link href="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Terms of Service</Link></li>
-              <li><Link href="/disclaimer" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Disclaimer</Link></li>
-              <li><Link href="/security" className="text-gray-400 hover:text-cyan-400 transition-colors text-sm">Security</Link></li>
+              <li>
+                <Link 
+                  href="/about" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/philosophy" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Philosophy
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/research" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Research
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/blog" 
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                >
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
-          
-          {/* Connect Column */}
+
+          {/* Column 4: Connect */}
           <div>
-            <h3 className="text-cyan-400 font-bold text-lg mb-4">Connect</h3>
-            <div className="flex gap-4">
-              <a
-                href={SOCIAL_PROFILES.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on X (Twitter)"
-                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ CONNECT ]</h4>
+            <div className="flex gap-3">
+              <a 
+                href="https://twitter.com/apexintel" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-8 h-8 border border-slate-700 hover:border-cyan-500/50 rounded-md flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all hover:shadow-[0_0_8px_rgba(0,255,255,0.3)]"
+                aria-label="Twitter/X"
               >
-                <Twitter className="w-5 h-5 text-cyan-400" />
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
               </a>
-              <a
-                href={SOCIAL_PROFILES.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Connect on LinkedIn"
-                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              <a 
+                href="https://linkedin.com/company/apexintel" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-8 h-8 border border-slate-700 hover:border-cyan-500/50 rounded-md flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all hover:shadow-[0_0_8px_rgba(0,255,255,0.3)]"
+                aria-label="LinkedIn"
               >
-                <Linkedin className="w-5 h-5 text-cyan-400" />
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
               </a>
-              <a
-                href={SOCIAL_PROFILES.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on Instagram"
-                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
+              <a 
+                href="https://github.com/apexintel" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-8 h-8 border border-slate-700 hover:border-cyan-500/50 rounded-md flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all hover:shadow-[0_0_8px_rgba(0,255,255,0.3)]"
+                aria-label="GitHub"
               >
-                <Instagram className="w-5 h-5 text-cyan-400" />
-              </a>
-              <a
-                href={SOCIAL_PROFILES.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View our GitHub repository"
-                className="w-10 h-10 border border-cyan-500/50 rounded-lg flex items-center justify-center hover:bg-cyan-500/20 transition-colors"
-              >
-                <Github className="w-5 h-5 text-cyan-400" />
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
               </a>
             </div>
           </div>
         </div>
-        
-        {/* Bottom bar */}
-        <div className="pt-8 border-t border-cyan-500/20 text-center text-gray-500 text-sm">
-          © 2025 Apex Intelligence. All rights reserved.
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-xs font-mono">
+          <div className="flex items-center gap-4">
+            <span>© 2025 INTRANATIONAL INTEL & AI RESEARCH CENTER. ALL RIGHTS RESERVED.</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="hover:text-cyan-400 transition-colors">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-cyan-400 transition-colors">
+              Terms
+            </Link>
+            <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+              Disclaimer
+            </Link>
+            <div className="h-4 w-px bg-slate-700" />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </footer>
   );
 };
-
