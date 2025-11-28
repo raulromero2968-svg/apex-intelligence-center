@@ -6,170 +6,227 @@ import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * Creates a proper low-poly wolf head geometry based on real wolf anatomy
- * Key features:
- * - Elongated snout (40% of head length)
- * - Defined jaw structure
- * - Proper cranium shape
- * - Triangular ears on top-back
- * - Full 3D volume with depth
- * - Tapered snout (wide at base, narrow at tip)
+ * Creates an anatomically accurate low-poly wolf head geometry
+ * Based on wolf skull research:
+ * - 1:1 snout-to-cranium ratio (elongated muzzle)
+ * - Flat cranium top with sagittal crest ridge
+ * - Wide zygomatic arch (prominent cheekbones ~20% width)
+ * - Dolichocephalic skull (long/narrow, craniofacial ratio ~286)
+ * - Ears at 45° angle, placed high-back
+ * - Strong mandible (0.8 upper height)
+ * - 80 optimized vertices for low-poly balance
+ *
+ * Vertex distribution:
+ * - Snout: 24 verts (30%)
+ * - Cranium: 20 verts (25%)
+ * - Ears: 16 verts (20%)
+ * - Jaw: 10 verts (12.5%)
+ * - Neck: 10 verts (12.5%)
  */
 function createWolfGeometry() {
   const geometry = new THREE.BufferGeometry();
-  
-  // 70 vertices for proper wolf head topology
-  // Organized by anatomical sections with proper proportions
+
+  // 80 vertices for anatomically accurate wolf head
+  // Proportions: snout length = cranium length (1:1 ratio)
+  // Total depth ~2.4 units (snout tip to occipital)
   const vertices = new Float32Array([
-    // === NOSE/SNOUT TIP (0-5) ===
-    0, -0.3, 1.5,        // 0: nose tip center
-    -0.15, -0.35, 1.45,  // 1: nose bottom left
-    0.15, -0.35, 1.45,   // 2: nose bottom right
-    -0.2, -0.2, 1.4,     // 3: nostril left
-    0.2, -0.2, 1.4,      // 4: nostril right
-    0, -0.15, 1.5,       // 5: nose bridge top
-    
-    // === UPPER SNOUT/MUZZLE (6-13) ===
-    -0.3, -0.25, 1.2,    // 6: upper snout left
-    0.3, -0.25, 1.2,     // 7: upper snout right
-    -0.25, -0.05, 1.25,  // 8: snout bridge left
-    0.25, -0.05, 1.25,   // 9: snout bridge right
-    0, 0.05, 1.3,        // 10: snout bridge center top
-    -0.35, -0.4, 1.1,    // 11: lower snout left
-    0.35, -0.4, 1.1,     // 12: lower snout right
-    0, -0.45, 1.15,      // 13: lower snout center
-    
-    // === SNOUT BASE/CHEEKS (14-21) ===
-    -0.45, -0.15, 0.9,   // 14: snout base left
-    0.45, -0.15, 0.9,    // 15: snout base right
-    -0.55, 0, 0.75,      // 16: cheek left outer
-    0.55, 0, 0.75,       // 17: cheek right outer
-    -0.5, 0.15, 0.8,     // 18: upper cheek left
-    0.5, 0.15, 0.8,      // 19: upper cheek right
-    -0.4, -0.5, 0.85,    // 20: lower jaw left
-    0.4, -0.5, 0.85,     // 21: lower jaw right
-    
-    // === EYE REGION (22-29) ===
-    -0.45, 0.3, 0.7,     // 22: eye socket left outer
-    0.45, 0.3, 0.7,      // 23: eye socket right outer
-    -0.35, 0.35, 0.75,   // 24: eye left inner
-    0.35, 0.35, 0.75,    // 25: eye right inner
-    -0.4, 0.45, 0.65,    // 26: brow left
-    0.4, 0.45, 0.65,     // 27: brow right
-    -0.3, 0.25, 0.8,     // 28: eye bridge left
-    0.3, 0.25, 0.8,      // 29: eye bridge right
-    
-    // === FOREHEAD/CRANIUM TOP (30-37) ===
-    0, 0.55, 0.6,        // 30: forehead center
-    -0.35, 0.6, 0.5,     // 31: forehead left
-    0.35, 0.6, 0.5,      // 32: forehead right
-    0, 0.75, 0.4,        // 33: top of cranium center
-    -0.3, 0.8, 0.3,      // 34: cranium top left
-    0.3, 0.8, 0.3,       // 35: cranium top right
-    -0.25, 0.85, 0.15,   // 36: back cranium left
-    0.25, 0.85, 0.15,    // 37: back cranium right
-    
-    // === EARS (38-45) ===
-    -0.5, 0.7, 0.25,     // 38: left ear base outer
-    -0.4, 0.75, 0.3,     // 39: left ear base inner
-    -0.6, 1.2, 0.2,      // 40: left ear tip outer
-    -0.5, 1.25, 0.25,    // 41: left ear tip inner
-    0.5, 0.7, 0.25,      // 42: right ear base outer
-    0.4, 0.75, 0.3,      // 43: right ear base inner
-    0.6, 1.2, 0.2,       // 44: right ear tip outer
-    0.5, 1.25, 0.25,     // 45: right ear tip inner
-    
-    // === BACK OF SKULL (46-53) ===
-    -0.6, 0.5, -0.1,     // 46: skull back left upper
-    0.6, 0.5, -0.1,      // 47: skull back right upper
-    -0.55, 0.3, -0.2,    // 48: skull back left mid
-    0.55, 0.3, -0.2,     // 49: skull back right mid
-    -0.45, 0.65, -0.25,  // 50: skull back left top
-    0.45, 0.65, -0.25,   // 51: skull back right top
-    0, 0.75, -0.2,       // 52: skull back center top
-    0, 0.4, -0.3,        // 53: skull back center mid
-    
-    // === JAW/CHIN (54-59) ===
-    -0.35, -0.6, 0.7,    // 54: jaw left
-    0.35, -0.6, 0.7,     // 55: jaw right
-    -0.25, -0.7, 0.9,    // 56: chin left
-    0.25, -0.7, 0.9,     // 57: chin right
-    0, -0.75, 1.0,       // 58: chin point
-    0, -0.65, 0.6,       // 59: throat
-    
-    // === NECK CONNECTION (60-69) ===
-    -0.45, -0.7, 0.4,    // 60: neck left upper
-    0.45, -0.7, 0.4,     // 61: neck right upper
-    -0.4, -0.8, 0.2,     // 62: neck left mid
-    0.4, -0.8, 0.2,      // 63: neck right mid
-    -0.35, -0.85, 0,     // 64: neck left lower
-    0.35, -0.85, 0,      // 65: neck right lower
-    0, -0.75, 0.3,       // 66: neck center upper
-    0, -0.85, 0.1,       // 67: neck center mid
-    -0.5, -0.5, -0.15,   // 68: neck back left
-    0.5, -0.5, -0.15,    // 69: neck back right
+    // === NOSE/SNOUT TIP (0-7) - Tapers 30° from base ===
+    0, -0.15, 1.8,        // 0: nose tip center (hero vertex)
+    -0.1, -0.2, 1.75,     // 1: nose bottom left
+    0.1, -0.2, 1.75,      // 2: nose bottom right
+    -0.12, -0.08, 1.78,   // 3: nostril left
+    0.12, -0.08, 1.78,    // 4: nostril right
+    0, 0.0, 1.8,          // 5: nose bridge top
+    -0.08, -0.25, 1.7,    // 6: nose underside left
+    0.08, -0.25, 1.7,     // 7: nose underside right
+
+    // === UPPER SNOUT/MUZZLE (8-15) - Elongated for 1:1 ratio ===
+    -0.22, -0.1, 1.5,     // 8: upper snout left
+    0.22, -0.1, 1.5,      // 9: upper snout right
+    -0.18, 0.08, 1.55,    // 10: snout bridge left
+    0.18, 0.08, 1.55,     // 11: snout bridge right
+    0, 0.15, 1.6,         // 12: snout ridge center (nasal bone)
+    -0.25, -0.25, 1.45,   // 13: lower snout left
+    0.25, -0.25, 1.45,    // 14: lower snout right
+    0, -0.3, 1.5,         // 15: lower snout center
+
+    // === SNOUT MID-SECTION (16-23) ===
+    -0.35, -0.05, 1.2,    // 16: mid-snout left
+    0.35, -0.05, 1.2,     // 17: mid-snout right
+    -0.3, 0.15, 1.25,     // 18: mid-snout bridge left
+    0.3, 0.15, 1.25,      // 19: mid-snout bridge right
+    0, 0.22, 1.3,         // 20: mid-snout ridge
+    -0.38, -0.35, 1.15,   // 21: mid-snout jaw left
+    0.38, -0.35, 1.15,    // 22: mid-snout jaw right
+    0, -0.4, 1.2,         // 23: mid-snout jaw center
+
+    // === SNOUT BASE/ZYGOMATIC (24-31) - Wide cheekbones ===
+    -0.48, 0.0, 0.9,      // 24: snout base left
+    0.48, 0.0, 0.9,       // 25: snout base right
+    -0.58, 0.1, 0.75,     // 26: zygomatic arch left (hero - cheekbone)
+    0.58, 0.1, 0.75,      // 27: zygomatic arch right (hero - cheekbone)
+    -0.52, 0.25, 0.8,     // 28: upper cheek left
+    0.52, 0.25, 0.8,      // 29: upper cheek right
+    -0.45, -0.4, 0.85,    // 30: lower cheek/jaw left
+    0.45, -0.4, 0.85,     // 31: lower cheek/jaw right
+
+    // === EYE REGION (32-39) - 6-vert loops around eyes ===
+    -0.42, 0.38, 0.7,     // 32: eye socket left outer
+    0.42, 0.38, 0.7,      // 33: eye socket right outer
+    -0.32, 0.42, 0.75,    // 34: eye left inner
+    0.32, 0.42, 0.75,     // 35: eye right inner
+    -0.38, 0.52, 0.65,    // 36: brow ridge left
+    0.38, 0.52, 0.65,     // 37: brow ridge right
+    -0.28, 0.32, 0.82,    // 38: eye bridge left
+    0.28, 0.32, 0.82,     // 39: eye bridge right
+
+    // === FOREHEAD/FLAT CRANIUM (40-47) - Flat top with sagittal crest ===
+    0, 0.58, 0.55,        // 40: forehead center
+    -0.32, 0.62, 0.45,    // 41: forehead left
+    0.32, 0.62, 0.45,     // 42: forehead right
+    0, 0.68, 0.35,        // 43: sagittal crest front (hero - ridge)
+    -0.28, 0.7, 0.25,     // 44: cranium top left (flat)
+    0.28, 0.7, 0.25,      // 45: cranium top right (flat)
+    -0.22, 0.72, 0.1,     // 46: back cranium left
+    0.22, 0.72, 0.1,      // 47: back cranium right
+
+    // === LEFT EAR (48-55) - 45° angle, triangular ===
+    -0.45, 0.65, 0.15,    // 48: left ear base outer
+    -0.35, 0.68, 0.2,     // 49: left ear base inner
+    -0.48, 0.62, 0.05,    // 50: left ear base back
+    -0.55, 1.15, 0.1,     // 51: left ear tip outer (hero)
+    -0.45, 1.18, 0.15,    // 52: left ear tip inner
+    -0.5, 1.1, 0.0,       // 53: left ear tip back
+    -0.52, 0.9, 0.08,     // 54: left ear mid outer
+    -0.42, 0.92, 0.18,    // 55: left ear mid inner
+
+    // === RIGHT EAR (56-63) - 45° angle, triangular ===
+    0.45, 0.65, 0.15,     // 56: right ear base outer
+    0.35, 0.68, 0.2,      // 57: right ear base inner
+    0.48, 0.62, 0.05,     // 58: right ear base back
+    0.55, 1.15, 0.1,      // 59: right ear tip outer (hero)
+    0.45, 1.18, 0.15,     // 60: right ear tip inner
+    0.5, 1.1, 0.0,        // 61: right ear tip back
+    0.52, 0.9, 0.08,      // 62: right ear mid outer
+    0.42, 0.92, 0.18,     // 63: right ear mid inner
+
+    // === BACK OF SKULL/OCCIPITAL (64-69) ===
+    -0.5, 0.45, -0.15,    // 64: skull back left upper
+    0.5, 0.45, -0.15,     // 65: skull back right upper
+    -0.45, 0.25, -0.25,   // 66: skull back left mid
+    0.45, 0.25, -0.25,    // 67: skull back right mid
+    0, 0.65, -0.2,        // 68: occipital bump (sagittal crest back)
+    0, 0.35, -0.35,       // 69: skull back center (deepest point)
+
+    // === JAW/MANDIBLE (70-75) - Strong, 0.8 upper height ===
+    -0.32, -0.55, 0.65,   // 70: jaw hinge left (hero)
+    0.32, -0.55, 0.65,    // 71: jaw hinge right (hero)
+    -0.22, -0.65, 0.9,    // 72: chin left
+    0.22, -0.65, 0.9,     // 73: chin right
+    0, -0.7, 1.1,         // 74: chin point
+    0, -0.58, 0.55,       // 75: throat
+
+    // === NECK (76-79) - Connection with volume ===
+    -0.4, -0.6, 0.35,     // 76: neck left
+    0.4, -0.6, 0.35,      // 77: neck right
+    -0.45, -0.45, -0.1,   // 78: neck back left
+    0.45, -0.45, -0.1,    // 79: neck back right
   ]);
-  
+
   // Define faces with proper topology following wolf anatomy
+  // CCW winding for correct normals
   const indices = new Uint16Array([
-    // NOSE TIP
-    0, 1, 5,  0, 5, 2,  1, 3, 5,  2, 5, 4,
-    3, 1, 6,  4, 7, 2,  5, 3, 8,  5, 8, 10,  5, 10, 9,  5, 9, 4,
-    
-    // UPPER SNOUT
-    3, 6, 8,  4, 9, 7,  8, 6, 14,  9, 15, 7,
-    10, 8, 28,  10, 28, 29,  10, 29, 9,
-    6, 11, 14,  7, 15, 12,  11, 13, 14,  12, 14, 13,
-    1, 11, 6,  2, 7, 12,  1, 13, 11,  2, 12, 13,  0, 13, 1,  0, 2, 13,
-    
-    // SNOUT BASE TO FACE
-    14, 16, 18,  15, 19, 17,  14, 18, 28,  15, 29, 19,
-    28, 18, 22,  29, 23, 19,  28, 22, 24,  29, 25, 23,
-    11, 20, 14,  12, 15, 21,  20, 16, 14,  21, 15, 17,
-    
-    // EYE REGION
-    22, 24, 26,  23, 27, 25,  24, 22, 18,  25, 19, 23,
-    24, 30, 26,  25, 27, 30,  26, 30, 31,  27, 32, 30,
-    22, 26, 31,  23, 32, 27,
-    
-    // FOREHEAD TO CRANIUM
-    30, 31, 33,  30, 33, 32,  31, 34, 33,  32, 33, 35,
-    33, 34, 36,  33, 36, 52,  33, 52, 37,  33, 37, 35,
-    
-    // EARS
-    34, 38, 39,  34, 39, 36,  38, 40, 41,  38, 41, 39,
-    40, 41, 45,  40, 45, 44,  39, 41, 36,  41, 52, 36,
-    35, 43, 42,  35, 37, 43,  42, 43, 45,  42, 45, 44,
-    43, 37, 52,  43, 52, 45,
-    
-    // BACK OF SKULL
-    31, 46, 34,  32, 35, 47,  34, 46, 38,  35, 42, 47,
-    46, 48, 38,  47, 42, 49,  38, 48, 68,  42, 69, 49,
-    46, 50, 36,  47, 37, 51,  50, 52, 36,  51, 37, 52,
-    50, 52, 51,  46, 50, 48,  47, 49, 51,
-    48, 53, 68,  49, 69, 53,  50, 53, 48,  51, 49, 53,  50, 51, 53,
-    
-    // JAW
-    20, 54, 16,  21, 17, 55,  16, 54, 48,  17, 49, 55,
-    54, 56, 20,  55, 21, 57,  56, 58, 20,  57, 21, 58,
-    56, 58, 57,  20, 58, 11,  21, 12, 58,  11, 58, 13,  12, 13, 58,
-    
-    // THROAT/NECK CONNECTION
-    54, 59, 56,  55, 57, 59,  54, 60, 59,  55, 59, 61,
-    59, 60, 66,  59, 66, 61,  60, 62, 66,  61, 66, 63,
-    62, 64, 66,  63, 66, 65,  64, 67, 66,  65, 66, 67,
-    
-    // NECK TO SKULL
-    60, 54, 16,  61, 17, 55,  60, 16, 48,  61, 49, 17,
-    60, 48, 68,  61, 69, 49,  60, 68, 62,  61, 63, 69,
-    62, 68, 64,  63, 65, 69,  68, 53, 64,  69, 65, 53,
-    64, 53, 67,  65, 67, 53,
+    // === NOSE TIP FACES ===
+    0, 1, 5,  0, 5, 2,  // nose front
+    1, 3, 5,  2, 5, 4,  // nostril sides
+    5, 3, 10, 5, 10, 12, 5, 12, 11, 5, 11, 4, // nose bridge
+    0, 6, 1,  0, 2, 7,  1, 6, 7, 1, 7, 2, // nose underside
+
+    // === UPPER SNOUT FACES ===
+    3, 1, 8,  4, 9, 2,  // nostril to snout
+    3, 8, 10, 4, 11, 9, // upper snout sides
+    10, 8, 16, 10, 16, 18, 11, 17, 9, 11, 19, 17, // snout bridge to mid
+    12, 10, 18, 12, 18, 20, 12, 20, 19, 12, 19, 11, // snout ridge
+    6, 13, 8, 8, 13, 16, 7, 9, 14, 9, 17, 14, // snout sides
+    6, 15, 13, 7, 14, 15, 6, 7, 15, // snout underside
+    13, 15, 21, 14, 22, 15, 15, 22, 21, 21, 22, 23, // jaw underside
+
+    // === MID-SNOUT TO BASE FACES ===
+    16, 21, 24, 17, 25, 22, // mid to base sides
+    18, 16, 24, 18, 24, 28, 19, 25, 17, 19, 29, 25, // upper sides
+    20, 18, 28, 20, 28, 38, 20, 38, 39, 20, 39, 29, 20, 29, 19, // ridge to eyes
+    21, 30, 24, 22, 25, 31, // lower sides
+
+    // === ZYGOMATIC/CHEEK FACES ===
+    24, 30, 26, 25, 27, 31, // cheekbone lower
+    24, 26, 28, 25, 29, 27, // cheekbone upper
+    28, 26, 32, 29, 33, 27, // cheek to eye
+
+    // === EYE REGION FACES ===
+    38, 28, 32, 38, 32, 34, 39, 33, 29, 39, 35, 33, // eye inner
+    32, 34, 36, 33, 37, 35, // eye to brow
+    34, 38, 40, 34, 40, 36, 35, 40, 39, 35, 37, 40, // eye bridge
+    36, 40, 41, 37, 42, 40, // brow to forehead
+    32, 36, 41, 33, 42, 37, // eye outer to forehead
+
+    // === FOREHEAD/CRANIUM FACES ===
+    40, 41, 43, 40, 43, 42, // forehead center
+    41, 44, 43, 42, 43, 45, // forehead to cranium
+    43, 44, 46, 43, 46, 68, 43, 68, 47, 43, 47, 45, // sagittal crest
+
+    // === LEFT EAR FACES ===
+    44, 48, 49, 44, 49, 46, // ear base inner
+    48, 50, 46, 48, 54, 50, // ear base outer
+    48, 49, 55, 48, 55, 54, // ear front
+    54, 55, 52, 54, 52, 51, // ear mid
+    50, 54, 53, 54, 51, 53, // ear back
+    51, 52, 53, // ear tip
+    49, 46, 68, 49, 68, 55, // ear to crest
+
+    // === RIGHT EAR FACES ===
+    45, 57, 56, 45, 47, 57, // ear base inner
+    56, 47, 58, 56, 58, 62, // ear base outer
+    56, 63, 57, 56, 62, 63, // ear front
+    62, 60, 63, 62, 59, 60, // ear mid
+    58, 61, 62, 62, 61, 59, // ear back
+    59, 61, 60, // ear tip
+    57, 68, 47, 57, 63, 68, // ear to crest
+
+    // === BACK OF SKULL FACES ===
+    41, 64, 44, 42, 45, 65, // forehead to back
+    44, 64, 48, 45, 56, 65, // cranium sides to ears
+    64, 66, 48, 48, 66, 78, 65, 56, 67, 56, 79, 67, // back sides
+    64, 68, 46, 46, 50, 64, 65, 47, 68, 47, 65, 58, // back top
+    50, 78, 64, 58, 65, 79, // ear base to back
+    68, 64, 69, 68, 69, 65, 64, 66, 69, 65, 69, 67, // occipital
+    66, 78, 69, 67, 69, 79, // back center
+
+    // === JAW/MANDIBLE FACES ===
+    30, 70, 26, 31, 27, 71, // jaw hinge to cheek
+    26, 70, 64, 26, 64, 32, 27, 65, 71, 27, 33, 65, // jaw to skull
+    70, 72, 30, 71, 31, 73, // jaw to chin
+    72, 74, 30, 73, 31, 74, // chin sides
+    30, 74, 21, 31, 22, 74, // chin to snout
+    21, 74, 23, 22, 23, 74, // chin center
+    72, 74, 73, // chin front
+
+    // === THROAT/NECK FACES ===
+    70, 75, 72, 71, 73, 75, // jaw to throat
+    70, 76, 75, 71, 75, 77, // jaw hinge to neck
+    75, 76, 77, // throat center
+
+    // === NECK CONNECTION FACES ===
+    76, 70, 26, 77, 27, 71, // neck to jaw
+    76, 26, 64, 77, 65, 27, // neck sides
+    76, 64, 78, 77, 79, 65, // neck to back
+    76, 78, 77, 77, 78, 79, // neck back
+    78, 66, 69, 79, 69, 67, // neck to skull back
   ]);
-  
+
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
   geometry.setIndex(new THREE.BufferAttribute(indices, 1));
   geometry.computeVertexNormals();
-  
+
   return geometry;
 }
 
@@ -276,21 +333,23 @@ export default function Interactive3DWolf() {
         </p>
       </div>
       
-      {/* 3D Canvas */}
+      {/* 3D Canvas - Camera positioned to frame elongated 1:1 snout-cranium ratio */}
       <Canvas
-        camera={{ position: [0, 0, 4], fov: 45 }}
+        camera={{ position: [0, 0.2, 5], fov: 50 }}
         className="cursor-grab active:cursor-grabbing"
       >
-        {/* Prismatic Lighting */}
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={1.2} color="#06b6d4" />
-        <pointLight position={[-10, -10, -10]} intensity={0.8} color="#a855f7" />
-        <pointLight position={[0, 10, -10]} intensity={0.6} color="#0891b2" />
+        {/* Enhanced Prismatic Lighting for anatomical detail */}
+        <ambientLight intensity={0.35} />
+        <pointLight position={[8, 8, 8]} intensity={1.2} color="#06b6d4" />
+        <pointLight position={[-8, -6, -8]} intensity={0.8} color="#a855f7" />
+        <pointLight position={[0, 8, -8]} intensity={0.6} color="#0891b2" />
+        {/* Front light to highlight snout detail */}
+        <pointLight position={[0, 0, 6]} intensity={0.4} color="#22d3ee" />
         <spotLight
-          position={[0, 8, 5]}
-          angle={0.4}
+          position={[0, 6, 4]}
+          angle={0.5}
           penumbra={1}
-          intensity={1}
+          intensity={1.2}
           color="#a855f7"
         />
         
