@@ -197,7 +197,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 prose-h2:text-2xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:pb-4 prose-h2:border-b prose-h2:border-cyan-500/30
                 prose-h3:text-xl prose-h3:mt-12 prose-h3:mb-6 prose-h3:text-purple-300
                 prose-h4:text-lg prose-h4:mt-8 prose-h4:mb-3
-                prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-8 prose-p:text-base prose-p:mt-4
+                prose-p:text-slate-300 prose-p:leading-[2] prose-p:mb-12 prose-p:text-base
                 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 hover:prose-a:underline prose-a:transition-colors
                 prose-strong:text-white prose-strong:font-bold
                 prose-em:text-slate-200 prose-em:italic
@@ -208,7 +208,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 prose-ol:list-none prose-ol:pl-0 prose-ol:space-y-3 prose-ol:text-slate-300
                 prose-li:text-slate-300 prose-li:leading-relaxed prose-li:pl-6 prose-li:relative
                 prose-li:before:content-['▹'] prose-li:before:absolute prose-li:before:left-0 prose-li:before:text-cyan-400
-                prose-hr:border-cyan-500/30 prose-hr:my-12
+                prose-hr:border-0 prose-hr:my-16 prose-hr:h-[2px] prose-hr:bg-gradient-to-r prose-hr:from-transparent prose-hr:via-cyan-400/50 prose-hr:to-transparent prose-hr:relative prose-hr:before:content-[''] prose-hr:before:absolute prose-hr:before:left-1/2 prose-hr:before:-translate-x-1/2 prose-hr:before:-top-1 prose-hr:before:w-2 prose-hr:before:h-2 prose-hr:before:bg-cyan-400 prose-hr:before:rotate-45 prose-hr:before:shadow-[0_0_10px_rgba(6,182,212,0.8)] prose-hr:after:content-[''] prose-hr:after:absolute prose-hr:after:left-[20%] prose-hr:after:-top-0.5 prose-hr:after:w-1 prose-hr:after:h-1 prose-hr:after:bg-purple-400 prose-hr:after:rounded-full prose-hr:after:shadow-[0_0_6px_rgba(168,85,247,0.8)]
                 prose-img:rounded-lg prose-img:border prose-img:border-cyan-500/20 prose-img:shadow-[0_0_30px_rgba(6,182,212,0.2)]
               ">
                 {post.content}
