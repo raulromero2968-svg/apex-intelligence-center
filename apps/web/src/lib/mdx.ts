@@ -362,6 +362,7 @@ export interface CommonsPostFrontmatter {
   date?: string; // Legacy support
   author?: string;
   heroImage?: string;
+  thumbnail?: string;
   hero?: string; // Legacy support
   tags?: string[];
   category?: string;
