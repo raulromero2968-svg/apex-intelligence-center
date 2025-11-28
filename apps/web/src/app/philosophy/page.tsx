@@ -933,7 +933,7 @@ export default function PhilosophyPage() {
                   {/* In Simulation Scenario */}
                   <div className="border border-violet-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
                     <div className="w-10 h-10 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center mb-3">
-                      <Sparkles className="w-5 h-5 text-violet-400" />
+                      <Sparkles className="w-5 h-5 text-prismatic" strokeWidth={2} fill="none" />
                     </div>
                     <h4 className="text-md font-bold text-white mb-2 font-mono text-violet-400">IN SIMULATION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
