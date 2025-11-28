@@ -60,10 +60,10 @@ export default function PhilosophyPage() {
 
           {/* Main Title */}
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none mb-6">
-            <span className="block text-holographic">
+            <span className="block text-white drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
               Our
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600">
+            <span className="block text-holographic">
               Philosophy
             </span>
           </h1>
