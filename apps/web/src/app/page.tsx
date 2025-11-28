@@ -455,21 +455,23 @@ export default function HomePage() {
             <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
 
-            <div className="relative z-10 text-center">
+            <div className="relative z-10">
               {/* Status Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+              <div className="flex justify-center mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                 </span>
                 ALPHA ACCESS OPEN
+                </div>
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-mono tracking-tight text-holographic">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-mono tracking-tight text-holographic text-center">
                 Join the Network
               </h2>
 
-              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-mono">
+              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-mono text-center">
                 Weekly intelligence drops. Research dispatches. Zero hype.
                 <br />
                 <span className="text-slate-500">Unsubscribe anytime.</span>
