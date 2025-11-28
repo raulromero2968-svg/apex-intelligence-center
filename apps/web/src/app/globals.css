@@ -1632,3 +1632,24 @@ html.light canvas {
       animation: none;
     }
   }
+
+/* Essay Content Spacing - Force proper spacing between paragraphs */
+.essay-content p {
+  margin-bottom: 2rem !important;
+  line-height: 2 !important;
+  display: block !important;
+}
+
+.essay-content p + p {
+  margin-top: 2rem !important;
+}
+
+.essay-content h2 {
+  margin-top: 4rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.essay-content h3 {
+  margin-top: 3rem !important;
+  margin-bottom: 1.5rem !important;
+}

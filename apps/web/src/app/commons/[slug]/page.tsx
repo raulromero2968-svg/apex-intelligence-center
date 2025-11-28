@@ -216,26 +216,6 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
             </Suspense>
           </div>
 
-          {/* Custom CSS for Essay Spacing */}
-          <style jsx global>{`
-            .essay-content p {
-              margin-bottom: 2rem !important;
-              line-height: 2 !important;
-              display: block !important;
-            }
-            .essay-content p + p {
-              margin-top: 2rem !important;
-            }
-            .essay-content h2 {
-              margin-top: 4rem !important;
-              margin-bottom: 2rem !important;
-            }
-            .essay-content h3 {
-              margin-top: 3rem !important;
-              margin-bottom: 1.5rem !important;
-            }
-          `}</style>
-
           {/* Terminal Footer */}
           <div className="bg-black/60 border-t border-cyan-500/30 px-6 py-4">
             <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
