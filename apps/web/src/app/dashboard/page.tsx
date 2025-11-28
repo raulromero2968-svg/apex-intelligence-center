@@ -238,7 +238,7 @@ export default function DashboardPage() {
                 title="LATEST INSIGHTS" 
                 classification="BLOG // ANALYSIS"
               >
-                <div className="grid gap-6 md:grid-cols-3 not-prose py-4">
+                <div className="grid gap-6 md:grid-cols-3 not-prose px-6 py-6">
                   {blogPosts
                     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
                     .slice(0, 3)
