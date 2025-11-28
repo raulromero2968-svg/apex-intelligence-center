@@ -5,10 +5,16 @@ import { intelNotes } from "@/content/seed";
 import StarfieldFX from "@/components/fx/StarfieldFX";
 import { Activity, TrendingUp, Database, Radio, Eye, Zap } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
 
 export default function IntelPage() {
   return (
     <div className="min-h-screen pt-24 pb-20 relative">
+      {/* PhD Framework - Chapter 04: Results & Analysis */}
+      <DissertationChapterBadge
+        chapter={DISSERTATION_CHAPTERS.RESULTS}
+        variant="floating"
+      />
       <StarfieldFX />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-16">

@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/philosophy', label: 'PHILOSOPHY' },
   { href: '/portfolio', label: 'PORTFOLIO' },
   { href: '/commons', label: 'COMMONS' },
+  { href: '/phd-framework', label: 'PHD' },
   { href: '/about', label: 'ABOUT' },
   { href: '/subscribe', label: 'SUBSCRIBE' },
 ];

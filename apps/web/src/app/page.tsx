@@ -8,6 +8,7 @@ import CustomCursor from '@/components/ui/CustomCursor';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import DigitalScroll from '@/components/DigitalScroll';
 import { ScrollReveal } from '@/components/ScrollReveal';
+import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
 
 // Intelligence Feed Data - Mixing TCG Markets with Biology Research
 const INTEL_FEED = [
@@ -72,6 +73,12 @@ export default function HomePage() {
       {/* Cinematic Letterboxing */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-black z-[100] m-0 p-0" />
       <CustomCursor />
+
+      {/* PhD Framework - Chapter 01: Introduction */}
+      <DissertationChapterBadge
+        chapter={DISSERTATION_CHAPTERS.INTRODUCTION}
+        variant="floating"
+      />
 
       {/* Shooting Stars Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">

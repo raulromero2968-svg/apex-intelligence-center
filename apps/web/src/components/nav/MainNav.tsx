@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/commons", label: "Commons", featured: true },
+  { href: "/phd-framework", label: "PhD Framework", featured: true },
   { href: "/intel", label: "Intel" },
   { href: "/insights", label: "Insights" },
   { href: "/blog", label: "Blog" },
