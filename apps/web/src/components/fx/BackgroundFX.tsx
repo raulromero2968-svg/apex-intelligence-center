@@ -25,7 +25,8 @@ function useSquares(count = 6) {    // fewer stars
 
 export default function BackgroundFX({ className }: { className?: string }) {
   const reduced = useReducedMotion();
-  const squares = useSquares(7);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const squares = useSquares(isMobile ? 3 : 7); // Fewer squares on mobile
 
   return (
     <div aria-hidden className={clsx("pointer-events-none fixed inset-0 -z-10 overflow-hidden", className)}>
@@ -35,6 +36,7 @@ export default function BackgroundFX({ className }: { className?: string }) {
       </div>
 
       {/* Meditative matrix river: very slow horizontal shimmer lines */}
+      {!isMobile && (
       <div className="absolute inset-0">
         {Array.from({ length: 22 }).map((_, i) => (
           <motion.div
@@ -57,6 +59,7 @@ export default function BackgroundFX({ className }: { className?: string }) {
           />
         ))}
       </div>
+      )}
 
       {/* Shooting squares = shooting stars, but chill */}
       {!reduced && (

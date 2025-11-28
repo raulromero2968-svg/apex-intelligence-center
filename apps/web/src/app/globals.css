@@ -1237,6 +1237,13 @@ html.light canvas {
     }
   }
 
+  /* Mobile optimization: disable scanning slash on mobile */
+  @media (max-width: 768px) {
+    .text-holographic::before {
+      display: none; /* Remove scanning slash on mobile for performance */
+    }
+  }
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .text-holographic {
@@ -1298,6 +1305,19 @@ html.light canvas {
 
   .scroll-reveal:nth-child(5) {
     transition-delay: 400ms;
+  }
+
+  /* Mobile optimization: simpler animations */
+  @media (max-width: 768px) {
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      filter: none; /* Remove blur on mobile */
+      transition: all 0.4s ease-out; /* Faster, simpler transition */
+    }
+    .scroll-reveal-active {
+      animation: none; /* Remove glow animation on mobile */
+    }
   }
 
   /* Reduced motion support */
@@ -1550,5 +1570,33 @@ html.light canvas {
     50% {
       background-position: 100% 100%;
       opacity: 0.3;
+    }
+  }
+
+  /* Prismatic Border Animation for HoloCardContainer */
+  @keyframes prismatic-border {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Mobile optimization: reduce animations on mobile devices */
+  @media (max-width: 768px) {
+    .animate-\[prismatic-border_3s_linear_infinite\] {
+      animation: none;
+      background: linear-gradient(to right, #06b6d4, #a855f7);
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-\[prismatic-border_3s_linear_infinite\] {
+      animation: none;
     }
   }

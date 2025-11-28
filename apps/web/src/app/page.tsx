@@ -131,7 +131,7 @@ export default function HomePage() {
             <span className="text-cyan-400 font-bold">Simulation Markets</span>,{' '}
             <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
             <span className="text-white font-bold">Sentient AI</span>.
-            <span className="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
+
           </p>
 
           {/* Primary CTA Cluster - Glow Container */}
