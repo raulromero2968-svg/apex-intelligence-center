@@ -102,24 +102,27 @@ export default function HomePage() {
             <div className="relative overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_0_60px_rgba(6,182,212,0.2)]">
               {/* Cosmic Banner Image */}
               <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
-                <img
+                <Image
                   src="/images/cosmic-hero-banner.png"
                   alt="Cosmic ethereal landscape with holographic jellyfish, moon, and mystical trees"
+                  width={2400}
+                  height={600}
+                  priority
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 pointer-events-none" />
               </div>
-              
+
               {/* Scanline effect overlay */}
-              <div 
+              <div
                 className="absolute inset-0 pointer-events-none opacity-[0.03]"
                 style={{
                   backgroundImage: `linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%)`,
                   backgroundSize: '100% 4px',
                 }}
               />
-              
+
               {/* Corner brackets */}
               <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-cyan-400/60" />
               <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-purple-400/60" />
