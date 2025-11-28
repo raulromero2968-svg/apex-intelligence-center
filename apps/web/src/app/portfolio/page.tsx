@@ -241,11 +241,11 @@ export default function PortfolioPage() {
               <h2 className="flex items-center gap-3 text-2xl tracking-wider font-mono">
                 <Sparkles 
                   className="w-6 h-6" 
-                  strokeWidth={2} 
+                  strokeWidth={2.5} 
                   fill="none"
+                  stroke="#a855f7"
                   style={{
-                    stroke: 'url(#prismatic-gradient)',
-                    filter: 'drop-shadow(0 0 4px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 8px rgba(34, 211, 238, 0.4))'
+                    filter: 'drop-shadow(0 0 6px #a855f7) drop-shadow(0 0 12px #06b6d4)'
                   }}
                 />
                 <span className="text-holographic">[ ALL COLLECTIONS ]</span>
