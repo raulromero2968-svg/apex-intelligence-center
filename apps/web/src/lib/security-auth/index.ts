@@ -88,3 +88,29 @@ export {
   getResponseModifier,
   hashOutcome,
 } from './fhi-alignment';
+
+// POST-Agency Corrigibility (Thornley Framework)
+export {
+  // Types
+  type PostAgencyClaims,
+  type PostAgencyResult,
+  type PosteriorUpdateRequest,
+
+  // Constants
+  DEFAULT_RECURSION_CAP,
+  MAX_RECURSION_CAP,
+  TIER_RECURSION_CAPS,
+
+  // JWT Verification
+  verifyPostAgencyToken,
+  generatePostAgencyToken,
+
+  // Alignment Checks
+  postAgencyAlign,
+  quickPostAgencyCheck,
+
+  // Utility Functions
+  getPostAgencyDisclaimer,
+  getRemainingRecursion,
+  requiresPostAgency,
+} from './post-agency';

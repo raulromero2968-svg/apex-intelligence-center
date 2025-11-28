@@ -36,5 +36,24 @@ export {
   type NewSimulationInsight,
 } from './simulationModels';
 
+// FHI Alignment & POST-Agency Data (KB-09 Migration)
+export {
+  alignmentData,
+  postAgencyUpdates,
+  alignmentAuditLog,
+  alignmentStatusEnum,
+  corrigibilityLevelEnum,
+  postAgencyUpdateTypeEnum,
+  type AlignmentData,
+  type NewAlignmentData,
+  type PostAgencyUpdate,
+  type NewPostAgencyUpdate,
+  type AlignmentAuditLogEntry,
+  type NewAlignmentAuditLogEntry,
+  type AlignmentStatus,
+  type CorrigibilityLevel,
+  type PostAgencyUpdateType,
+} from './alignmentData';
+
 
 
