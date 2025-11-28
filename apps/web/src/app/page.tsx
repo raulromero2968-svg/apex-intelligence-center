@@ -421,7 +421,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </Electronic          </div>
+          </ElectronicFolder>
         </div>
       </section>
       </ScrollReveal>
