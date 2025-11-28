@@ -98,10 +98,10 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-{/* System Status Badge - Diamond Sigil Design with Timestamp */}
-          <div className="flex flex-col items-center gap-1 mb-8">
-            {/* Top Diamond */}
-            <span className="text-cyan-400 text-lg animate-pulse">◆</span>
+{/* System Status Badge - Diamond Sigil Design */}
+          <div className="flex flex-col items-center gap-2 mb-8">
+            {/* Top Diamond - Prismatic/Holographic */}
+            <span className="text-holographic text-lg animate-pulse drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">◆</span>
 
             {/* Main Status Bar */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 font-mono shadow-[0_0_30px_rgba(6,182,212,0.2)] relative">
@@ -114,9 +114,6 @@ export default function HomePage() {
               <span className="tracking-widest font-bold text-sm">ONLINE</span>
               <Activity className="w-4 h-4" />
             </div>
-
-            {/* Bottom Diamond */}
-            <span className="text-cyan-400 text-lg animate-pulse">◆</span>
           </div>
 
           {/* Main Title - Command Center Typography */}
