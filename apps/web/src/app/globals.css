@@ -1635,21 +1635,116 @@ html.light canvas {
 
 /* Essay Content Spacing - Force proper spacing between paragraphs */
 .essay-content p {
-  margin-bottom: 2rem !important;
+  margin-bottom: 2.5rem !important;
+  margin-top: 0 !important;
   line-height: 2 !important;
   display: block !important;
+  text-indent: 0 !important;
 }
 
 .essay-content p + p {
-  margin-top: 2rem !important;
+  margin-top: 2.5rem !important;
+}
+
+/* Ensure paragraphs in prose containers have proper spacing */
+.essay-content.prose p,
+.essay-content .prose p {
+  margin-bottom: 2.5rem !important;
+  line-height: 2 !important;
+}
+
+/* First paragraph styling - drop cap effect for literary feel */
+.essay-content > p:first-of-type::first-letter {
+  font-size: 3.5rem;
+  font-weight: 700;
+  float: left;
+  line-height: 1;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
+  color: #06b6d4;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
 }
 
 .essay-content h2 {
   margin-top: 4rem !important;
   margin-bottom: 2rem !important;
+  clear: both;
 }
 
 .essay-content h3 {
   margin-top: 3rem !important;
   margin-bottom: 1.5rem !important;
+  clear: both;
+}
+
+/* Blockquote enhanced styling */
+.essay-content blockquote {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+  border-left: 4px solid rgba(168, 85, 247, 0.5) !important;
+  padding-left: 1.5rem !important;
+  font-style: italic !important;
+  color: #c4b5fd !important;
+  background: rgba(168, 85, 247, 0.1) !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 0 0.5rem 0.5rem 0 !important;
+}
+
+/* Emphasis styling for essay italic text */
+.essay-content em {
+  color: #e2e8f0;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLASS ORB / HELP FAB ANIMATIONS
+   Slow spinning prismatic effect for the AI assistance orb
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes prismatic-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-prismatic-pulse {
+  animation: prismatic-pulse 3s ease-in-out infinite;
+}
+
+/* Glass orb shimmer effect */
+@keyframes orb-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.glass-orb-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: orb-shimmer 3s ease-in-out infinite;
 }

@@ -90,7 +90,7 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-          {/* System Status Badge - Diamond Sigil Design */}
+{/* System Status Badge - Diamond Sigil Design with Timestamp */}
           <div className="flex flex-col items-center gap-1 mb-8">
             {/* Top Diamond */}
             <span className="text-cyan-400 text-lg animate-pulse">◆</span>
