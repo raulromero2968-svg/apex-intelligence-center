@@ -483,3 +483,95 @@ export async function getAllCommonsPosts(): Promise<CommonsPost[]> {
   }
 }
 
+
+// ============================================================================
+// Legal Page Functions (content/legal/)
+// ============================================================================
+
+const legalDirectory = path.join(process.cwd(), 'src', 'content', 'legal');
+
+export interface LegalDocFrontmatter {
+  title: string;
+  subtitle?: string;
+  publishedAt: string;
+}
+
+export interface LegalDoc {
+  slug: string;
+  frontmatter: LegalDocFrontmatter;
+  content: any;
+}
+
+// Get all legal doc slugs
+export async function getAllLegalDocSlugs(): Promise<string[]> {
+  try {
+    const files = await readdir(legalDirectory);
+    return files
+      .filter((file) => file.endsWith('.mdx'))
+      .map((file) => file.replace(/\.mdx$/, ''));
+  } catch (error) {
+    console.warn('Legal directory not found:', error);
+    return [];
+  }
+}
+
+// Get legal doc by slug
+export async function getLegalDocBySlug(slug: string): Promise<LegalDoc | null> {
+  try {
+    const filePath = path.join(legalDirectory, `${slug}.mdx`);
+    const source = await readFile(filePath, 'utf8');
+
+    const { data: frontmatter, content: rawContent } = matter(source);
+
+    const { content: mdxContent } = await compileMDX<LegalDocFrontmatter>({
+      source: rawContent,
+      components: {},
+      options: {
+        parseFrontmatter: false,
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+        },
+      },
+    });
+
+    return {
+      slug,
+      frontmatter: frontmatter as LegalDocFrontmatter,
+      content: mdxContent,
+    };
+  } catch (error) {
+    console.error(`Error reading legal doc ${slug}:`, error);
+    return null;
+  }
+}
+
+// Get all legal docs
+export async function getAllLegalDocs(): Promise<LegalDoc[]> {
+  try {
+    const files = await readdir(legalDirectory);
+    const docs: LegalDoc[] = [];
+
+    for (const file of files) {
+      if (!file.endsWith('.mdx')) continue;
+
+      const slug = file.replace(/\.mdx$/, '');
+      const filePath = path.join(legalDirectory, file);
+      const source = await readFile(filePath, 'utf8');
+
+      const { data: frontmatter } = matter(source);
+
+      docs.push({
+        slug,
+        frontmatter: frontmatter as LegalDocFrontmatter,
+        content: null,
+      });
+    }
+
+    return docs.sort((a, b) => {
+      return new Date(b.frontmatter.publishedAt).getTime() - new Date(a.frontmatter.publishedAt).getTime();
+    });
+  } catch (error) {
+    console.warn('Error reading legal docs:', error);
+    return [];
+  }
+}

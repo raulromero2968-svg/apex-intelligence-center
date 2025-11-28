@@ -154,13 +154,13 @@ export const Footer = () => {
             <span>© 2025 INTRANATIONAL INTEL & AI RESEARCH CENTER. ALL RIGHTS RESERVED.</span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-cyan-400 transition-colors">
-              Privacy
+            <Link href="/legal/privacy-policy" className="hover:text-cyan-400 transition-colors">
+              Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-cyan-400 transition-colors">
-              Terms
+            <Link href="/legal/terms-of-service" className="hover:text-cyan-400 transition-colors">
+              Terms of Service
             </Link>
-            <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+            <Link href="/legal/disclaimer" className="hover:text-cyan-400 transition-colors">
               Disclaimer
             </Link>
             <div className="h-4 w-px bg-slate-700" />
