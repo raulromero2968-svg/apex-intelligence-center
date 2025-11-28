@@ -14,6 +14,7 @@ const navLinks = [
   { href: '/commons', label: 'COMMONS' },
   { href: '/phd-framework', label: 'PHD' },
   { href: '/about', label: 'ABOUT' },
+  { href: '/pricing', label: 'PRICING' },
   { href: '/subscribe', label: 'SUBSCRIBE' },
 ];
 
