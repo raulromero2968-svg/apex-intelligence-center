@@ -82,7 +82,7 @@ export function ElectronicFolder({
 
         {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-          <span className="text-[120px] font-black text-slate-800/5 tracking-widest rotate-[-15deg] select-none">
+          <span className="text-[120px] font-black tracking-widest rotate-[-15deg] select-none text-prismatic opacity-10">
             APEX
           </span>
         </div>
