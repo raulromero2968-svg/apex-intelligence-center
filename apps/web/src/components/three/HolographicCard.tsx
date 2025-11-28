@@ -12,23 +12,59 @@ interface CardProps {
 export const HolographicCard = ({ imageUrl }: CardProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHover] = useState(false);
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
 
-  // Smooth rotation animation on hover
+  // Load texture on client side
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      imageUrl,
+      (loadedTexture) => {
+        loadedTexture.colorSpace = THREE.SRGBColorSpace;
+        setTexture(loadedTexture);
+      },
+      undefined,
+      (error) => {
+        console.error('Error loading Charizard texture:', error);
+      }
+    );
+  }, [imageUrl]);
+
+  // Smooth rotation animation
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Idle animation: slight breathing rotation
       if (!hovered) {
         meshRef.current.rotation.y += delta * 0.1;
       }
-      // Interactive: move towards mouse position could be added here
     }
   });
 
+  // Create materials array for box geometry faces
+  // Box faces: [right, left, top, bottom, front, back]
+  const materials = [
+    // Right (index 0)
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
+    // Left (index 1)
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
+    // Top (index 2)
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
+    // Bottom (index 3)
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
+    // Front (index 4) - This is where we put the Charizard image
+    new THREE.MeshStandardMaterial({ 
+      map: texture, 
+      roughness: 0.3, 
+      metalness: 0.1 
+    }),
+    // Back (index 5)
+    new THREE.MeshStandardMaterial({ color: '#1e293b', roughness: 0.2, metalness: 0.8 }),
+  ];
+
   return (
     <Float
-      speed={2} // Animation speed
-      rotationIntensity={1} // Float rotation intensity
-      floatIntensity={2} // Up/down float intensity
+      speed={2}
+      rotationIntensity={1}
+      floatIntensity={2}
     >
       <mesh
         ref={meshRef}
@@ -36,53 +72,10 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
         onPointerOut={() => setHover(false)}
         castShadow
         receiveShadow
+        material={materials}
       >
-        {/* TCG Card Dimensions: 2.5 x 3.5 inches roughly translates to this aspect ratio */}
         <boxGeometry args={[2.5, 3.5, 0.05]} />
-
-        {/* Edges/Back: Dark metallic look */}
-        <meshStandardMaterial
-          color="#1e293b"
-          roughness={0.2}
-          metalness={0.8}
-        />
-
-        {/* Front Face: The Card Image */}
-        {/* We use Decal or a separate material index for the face.
-            For simplicity in this POC, we will use a texture loader on the front face index.
-            In production, we would map the texture to specific UVs.
-        */}
-        <CardFace imageUrl={imageUrl} />
       </mesh>
     </Float>
   );
 };
-
-// Sub-component to handle texture loading safely
-const CardFace = ({ imageUrl }: { imageUrl: string }) => {
-    const [texture, setTexture] = useState<THREE.Texture | null>(null);
-    
-    useEffect(() => {
-        const loader = new THREE.TextureLoader();
-        loader.load(
-            imageUrl,
-            (loadedTexture) => {
-                loadedTexture.colorSpace = THREE.SRGBColorSpace;
-                setTexture(loadedTexture);
-            },
-            undefined,
-            (error) => {
-                console.error('Error loading texture:', error);
-            }
-        );
-    }, [imageUrl]);
-    
-    return (
-        <meshStandardMaterial 
-            attach="material-4" 
-            map={texture} 
-            roughness={0.3}
-            metalness={0.1}
-        />
-    );
-}
