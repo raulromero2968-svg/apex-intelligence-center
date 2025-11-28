@@ -53,3 +53,17 @@ export {
   validateSessionSecurity,
   needsReauthentication,
 } from './defense-auth';
+
+// FHI Corrigibility (KB-05 Security + Simulation Integration)
+export {
+  fhiCorrigible,
+  verifySimulationToken,
+  generateSimulationToken,
+  isHarmfulOutcome,
+  isHighStakeOutcome,
+  isSessionFresh,
+  getEthicalDisclaimer,
+  SIMULATION_LIMITS,
+  type SimulationClaims,
+  type CorrigibilityResult,
+} from './fhi-corr';

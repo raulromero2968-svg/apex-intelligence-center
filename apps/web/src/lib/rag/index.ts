@@ -22,3 +22,20 @@ export {
   detectBostromScenario,
 } from './eggroll-fusion';
 
+// Bostrom Trilemma Probability (KB-02 EGGROLL Integration)
+export {
+  bostromProb,
+  bostromProbBatch,
+  requiresEthicalDisclaimer,
+  type BostromProbability,
+  type BostromOptimizationConfig,
+} from './bostrom-prob';
+
+// Utopia Ethical Prompts (KB-02 RAG Integration)
+export {
+  utopiaRAG,
+  utopiaRAGSummary,
+  requiresUtopiaFraming,
+  type UtopiaConfig,
+  type UtopiaResponse,
+} from './utopia-prompt';
