@@ -239,7 +239,15 @@ export default function PortfolioPage() {
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
               <h2 className="flex items-center gap-3 text-2xl tracking-wider font-mono">
-                <Sparkles className="w-6 h-6 text-prismatic" strokeWidth={2} fill="none" />
+                <Sparkles 
+                  className="w-6 h-6" 
+                  strokeWidth={2} 
+                  fill="none"
+                  style={{
+                    stroke: 'url(#prismatic-gradient)',
+                    filter: 'drop-shadow(0 0 4px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 8px rgba(34, 211, 238, 0.4))'
+                  }}
+                />
                 <span className="text-holographic">[ ALL COLLECTIONS ]</span>
               </h2>
             </div>

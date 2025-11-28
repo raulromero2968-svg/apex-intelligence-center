@@ -59,7 +59,15 @@ export default async function CommonsPage() {
           <HoloCard>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-prismatic" strokeWidth={2} fill="none" />
+                <Sparkles 
+                  className="w-5 h-5" 
+                  strokeWidth={2} 
+                  fill="none"
+                  style={{
+                    stroke: 'url(#prismatic-gradient)',
+                    filter: 'drop-shadow(0 0 4px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 8px rgba(34, 211, 238, 0.4))'
+                  }}
+                />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-2">
