@@ -95,7 +95,7 @@ export function ShadowReflexTest() {
               onClick={handleStartTest}
               className="group inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold px-8 py-3 rounded-lg transition-all shadow-lg shadow-orange-500/20"
             >
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-5 h-5 text-white" strokeWidth={2} fill="none" />
               Run the Full Test
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>

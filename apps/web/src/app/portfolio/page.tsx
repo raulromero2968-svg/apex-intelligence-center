@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Trophy, Heart, Eye, Sparkles, TrendingUp, Award, Users, ArrowUpRight, Layers } from 'lucide-react';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import HoloCardContainer from '@/components/HoloCardContainer';
 
 // Sample curated collections data - diverse collection types
 const collections = [
@@ -240,7 +239,15 @@ export default function PortfolioPage() {
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
               <h2 className="flex items-center gap-3 text-2xl tracking-wider font-mono">
-                <Sparkles className="w-6 h-6 text-cyan-400" />
+                <Sparkles 
+                  className="w-6 h-6" 
+                  strokeWidth={2.5} 
+                  fill="none"
+                  stroke="#a855f7"
+                  style={{
+                    filter: 'drop-shadow(0 0 6px #a855f7) drop-shadow(0 0 12px #06b6d4)'
+                  }}
+                />
                 <span className="text-holographic">[ ALL COLLECTIONS ]</span>
               </h2>
             </div>
@@ -327,7 +334,7 @@ export default function PortfolioPage() {
       <ScrollReveal>
         <section className="relative z-10 px-6 md:px-12 py-20">
           <div className="max-w-3xl mx-auto">
-            <HoloCardContainer>
+            <div className="relative overflow-hidden rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-950/20 to-cyan-950/20 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/60 hover:shadow-lg hover:shadow-purple-500/10">
               <div className="text-center p-8">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
                   <Award className="w-4 h-4" />
@@ -358,7 +365,7 @@ export default function PortfolioPage() {
                   </Link>
                 </div>
               </div>
-            </HoloCardContainer>
+            </div>
           </div>
         </section>
       </ScrollReveal>

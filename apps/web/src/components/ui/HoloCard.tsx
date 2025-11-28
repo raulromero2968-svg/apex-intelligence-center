@@ -11,11 +11,12 @@ interface HoloCardProps {
 }
 
 /**
- * HoloCard - High-emphasis glassmorphism container with animated breathing border
+ * HoloCard - High-emphasis glassmorphism container with ethereal fading edges
  * Use for: Subscription forms, CTAs, featured content
  *
  * Features:
- * - Animated breathing border with cyan/blue gradient
+ * - Fading ethereal edges for true holographic effect
+ * - Animated breathing border with cyan/purple gradient
  * - Corner accent brackets (Intel aesthetic)
  * - Scanline overlay effect
  * - Three intensity levels for visual emphasis
@@ -27,22 +28,25 @@ export function HoloCard({
 }: HoloCardProps) {
   const intensityConfig = {
     low: {
-      borderOpacity: 'border-cyan-500/30',
-      glowSize: 'shadow-[0_0_20px_rgba(6,182,212,0.15)]',
+      borderOpacity: 'border-cyan-500/20',
+      glowSize: 'shadow-[0_0_30px_rgba(6,182,212,0.15)]',
       scanlineOpacity: 'opacity-[0.02]',
       breathingOpacity: 'opacity-20',
+      fadeSize: 'blur-[2px]',
     },
     medium: {
-      borderOpacity: 'border-cyan-500/50',
-      glowSize: 'shadow-[0_0_40px_rgba(6,182,212,0.25)]',
+      borderOpacity: 'border-cyan-500/30',
+      glowSize: 'shadow-[0_0_50px_rgba(6,182,212,0.25)]',
       scanlineOpacity: 'opacity-[0.03]',
       breathingOpacity: 'opacity-30',
+      fadeSize: 'blur-[3px]',
     },
     high: {
-      borderOpacity: 'border-cyan-400/70',
-      glowSize: 'shadow-[0_0_60px_rgba(6,182,212,0.4)]',
+      borderOpacity: 'border-cyan-400/40',
+      glowSize: 'shadow-[0_0_70px_rgba(6,182,212,0.4)]',
       scanlineOpacity: 'opacity-[0.04]',
       breathingOpacity: 'opacity-50',
+      fadeSize: 'blur-[4px]',
     },
   };
 
@@ -58,15 +62,44 @@ export function HoloCard({
         className
       )}
     >
-      {/* Animated Breathing Border Gradient */}
+      {/* Outer ethereal glow - creates the holographic atmosphere */}
       <div
         className={clsx(
-          'absolute -inset-0.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-cyan-500 rounded-2xl blur-sm',
+          'absolute -inset-8 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-2xl',
+          'group-hover:from-cyan-500/15 group-hover:via-purple-500/15 group-hover:to-pink-500/15',
+          'transition-all duration-1000',
+          'animate-breathing'
+        )}
+      />
+
+      {/* Animated Breathing Border Gradient with fade */}
+      <div
+        className={clsx(
+          'absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 rounded-2xl',
+          config.fadeSize,
           'group-hover:opacity-75 transition duration-1000 group-hover:duration-200',
           'animate-breathing',
           config.breathingOpacity
         )}
       />
+
+      {/* Fading edge overlay - creates the ethereal holographic border */}
+      <div className="absolute -inset-0.5 rounded-2xl overflow-hidden pointer-events-none">
+        {/* Top edge fade */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-cyan-400/30 via-cyan-400/10 to-transparent blur-sm" />
+        {/* Bottom edge fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-purple-400/30 via-purple-400/10 to-transparent blur-sm" />
+        {/* Left edge fade */}
+        <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-cyan-400/30 via-cyan-400/10 to-transparent blur-sm" />
+        {/* Right edge fade */}
+        <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-purple-400/30 via-purple-400/10 to-transparent blur-sm" />
+        
+        {/* Corner glows for extra ethereal effect */}
+        <div className="absolute top-0 left-0 w-16 h-16 bg-cyan-400/20 rounded-full blur-xl" />
+        <div className="absolute top-0 right-0 w-16 h-16 bg-purple-400/20 rounded-full blur-xl" />
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-purple-400/20 rounded-full blur-xl" />
+        <div className="absolute bottom-0 right-0 w-16 h-16 bg-pink-400/20 rounded-full blur-xl" />
+      </div>
 
       {/* Main Container */}
       <div className={clsx(
@@ -85,21 +118,21 @@ export function HoloCard({
           style={{
             backgroundImage: `
               linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
-              linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06))
+              linear-gradient(90deg, rgba(6,182,212,0.06), rgba(168,85,247,0.02), rgba(236,72,153,0.06))
             `,
             backgroundSize: '100% 4px, 3px 100%',
           }}
         />
 
-        {/* Corner Accents - Intel/HUD aesthetic */}
-        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none" />
-        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-cyan-400/60 pointer-events-none" />
-        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-cyan-400/60 pointer-events-none" />
-        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-cyan-400/60 pointer-events-none" />
+        {/* Corner Accents - Intel/HUD aesthetic with glow */}
+        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
+        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-purple-400/60 pointer-events-none shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-purple-400/60 pointer-events-none shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-pink-400/60 pointer-events-none shadow-[0_0_8px_rgba(236,72,153,0.6)]" />
 
         {/* Ambient glow spots */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Content */}
         <div className="relative z-10 p-8 md:p-10">

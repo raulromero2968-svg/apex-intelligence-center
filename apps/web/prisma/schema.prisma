@@ -439,3 +439,67 @@ model SimulationTrade {
   @@index([suspicious])
   @@index([createdAt])
 }
+
+// ============================================================================
+// FOUNDATIONAL LITERATURE EMBEDDINGS (KB-09 pgvector)
+// ============================================================================
+// Curated collection of ~25 foundational works that shaped human thought,
+// civilization, ethics, science, and culture (Prehistory to 1870).
+// Used for RAG training, ethical simulations, and TCG predictions.
+//
+// Trade-offs:
+// - GOOD: Lit embeddings enrich predictions with timeless ethical frameworks
+// - BAD: Old texts may bias modern ethics—filter with corrigibility checks
+// ============================================================================
+
+// Literature embeddings for semantic similarity search (KB-09 patterns)
+model LitEmbedding {
+  id              String   @id @default(cuid())
+  title           String   // e.g., "Epic of Gilgamesh", "Republic"
+  author          String?  // e.g., "Plato", "Anonymous"
+  dateApprox      String?  // e.g., "~2100 BCE", "380 BCE"
+  category        String   // "religion" | "philosophy" | "literature" | "history" | "science"
+
+  // Content and summary
+  description     String   @db.Text // Why useful for humanity
+  keyThemes       Json?    // Array of key themes: ["mortality", "ethics", "governance"]
+
+  // pgvector embedding for similarity search (KB-09)
+  // Uses 1536-dim for OpenAI text-embedding-3-large compatibility
+  embedding       Unsupported("vector(1536)")?
+
+  // Bostrom alignment scoring (KB-05 ethical safeguards)
+  ethicsScore     Float    @default(0.5)  // 0-1 alignment with FHI longtermism
+  corrigibilityFlag Boolean @default(true) // Safe for AI training without bias filtering
+
+  // Usage tracking
+  usageCount      Int      @default(0)    // Times used in RAG queries
+  lastUsedAt      DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([title, author])
+  @@index([category])
+  @@index([ethicsScore])
+  @@index([corrigibilityFlag])
+}
+
+// Literature usage log (for audit trail and RAG improvement)
+model LitUsageLog {
+  id              String   @id @default(cuid())
+  litEmbeddingId  String
+  userId          String?
+  queryHash       String   // SHA-256 hash of query for privacy
+
+  // Context of usage
+  usageType       String   // "rag_query" | "simulation" | "ethics_check"
+  relevanceScore  Float?   // 0-1 relevance in this query
+
+  // Audit trail
+  createdAt       DateTime @default(now())
+
+  @@index([litEmbeddingId])
+  @@index([userId])
+  @@index([createdAt])
+}

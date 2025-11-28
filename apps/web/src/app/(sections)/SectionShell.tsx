@@ -19,8 +19,9 @@ export default function SectionShell({
         {/* Prismatic Title with Scan Effect */}
         <div className="relative inline-block">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight relative z-10">
-            <span className="text-holographic drop-shadow-[0_0_20px_rgba(6,182,212,0.5)]">Underground</span>{' '}
-            <span className="text-holographic drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">{title}</span>
+            <span className="text-holographic drop-shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+              Underground {title}
+            </span>
           </h1>
           
           {/* Animated Scan Line Effect */}

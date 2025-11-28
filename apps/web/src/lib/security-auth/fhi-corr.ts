@@ -322,3 +322,257 @@ export function getEthicalDisclaimer(highStake: boolean): string {
     'Market predictions are probabilistic estimates, not financial advice.'
   );
 }
+
+// ============================================================================
+// LITERATURE-ENHANCED CORRIGIBILITY (KB-05 + KB-02 Integration)
+// ============================================================================
+// Extended claims for foundational literature integration with simulation markets.
+// Adds deep utopia framing and ethical score requirements.
+
+/**
+ * Literature-enhanced simulation claims
+ */
+export interface LiteratureSimulationClaims extends SimulationClaims {
+  /** Minimum ethics score requirement for literature sources */
+  minEthicsScore: number;
+  /** Whether deep utopia framing is enabled (abundance-focused posthuman scenarios) */
+  deepUtopiaEnabled: boolean;
+  /** Categories of literature allowed for this user */
+  allowedLitCategories: Array<'religion' | 'philosophy' | 'literature' | 'history' | 'science'>;
+}
+
+/**
+ * Deep utopia configuration
+ * From Bostrom's "Deep Utopia" - framing posthuman futures as abundance, not dystopia
+ */
+export interface DeepUtopiaConfig {
+  /** Focus on meaningful posthuman scenarios */
+  meaningfulWork: boolean;
+  /** Emphasis on dignity in simulated futures */
+  preserveDignity: boolean;
+  /** Avoid dystopian biases in predictions */
+  avoidDystopianBias: boolean;
+  /** Value loading for beneficial AI outcomes */
+  valueLoadingEnabled: boolean;
+}
+
+/**
+ * Default deep utopia configuration
+ */
+export const DEFAULT_DEEP_UTOPIA_CONFIG: DeepUtopiaConfig = {
+  meaningfulWork: true,
+  preserveDignity: true,
+  avoidDystopianBias: true,
+  valueLoadingEnabled: true,
+};
+
+/**
+ * Generate literature-enabled simulation token
+ *
+ * @param userId - User identifier
+ * @param email - User email
+ * @param tier - Subscription tier
+ * @param options - Extended options including literature preferences
+ * @returns Signed JWT with literature simulation claims
+ */
+export async function generateLiteratureSimulationToken(
+  userId: string,
+  email: string,
+  tier: SubscriptionTier,
+  options: {
+    corrigible?: boolean;
+    researchExemption?: boolean;
+    sessionId: string;
+    minEthicsScore?: number;
+    deepUtopiaEnabled?: boolean;
+    allowedLitCategories?: LiteratureSimulationClaims['allowedLitCategories'];
+  }
+): Promise<string> {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET not configured');
+  }
+
+  const secretKey = new TextEncoder().encode(secret);
+
+  // Determine min ethics score by tier
+  const tierEthicsScores: Record<SubscriptionTier, number> = {
+    free: 0.7, // Higher threshold for free tier (more filtering)
+    pro: 0.5, // Standard threshold
+    enterprise: 0.3, // Research tier can access lower-scored sources
+  };
+
+  const claims: Partial<LiteratureSimulationClaims> = {
+    userId,
+    email,
+    role: tier,
+    simulationLimit: SIMULATION_LIMITS[tier],
+    corrigible: options.corrigible !== false,
+    researchExemption: options.researchExemption === true,
+    sessionStart: Date.now() / 1000,
+    // Literature-specific claims
+    minEthicsScore: options.minEthicsScore ?? tierEthicsScores[tier],
+    deepUtopiaEnabled: options.deepUtopiaEnabled ?? true,
+    allowedLitCategories: options.allowedLitCategories ?? [
+      'religion',
+      'philosophy',
+      'literature',
+      'history',
+      'science',
+    ],
+  };
+
+  return await new SignJWT({ ...claims, sessionId: options.sessionId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('15m')
+    .sign(secretKey);
+}
+
+/**
+ * Literature corrigibility check
+ *
+ * Validates whether a literature-enhanced simulation is allowed based on:
+ * 1. Base simulation corrigibility checks
+ * 2. Literature category restrictions
+ * 3. Ethics score requirements
+ * 4. Deep utopia framing compliance
+ *
+ * @param token - JWT access token
+ * @param outcome - Proposed simulation outcome
+ * @param litCategory - Category of literature being used
+ * @param litEthicsScore - Ethics score of literature source
+ * @returns Corrigibility result
+ */
+export async function literatureCorrigible(
+  token: string,
+  outcome: string,
+  litCategory: 'religion' | 'philosophy' | 'literature' | 'history' | 'science',
+  litEthicsScore: number
+): Promise<CorrigibilityResult & { deepUtopiaRequired: boolean }> {
+  return Sentry.startSpan(
+    { name: 'security.fhi.literature_corrigibility', op: 'auth.check' },
+    async (span) => {
+      span?.setAttribute('outcome', outcome.slice(0, 100));
+      span?.setAttribute('litCategory', litCategory);
+      span?.setAttribute('litEthicsScore', litEthicsScore);
+
+      // First, check base corrigibility
+      const baseResult = await fhiCorrigible(token, outcome);
+
+      if (!baseResult.allowed) {
+        return { ...baseResult, deepUtopiaRequired: false };
+      }
+
+      // Verify literature-specific claims
+      const claims = await verifySimulationToken(token);
+      if (!claims) {
+        return {
+          allowed: false,
+          reason: 'Invalid authentication for literature access',
+          requiresMfa: false,
+          requiresDisclaimer: false,
+          deepUtopiaRequired: false,
+        };
+      }
+
+      // Check literature category access
+      const litClaims = claims as unknown as LiteratureSimulationClaims;
+      const allowedCategories = litClaims.allowedLitCategories || [
+        'religion',
+        'philosophy',
+        'literature',
+        'history',
+        'science',
+      ];
+
+      if (!allowedCategories.includes(litCategory)) {
+        span?.setAttribute('result', 'category_blocked');
+        return {
+          allowed: false,
+          reason: `Access to ${litCategory} literature not permitted for this user`,
+          requiresMfa: false,
+          requiresDisclaimer: false,
+          deepUtopiaRequired: false,
+        };
+      }
+
+      // Check ethics score requirement
+      const minEthicsScore = litClaims.minEthicsScore ?? 0.5;
+      if (litEthicsScore < minEthicsScore) {
+        span?.setAttribute('result', 'low_ethics_score');
+        return {
+          allowed: false,
+          reason: `Literature source ethics score (${litEthicsScore}) below minimum (${minEthicsScore})`,
+          requiresMfa: false,
+          requiresDisclaimer: true,
+          deepUtopiaRequired: false,
+        };
+      }
+
+      // Deep utopia check for posthuman outcomes
+      const deepUtopiaEnabled = litClaims.deepUtopiaEnabled ?? true;
+      const requiresDeepUtopia = isHighStakeOutcome(outcome) && deepUtopiaEnabled;
+
+      span?.setAttribute('result', 'allowed');
+      span?.setAttribute('deepUtopiaRequired', requiresDeepUtopia);
+
+      return {
+        ...baseResult,
+        deepUtopiaRequired: requiresDeepUtopia,
+      };
+    }
+  );
+}
+
+/**
+ * Get deep utopia disclaimer for posthuman scenarios
+ *
+ * @param config - Deep utopia configuration
+ * @returns Disclaimer text emphasizing abundance and dignity
+ */
+export function getDeepUtopiaDisclaimer(config: Partial<DeepUtopiaConfig> = {}): string {
+  const fullConfig = { ...DEFAULT_DEEP_UTOPIA_CONFIG, ...config };
+
+  const parts: string[] = [];
+
+  if (fullConfig.meaningfulWork) {
+    parts.push('Posthuman scenarios should emphasize meaningful existence, not mere optimization.');
+  }
+
+  if (fullConfig.preserveDignity) {
+    parts.push('All simulations must preserve dignity of potentially sentient digital minds.');
+  }
+
+  if (fullConfig.avoidDystopianBias) {
+    parts.push('Analysis framed for flourishing, avoiding dystopian speculation biases.');
+  }
+
+  if (fullConfig.valueLoadingEnabled) {
+    parts.push('Value loading enabled for beneficial AI outcomes per superintelligence strategies.');
+  }
+
+  return parts.join(' ');
+}
+
+/**
+ * Corrigibility disclaimer combining FHI ethics and literature grounding
+ *
+ * @param litSourceCount - Number of literature sources used
+ * @param avgEthicsScore - Average ethics score of sources
+ * @param deepUtopia - Whether deep utopia framing is active
+ * @returns Combined disclaimer
+ */
+export function getLiteratureCorrigibilityDisclaimer(
+  litSourceCount: number,
+  avgEthicsScore: number,
+  deepUtopia: boolean
+): string {
+  const base = `Analysis grounded in ${litSourceCount} foundational texts (avg ethics: ${avgEthicsScore.toFixed(2)}/1.0). `;
+  const fhi = 'FHI longtermism: Simulations for flourishing, not speculation. ';
+  const utopia = deepUtopia
+    ? getDeepUtopiaDisclaimer({ meaningfulWork: true, preserveDignity: true })
+    : '';
+
+  return base + fhi + utopia;
+}

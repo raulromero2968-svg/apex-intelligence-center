@@ -30,14 +30,14 @@ export default function CustomCursor() {
 
     return (
         <div
-            className="fixed pointer-events-none z-[9999]"
+            className="fixed pointer-events-none z-[10001]"
             style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
                 transform: 'translate(-50%, -50%)',
             }}
         >
-            {/* No visible cursor element - just tracking for potential future use */}
+            {/* Cursor visible above tutorial popup (z-10001 > tutorial z-10000) */}
         </div>
     );
 }

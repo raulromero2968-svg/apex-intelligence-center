@@ -266,6 +266,16 @@ export default function RootLayout({
         )}
 
       >
+        {/* SVG Gradient Definitions for Prismatic Icons */}
+        <svg width="0" height="0" style={{ position: 'absolute' }}>
+          <defs>
+            <linearGradient id="prismatic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style={{ stopColor: '#06b6d4', stopOpacity: 1 }} />
+              <stop offset="50%" style={{ stopColor: '#a855f7', stopOpacity: 1 }} />
+              <stop offset="100%" style={{ stopColor: '#ec4899', stopOpacity: 1 }} />
+            </linearGradient>
+          </defs>
+        </svg>
 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:bg-cyan-400 focus:text-black focus:px-3 focus:py-2 focus:rounded focus:z-[9999]">
 
@@ -335,11 +345,7 @@ export default function RootLayout({
 
 
 
-        <footer className="w-full border-t border-cyan-500/30 bg-black/80 text-[10px] sm:text-xs text-cyan-300/80 py-3 px-4 text-center shadow-[0_0_25px_rgba(8,145,178,0.35)] backdrop-blur">
 
-          Production Equilibrium Achieved November 19 2025 | Guarded by 6 Unbreakable Laws | Commit af4f277
-
-        </footer>
 
 
 
