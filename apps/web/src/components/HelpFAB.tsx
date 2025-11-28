@@ -5,6 +5,12 @@ import Link from 'next/link';
 
 export default function HelpFAB() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // TODO: Connect to auth system
+
+  // Don't show on landing page unless logged in
+  if (!isLoggedIn) {
+    return null;
+  }
 
   const handleRestartTour = () => {
     if (typeof window !== 'undefined' && (window as any).restartApexTour) {
@@ -59,10 +65,10 @@ export default function HelpFAB() {
             <div className="absolute bottom-1/3 right-1/3 w-1/3 h-1/3 bg-gradient-to-bl from-purple-400 to-transparent blur-sm opacity-50 rounded-full" />
           </div>
           
-          {/* Question mark symbol */}
+          {/* AI symbol */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <span className="text-white font-bold text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              ?
+            <span className="text-white font-bold text-3xl drop-shadow-[0_2px_8px_rgba(6,182,212,0.8)] tracking-wider">
+              ✱
             </span>
           </div>
           

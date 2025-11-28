@@ -103,10 +103,16 @@ export default function HomePage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
             </span>
-            <Terminal className="w-4 h-4" />
-            <span className="tracking-wider">NEXUS // SYSTEM ACTIVE</span>
-            <span className="text-slate-500">|</span>
-            <span className="text-slate-400 text-xs">{currentTime}</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-cyan-400/60 text-xs">◆</span>
+              <div className="flex items-center gap-2">
+                <Terminal className="w-4 h-4" />
+                <span className="tracking-widest font-bold">NEXUS</span>
+                <span className="text-cyan-400/40">●</span>
+                <span className="tracking-wide text-sm">ONLINE</span>
+              </div>
+              <span className="text-cyan-400/60 text-xs">◆</span>
+            </div>
             
             {/* Right Sigil */}
             <svg className="w-5 h-5 text-cyan-500/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

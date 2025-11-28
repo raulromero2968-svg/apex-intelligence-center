@@ -183,7 +183,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           {/* Document Content - Digital Scroll */}
           <div className="px-8 py-12 bg-black/20">
             <Suspense fallback={
-              <div className="prose prose-invert prose-lg max-w-none font-mono">
+              <div className="essay-content prose prose-invert prose-lg max-w-none font-mono">
                 <div className="animate-pulse space-y-4">
                   <div className="h-4 bg-cyan-500/10 rounded w-3/4"></div>
                   <div className="h-4 bg-cyan-500/10 rounded w-full"></div>
@@ -191,7 +191,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 </div>
               </div>
             }>
-              <div className="prose prose-invert prose-lg max-w-none font-mono
+              <div className="essay-content prose prose-invert prose-lg max-w-none font-mono
                 prose-headings:text-cyan-300 prose-headings:font-bold prose-headings:font-mono
                 prose-h1:text-4xl prose-h1:mt-0 prose-h1:mb-8 prose-h1:text-holographic prose-h1:hidden
                 prose-h2:text-2xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:pb-4 prose-h2:border-b prose-h2:border-cyan-500/30
@@ -215,6 +215,26 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
               </div>
             </Suspense>
           </div>
+
+          {/* Custom CSS for Essay Spacing */}
+          <style jsx global>{`
+            .essay-content p {
+              margin-bottom: 2rem !important;
+              line-height: 2 !important;
+              display: block !important;
+            }
+            .essay-content p + p {
+              margin-top: 2rem !important;
+            }
+            .essay-content h2 {
+              margin-top: 4rem !important;
+              margin-bottom: 2rem !important;
+            }
+            .essay-content h3 {
+              margin-top: 3rem !important;
+              margin-bottom: 1.5rem !important;
+            }
+          `}</style>
 
           {/* Terminal Footer */}
           <div className="bg-black/60 border-t border-cyan-500/30 px-6 py-4">
