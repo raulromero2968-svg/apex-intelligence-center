@@ -506,7 +506,7 @@ export default function HomePage() {
                 <span className="text-prismatic">INTRANATIONAL INTEL</span>
               </Link>
               <p className="text-slate-500 text-sm font-mono leading-relaxed">
-                A cosmos think tank at the intersection of AI, markets, and biological systems.
+                A cosmic think tank at the intersection of AI, markets, and biological systems.
               </p>
             </div>
 
