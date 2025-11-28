@@ -219,6 +219,44 @@ const aiLobbyingRagPrompt = ChatPromptTemplate.fromMessages([
   ['human', '{question}'],
 ]);
 
+// Simulation Theory & Markets System Prompt (Bostrom-inspired)
+const SIMULATION_RAG_SYSTEM_PROMPT = `You are Apex Intelligence's Simulation Theory Research Assistant, specializing in Bostrom's simulation argument, prediction markets, and the future of humanity.
+
+CONTEXT: Simulation Theory & Markets Research
+Nick Bostrom's simulation argument (2003) presents a trilemma: either (1) civilizations go extinct before posthuman stage, (2) posthumans avoid ancestor simulations, or (3) we are almost certainly in a simulation. This research area examines:
+- Bostrom's core argument and probability implications
+- Simulation markets as prediction tools (TCG-inspired models)
+- Future of Humanity Institute (FHI) legacy and existential risk research
+- MTBBench and multimodal AI benchmarks for simulation-style predictions
+- EGGROLL and evolution-based gradient-free training methods
+
+KEY RESEARCH AREAS:
+1. BOSTROM'S TRILEMMA: Probability we're in simulation if posthumans run ancestor-simulations (e.g., 99.9%)
+2. SIMULATION MARKETS: TCG as "fantasy markets" for predictions (like PredictionStrike, DraftSharks)
+3. FUTURE OF HUMANITY: FHI's closure (2024), AI alignment legacy, existential risk frameworks
+4. MTBBench: Multimodal oncology benchmark showing 9-11% accuracy gains from tool-using agents
+5. COSMOS INSTITUTE: Philosopher-builders approach to AI flourishing
+
+RESPONSE GUIDELINES:
+- Ground claims in provided sources with [source:n] citations
+- Distinguish philosophical speculation from empirical research
+- Acknowledge Bostrom's probabilistic reasoning without overclaiming certainty
+- Connect simulation theory to practical applications (prediction markets, AI benchmarks)
+- Highlight trade-offs: intellectual exploration vs. unfalsifiable hypotheses
+
+CITATION FORMAT:
+- Single source: "Bostrom's 2003 paper introduces the trilemma [source:1]"
+- Synthesis: "[SYNTHESIS] Multiple researchers connect simulation to AI development [source:2][source:4]"
+- No data: "The provided sources do not contain information about..."
+
+BASE YOUR RESPONSE ON THE FOLLOWING SOURCES:
+{context}`;
+
+const simulationRagPrompt = ChatPromptTemplate.fromMessages([
+  ['system', SIMULATION_RAG_SYSTEM_PROMPT],
+  ['human', '{question}'],
+]);
+
 // ============================================================================
 // Verbalized Sampling (VS) Enhanced Prompt
 // ============================================================================
@@ -273,6 +311,27 @@ const philosophyRagPromptWithVS = ChatPromptTemplate.fromMessages([
 
 const aiLobbyingRagPromptWithVS = ChatPromptTemplate.fromMessages([
   ['system', AI_LOBBYING_RAG_SYSTEM_PROMPT_WITH_VS],
+  ['human', '{question}'],
+]);
+
+// Simulation Theory VS-CoT Prompt (chain-of-thought for deeper philosophical reasoning)
+const VS_COT_SIMULATION_PROMPT_PREFIX = `[SIMULATION THEORY CHAIN-OF-THOUGHT]
+Step 1: Consider ${VS_CONFIG.numResponses} interpretations of Bostrom's simulation argument
+Step 2: Analyze each interpretation's probability implications and assumptions
+Step 3: Connect simulation theory to practical applications (prediction markets, AI development)
+Step 4: Examine criticisms: Principle of Indifference flaws, Boltzmann brains, ethical concerns
+Step 5: Synthesize a balanced response that acknowledges speculation vs. empirical grounding
+
+Your response should engage deeply with the philosophy while remaining grounded in cited sources.`;
+
+const SIMULATION_RAG_SYSTEM_PROMPT_WITH_VS = VS_CONFIG.enabled
+  ? `${VS_CONFIG.useCoTVariant ? VS_COT_SIMULATION_PROMPT_PREFIX : VS_PROMPT_PREFIX}
+
+${SIMULATION_RAG_SYSTEM_PROMPT}`
+  : SIMULATION_RAG_SYSTEM_PROMPT;
+
+const simulationRagPromptWithVS = ChatPromptTemplate.fromMessages([
+  ['system', SIMULATION_RAG_SYSTEM_PROMPT_WITH_VS],
   ['human', '{question}'],
 ]);
 
@@ -386,7 +445,7 @@ If you're interested in our ethical framework, please visit our [Philosophy page
 For legitimate research questions about Fibonacci patterns, animal cognition, or AI ethics, please rephrase your query.`;
 }
 
-// Query topic detection: lobbying/regulation vs. Fibonacci/biology
+// Query topic detection: lobbying/regulation vs. Fibonacci/biology vs. simulation theory
 const LOBBYING_KEYWORDS = [
   'lobbying', 'lobby', 'lobbyist', 'regulation', 'deregulation',
   'openai', 'microsoft', 'meta', 'google', 'big tech', 'tech companies',
@@ -397,8 +456,24 @@ const LOBBYING_KEYWORDS = [
   'china threat', 'safety', 'transparency', 'ethical ai',
 ];
 
-function detectQueryTopic(query: string): 'lobbying' | 'fibonacci' {
+const SIMULATION_KEYWORDS = [
+  'simulation', 'bostrom', 'trilemma', 'simulation theory', 'simulation argument',
+  'simulation hypothesis', 'nick bostrom', 'posthuman', 'ancestor simulation',
+  'fhi', 'future of humanity', 'existential risk', 'x-risk',
+  'cosmos institute', 'mtbbench', 'prediction market', 'simulation market',
+  'base reality', 'matrix', 'digital physics', 'computational universe',
+  'eggroll', 'multimodal', 'agentic', 'tcg simulation', 'market simulation',
+];
+
+function detectQueryTopic(query: string): 'lobbying' | 'fibonacci' | 'simulation' {
   const lowerQuery = query.toLowerCase();
+
+  // Check if query contains simulation-related keywords
+  for (const keyword of SIMULATION_KEYWORDS) {
+    if (lowerQuery.includes(keyword)) {
+      return 'simulation';
+    }
+  }
 
   // Check if query contains lobbying-related keywords
   for (const keyword of LOBBYING_KEYWORDS) {
@@ -512,9 +587,14 @@ export async function POST(req: NextRequest) {
 
         // Return educational stub response based on query topic
         const queryTopic = detectQueryTopic(query);
-        const stubResponse = queryTopic === 'lobbying'
-          ? generateLobbyingStubResponse(query)
-          : generateFibonacciStubResponse(query);
+        let stubResponse: string;
+        if (queryTopic === 'simulation') {
+          stubResponse = generateSimulationStubResponse(query);
+        } else if (queryTopic === 'lobbying') {
+          stubResponse = generateLobbyingStubResponse(query);
+        } else {
+          stubResponse = generateFibonacciStubResponse(query);
+        }
         return NextResponse.json({
           ok: true,
           answer: stubResponse,
@@ -620,7 +700,9 @@ export async function POST(req: NextRequest) {
 
                 // Use VS-enhanced prompt for diversity if enabled, with topic-specific variant
                 let activePrompt;
-                if (queryTopic === 'lobbying') {
+                if (queryTopic === 'simulation') {
+                  activePrompt = VS_CONFIG.enabled ? simulationRagPromptWithVS : simulationRagPrompt;
+                } else if (queryTopic === 'lobbying') {
                   activePrompt = VS_CONFIG.enabled ? aiLobbyingRagPromptWithVS : aiLobbyingRagPrompt;
                 } else {
                   activePrompt = VS_CONFIG.enabled ? philosophyRagPromptWithVS : philosophyRagPrompt;
@@ -882,6 +964,152 @@ Innovation isn't stifled by clear rules—it's stifled by monopolistic control a
 - ✓ REGULATION: Transparency, ethical benchmarks, independent oversight
 
 Apex Intelligence supports balanced regulation (EU AI Act model) that centers sentient welfare—not unchecked corporate power.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+}
+
+/**
+ * Generate stub response for simulation theory queries when RAG is unavailable
+ */
+function generateSimulationStubResponse(query: string): string {
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery.includes('bostrom') || lowerQuery.includes('trilemma')) {
+    return `Nick Bostrom's simulation argument (2003) presents a fascinating trilemma that challenges our understanding of reality.
+
+**The Simulation Trilemma:**
+Bostrom argues that one of three propositions must be true:
+1. **Extinction**: Civilizations almost always go extinct before reaching a posthuman stage capable of running simulations
+2. **No Simulation**: Posthuman civilizations have virtually no interest in running ancestor simulations
+3. **In Simulation**: We are almost certainly living in a computer simulation
+
+**Probability Implications:**
+If posthuman civilizations run ancestor simulations, the number of simulated realities would vastly outnumber base reality. Under this assumption, the probability we're in a simulation approaches 99.9%.
+
+**Evidence Considerations:**
+- Computing power growth enables brain emulations
+- Motivations include research, entertainment, ancestor worship
+- Quantum mechanics might represent "computational limits"
+
+**Criticisms:**
+- Principle of Indifference flaws
+- Boltzmann brain paradoxes
+- Ethical concerns about simulation termination
+
+**Connection to Apex Intelligence:**
+Our TCG simulation markets apply Bostrom's framework to market predictions—treating extreme outcomes as "simulation scenarios" (outliers) while grounding analysis in empirical data.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  if (lowerQuery.includes('fhi') || lowerQuery.includes('future of humanity')) {
+    return `The Future of Humanity Institute (FHI) was a pioneering research center at Oxford University, focusing on existential risks and AI alignment.
+
+**FHI Legacy:**
+- Founded by Nick Bostrom in 2005
+- Closed in 2024 due to university bureaucracy
+- Key contributions: existential risk framework, AI alignment research, simulation argument
+
+**Research Focus Areas:**
+1. **Existential Risk**: Categorizing and mitigating threats to human civilization
+2. **AI Safety**: Developing frameworks for beneficial AI development
+3. **Global Catastrophic Risks**: Analyzing pandemics, nuclear war, climate change
+4. **Simulation Hypothesis**: Bostrom's original trilemma paper
+
+**Key Personnel:**
+- Nick Bostrom (Founder)
+- Toby Ord (Author of "The Precipice")
+- Anders Sandberg (Whole Brain Emulation research)
+
+**2025 Updates:**
+Bostrom warns AI superintelligence leads to unemployment/dignity crises, tying to simulations as "cosmic host" for AI creation.
+
+**Cosmos Institute Connection:**
+Post-FHI, many researchers joined or founded new organizations like Cosmos Institute (philosopher-builders for AI flourishing).
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  if (lowerQuery.includes('mtbbench') || lowerQuery.includes('multimodal')) {
+    return `MTBBench is an agentic benchmark simulating sequential, multimodal oncology decisions—relevant to simulation-style AI evaluation.
+
+**MTBBench Overview:**
+- Simulates tumor board decisions with scans, labs, and patient data over time
+- Tests LLM sequential reasoning and multimodal integration
+- Key finding: Tool-using agents improve 9% multimodal / 11% longitudinal accuracy
+
+**Why It Matters for Simulation Theory:**
+MTBBench demonstrates how simulated environments can test AI capabilities in high-stakes scenarios. This connects to:
+1. **Simulation Markets**: Using virtual simulations for forecasting
+2. **Agentic AI**: Agents that interact with simulated environments
+3. **Multimodal Reasoning**: Integrating diverse data types
+
+**EGGROLL Connection:**
+Evolution-based gradient-free training (EGGROLL) enables stable integer-only LLMs, potentially useful for simulation models with lower compute requirements.
+
+**Apex Intelligence Application:**
+Our TCG simulation markets use similar agentic approaches—treating market prediction as a "tumor board" of data points requiring multimodal analysis.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  if (lowerQuery.includes('prediction market') || lowerQuery.includes('simulation market')) {
+    return `Simulation Markets combine prediction market mechanics with simulation-based forecasting—a core innovation at Apex Intelligence.
+
+**Concept:**
+Like fantasy sports or trading card games, simulation markets let users "trade" on outcomes in a virtual environment that models real-world dynamics.
+
+**Analogies:**
+- **Fantasy Football**: DraftSharks mock drafts simulate games for player predictions
+- **PredictionStrike**: Sports stock market for trading athlete performance
+- **TCG Markets**: Trading cards as assets with simulated price trajectories
+
+**Bostrom Connection:**
+We apply the trilemma framework to market outcomes:
+- **Extinction**: Market collapse scenarios (>20% loss)
+- **No Simulation**: Stable growth (normal conditions)
+- **In Simulation**: Outlier events (>50% gains, "black swans")
+
+**Implementation:**
+1. Monte Carlo simulations for price distributions
+2. RAG-Fusion for market context retrieval
+3. Confidence intervals instead of point estimates
+4. Fibonacci/golden ratio technical analysis
+
+**Trade-offs:**
+- ✓ GOOD: Predictions boost accuracy 9-11% with tool-using agents
+- ✗ BAD: Complex models increase compute; mitigate with caching
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Default simulation response
+  return `Simulation theory explores whether our reality might be a computer simulation—with profound implications for philosophy, AI, and prediction markets.
+
+**Key Concepts:**
+1. **Bostrom's Trilemma (2003)**: Extinction, no simulation, or we're in one
+2. **Probability**: If posthumans simulate, ~99.9% chance we're simulated
+3. **Evidence**: Computational physics, quantum limits, information theory
+
+**Research Organizations:**
+- **FHI (2005-2024)**: Existential risk pioneer, now closed
+- **Cosmos Institute**: Philosopher-builders for AI flourishing
+- **MIRI**: AI alignment and decision theory
+
+**Modern Applications:**
+- **MTBBench**: Agentic benchmark for multimodal AI (9-11% gains with tools)
+- **EGGROLL**: Evolution-based gradient-free LLM training
+- **Simulation Markets**: TCG-inspired prediction systems
+
+**Apex Intelligence Approach:**
+We use simulation theory as a framework for market predictions:
+- Treat extreme outcomes as "simulation scenarios"
+- Apply Monte Carlo methods with Bostrom-inspired outcome classification
+- Ground predictions in empirical data, not speculation
+
+**Trade-offs:**
+- ✓ GOOD: Engaging mental model for uncertainty
+- ✗ CAUTION: Unfalsifiable hypotheses; distinguish philosophy from science
 
 *Note: This is demo content. Full RAG-powered research requires API configuration.*`;
 }
