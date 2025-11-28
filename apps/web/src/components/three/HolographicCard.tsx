@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import { Float, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface CardProps {
@@ -60,12 +60,14 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
 
 // Sub-component to handle texture loading safely
 const CardFace = ({ imageUrl }: { imageUrl: string }) => {
-    // Fallback texture logic or loading state should be handled here
-    // For this POC, we assume a texture is loaded on the front face (Z+)
-    // In a real implementation, we use useTexture from @react-three/drei
-
-    // Note: Creating a simple colored face for the POC if no image is present
+    const texture = useTexture(imageUrl);
+    
     return (
-        <meshBasicMaterial attach="material-4" color="#22d3ee" map={null} />
+        <meshStandardMaterial 
+            attach="material-4" 
+            map={texture} 
+            roughness={0.3}
+            metalness={0.1}
+        />
     );
 }
