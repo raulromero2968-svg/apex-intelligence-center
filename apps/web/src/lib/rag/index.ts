@@ -77,3 +77,17 @@ export {
   type BostromRAGResult,
   type TrilemmaOutcome,
 } from './bostrom-variants';
+
+// ============================================================================
+// FHI Alignment RAG (KB-02 + KB-05 Integration)
+// ============================================================================
+export {
+  alignRAG,
+  quickAlignCheck as quickAlignRAGCheck,
+  getAlignmentSuffix,
+  requiresAlignmentProcessing,
+  getValueLoadingDescription,
+  type AlignmentConfig,
+  type AlignmentResponse,
+  type SimulationAlignmentContext,
+} from './align-prompt';
