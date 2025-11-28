@@ -351,3 +351,211 @@ export const multiModalRateLimiters = {
     return ratelimit(limits[tier], `multimodal:upload:${userId}`, 60);
   },
 };
+
+// ============================================================================
+// LITERATURE & PHILOSOPHY RATE LIMITERS (KB-10)
+// ============================================================================
+// Tiered rate limits for foundational literature queries and philosophy research.
+// Designed to balance access with resource consumption for RAG-heavy endpoints.
+
+/**
+ * Get rate limits for literature/philosophy queries
+ *
+ * @param tier - Subscription tier
+ * @returns Requests per day limits for literature queries
+ */
+export function getLiteratureLimits(tier: 'free' | 'pro' | 'enterprise'): {
+  daily: number;
+  perMinute: number;
+  burstSize: number;
+} {
+  switch (tier) {
+    case 'enterprise':
+      return { daily: Infinity, perMinute: Infinity, burstSize: Infinity };
+    case 'pro':
+      return { daily: 500, perMinute: 30, burstSize: 10 };
+    case 'free':
+    default:
+      return { daily: 50, perMinute: 5, burstSize: 3 };
+  }
+}
+
+/**
+ * Literature RAG rate limiter
+ *
+ * @param userId - User ID
+ * @param tier - Subscription tier
+ * @returns Rate limit result
+ */
+export async function literatureRatelimit(
+  userId: string,
+  tier: 'free' | 'pro' | 'enterprise'
+): Promise<RateLimitResult> {
+  const limits = getLiteratureLimits(tier);
+  return ratelimit(limits.perMinute, `literature:${userId}`, 60);
+}
+
+// ============================================================================
+// PREDICTION MARKET RATE LIMITERS (KB-10)
+// ============================================================================
+// Tiered rate limits for prediction market APIs (Polymarket, Manifold, Kalshi).
+// More restrictive to prevent abuse and respect external API limits.
+
+/**
+ * Get rate limits for prediction market APIs
+ *
+ * @param tier - Subscription tier
+ * @returns Requests per day limits
+ */
+export function getPredictionMarketLimits(tier: 'free' | 'pro' | 'enterprise'): {
+  polymarket: { daily: number; perMinute: number };
+  manifold: { daily: number; perMinute: number };
+  kalshi: { daily: number; perMinute: number };
+} {
+  switch (tier) {
+    case 'enterprise':
+      return {
+        polymarket: { daily: Infinity, perMinute: 60 },
+        manifold: { daily: Infinity, perMinute: 60 },
+        kalshi: { daily: Infinity, perMinute: 60 },
+      };
+    case 'pro':
+      return {
+        polymarket: { daily: 200, perMinute: 10 },
+        manifold: { daily: 200, perMinute: 10 },
+        kalshi: { daily: 200, perMinute: 10 },
+      };
+    case 'free':
+    default:
+      return {
+        polymarket: { daily: 20, perMinute: 2 },
+        manifold: { daily: 20, perMinute: 2 },
+        kalshi: { daily: 20, perMinute: 2 },
+      };
+  }
+}
+
+/**
+ * Prediction market rate limiter
+ *
+ * @param market - Market name ('polymarket' | 'manifold' | 'kalshi')
+ * @param userId - User ID
+ * @param tier - Subscription tier
+ * @returns Rate limit result
+ */
+export async function predictionMarketRatelimit(
+  market: 'polymarket' | 'manifold' | 'kalshi',
+  userId: string,
+  tier: 'free' | 'pro' | 'enterprise'
+): Promise<RateLimitResult> {
+  const limits = getPredictionMarketLimits(tier);
+  const marketLimits = limits[market];
+  return ratelimit(marketLimits.perMinute, `market:${market}:${userId}`, 60);
+}
+
+// ============================================================================
+// SIMULATION MARKET RATE LIMITERS (KB-10)
+// ============================================================================
+// Rate limits for simulation markets with EGGROLL training and Bostrom predictions.
+// Includes POST-Agency flags for goal updates.
+
+/**
+ * Get rate limits for simulation markets (Bostrom/EGGROLL)
+ *
+ * @param tier - Subscription tier
+ * @returns Simulation rate limits
+ */
+export function getSimulationMarketLimits(tier: 'free' | 'pro' | 'enterprise'): {
+  createSimulation: number;
+  tradeSimulation: number;
+  evolveModel: number;
+  postAgencyUpdates: number;
+} {
+  switch (tier) {
+    case 'enterprise':
+      return {
+        createSimulation: Infinity,
+        tradeSimulation: Infinity,
+        evolveModel: Infinity,
+        postAgencyUpdates: Infinity,
+      };
+    case 'pro':
+      return {
+        createSimulation: 10, // per hour
+        tradeSimulation: 100, // per hour
+        evolveModel: 20, // per hour
+        postAgencyUpdates: 50, // per hour
+      };
+    case 'free':
+    default:
+      return {
+        createSimulation: 2, // per hour
+        tradeSimulation: 20, // per hour
+        evolveModel: 5, // per hour
+        postAgencyUpdates: 10, // per hour
+      };
+  }
+}
+
+/**
+ * Simulation market rate limiter with action type
+ *
+ * @param action - Action type
+ * @param userId - User ID
+ * @param tier - Subscription tier
+ * @returns Rate limit result
+ */
+export async function simulationMarketRatelimit(
+  action: 'createSimulation' | 'tradeSimulation' | 'evolveModel' | 'postAgencyUpdates',
+  userId: string,
+  tier: 'free' | 'pro' | 'enterprise'
+): Promise<RateLimitResult> {
+  const limits = getSimulationMarketLimits(tier);
+  const actionLimit = limits[action];
+  return ratelimit(actionLimit, `simulation:${action}:${userId}`, 3600); // 1 hour window
+}
+
+// ============================================================================
+// CORRIGIBILITY-AWARE RATE LIMITING
+// ============================================================================
+// Rate limiters that integrate with corrigibility checks for sensitive operations.
+
+/**
+ * Corrigibility-aware rate limit result
+ */
+export interface CorrigibilityRateLimitResult extends RateLimitResult {
+  corrigibilityApplied: boolean;
+  sensitivityMultiplier: number;
+}
+
+/**
+ * Rate limit with corrigibility adjustment
+ *
+ * Applies stricter limits for sensitive queries based on corrigibility flags.
+ *
+ * @param baseLimit - Base rate limit
+ * @param identifier - Unique key
+ * @param sensitivityLevel - 0-1 sensitivity score (1 = most sensitive)
+ * @param window - Time window in seconds
+ * @returns Rate limit result with corrigibility info
+ */
+export async function corrigibilityRatelimit(
+  baseLimit: number,
+  identifier: string,
+  sensitivityLevel: number = 0,
+  window: number = 60
+): Promise<CorrigibilityRateLimitResult> {
+  // Apply sensitivity multiplier (more sensitive = stricter limit)
+  // Sensitivity 0 = 100% of base limit
+  // Sensitivity 1 = 50% of base limit
+  const sensitivityMultiplier = 1 - (sensitivityLevel * 0.5);
+  const adjustedLimit = Math.ceil(baseLimit * sensitivityMultiplier);
+
+  const result = await ratelimit(adjustedLimit, identifier, window);
+
+  return {
+    ...result,
+    corrigibilityApplied: sensitivityLevel > 0,
+    sensitivityMultiplier,
+  };
+}

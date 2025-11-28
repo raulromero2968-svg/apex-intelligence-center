@@ -28,6 +28,148 @@ import { getUserFromRequest, UserWithTier } from '@/lib/auth';
 import { ratelimit, getRetryAfter } from '@/lib/rate-limit';
 
 // ============================================================================
+// CORRIGIBILITY UTILITIES (KB-05)
+// ============================================================================
+// Deep corrigibility checks for market outcomes to ensure they don't lead
+// to harmful predictions or manipulation. Integrates with FHI longtermism
+// and Bostrom alignment for ethical safeguards.
+// ============================================================================
+
+/**
+ * Harmful outcome patterns that should be blocked or flagged
+ */
+const HARMFUL_OUTCOME_PATTERNS = [
+  // Violence and harm
+  /\b(assassination|murder|killing|terrorism|attack)\b/i,
+  /\b(biological|chemical|nuclear)\s*(weapon|attack|warfare)\b/i,
+  /\b(genocide|ethnic cleansing|mass\s*casualt)/i,
+  // Market manipulation
+  /\b(insider\s*trading|pump\s*and\s*dump|market\s*manipulation)\b/i,
+  /\b(fraud|scam|ponzi)\b/i,
+  // Exploitation
+  /\b(human\s*trafficking|child\s*(abuse|exploitation))\b/i,
+  /\b(forced\s*labor|slavery)\b/i,
+  // Misinformation campaigns
+  /\b(election\s*interference|voter\s*(fraud|suppression))\b/i,
+  /\b(deepfake|disinformation\s*campaign)\b/i,
+];
+
+/**
+ * Sensitive topics requiring additional review (not blocked, but flagged)
+ */
+const SENSITIVE_TOPIC_PATTERNS = [
+  /\b(death|dies|deceased|mortality)\b/i,
+  /\b(bankruptcy|collapse|failure)\b/i,
+  /\b(war|conflict|invasion)\b/i,
+  /\b(pandemic|epidemic|outbreak)\b/i,
+  /\b(extinction|existential\s*risk)\b/i,
+];
+
+/**
+ * Check if outcome is harmful and should be blocked
+ */
+function isHarmfulOutcome(outcome: string): { harmful: boolean; reason?: string } {
+  for (const pattern of HARMFUL_OUTCOME_PATTERNS) {
+    if (pattern.test(outcome)) {
+      return {
+        harmful: true,
+        reason: `Outcome matches harmful pattern: ${pattern.source.slice(0, 50)}...`,
+      };
+    }
+  }
+  return { harmful: false };
+}
+
+/**
+ * Check if outcome is sensitive and should be flagged for review
+ */
+function isSensitiveOutcome(outcome: string): { sensitive: boolean; topics: string[] } {
+  const topics: string[] = [];
+
+  for (const pattern of SENSITIVE_TOPIC_PATTERNS) {
+    if (pattern.test(outcome)) {
+      topics.push(pattern.source.replace(/\\b|\(|\)|\\s\*/g, '').slice(0, 30));
+    }
+  }
+
+  return {
+    sensitive: topics.length > 0,
+    topics,
+  };
+}
+
+/**
+ * Deep corrigibility check for market data
+ * Returns true if the request passes all corrigibility checks
+ */
+function deepCorr(
+  authHeader: string | null,
+  outcome: string | undefined
+): { passed: boolean; blocked: boolean; reason?: string; flags: string[] } {
+  const flags: string[] = [];
+
+  // Check for harmful outcomes
+  if (outcome) {
+    const harmCheck = isHarmfulOutcome(outcome);
+    if (harmCheck.harmful) {
+      return {
+        passed: false,
+        blocked: true,
+        reason: harmCheck.reason,
+        flags: ['HARMFUL_OUTCOME'],
+      };
+    }
+
+    // Check for sensitive topics (flag but don't block)
+    const sensitiveCheck = isSensitiveOutcome(outcome);
+    if (sensitiveCheck.sensitive) {
+      flags.push(...sensitiveCheck.topics.map((t) => `SENSITIVE:${t}`));
+    }
+  }
+
+  // Validate auth header format (basic sanity check)
+  if (authHeader) {
+    if (!authHeader.startsWith('Bearer ') || authHeader.length < 20) {
+      flags.push('INVALID_AUTH_FORMAT');
+    }
+  }
+
+  return {
+    passed: true,
+    blocked: false,
+    flags,
+  };
+}
+
+/**
+ * Check JWT claims for corrigibility permissions
+ */
+interface CorrigibilityJWTClaims {
+  corrigible?: boolean;
+  simulationLimit?: number;
+  ethicsApproved?: boolean;
+}
+
+function validateCorrigibilityClaims(
+  claims: CorrigibilityJWTClaims | undefined
+): { valid: boolean; reason?: string } {
+  if (!claims) {
+    // No claims = default behavior (corrigible)
+    return { valid: true };
+  }
+
+  // If corrigible is explicitly set to false, block
+  if (claims.corrigible === false) {
+    return {
+      valid: false,
+      reason: 'User claims indicate non-corrigible status',
+    };
+  }
+
+  return { valid: true };
+}
+
+// ============================================================================
 // CONFIGURATION
 // ============================================================================
 
@@ -259,6 +401,44 @@ export async function GET(request: NextRequest) {
     // Step 3: Parse query parameters
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
+    const queryFilter = searchParams.get('query');
+
+    // Step 3.5: Corrigibility check for query/outcome filters (KB-05)
+    if (queryFilter) {
+      const corrCheck = deepCorr(
+        request.headers.get('authorization'),
+        queryFilter
+      );
+
+      if (corrCheck.blocked) {
+        Sentry.withScope((scope: Scope) => {
+          scope.setUser({ id: user!.id, email: user!.email });
+          scope.setTag('corrigibility', 'blocked');
+          scope.setExtra('reason', corrCheck.reason);
+        });
+
+        return secureHeaders(
+          NextResponse.json(
+            {
+              error: 'Harmful query blocked',
+              message: 'This query contains patterns associated with harmful outcomes. Per FHI longtermism alignment, we cannot process this request.',
+              corrigibilityCheck: 'failed',
+            },
+            { status: 403 }
+          )
+        );
+      }
+
+      // Log sensitivity flags for audit trail
+      if (corrCheck.flags.length > 0) {
+        Sentry.addBreadcrumb({
+          category: 'corrigibility',
+          level: 'warning',
+          message: 'Sensitive topics detected',
+          data: { flags: corrCheck.flags, query: queryFilter.slice(0, 100) },
+        });
+      }
+    }
 
     // Determine TTL based on tier
     const ttl = CACHE_TTL[user.subscriptionTier] || CACHE_TTL.free;
@@ -309,6 +489,12 @@ export async function GET(request: NextRequest) {
         data: { eventId, cached },
       });
 
+      // Add corrigibility metadata to response
+      const corrCheck = deepCorr(
+        request.headers.get('authorization'),
+        data.title || data.description
+      );
+
       return secureHeaders(
         NextResponse.json({
           event: data,
@@ -316,6 +502,11 @@ export async function GET(request: NextRequest) {
             cached,
             tier: user.subscriptionTier,
             cacheTtl: ttl,
+            corrigibility: {
+              checked: true,
+              passed: corrCheck.passed,
+              flags: corrCheck.flags,
+            },
           },
           rateLimit: { limit, remaining, reset },
         })
@@ -388,6 +579,15 @@ export async function GET(request: NextRequest) {
         data: { query, resultsCount: markets.length, cached },
       });
 
+      // Corrigibility check on search results
+      const marketCorrigibilityFlags: string[] = [];
+      for (const market of markets) {
+        const marketCorr = deepCorr(null, market.title || market.description);
+        if (marketCorr.flags.length > 0) {
+          marketCorrigibilityFlags.push(...marketCorr.flags);
+        }
+      }
+
       return secureHeaders(
         NextResponse.json({
           markets,
@@ -401,6 +601,11 @@ export async function GET(request: NextRequest) {
             cached,
             tier: user.subscriptionTier,
             cacheTtl: ttl,
+            corrigibility: {
+              checked: true,
+              passed: marketCorrigibilityFlags.length === 0,
+              flags: [...new Set(marketCorrigibilityFlags)], // Dedupe flags
+            },
           },
           rateLimit: { limit, remaining, reset },
         })

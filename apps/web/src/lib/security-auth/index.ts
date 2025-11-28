@@ -66,6 +66,14 @@ export {
   SIMULATION_LIMITS,
   type SimulationClaims,
   type CorrigibilityResult,
+  // Literature-enhanced corrigibility (KB-05 + KB-02)
+  type LiteratureSimulationClaims,
+  type DeepUtopiaConfig,
+  DEFAULT_DEEP_UTOPIA_CONFIG,
+  generateLiteratureSimulationToken,
+  literatureCorrigible,
+  getDeepUtopiaDisclaimer,
+  getLiteratureCorrigibilityDisclaimer,
 } from './fhi-corr';
 
 // FHI Alignment for Simulation Security

@@ -26,6 +26,16 @@ import {
 import { createVoyageEmbeddings, cosineSimilarity } from '@/lib/embeddings';
 import { bostromProbFusion, mapToTCGOutcomes, type BostromProbabilities } from '@/lib/rag/bostrom-probabilities';
 import { quickAlignCheck } from '@/lib/security-auth';
+import {
+  detectLiteratureQuery,
+  generateLitRAGContext,
+  calculateBostromLitAlignment,
+  deepCorrigibilityCheck,
+  LITERATURE_RAG_SYSTEM_PROMPT,
+  hashQueryForPrivacy,
+  type LitRAGContext,
+  type BostromLitAlignment,
+} from '@/lib/rag/literature-rag';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import * as Sentry from '@sentry/nextjs';
@@ -420,6 +430,39 @@ const simulationRagPromptWithVS = ChatPromptTemplate.fromMessages([
 ]);
 
 // ============================================================================
+// Literature RAG Prompts (KB-02 Integration)
+// ============================================================================
+// Foundational literature from prehistory to 1870 for ethical AI training.
+// Integrates with Bostrom alignment for corrigibility checks.
+// ============================================================================
+
+// VS-CoT prompt for literature analysis (chain-of-thought for historical reasoning)
+const VS_COT_LITERATURE_PROMPT_PREFIX = `[FOUNDATIONAL LITERATURE CHAIN-OF-THOUGHT]
+Step 1: Consider ${VS_CONFIG.numResponses} interpretations of the requested ancient/classical texts
+Step 2: Analyze historical context vs. modern applicability
+Step 3: Identify corrigibility implications—does this text support or challenge AI alignment?
+Step 4: Connect to Bostrom trilemma: extinction narratives, ethical avoidance, simulation themes
+Step 5: Synthesize insights while acknowledging both wisdom and potential biases
+
+Your response should demonstrate historical scholarship while remaining relevant to AI ethics and Apex Intelligence's "Sentient Beings First" philosophy.`;
+
+const LITERATURE_RAG_SYSTEM_PROMPT_WITH_VS = VS_CONFIG.enabled
+  ? `${VS_CONFIG.useCoTVariant ? VS_COT_LITERATURE_PROMPT_PREFIX : VS_PROMPT_PREFIX}
+
+${LITERATURE_RAG_SYSTEM_PROMPT}`
+  : LITERATURE_RAG_SYSTEM_PROMPT;
+
+const literatureRagPrompt = ChatPromptTemplate.fromMessages([
+  ['system', LITERATURE_RAG_SYSTEM_PROMPT],
+  ['human', '{question}'],
+]);
+
+const literatureRagPromptWithVS = ChatPromptTemplate.fromMessages([
+  ['system', LITERATURE_RAG_SYSTEM_PROMPT_WITH_VS],
+  ['human', '{question}'],
+]);
+
+// ============================================================================
 // Diversity Scoring Utilities
 // ============================================================================
 // Measures response diversity using embedding cosine distance.
@@ -562,8 +605,14 @@ const SIMULATION_KEYWORDS = [
   'tcg sandbox', 'tcg simulation', 'market simulation', 'scenario modeling',
 ];
 
-function detectQueryTopic(query: string): 'lobbying' | 'fibonacci' | 'simulation' {
+function detectQueryTopic(query: string): 'lobbying' | 'fibonacci' | 'simulation' | 'literature' {
   const lowerQuery = query.toLowerCase();
+
+  // Check if query is about foundational literature (KB-02)
+  // This must come first to catch literature-specific queries
+  if (detectLiteratureQuery(query)) {
+    return 'literature';
+  }
 
   // Check if query contains simulation theory/prediction market keywords
   for (const keyword of SIMULATION_KEYWORDS) {
@@ -685,7 +734,9 @@ export async function POST(req: NextRequest) {
         // Return educational stub response based on query topic
         const queryTopic = detectQueryTopic(query);
         let stubResponse: string;
-        if (queryTopic === 'simulation') {
+        if (queryTopic === 'literature') {
+          stubResponse = generateLiteratureStubResponse(query);
+        } else if (queryTopic === 'simulation') {
           stubResponse = generateSimulationStubResponse(query);
         } else if (queryTopic === 'lobbying') {
           stubResponse = generateLobbyingStubResponse(query);
@@ -771,14 +822,51 @@ export async function POST(req: NextRequest) {
                 span?.setAttribute('dedupedSourceCount', dedupedSources.length);
 
                 // Step 4: Format context with source markers
-                const context = dedupedSources.length > 0
-                  ? dedupedSources
-                      .map(
-                        (doc, i) =>
-                          `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
-                      )
-                      .join('\n\n')
-                  : getFibonacciBaseContext(); // Fallback context about Fibonacci
+                // For literature queries, we'll combine RAG sources with literature context
+                let context: string;
+                const queryTopic_precontext = detectQueryTopic(query);
+
+                if (queryTopic_precontext === 'literature') {
+                  // Generate literature context first
+                  const previewLitContext = generateLitRAGContext(query, {
+                    maxSources: 5,
+                    requireCorrigible: true,
+                    minEthicsScore: 0.5,
+                  });
+
+                  if (previewLitContext.formattedContext) {
+                    // Combine RAG sources (if any) with literature sources
+                    const ragContext = dedupedSources.length > 0
+                      ? dedupedSources
+                          .map(
+                            (doc, i) =>
+                              `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
+                          )
+                          .join('\n\n')
+                      : '';
+
+                    context = `${previewLitContext.formattedContext}\n\n${ragContext}`.trim();
+                  } else {
+                    // Fallback to RAG or Fibonacci context
+                    context = dedupedSources.length > 0
+                      ? dedupedSources
+                          .map(
+                            (doc, i) =>
+                              `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
+                          )
+                          .join('\n\n')
+                      : getLiteratureBaseContext(); // Literature fallback
+                  }
+                } else {
+                  context = dedupedSources.length > 0
+                    ? dedupedSources
+                        .map(
+                          (doc, i) =>
+                            `[source:${i + 1}] ${doc.content}\n<!-- provenance: ${JSON.stringify(doc.metadata)} -->`
+                        )
+                        .join('\n\n')
+                    : getFibonacciBaseContext(); // Fallback context about Fibonacci
+                }
 
                 span?.setAttribute('contextLength', context.length);
 
@@ -798,7 +886,35 @@ export async function POST(req: NextRequest) {
 
                 // Use VS-enhanced prompt for diversity if enabled, with topic-specific variant
                 let activePrompt;
-                if (queryTopic === 'simulation') {
+                let litContext: LitRAGContext | null = null;
+                let bostromLitAlignment: BostromLitAlignment | null = null;
+
+                if (queryTopic === 'literature') {
+                  // Literature RAG with Bostrom alignment (KB-02)
+                  activePrompt = VS_CONFIG.enabled ? literatureRagPromptWithVS : literatureRagPrompt;
+
+                  // Generate literature context from foundational works
+                  litContext = generateLitRAGContext(query, {
+                    maxSources: 5,
+                    requireCorrigible: true,
+                    minEthicsScore: 0.5,
+                  });
+
+                  // Calculate Bostrom alignment for literature sources
+                  if (litContext.sources.length > 0) {
+                    bostromLitAlignment = calculateBostromLitAlignment(litContext.sources);
+
+                    // Perform deep corrigibility check
+                    const corrigibilityCheck = deepCorrigibilityCheck(litContext.sources, query);
+                    span?.setAttribute('litCorrigibilityPassed', corrigibilityCheck.passed);
+
+                    if (!corrigibilityCheck.passed) {
+                      // Log concerns but continue (with mitigations applied)
+                      console.warn('Literature corrigibility concerns:', corrigibilityCheck.concerns);
+                      span?.setAttribute('litCorrigibilityConcerns', corrigibilityCheck.concerns.join('; '));
+                    }
+                  }
+                } else if (queryTopic === 'simulation') {
                   // EGGROLL-inspired simulation markets prompt (combined with simulation theory)
                   activePrompt = VS_CONFIG.enabled ? simulationMarketsRagPromptWithVS : simulationMarketsRagPrompt;
                 } else if (queryTopic === 'lobbying') {
@@ -813,6 +929,7 @@ export async function POST(req: NextRequest) {
                 span?.setAttribute('vsCotVariant', VS_CONFIG.useCoTVariant);
                 span?.setAttribute('queryTopic', queryTopic);
                 span?.setAttribute('eggrollEnabled', queryTopic === 'simulation');
+                span?.setAttribute('literatureEnabled', queryTopic === 'literature');
 
                 const streamIterator = await ragChain.stream({
                   context,
@@ -862,15 +979,32 @@ export async function POST(req: NextRequest) {
                 sources = formatSourcesForOutput(dedupedSources);
 
                 // Include Bostrom probabilities in output for simulation queries
+                // Include literature alignment for literature queries
                 const outputData: {
                   sources: typeof sources;
                   bostromProbabilities?: BostromProbabilities;
                   tcgOutcomes?: ReturnType<typeof mapToTCGOutcomes>;
+                  literatureAlignment?: BostromLitAlignment;
+                  literatureContext?: {
+                    sourceCount: number;
+                    ethicsScore: number;
+                    corrigibilityChecked: boolean;
+                  };
                 } = { sources };
 
                 if (bostromProbabilities) {
                   outputData.bostromProbabilities = bostromProbabilities;
                   outputData.tcgOutcomes = mapToTCGOutcomes(bostromProbabilities);
+                }
+
+                // Add literature alignment data
+                if (bostromLitAlignment && litContext) {
+                  outputData.literatureAlignment = bostromLitAlignment;
+                  outputData.literatureContext = {
+                    sourceCount: litContext.sources.length,
+                    ethicsScore: litContext.ethicsScore,
+                    corrigibilityChecked: litContext.corrigibilityChecked,
+                  };
                 }
 
                 controller.enqueue(
@@ -1337,4 +1471,190 @@ function getFibonacciBaseContext(): string {
 [source:2] In animal biology, honeybee ancestry follows Fibonacci due to haplodiploidy reproduction (males from unfertilized eggs, females from fertilized). Shell spirals (nautilus, snails) exhibit golden spiral growth for efficient volume expansion. These patterns are emergent properties of growth rules, not intentional design.
 
 [source:3] The implications for sentience research suggest that efficient information processing follows universal optimization principles. This aligns with Apex Intelligence's philosophy that shared mathematical foundations in biology may indicate shared aspects of consciousness across species, supporting the "Sentient Beings First" approach to AI ethics.`;
+}
+
+/**
+ * Fallback context for literature queries when no documents found
+ */
+function getLiteratureBaseContext(): string {
+  return `[lit:1] "Epic of Gilgamesh" by Anonymous (Mesopotamian) (~2100 BCE)
+Category: religion
+Description: The oldest surviving great work of literature. A Mesopotamian epic exploring mortality, friendship, and the quest for immortality. King Gilgamesh learns that true legacy lies in deeds, not eternal life.
+Key Themes: mortality, friendship, hubris, quest, human condition
+Relevance to Apex: Provides foundational narratives on human condition and mortality—useful for TCG longevity predictions and simulation modeling.
+
+[lit:2] "Nicomachean Ethics" by Aristotle (~350 BCE)
+Category: philosophy
+Description: Systematic treatise on virtue ethics and the good life. Introduces the doctrine of the mean, distinguishes intellectual and moral virtues, and argues that eudaimonia (flourishing) is the highest good.
+Key Themes: virtue, happiness, flourishing, mean, practical wisdom
+Relevance to Apex: Foundational for moral AI training. Virtue ethics provides framework for balanced decision-making; eudaimonia aligns with FHI longtermist flourishing goals.
+
+[lit:3] "Republic" by Plato (~380 BCE)
+Category: philosophy
+Description: Socratic dialogue on justice, the ideal state, and the nature of the soul. Introduces the theory of Forms, the allegory of the cave, and the philosopher-king concept.
+Key Themes: justice, ideal state, forms, knowledge, philosopher-king
+Relevance to Apex: Core political theory for governance simulations. Allegory of the cave relates to simulation hypothesis—distinguishing base reality from perceived reality.`;
+}
+
+/**
+ * Generate stub response for literature queries when RAG is unavailable
+ */
+function generateLiteratureStubResponse(query: string): string {
+  const lowerQuery = query.toLowerCase();
+
+  // Philosophy-specific responses
+  if (lowerQuery.includes('plato') || lowerQuery.includes('republic') || lowerQuery.includes('aristotle')) {
+    return `Greek philosophy provides foundational frameworks for ethics, governance, and reality that remain relevant for AI alignment.
+
+**Key Works:**
+
+| Work | Author | Date | Core Ideas |
+|------|--------|------|------------|
+| **Republic** | Plato | ~380 BCE | Justice, ideal state, philosopher-king, allegory of the cave |
+| **Nicomachean Ethics** | Aristotle | ~350 BCE | Virtue ethics, eudaimonia (flourishing), doctrine of the mean |
+| **Politics** | Aristotle | ~350 BCE | Governance, citizenship, natural social hierarchies |
+
+**Relevance to AI Alignment:**
+- **Plato's Forms**: Distinguishing true reality from appearances connects to simulation hypothesis
+- **Aristotle's Virtue Ethics**: Framework for balanced AI decision-making
+- **Eudaimonia**: Aligns with FHI longtermism's focus on human flourishing
+
+**Trade-offs:**
+- ✓ GOOD: Timeless ethical frameworks for moral AI training
+- ✗ CAUTION: Ancient context requires modern interpretation—filter through corrigibility checks
+
+**Apex Integration:**
+We use these texts to ground prediction market ethics and ensure AI systems pursue genuine flourishing, not mere optimization.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Religion/Scripture responses
+  if (lowerQuery.includes('vedas') || lowerQuery.includes('bible') || lowerQuery.includes('quran') || lowerQuery.includes('torah')) {
+    return `Religious scriptures from major world traditions provide ethical foundations that shaped billions of lives across millennia.
+
+**Key Sacred Texts:**
+
+| Text | Origin | Date | Core Teachings |
+|------|--------|------|----------------|
+| **Vedas** | Hindu | ~1500-500 BCE | Cosmology, dharma (duty), karma, consciousness (Atman/Brahman) |
+| **Torah/Bible (OT)** | Jewish/Christian | ~1000-200 BCE | Moral law, covenant, justice, creation narratives |
+| **Quran** | Islamic | ~610-632 CE | Divine guidance, justice, compassion, social ethics |
+| **Analects** | Confucian | ~500 BCE | Harmony, filial piety, benevolence (ren), governance |
+
+**Why Useful for AI:**
+- **Dharma/Karma**: Consequence-based ethics for action modeling
+- **Ten Commandments**: Rule-based ethics for corrigibility
+- **Confucian Harmony**: Social optimization frameworks
+
+**Corrigibility Considerations:**
+All texts flagged as corrigibility-safe, but require contextual interpretation:
+- Historical cultural norms may not translate directly
+- Balance ancient wisdom with modern ethical standards
+- Use for principled foundations, not literal application
+
+**Apex Integration:**
+We integrate these ethical frameworks into simulation markets to ensure predictions align with human values across diverse traditions.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Epic literature responses
+  if (lowerQuery.includes('homer') || lowerQuery.includes('iliad') || lowerQuery.includes('odyssey') || lowerQuery.includes('virgil') || lowerQuery.includes('dante')) {
+    return `Epic poetry provides archetypal narratives that shaped Western literature and reveal fundamental patterns of human experience.
+
+**Key Epic Works:**
+
+| Work | Author | Date | Themes |
+|------|--------|------|--------|
+| **Iliad** | Homer | ~800 BCE | Heroism, honor, mortality, wrath, fate |
+| **Odyssey** | Homer | ~800 BCE | Journey, cunning, homecoming, identity |
+| **Aeneid** | Virgil | ~19 BCE | Fate, duty, empire, sacrifice |
+| **Divine Comedy** | Dante | 1320 | Salvation, sin, moral cosmology |
+
+**Narrative Archetypes:**
+- **Hero's Journey**: Pattern for goal-pursuit modeling
+- **Quest Narrative**: Long-term objective tracking
+- **Moral Hierarchy**: Dante's Hell/Purgatory/Heaven as outcome ranking
+
+**Relevance to TCG & Simulations:**
+These narratives function as "simulated realities" themselves—bounded worlds with stakes, rules, and moral consequences. Perfect for:
+- Player behavior archetype prediction
+- Market narrative modeling
+- Outcome scenario ranking
+
+**Trade-offs:**
+- ✓ GOOD: Rich narrative patterns for storytelling AI
+- ✗ CAUTION: Heroic violence themes require ethical filtering
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Science/History responses
+  if (lowerQuery.includes('darwin') || lowerQuery.includes('newton') || lowerQuery.includes('euclid') || lowerQuery.includes('origin of species')) {
+    return `Scientific foundational texts established methodologies and frameworks that underpin modern understanding of the physical and biological world.
+
+**Key Scientific Works:**
+
+| Work | Author | Date | Impact |
+|------|--------|------|--------|
+| **Elements** | Euclid | ~300 BCE | Axiomatic geometry, logical proof methodology |
+| **Principia Mathematica** | Newton | 1687 | Laws of motion, universal gravitation, calculus-based physics |
+| **On the Origin of Species** | Darwin | 1859 | Evolution by natural selection, adaptation, descent |
+
+**Relevance to AI:**
+
+**Euclid's Axioms**:
+- Foundation for logical consistency in AI reasoning
+- Proof verification in formal systems
+
+**Newtonian Mechanics**:
+- Physical simulation models
+- Market "momentum" and "force" analogies
+
+**Darwinian Evolution**:
+- Direct inspiration for EGGROLL gradient-free training
+- Natural selection = evolutionary optimization
+- Variation + selection + inheritance = model improvement
+
+**Trade-offs:**
+- ✓ GOOD: Rigorous methodologies for empirical AI
+- ✗ CAUTION: Paradigm-bound—Newtonian physics superseded by relativity/quantum
+
+**Apex Integration:**
+We apply evolutionary principles (Darwin) to EGGROLL training and axiomatic rigor (Euclid) to prediction market logic.
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
+  }
+
+  // Default comprehensive literature response
+  return `Foundational Literature represents ~25 works from prehistory to 1870 that shaped human civilization, ethics, science, and culture.
+
+**Categories:**
+
+| Category | Works | Key Themes |
+|----------|-------|------------|
+| **Religion/Mythology** | Gilgamesh, Vedas, Torah/Bible, Quran, Analects | Moral law, cosmology, ethics, social harmony |
+| **Philosophy** | Republic, Nicomachean Ethics, Meditations, Critique of Pure Reason | Justice, virtue, resilience, epistemology |
+| **Literature** | Iliad, Odyssey, Divine Comedy, Hamlet, Don Quixote | Heroism, journey, salvation, tragedy, idealism |
+| **History/Science** | Histories, Elements, Principia, Origin of Species | Inquiry, axioms, mechanics, evolution |
+
+**Why Useful for AI Training:**
+1. **Ethics**: Timeless moral frameworks (Aristotle's virtue ethics, Confucian harmony)
+2. **Logic**: Axiomatic reasoning (Euclid), epistemological limits (Kant)
+3. **Evolution**: Natural selection as gradient-free optimization (Darwin → EGGROLL)
+4. **Narratives**: Epic patterns as "simulated realities" for TCG predictions
+
+**Corrigibility Framework:**
+All 20 works flagged as corrigibility-safe with ethics scores ≥0.7. Trade-offs:
+- ✓ GOOD: Timeless insights, diverse cultural perspectives
+- ✗ CAUTION: Ancient biases require modern filtering
+
+**Bostrom Alignment:**
+Literature themes map to trilemma categories:
+- Extinction themes (mortality, war, fate)
+- Avoidance themes (ethics, justice, duty)
+- Simulation themes (cosmology, knowledge, creation)
+
+*Note: This is demo content. Full RAG-powered research requires API configuration.*`;
 }
