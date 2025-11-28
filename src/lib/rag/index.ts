@@ -7,9 +7,10 @@
 
 export {
   utopiaRAG,
-  utopiaRAGSummary,
-  requiresUtopiaFraming,
-  getEthicalFraming,
-  type UtopiaConfig,
-  type UtopiaResponse,
+  simpleUtopiaRAG,
+  getUtopiaDisclaimer,
+  formatUtopiaContext,
+  UTOPIA_SCENARIO_TYPES,
+  type UtopiaRagResponse,
+  type UtopiaScenarioType,
 } from './utopia-prompt';

@@ -6,11 +6,9 @@
  */
 
 export {
-  deepCorr,
-  deepCorrSync,
-  validateOutcomeCorrigibility,
-  requiresDeepCorrigibility,
-  type DeepCorrigibilityConfig,
-  type DeepCorrigibilityResult,
-  type CorrigibilityPayload,
+  deepCorrigibilityCheck,
+  deepCorrigible,
+  validateCorrigibilityClaims,
+  getCorrigibilityDisclaimer,
+  type CorrigibilityResult,
 } from './deep-corr';

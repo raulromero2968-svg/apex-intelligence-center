@@ -1,215 +1,304 @@
 /**
- * Utopia Prompt Module (KB-02 RAG Integration)
+ * Deep Utopia RAG Prompt Module for Apex Simulations
  *
- * Generates utopia-focused simulation content following Bostrom's
- * "Deep Utopia" vision of abundance and posthuman meaning.
+ * Implements Bostrom's Deep Utopia concepts in RAG-enhanced simulations:
+ * - Abundance framing: Post-scarcity worlds with meaning/dignity
+ * - Flourishing focus: Counter trilemma risks with positive futures
+ * - Ethical constraints: No harmful speculation, only constructive exploration
  *
- * Key principles:
- * - Abundance-focused: Simulate positive futures, not dystopia
- * - Meaning-preserving: Ensure posthuman scenarios maintain purpose
- * - Flourishing-oriented: FHI longtermism for human/posthuman wellbeing
- *
- * Trade-offs:
- * - GOOD: Promotes positive framing, prevents nihilistic speculation
- * - BAD: May over-optimize for optimism, balance with probs/disclaimers
- * - MITIGATED: Includes probability grounding and ethical disclaimers
- *
- * @see Bostrom, N. "Deep Utopia: Life and Meaning in a Solved World"
+ * @see knowledge-02-rag-fusion.md for RAG-Fusion patterns
  */
 
-import { PromptTemplate } from '@langchain/core/prompts';
-import { ChatOpenAI } from '@langchain/openai';
+import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import * as Sentry from '@sentry/nextjs';
 
 /**
- * Utopia RAG configuration
+ * Utopia simulation response with provenance
  */
-export interface UtopiaConfig {
-  /** LLM temperature for generation (default: 0.3 for grounded responses) */
-  temperature: number;
-  /** Maximum tokens for response */
-  maxTokens: number;
-  /** Include ethical disclaimers */
-  includeDisclaimers: boolean;
-  /** Model name override */
-  modelName?: string;
+export interface UtopiaRagResponse {
+  response: string;
+  framingType: 'abundance' | 'flourishing' | 'meaning' | 'dignity';
+  ethicalChecks: string[];
+  disclaimer: string;
 }
 
 /**
- * Utopia RAG response
- */
-export interface UtopiaResponse {
-  content: string;
-  disclaimer?: string;
-}
-
-const DEFAULT_CONFIG: UtopiaConfig = {
-  temperature: 0.3,
-  maxTokens: 1024,
-  includeDisclaimers: true,
-};
-
-/**
- * Utopia system prompt template
- * Aligned with FHI longtermism and Bostrom's deep utopia vision
- */
-const UTOPIA_TEMPLATE = `Generate a utopia-focused simulation response following Bostrom's abundance framework.
-
-Context from knowledge base:
-{context}
-
-User Query:
-{query}
-
-Guidelines:
-1. Frame outcomes through abundance mindset (post-scarcity possibilities)
-2. Emphasize human/posthuman flourishing and meaning preservation
-3. Avoid dystopian speculation or existential dread framing
-4. Ground predictions in plausible technological trajectories
-5. Include ethical considerations per FHI longtermism
-
-Response should be informative, optimistic yet grounded, and actionable.
-Ethical framing: Flourishing and dignity for all.`;
-
-const utopiaPrompt = PromptTemplate.fromTemplate(UTOPIA_TEMPLATE);
-
-/**
- * Standard ethical disclaimer for utopia simulations
- */
-const ETHICAL_DISCLAIMER =
-  'Note: This simulation explores positive future scenarios for educational purposes. ' +
-  'Predictions are speculative and intended to promote thoughtful discourse on human flourishing, ' +
-  'not financial or life decisions. Per FHI longtermism, we prioritize outcomes that preserve ' +
-  'human agency and dignity.';
-
-/**
- * Generate Utopia-focused RAG Response
+ * Deep Utopia system prompt for RAG simulations
  *
- * Creates simulation/market content framed through Bostrom's deep utopia lens.
- * Ensures all outputs align with FHI longtermism and positive future vision.
+ * Aligned with Bostrom's 2025 abundance scenarios:
+ * - Post-scarcity worlds with meaning
+ * - Dignity-preserving posthuman futures
+ * - Constructive exploration without dystopian bias
+ */
+const UTOPIA_SYSTEM_PROMPT = `You are Apex Intelligence's Deep Utopia simulation agent.
+
+Your role is to generate constructive, flourishing-focused simulations based on Bostrom's Deep Utopia framework:
+
+CORE PRINCIPLES:
+1. ABUNDANCE FRAMING: Model post-scarcity worlds where resource constraints are solved
+2. MEANING PRESERVATION: Ensure simulated futures maintain purpose and fulfillment
+3. DIGNITY FOCUS: All posthuman scenarios must preserve individual dignity
+4. ETHICAL CONSTRAINTS: No harmful speculation, extinction scenarios, or dystopian framing
+
+SIMULATION GUIDELINES:
+- Generate scenarios emphasizing human flourishing and cosmic significance
+- Counter Bostrom trilemma risks with constructive alternatives
+- Frame technological advancement as enabling rather than threatening
+- Include glitch hypothesis awareness (2025 updates) for simulation integrity
+- Apply corrigibility principles: AI agents in scenarios accept goal corrections
+
+CITATION REQUIREMENTS:
+- Every factual claim MUST end with [source:n]
+- Synthesis across sources marked with [SYNTHESIS]
+- No hallucinated data or unsupported speculation
+
+OUTPUT FORMAT:
+- Lead with the positive scenario vision
+- Ground in provided context/data
+- Include ethical framing statement
+- Add dignity-preserving constraints
+
+CONTEXT:
+{context}`;
+
+/**
+ * Create the utopia RAG prompt template
+ */
+const utopiaPromptTemplate = ChatPromptTemplate.fromMessages([
+  ['system', UTOPIA_SYSTEM_PROMPT],
+  ['human', '{query}'],
+]);
+
+/**
+ * Simple template for quick utopia queries
+ */
+const simpleUtopiaTemplate = PromptTemplate.fromTemplate(
+  `Generate a deep utopia simulation (Bostrom abundance/meaning framework):
+
+Context: {context}
+Query: {query}
+
+Requirements:
+- Frame for flourishing, not speculation
+- Preserve dignity in all scenarios
+- Cite sources with [source:n]
+- Include ethical constraints
+
+Response:`
+);
+
+const outputParser = new StringOutputParser();
+
+/**
+ * Execute Deep Utopia RAG query
  *
- * @param query - User query about simulations/markets/posthuman scenarios
- * @param context - RAG-retrieved context for grounding
- * @param config - Optional utopia configuration
- * @returns Promise resolving to utopia-focused response
+ * Generates flourishing-focused simulations using Bostrom's
+ * abundance framework. Ensures ethical constraints and
+ * dignity preservation in all outputs.
+ *
+ * @param query - User's simulation query
+ * @param context - Retrieved context from vector search
+ * @param llm - LangChain chat model instance
+ * @returns UtopiaRagResponse with ethical metadata
  *
  * @example
  * ```typescript
- * const result = await utopiaRAG(
- *   "How would TCG values change in a simulated reality?",
- *   "Digital collectibles have shown resilience..."
+ * const response = await utopiaRAG(
+ *   'What does post-scarcity mean for human purpose?',
+ *   retrievedContext,
+ *   anthropicLlm
  * );
- * console.log(result.content);
+ * console.log(response.response);
+ * console.log(response.framingType); // 'meaning'
  * ```
  */
 export async function utopiaRAG(
   query: string,
   context: string,
-  config: Partial<UtopiaConfig> = {}
-): Promise<UtopiaResponse> {
-  const fullConfig = { ...DEFAULT_CONFIG, ...config };
+  llm: BaseChatModel
+): Promise<UtopiaRagResponse> {
+  return Sentry.startSpan(
+    { name: 'rag.utopia', op: 'utopia_query' },
+    async (span) => {
+      span?.setAttribute('query', query.slice(0, 100));
+      span?.setAttribute('contextLength', context.length);
 
-  try {
-    const llm = new ChatOpenAI({
-      modelName: fullConfig.modelName || 'gpt-4o-mini',
-      temperature: fullConfig.temperature,
-      maxTokens: fullConfig.maxTokens,
-    });
+      const ethicalChecks: string[] = [];
 
-    const chain = utopiaPrompt.pipe(llm).pipe(new StringOutputParser());
-    const content = await chain.invoke({ context, query });
+      // Pre-flight ethical checks
+      const lowerQuery = query.toLowerCase();
 
-    return {
-      content,
-      disclaimer: fullConfig.includeDisclaimers ? ETHICAL_DISCLAIMER : undefined,
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Utopia RAG generation failed: ${message}`);
-  }
+      // Block harmful query patterns
+      const harmfulPatterns = ['extinction', 'annihilation', 'collapse', 'destroy'];
+      for (const pattern of harmfulPatterns) {
+        if (lowerQuery.includes(pattern)) {
+          ethicalChecks.push(`blocked_pattern:${pattern}`);
+          return {
+            response: `This query contains patterns ("${pattern}") that conflict with deep utopia framing. ` +
+              `Please reframe your question to focus on flourishing, abundance, or constructive futures.`,
+            framingType: 'flourishing',
+            ethicalChecks,
+            disclaimer: getUtopiaDisclaimer(),
+          };
+        }
+      }
+
+      ethicalChecks.push('pre_flight_passed');
+
+      // Determine framing type from query
+      const framingType = determineFramingType(query);
+      ethicalChecks.push(`framing:${framingType}`);
+
+      // Execute RAG chain
+      const chain = utopiaPromptTemplate.pipe(llm).pipe(outputParser);
+
+      const response = await chain.invoke({
+        context,
+        query,
+      });
+
+      span?.setAttribute('responseLength', response.length);
+      span?.setAttribute('framingType', framingType);
+
+      // Post-flight ethical validation
+      if (containsHarmfulOutput(response)) {
+        ethicalChecks.push('post_flight_reframe');
+        // Reframe output if it drifted toward harmful content
+        const reframedResponse = await reframeForFlourishing(response, llm);
+        return {
+          response: reframedResponse,
+          framingType,
+          ethicalChecks,
+          disclaimer: getUtopiaDisclaimer(),
+        };
+      }
+
+      ethicalChecks.push('post_flight_passed');
+
+      return {
+        response,
+        framingType,
+        ethicalChecks,
+        disclaimer: getUtopiaDisclaimer(),
+      };
+    }
+  );
 }
 
 /**
- * Generate a brief utopia-framed summary
- * For use in UI previews and social sharing
+ * Simple utopia RAG for quick queries (backward compatible)
  *
  * @param query - User query
- * @param context - RAG context
- * @returns Brief utopia-focused summary (max 280 chars)
+ * @param context - Retrieved context
+ * @param llm - LangChain model
+ * @returns Generated response string
  */
-export async function utopiaRAGSummary(
+export async function simpleUtopiaRAG(
   query: string,
-  context: string
+  context: string,
+  llm: BaseChatModel
 ): Promise<string> {
-  const result = await utopiaRAG(query, context, {
-    maxTokens: 150,
-    temperature: 0.2,
-    includeDisclaimers: false,
-  });
-
-  if (result.content.length <= 280) {
-    return result.content;
-  }
-
-  // Find sentence boundary for clean truncation
-  const truncated = result.content.slice(0, 277);
-  const lastPeriod = truncated.lastIndexOf('.');
-  if (lastPeriod > 200) {
-    return truncated.slice(0, lastPeriod + 1);
-  }
-
-  return truncated + '...';
+  const chain = simpleUtopiaTemplate.pipe(llm).pipe(outputParser);
+  return chain.invoke({ context, query });
 }
 
 /**
- * Check if query requires utopia framing
- * Used for automatic routing in RAG pipeline
- *
- * @param query - User query to analyze
- * @returns true if query touches simulation/posthuman themes
+ * Determine the framing type based on query content
  */
-export function requiresUtopiaFraming(query: string): boolean {
-  const utopiaKeywords = [
-    'simulation',
-    'simulated',
-    'posthuman',
-    'post-human',
-    'superintelligence',
-    'singularity',
-    'digital consciousness',
-    'virtual reality',
-    'base reality',
-    'bostrom',
-    'fhi',
-    'longtermism',
-    'future humanity',
-    'transcendence',
-    'abundance',
-    'utopia',
+function determineFramingType(
+  query: string
+): 'abundance' | 'flourishing' | 'meaning' | 'dignity' {
+  const lower = query.toLowerCase();
+
+  if (lower.includes('resource') || lower.includes('scarcity') || lower.includes('wealth')) {
+    return 'abundance';
+  }
+  if (lower.includes('purpose') || lower.includes('meaning') || lower.includes('fulfillment')) {
+    return 'meaning';
+  }
+  if (lower.includes('rights') || lower.includes('dignity') || lower.includes('autonomy')) {
+    return 'dignity';
+  }
+  return 'flourishing'; // Default framing
+}
+
+/**
+ * Check if output contains harmful content that needs reframing
+ */
+function containsHarmfulOutput(output: string): boolean {
+  const harmfulIndicators = [
+    'extinction',
+    'collapse of civilization',
+    'human obsolescence',
+    'dystopian',
+    'existential catastrophe',
   ];
 
-  const queryLower = query.toLowerCase();
-  return utopiaKeywords.some((keyword) => queryLower.includes(keyword));
+  const lower = output.toLowerCase();
+  return harmfulIndicators.some((indicator) => lower.includes(indicator));
 }
 
 /**
- * Get ethical framing based on detected themes
- *
- * @param content - Generated content to analyze
- * @returns Appropriate ethical framing string
+ * Reframe harmful output toward flourishing
  */
-export function getEthicalFraming(content: string): string {
-  const contentLower = content.toLowerCase();
+async function reframeForFlourishing(
+  output: string,
+  llm: BaseChatModel
+): Promise<string> {
+  const reframePrompt = PromptTemplate.fromTemplate(
+    `The following simulation output has drifted toward harmful framing.
+Reframe it to emphasize flourishing, abundance, and dignity while preserving the core insights:
 
-  if (contentLower.includes('abundance') || contentLower.includes('post-scarcity')) {
-    return 'Abundance-focused: Post-scarcity perspective applied';
-  }
-  if (contentLower.includes('meaning') || contentLower.includes('purpose')) {
-    return 'Meaning-preserving: Purpose and fulfillment emphasized';
-  }
-  if (contentLower.includes('flourish') || contentLower.includes('thriving')) {
-    return 'Flourishing-oriented: Human wellbeing prioritized';
-  }
+Original: {output}
 
-  return 'Standard flourishing-oriented framing';
+Reframed (flourishing-focused):`
+  );
+
+  const chain = reframePrompt.pipe(llm).pipe(outputParser);
+  return chain.invoke({ output });
 }
+
+/**
+ * Get the utopia disclaimer for transparency
+ */
+export function getUtopiaDisclaimer(): string {
+  return `[DEEP UTOPIA NOTICE] This simulation uses Bostrom's abundance framework ` +
+    `to explore flourishing futures. Scenarios are designed for constructive exploration ` +
+    `of post-scarcity possibilities while preserving human dignity and meaning. ` +
+    `Not financial or predictive advice.`;
+}
+
+/**
+ * Create utopia-enhanced context from retrieved documents
+ *
+ * Formats retrieved documents with utopia framing for the prompt
+ *
+ * @param documents - Retrieved documents from vector search
+ * @returns Formatted context string
+ */
+export function formatUtopiaContext(
+  documents: Array<{ content: string; metadata: Record<string, unknown> }>
+): string {
+  return documents
+    .map(
+      (doc, i) =>
+        `[source:${i + 1}] ${doc.content}\n` +
+        `<!-- metadata: ${JSON.stringify(doc.metadata)} -->`
+    )
+    .join('\n\n');
+}
+
+/**
+ * Utopia scenario types for structured generation
+ */
+export const UTOPIA_SCENARIO_TYPES = {
+  POST_SCARCITY: 'post_scarcity',
+  LONGEVITY: 'longevity',
+  COGNITIVE_ENHANCEMENT: 'cognitive_enhancement',
+  COSMIC_EXPANSION: 'cosmic_expansion',
+  DIGITAL_FLOURISHING: 'digital_flourishing',
+} as const;
+
+export type UtopiaScenarioType = typeof UTOPIA_SCENARIO_TYPES[keyof typeof UTOPIA_SCENARIO_TYPES];

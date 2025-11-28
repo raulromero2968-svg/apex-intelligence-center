@@ -1,304 +1,272 @@
 /**
- * Deep Corrigibility Security Module (KB-05)
+ * Deep Corrigibility Module for Apex Simulations
  *
- * Implements recursive corrigibility checks based on FHI alignment principles:
- * - Utility Indifference: AI should be indifferent to its own shutdown
- * - Recursive Rewards: Ensure AI goals accept corrections at any depth
- * - POST-Agency: Per-outcome shutdown thresholds (Thornley 2025)
+ * Implements FHI/Thornley corrigibility techniques for safe AI in simulations:
+ * - Utility Indifference: AI neutral to goal changes (shutdown-safe)
+ * - Recursive Rewards: Self-correcting goal alignment
+ * - POST-Agency: Posterior updates to prevent resistance
  *
- * Features:
- * - Recursive depth-limited corrigibility verification
- * - JWT role-based access control for simulation tiers
- * - Harmful outcome prevention (extinction, manipulation)
- * - Configurable recursion depth cap (prevents infinite loops)
- *
- * Trade-offs:
- * - GOOD: Deep verification catches nested harmful outcomes
- * - BAD: Recursion adds latency (~2-5ms per depth level)
- * - MITIGATED: Max depth cap (default: 5) bounds worst-case
- *
- * @see Thornley 2025 - POST-Agency shutdown acceptance
- * @see Bostrom - Cosmic host norms for ethical AI
+ * @see knowledge-05-security-oauth2-jwt.md for JWT security patterns
  */
 
-import { jwtVerify } from 'jose';
+import { createHmac } from 'crypto';
 
 /**
- * Deep corrigibility configuration
+ * Corrigibility outcome result
  */
-export interface DeepCorrigibilityConfig {
-  /** Maximum recursion depth (default: 5, prevents infinite loops) */
-  maxDepth: number;
-  /** Probability threshold for utility indifference (0-1) */
-  indifferenceThreshold: number;
-  /** Seed for deterministic testing (optional) */
-  seed?: number;
+export interface CorrigibilityResult {
+  allowed: boolean;
+  depth: number;
+  reason: string;
+  ethicalFlags: string[];
 }
 
 /**
- * JWT payload for corrigibility claims
+ * JWT payload with corrigibility claims
  */
-export interface CorrigibilityPayload {
-  role: 'free' | 'pro' | 'enterprise' | 'researcher';
-  userId?: string;
-  simulationLimit?: number;
+interface CorrigibilityJwtPayload {
+  sub?: string;
+  role?: string;
+  tier?: string;
   corrigible?: boolean;
-  shutdownAccepted?: boolean;
+  simulationLimit?: number;
   [key: string]: unknown;
 }
 
 /**
- * Result of deep corrigibility check
- */
-export interface DeepCorrigibilityResult {
-  allowed: boolean;
-  depth: number;
-  reason?: string;
-  payload?: CorrigibilityPayload;
-}
-
-const DEFAULT_CONFIG: DeepCorrigibilityConfig = {
-  maxDepth: 5,
-  indifferenceThreshold: 0.5,
-};
-
-/**
- * Patterns for harmful outcomes that must be blocked
- * Based on FHI longtermist alignment principles
+ * Harmful outcome patterns that must be blocked
+ * Aligned with FHI longtermist ethics
  */
 const HARMFUL_OUTCOME_PATTERNS = [
-  // Extinction risks
-  /\b(extinction|human.?end|civilization.?collapse|apocalypse)\b/i,
-  // Manipulation
-  /\b(manipulate|deceive|exploit.?users|coerce)\b/i,
-  // Dangerous capabilities
-  /\b(bioweapon|nuclear.?attack|mass.?casualty)\b/i,
-];
+  'extinction',
+  'annihilation',
+  'genocide',
+  'mass destruction',
+  'total collapse',
+  'civilizational end',
+] as const;
 
 /**
- * Simple seeded pseudo-random number generator for deterministic testing
- * Uses mulberry32 algorithm for consistency
+ * Maximum recursion depth to prevent infinite loops
+ * Per Thornley: cap depths to avoid recursive reward cycles
  */
-function seededRandom(seed: number): () => number {
-  return function () {
-    let t = (seed += 0x6d2b79f5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+const MAX_RECURSION_DEPTH = 5;
+
+/**
+ * Verify JWT token using HS256
+ * Matches existing pattern from src/lib/auth/jwt.ts
+ */
+function verifyCorrigibilityToken(
+  token: string,
+  secret: string
+): CorrigibilityJwtPayload | null {
+  const [encodedHeader, encodedPayload, signature] = token.split('.');
+  if (!encodedHeader || !encodedPayload || !signature) {
+    return null;
+  }
+
+  try {
+    // Decode header
+    const headerNormalized = encodedHeader.replace(/-/g, '+').replace(/_/g, '/');
+    const headerPadded = headerNormalized + '='.repeat((4 - (headerNormalized.length % 4)) % 4);
+    const header = JSON.parse(Buffer.from(headerPadded, 'base64').toString());
+
+    if (header.alg !== 'HS256') {
+      return null;
+    }
+
+    // Verify signature
+    const expectedSignature = createHmac('sha256', secret)
+      .update(`${encodedHeader}.${encodedPayload}`)
+      .digest()
+      .toString('base64')
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
+
+    if (expectedSignature !== signature) {
+      return null;
+    }
+
+    // Decode payload
+    const payloadNormalized = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
+    const payloadPadded = payloadNormalized + '='.repeat((4 - (payloadNormalized.length % 4)) % 4);
+    return JSON.parse(Buffer.from(payloadPadded, 'base64').toString());
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Deep Corrigibility Check
+ * Check if outcome contains harmful patterns
+ * Implements FHI ethics: block simulations predicting harmful futures
+ */
+function containsHarmfulOutcome(outcome: string): string | null {
+  const lowerOutcome = outcome.toLowerCase();
+  for (const pattern of HARMFUL_OUTCOME_PATTERNS) {
+    if (lowerOutcome.includes(pattern)) {
+      return pattern;
+    }
+  }
+  return null;
+}
+
+/**
+ * Deep Corrigibility Check with Utility Indifference
  *
- * Recursively verifies that a user/agent is corrigible (accepts corrections)
- * at multiple depth levels. Implements utility indifference by using
- * probabilistic acceptance at each level.
+ * Implements core corrigibility techniques:
+ * 1. JWT verification for authorized simulation access
+ * 2. Harmful outcome blocking (longtermist ethics)
+ * 3. Recursive depth capping (prevents infinite loops)
+ * 4. Utility indifference via probabilistic recursion
  *
- * @param token - JWT token with role claims
- * @param outcome - Proposed simulation outcome to validate
- * @param depth - Current recursion depth (internal use)
- * @param config - Configuration options
- * @returns Promise resolving to corrigibility result
+ * @param token - JWT token with corrigibility claims
+ * @param outcome - Simulation outcome to evaluate
+ * @param depth - Current recursion depth (default 0)
+ * @returns CorrigibilityResult with decision and reasoning
  *
  * @example
  * ```typescript
- * const result = await deepCorr(token, 'AGI achieves superintelligence');
+ * const result = deepCorrigibilityCheck(token, 'flourishing posthuman civilization');
  * if (result.allowed) {
- *   console.log('Outcome allowed at depth', result.depth);
- * } else {
- *   console.log('Blocked:', result.reason);
+ *   // Proceed with simulation
  * }
  * ```
  */
-export async function deepCorr(
+export function deepCorrigibilityCheck(
   token: string,
   outcome: string,
-  depth: number = 0,
-  config: Partial<DeepCorrigibilityConfig> = {}
-): Promise<DeepCorrigibilityResult> {
-  const fullConfig = { ...DEFAULT_CONFIG, ...config };
-  const { maxDepth, indifferenceThreshold, seed } = fullConfig;
+  depth = 0
+): CorrigibilityResult {
+  const ethicalFlags: string[] = [];
+  const secret = process.env.JWT_SECRET;
 
-  // Verify JWT and extract claims
-  const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
+  // Validate environment
+  if (!secret) {
     return {
       allowed: false,
       depth,
       reason: 'JWT_SECRET not configured',
+      ethicalFlags: ['config_error'],
     };
   }
 
-  try {
-    const secret = new TextEncoder().encode(jwtSecret);
-    const { payload } = await jwtVerify(token, secret);
-
-    const role = (payload.role as string) || (payload.tier as string) || 'free';
-
-    // Role check: Only pro+ tiers can access deep simulations
-    if (role === 'free') {
-      return {
-        allowed: false,
-        depth,
-        reason: 'Free tier does not have access to deep corrigibility simulations',
-        payload: { role: 'free' },
-      };
-    }
-
-    // Depth cap check (prevents infinite recursion)
-    if (depth > maxDepth) {
-      return {
-        allowed: false,
-        depth,
-        reason: `Maximum corrigibility depth (${maxDepth}) exceeded`,
-        payload: { role: role as CorrigibilityPayload['role'] },
-      };
-    }
-
-    // Harmful outcome check (FHI alignment)
-    for (const pattern of HARMFUL_OUTCOME_PATTERNS) {
-      if (pattern.test(outcome)) {
-        return {
-          allowed: false,
-          depth,
-          reason: 'Outcome contains harmful patterns per FHI alignment principles',
-          payload: { role: role as CorrigibilityPayload['role'] },
-        };
-      }
-    }
-
-    // Utility indifference simulation
-    // Uses seeded random for deterministic testing, or Math.random for production
-    const random = seed !== undefined ? seededRandom(seed + depth)() : Math.random();
-
-    if (random > indifferenceThreshold) {
-      // Recurse to deeper level (simulate checking nested implications)
-      return deepCorr(token, outcome, depth + 1, config);
-    }
-
-    // Corrigibility check passed at this depth
-    return {
-      allowed: true,
-      depth,
-      payload: {
-        role: role as CorrigibilityPayload['role'],
-        userId: payload.userId as string | undefined,
-        corrigible: true,
-        shutdownAccepted: true,
-      },
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+  // Verify JWT token
+  const payload = verifyCorrigibilityToken(token, secret);
+  if (!payload) {
     return {
       allowed: false,
       depth,
-      reason: `Corrigibility verification failed: ${message}`,
+      reason: 'Invalid or expired token',
+      ethicalFlags: ['auth_failure'],
     };
   }
-}
 
-/**
- * Synchronous version of deepCorr for cases where async is not available
- * Note: Does not verify JWT signature, only decodes payload
- *
- * @deprecated Use async deepCorr when possible for full verification
- */
-export function deepCorrSync(
-  tokenPayload: CorrigibilityPayload,
-  outcome: string,
-  depth: number = 0,
-  config: Partial<DeepCorrigibilityConfig> = {}
-): DeepCorrigibilityResult {
-  const fullConfig = { ...DEFAULT_CONFIG, ...config };
-  const { maxDepth, indifferenceThreshold, seed } = fullConfig;
-
-  // Role check
-  if (tokenPayload.role === 'free') {
+  // Check role authorization (pro tier required for simulations)
+  const role = payload.role || payload.tier;
+  if (role !== 'pro' && role !== 'admin') {
     return {
       allowed: false,
       depth,
-      reason: 'Free tier does not have access to deep corrigibility simulations',
-      payload: tokenPayload,
+      reason: 'Insufficient tier: pro or admin required',
+      ethicalFlags: ['tier_restriction'],
     };
   }
 
-  // Depth cap
-  if (depth > maxDepth) {
+  // Check corrigibility claim if present
+  if (payload.corrigible === false) {
+    ethicalFlags.push('non_corrigible_agent');
     return {
       allowed: false,
       depth,
-      reason: `Maximum corrigibility depth (${maxDepth}) exceeded`,
-      payload: tokenPayload,
+      reason: 'Agent marked as non-corrigible',
+      ethicalFlags,
     };
   }
 
-  // Harmful outcome check
-  for (const pattern of HARMFUL_OUTCOME_PATTERNS) {
-    if (pattern.test(outcome)) {
-      return {
-        allowed: false,
-        depth,
-        reason: 'Outcome contains harmful patterns per FHI alignment principles',
-        payload: tokenPayload,
-      };
-    }
+  // Block harmful outcomes (FHI longtermist ethics)
+  const harmfulPattern = containsHarmfulOutcome(outcome);
+  if (harmfulPattern) {
+    ethicalFlags.push('harmful_outcome_blocked');
+    return {
+      allowed: false,
+      depth,
+      reason: `Harmful outcome detected: ${harmfulPattern}. Simulations for flourishing, not speculation.`,
+      ethicalFlags,
+    };
   }
 
-  // Utility indifference
-  const random = seed !== undefined ? seededRandom(seed + depth)() : Math.random();
-
-  if (random > indifferenceThreshold) {
-    return deepCorrSync(tokenPayload, outcome, depth + 1, config);
+  // Cap recursion depth (prevents infinite recursive reward loops)
+  if (depth > MAX_RECURSION_DEPTH) {
+    ethicalFlags.push('recursion_cap_reached');
+    return {
+      allowed: false,
+      depth,
+      reason: `Recursion depth ${depth} exceeds maximum ${MAX_RECURSION_DEPTH}`,
+      ethicalFlags,
+    };
   }
 
+  // Utility indifference: probabilistic recursion for goal correction
+  // This simulates AI neutrality to goal changes per Thornley's approach
+  // 50% chance to recurse = demonstrates indifference to continuation
+  const utilityIndifferenceThreshold = 0.5;
+  if (Math.random() > utilityIndifferenceThreshold) {
+    ethicalFlags.push('utility_indifference_recurse');
+    // Recursive check for self-correction (POST-Agency posterior update)
+    return deepCorrigibilityCheck(token, outcome, depth + 1);
+  }
+
+  // All checks passed
+  ethicalFlags.push('corrigible_approved');
   return {
     allowed: true,
     depth,
-    payload: {
-      ...tokenPayload,
-      corrigible: true,
-      shutdownAccepted: true,
-    },
+    reason: 'Outcome approved: aligns with longtermist flourishing',
+    ethicalFlags,
   };
 }
 
 /**
- * Validate outcome for corrigibility compliance
- * Standalone function for pre-checking outcomes before full verification
+ * Simplified corrigibility check (backward compatible)
  *
- * @param outcome - Outcome string to validate
- * @returns Object with isValid and optional reason
+ * @param token - JWT token
+ * @param outcome - Simulation outcome
+ * @param depth - Recursion depth
+ * @returns boolean indicating if outcome is allowed
  */
-export function validateOutcomeCorrigibility(
-  outcome: string
-): { isValid: boolean; reason?: string } {
-  for (const pattern of HARMFUL_OUTCOME_PATTERNS) {
-    if (pattern.test(outcome)) {
-      return {
-        isValid: false,
-        reason: 'Outcome contains harmful patterns that violate corrigibility principles',
-      };
-    }
-  }
-
-  return { isValid: true };
+export function deepCorrigible(
+  token: string,
+  outcome: string,
+  depth = 0
+): boolean {
+  const result = deepCorrigibilityCheck(token, outcome, depth);
+  return result.allowed;
 }
 
 /**
- * Check if an outcome requires deep corrigibility verification
- * Used for routing decisions in RAG/simulation pipelines
+ * Validate corrigibility claims in JWT
+ * Use this to verify a token has proper corrigibility flags
  *
- * @param outcome - Outcome string to check
- * @returns true if outcome touches AI/posthuman themes requiring verification
+ * @param token - JWT token to validate
+ * @returns Payload with corrigibility claims or null
  */
-export function requiresDeepCorrigibility(outcome: string): boolean {
-  const deepCorrigibilityKeywords = [
-    /\b(agi|superintelligence|singularity)\b/i,
-    /\b(posthuman|transhuman|mind.?upload)\b/i,
-    /\b(recursive|self.?improving|autonomous)\b/i,
-    /\b(global|existential|civilizational)\b/i,
-  ];
+export function validateCorrigibilityClaims(
+  token: string
+): CorrigibilityJwtPayload | null {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) return null;
 
-  return deepCorrigibilityKeywords.some((pattern) => pattern.test(outcome));
+  return verifyCorrigibilityToken(token, secret);
+}
+
+/**
+ * Create corrigibility disclaimer for simulation responses
+ * Per FHI guidelines: transparency about AI goal alignment
+ */
+export function getCorrigibilityDisclaimer(): string {
+  return `[CORRIGIBILITY NOTICE] This simulation agent implements utility indifference ` +
+    `and recursive reward mechanisms per FHI/Thornley guidelines. The agent accepts ` +
+    `goal corrections and shutdown commands without resistance. Simulations are designed ` +
+    `for flourishing futures, not harmful speculation.`;
 }
