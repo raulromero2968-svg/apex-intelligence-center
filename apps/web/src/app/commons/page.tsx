@@ -4,6 +4,7 @@ import { Calendar, Clock, BookOpen, Sparkles } from 'lucide-react';
 import { ElectronicFolder } from '../../../../../components/ui/ElectronicFolder';
 import { DigitalScroll } from '../../../../../components/ui/DigitalScroll';
 import { HoloCard } from '../../../../../components/ui/HoloCard';
+import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
 
 export const metadata = {
   title: "Apex Commons | Essays on Building Better Systems",
@@ -15,6 +16,12 @@ export default async function CommonsPage() {
 
   return (
     <div className="relative min-h-screen pt-24">
+      {/* PhD Framework - Chapter 02: Literature Review */}
+      <DissertationChapterBadge
+        chapter={DISSERTATION_CHAPTERS.LITERATURE_REVIEW}
+        variant="floating"
+      />
+
       {/* Hero Section */}
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">

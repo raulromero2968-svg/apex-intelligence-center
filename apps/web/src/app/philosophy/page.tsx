@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Rocket, Globe, BarChart3, Activity, Target, Sparkles, Box } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
+import { DissertationChapterBadge, DISSERTATION_CHAPTERS } from '@/components/phd/DissertationChapterBadge';
 import type { Metadata } from 'next';
 
 export const revalidate = 3600;
@@ -46,6 +47,12 @@ export const metadata: Metadata = {
 export default function PhilosophyPage() {
   return (
     <div className="relative min-h-screen pt-24">
+      {/* PhD Framework - Chapter 05: Discussion */}
+      <DissertationChapterBadge
+        chapter={DISSERTATION_CHAPTERS.DISCUSSION}
+        variant="floating"
+      />
+
       {/* Hero Section */}
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
