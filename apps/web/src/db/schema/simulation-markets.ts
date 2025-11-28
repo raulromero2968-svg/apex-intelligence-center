@@ -5,17 +5,23 @@
  * - TCG outcome predictions with pgvector embeddings (HNSW indexed)
  * - Polymarket integration for real-time odds
  * - Bostrom trilemma-aware existential predictions
+ * - Low-rank matrix decomposition metadata for SVD efficiency
+ * - POST-Agency corrigibility tracking
+ * - Deep utopia framing for posthuman scenarios
  *
  * Features:
  * - pgvector embeddings (1536-dim for OpenAI text-embedding-3-large)
- * - HNSW indexing for fast cosine similarity search
+ * - HNSW indexing for fast cosine similarity search (m=16, ef_construction=64)
  * - Event probability tracking from prediction markets
  * - Simulation run history with versioning
+ * - Corrigibility metadata for ethical AI alignment
  *
  * References:
  * - KB-09: Advanced Database Architecture (pgvector HNSW)
- * - KB-02: AI RAG Architecture (embeddings)
+ * - KB-02: AI RAG Architecture (embeddings, EGGROLL)
  * - EGGROLL: Gradient-free evolution for stable predictions
+ * - FHI: Corrigibility and utility indifference
+ * - Thornley: POST-Agency posterior goal updates
  *
  * @module simulation-markets-schema
  */
@@ -100,14 +106,48 @@ export const tcgOutcomes = pgTable('tcg_outcomes', {
   calibrationError: real('calibration_error'), // |prediction - actual|
   brierScore: real('brier_score'), // For probabilistic predictions
 
-  // Metadata
+  // Metadata with EGGROLL and POST-Agency support
   metadata: jsonb('metadata').$type<{
     model?: string;
     temperature?: number;
     contextSources?: string[];
     eggrollFitness?: { accuracy: number; stability: number; coherence: number };
     marketConditions?: Record<string, any>;
+    // SVD approximation metadata (KB-02 low-rank efficiency)
+    svdMetadata?: {
+      rank: number;
+      efficiencyGain: number;
+      singularValues?: number[];
+    };
+    // POST-Agency corrigibility metadata (Thornley)
+    postAgency?: {
+      enabled: boolean;
+      corrigibilityScore: number;
+      utilityIndifference: boolean;
+      recursiveRewardCap: number;
+      updateDepth: number;
+    };
+    // Deep utopia framing metadata
+    utopiaFraming?: {
+      enabled: boolean;
+      abundanceFocused: boolean;
+      dignityPreserving: boolean;
+      flourishingScore: number;
+    };
+    // Ethical disclaimer if applicable
+    ethicalDisclaimer?: string;
   }>().default({}),
+
+  // Bostrom trilemma classification
+  bostromScenario: text('bostrom_scenario', {
+    enum: ['extinction', 'posthuman', 'simulated_reality', 'general'],
+  }),
+
+  // Corrigibility score (0-1) from POST-Agency checks
+  corrigibilityScore: real('corrigibility_score'),
+
+  // Low-rank SVD efficiency gain (0-1)
+  svdEfficiencyGain: real('svd_efficiency_gain'),
 
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -116,6 +156,8 @@ export const tcgOutcomes = pgTable('tcg_outcomes', {
 }, (table) => ({
   // HNSW index for vector similarity (created in migration with vector_cosine_ops)
   // Note: Drizzle doesn't support HNSW syntax directly, created in SQL migration
+  // CREATE INDEX idx_tcg_outcomes_embedding_hnsw ON tcg_outcomes
+  // USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=64);
 
   // Standard indexes
   tcgCardIdx: index('idx_tcg_outcomes_card').on(table.tcgCardId),
@@ -124,6 +166,10 @@ export const tcgOutcomes = pgTable('tcg_outcomes', {
   confidenceIdx: index('idx_tcg_outcomes_confidence').on(table.confidence),
   createdAtIdx: index('idx_tcg_outcomes_created').on(table.createdAt),
   expiresAtIdx: index('idx_tcg_outcomes_expires').on(table.expiresAt),
+  // New indexes for EGGROLL and POST-Agency
+  bostromScenarioIdx: index('idx_tcg_outcomes_bostrom').on(table.bostromScenario),
+  corrigibilityIdx: index('idx_tcg_outcomes_corrigibility').on(table.corrigibilityScore),
+  svdEfficiencyIdx: index('idx_tcg_outcomes_svd_efficiency').on(table.svdEfficiencyGain),
 }));
 
 // ============================================================================

@@ -4,9 +4,11 @@
  * Features:
  * - Redis-backed token bucket algorithm (Upstash)
  * - Tiered limits: Free (20/min), Pro (100/min), Enterprise (unlimited)
+ * - Burst control with token refill (10/min burst for trilemma queries)
  * - RESTful error responses with Retry-After headers
  * - Sentry monitoring integration
  * - Per-user rate limiting (not IP-based)
+ * - POST-Agency flags for goal updates
  */
 
 import { Ratelimit } from '@upstash/ratelimit';
@@ -128,6 +130,146 @@ export function getLimitForTier(tier: 'free' | 'pro' | 'enterprise'): number {
  */
 export function getRetryAfter(reset: number): number {
   return Math.ceil((reset - Date.now()) / 1000);
+}
+
+// ============================================================================
+// BURST CONTROL WITH TOKEN REFILL (KB-10)
+// ============================================================================
+
+/**
+ * Burst rate limit result with refill info
+ */
+export interface BurstRateLimitResult extends RateLimitResult {
+  burstRemaining: number;
+  burstRefillAt: number;
+  postAgencyFlag?: boolean;
+}
+
+/**
+ * Burst rate limiting with token refill
+ *
+ * Implements a token bucket with burst capacity for handling
+ * spiky traffic patterns (e.g., trilemma query bursts).
+ *
+ * @param burstLimit - Max burst requests (default 10)
+ * @param sustainedLimit - Sustained rate per window
+ * @param identifier - Unique key (e.g., "simulation:user123")
+ * @param window - Time window in seconds (default: 60s)
+ * @param postAgencyFlag - Optional POST-Agency flag for goal updates
+ * @returns Rate limit result with burst capacity info
+ */
+export async function burstRatelimit(
+  burstLimit: number,
+  sustainedLimit: number,
+  identifier: string,
+  window: number = 60,
+  postAgencyFlag: boolean = false
+): Promise<BurstRateLimitResult> {
+  // If Redis not available, allow request
+  if (!redis) {
+    console.warn('Burst rate limiting disabled - Redis not available');
+    return {
+      success: true,
+      limit: sustainedLimit,
+      remaining: sustainedLimit,
+      reset: Date.now() + window * 1000,
+      burstRemaining: burstLimit,
+      burstRefillAt: Date.now() + window * 1000,
+      postAgencyFlag,
+    };
+  }
+
+  // Enterprise tier - unlimited access
+  if (sustainedLimit === Infinity || sustainedLimit <= 0) {
+    return {
+      success: true,
+      limit: Infinity,
+      remaining: Infinity,
+      reset: Date.now() + window * 1000,
+      burstRemaining: Infinity,
+      burstRefillAt: Date.now() + window * 1000,
+      postAgencyFlag,
+    };
+  }
+
+  try {
+    // Check burst bucket first
+    const burstLimiter = new Ratelimit({
+      redis: redis as any,
+      limiter: Ratelimit.tokenBucket(burstLimit, `${window} s`, burstLimit),
+      analytics: true,
+      prefix: 'apex:burst',
+    });
+
+    const burstResult = await burstLimiter.limit(identifier);
+
+    // If burst available, use it
+    if (burstResult.success) {
+      return {
+        success: true,
+        limit: sustainedLimit,
+        remaining: burstResult.remaining,
+        reset: burstResult.reset,
+        burstRemaining: burstResult.remaining,
+        burstRefillAt: burstResult.reset,
+        postAgencyFlag,
+      };
+    }
+
+    // Fall back to sustained rate
+    const sustainedLimiter = new Ratelimit({
+      redis: redis as any,
+      limiter: Ratelimit.slidingWindow(sustainedLimit, `${window} s`),
+      analytics: true,
+      prefix: 'apex:sustained',
+    });
+
+    const sustainedResult = await sustainedLimiter.limit(identifier);
+
+    return {
+      success: sustainedResult.success,
+      limit: sustainedLimit,
+      remaining: sustainedResult.remaining,
+      reset: sustainedResult.reset,
+      burstRemaining: 0,
+      burstRefillAt: burstResult.reset,
+      postAgencyFlag,
+    };
+  } catch (error) {
+    console.error('Burst rate limit check failed:', error);
+
+    // On error, allow request
+    return {
+      success: true,
+      limit: sustainedLimit,
+      remaining: sustainedLimit,
+      reset: Date.now() + window * 1000,
+      burstRemaining: burstLimit,
+      burstRefillAt: Date.now() + window * 1000,
+      postAgencyFlag,
+    };
+  }
+}
+
+/**
+ * Get burst limits for simulation/trilemma queries
+ *
+ * @param tier - Subscription tier
+ * @returns Burst and sustained limits
+ */
+export function getSimulationLimits(tier: 'free' | 'pro' | 'enterprise'): {
+  burst: number;
+  sustained: number;
+} {
+  switch (tier) {
+    case 'enterprise':
+      return { burst: Infinity, sustained: Infinity };
+    case 'pro':
+      return { burst: 20, sustained: 100 };
+    case 'free':
+    default:
+      return { burst: 10, sustained: 20 };
+  }
 }
 
 // ============================================================================

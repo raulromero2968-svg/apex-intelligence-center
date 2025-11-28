@@ -35,7 +35,9 @@ export type SchemaType =
   | 'WebPage'
   | 'ItemList'
   | 'HowTo'
-  | 'Review';
+  | 'Review'
+  | 'PredictionEvent'
+  | 'SimulationAnalysis';
 
 export interface SchemaTemplate {
   type: SchemaType;
@@ -250,6 +252,106 @@ export const SCHEMA_TEMPLATES: Record<SchemaType, SchemaTemplate> = {
       reviewBody: 'Excellent pull rates!',
     },
     richResultsType: 'Review snippet',
+  },
+  PredictionEvent: {
+    type: 'PredictionEvent',
+    name: 'Prediction Event',
+    description: 'Schema for prediction market events and Bostrom trilemma simulations (KB-07 SEO)',
+    requiredFields: ['name', 'predictionType', 'probability', 'startDate'],
+    optionalFields: [
+      'description',
+      'endDate',
+      'organizer',
+      'marketSource',
+      'bostromScenario',
+      'confidence',
+      'corrigibilityScore',
+      'utopiaFraming',
+      'ethicalDisclaimer',
+    ],
+    example: {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      '@id': 'prediction-event-001',
+      name: 'Simulation Probability Analysis: TCG Market 2025',
+      description: 'Bostrom trilemma analysis for TCG market predictions with EGGROLL evolution',
+      predictionType: 'simulated_reality',
+      probability: 0.66,
+      startDate: '2025-01-01T00:00:00Z',
+      endDate: '2025-12-31T23:59:59Z',
+      organizer: {
+        '@type': 'Organization',
+        name: 'Apex Intelligence Center',
+        url: 'https://apex-intelligence.com',
+      },
+      marketSource: 'manifold',
+      bostromScenario: {
+        extinction: 0.15,
+        posthuman: 0.19,
+        simulated_reality: 0.66,
+      },
+      confidence: {
+        lower: 0.55,
+        upper: 0.75,
+      },
+      corrigibilityScore: 0.85,
+      utopiaFraming: {
+        enabled: true,
+        abundanceFocused: true,
+        dignityPreserving: true,
+      },
+      ethicalDisclaimer: 'Predictions framed through deep utopia lens, emphasizing posthuman flourishing.',
+      additionalType: 'https://schema.org/EducationalEvent',
+    },
+    richResultsType: 'Event',
+  },
+  SimulationAnalysis: {
+    type: 'SimulationAnalysis',
+    name: 'Simulation Analysis',
+    description: 'Schema for AI simulation analysis with corrigibility metadata (POST-Agency)',
+    requiredFields: ['name', 'analysisType', 'dateCreated', 'creator'],
+    optionalFields: [
+      'description',
+      'methodology',
+      'fitnessScore',
+      'evolutionGenerations',
+      'svdEfficiency',
+      'postAgencyEnabled',
+      'corrigibilityScore',
+      'ethicalAlignment',
+    ],
+    example: {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      '@id': 'simulation-analysis-001',
+      name: 'EGGROLL Evolution Analysis: Charizard PSA 10',
+      description: 'Gradient-free evolution strategy analysis for TCG price prediction',
+      analysisType: 'eggroll_evolution',
+      dateCreated: '2025-01-15T10:30:00Z',
+      creator: {
+        '@type': 'Organization',
+        name: 'Apex Intelligence Center',
+      },
+      methodology: {
+        algorithm: 'EGGROLL',
+        generations: 3,
+        populationSize: 5,
+        svdRank: 4,
+      },
+      fitnessScore: 8,
+      evolutionGenerations: 3,
+      svdEfficiency: 0.18,
+      postAgencyEnabled: true,
+      corrigibilityScore: 0.85,
+      ethicalAlignment: {
+        fhiCompliant: true,
+        utilityIndifference: true,
+        deepUtopiaFraming: true,
+        disclaimer: 'Analysis for research and flourishing assessment only.',
+      },
+      additionalType: 'https://schema.org/TechArticle',
+    },
+    richResultsType: 'Article',
   },
 };
 
@@ -514,4 +616,248 @@ export function generateSchema(
     '@type': type,
     ...data,
   };
+}
+
+// ============================================================================
+// PREDICTION EVENT SCHEMA GENERATORS (KB-07 SEO + Bostrom)
+// ============================================================================
+
+/**
+ * Bostrom scenario probabilities for schema generation
+ */
+export interface BostromScenarioProbabilities {
+  extinction: number;
+  posthuman: number;
+  simulatedReality: number;
+}
+
+/**
+ * Utopia framing metadata for schema generation
+ */
+export interface UtopiaFramingMetadata {
+  enabled: boolean;
+  abundanceFocused: boolean;
+  dignityPreserving: boolean;
+  flourishingScore?: number;
+}
+
+/**
+ * Prediction event data for schema generation
+ */
+export interface PredictionEventData {
+  id: string;
+  name: string;
+  description: string;
+  predictionType: 'extinction' | 'posthuman' | 'simulated_reality' | 'general';
+  probability: number;
+  startDate: string;
+  endDate?: string;
+  marketSource?: 'manifold' | 'polymarket' | 'metaculus' | 'kalshi' | 'internal';
+  bostromScenario?: BostromScenarioProbabilities;
+  confidence?: { lower: number; upper: number };
+  corrigibilityScore?: number;
+  utopiaFraming?: UtopiaFramingMetadata;
+  ethicalDisclaimer?: string;
+  organizerName?: string;
+  organizerUrl?: string;
+}
+
+/**
+ * Generate PredictionEvent JSON-LD schema for SEO
+ *
+ * Creates schema.org/Event markup with Bostrom trilemma metadata
+ * for rich search results on prediction market pages.
+ *
+ * @param data - Prediction event data
+ * @returns JSON-LD schema object
+ *
+ * @example
+ * ```typescript
+ * const schema = generatePredictionEventSchema({
+ *   id: 'pred-001',
+ *   name: 'Simulation Probability 2025',
+ *   description: 'Bostrom trilemma analysis',
+ *   predictionType: 'simulated_reality',
+ *   probability: 0.66,
+ *   startDate: '2025-01-01',
+ * });
+ * ```
+ */
+export function generatePredictionEventSchema(
+  data: PredictionEventData
+): Record<string, unknown> {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    '@id': data.id,
+    name: data.name,
+    description: data.description,
+    startDate: data.startDate,
+    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    // Custom prediction properties
+    predictionType: data.predictionType,
+    probability: data.probability,
+  };
+
+  if (data.endDate) {
+    schema.endDate = data.endDate;
+  }
+
+  if (data.organizerName) {
+    schema.organizer = {
+      '@type': 'Organization',
+      name: data.organizerName,
+      ...(data.organizerUrl && { url: data.organizerUrl }),
+    };
+  }
+
+  if (data.marketSource) {
+    schema.marketSource = data.marketSource;
+  }
+
+  if (data.bostromScenario) {
+    schema.bostromScenario = {
+      extinction: data.bostromScenario.extinction,
+      posthuman: data.bostromScenario.posthuman,
+      simulated_reality: data.bostromScenario.simulatedReality,
+    };
+  }
+
+  if (data.confidence) {
+    schema.confidence = data.confidence;
+  }
+
+  if (data.corrigibilityScore !== undefined) {
+    schema.corrigibilityScore = data.corrigibilityScore;
+  }
+
+  if (data.utopiaFraming) {
+    schema.utopiaFraming = data.utopiaFraming;
+  }
+
+  if (data.ethicalDisclaimer) {
+    schema.ethicalDisclaimer = data.ethicalDisclaimer;
+  }
+
+  // Add educational event type for research framing
+  schema.additionalType = 'https://schema.org/EducationalEvent';
+
+  return schema;
+}
+
+/**
+ * Simulation analysis data for schema generation
+ */
+export interface SimulationAnalysisData {
+  id: string;
+  name: string;
+  description: string;
+  analysisType: 'eggroll_evolution' | 'monte_carlo' | 'bayesian' | 'hybrid';
+  dateCreated: string;
+  creatorName: string;
+  methodology?: {
+    algorithm: string;
+    generations?: number;
+    populationSize?: number;
+    svdRank?: number;
+  };
+  fitnessScore?: number;
+  evolutionGenerations?: number;
+  svdEfficiency?: number;
+  postAgencyEnabled?: boolean;
+  corrigibilityScore?: number;
+  ethicalAlignment?: {
+    fhiCompliant: boolean;
+    utilityIndifference: boolean;
+    deepUtopiaFraming: boolean;
+    disclaimer?: string;
+  };
+}
+
+/**
+ * Generate SimulationAnalysis JSON-LD schema for SEO
+ *
+ * Creates schema.org/CreativeWork markup with EGGROLL and POST-Agency metadata
+ * for rich search results on simulation analysis pages.
+ *
+ * @param data - Simulation analysis data
+ * @returns JSON-LD schema object
+ */
+export function generateSimulationAnalysisSchema(
+  data: SimulationAnalysisData
+): Record<string, unknown> {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    '@id': data.id,
+    name: data.name,
+    description: data.description,
+    dateCreated: data.dateCreated,
+    creator: {
+      '@type': 'Organization',
+      name: data.creatorName,
+    },
+    analysisType: data.analysisType,
+    additionalType: 'https://schema.org/TechArticle',
+  };
+
+  if (data.methodology) {
+    schema.methodology = data.methodology;
+  }
+
+  if (data.fitnessScore !== undefined) {
+    schema.fitnessScore = data.fitnessScore;
+  }
+
+  if (data.evolutionGenerations !== undefined) {
+    schema.evolutionGenerations = data.evolutionGenerations;
+  }
+
+  if (data.svdEfficiency !== undefined) {
+    schema.svdEfficiency = data.svdEfficiency;
+  }
+
+  if (data.postAgencyEnabled !== undefined) {
+    schema.postAgencyEnabled = data.postAgencyEnabled;
+  }
+
+  if (data.corrigibilityScore !== undefined) {
+    schema.corrigibilityScore = data.corrigibilityScore;
+  }
+
+  if (data.ethicalAlignment) {
+    schema.ethicalAlignment = data.ethicalAlignment;
+  }
+
+  return schema;
+}
+
+/**
+ * Generate JSON-LD script tag for Next.js page
+ *
+ * @param schemas - Array of schema objects to embed
+ * @returns Combined JSON-LD script string
+ */
+export function generateCombinedJsonLd(
+  schemas: Record<string, unknown>[]
+): string {
+  if (schemas.length === 0) {
+    return '';
+  }
+
+  if (schemas.length === 1) {
+    return generateJsonLdScript(schemas[0]);
+  }
+
+  // Use @graph for multiple schemas
+  const combined = {
+    '@context': 'https://schema.org',
+    '@graph': schemas.map(s => {
+      const { '@context': _, ...rest } = s;
+      return rest;
+    }),
+  };
+
+  return generateJsonLdScript(combined);
 }

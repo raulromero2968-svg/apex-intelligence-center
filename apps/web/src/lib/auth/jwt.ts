@@ -7,6 +7,8 @@
  * - Redis-backed session revocation
  * - Per-request authentication
  * - Subscription tier support for rate limiting
+ * - Simulation claims with corrigibility metadata (KB-05 + POST-Agency)
+ * - MFA challenges for high-stake bets on posthuman outcomes
  */
 
 import { NextRequest } from 'next/server';
@@ -291,5 +293,209 @@ export function clearAuthCookies(headers: Headers): void {
     'Set-Cookie',
     'refreshToken=; HttpOnly; Secure; SameSite=Strict; Path=/api/auth/refresh; Max-Age=0'
   );
+}
+
+// ============================================================================
+// SIMULATION CLAIMS (KB-05 + POST-Agency)
+// ============================================================================
+
+/**
+ * Simulation claims for JWT tokens
+ *
+ * Extends standard JWT with simulation-specific claims:
+ * - simulationLimit: Max simulations per day (tier-based)
+ * - corrigible: Whether agent accepts shutdown/corrections
+ * - postAgencyEnabled: Runtime goal shift capability
+ * - mfaVerified: For high-stake posthuman predictions
+ */
+export interface SimulationClaims {
+  simulationLimit: number;        // Max simulations per day (e.g., 100 for pro)
+  corrigible: boolean;            // Shutdown-safe agent flag
+  postAgencyEnabled: boolean;     // Runtime goal shift capability
+  utopiaFraming: boolean;         // Deep utopia abundance focus
+  mfaVerified?: boolean;          // MFA verified for high-stake bets
+  lastMfaAt?: number;             // Unix timestamp of last MFA
+  highStakeAccess?: boolean;      // Access to >$1000 stake predictions
+}
+
+/**
+ * Extended user with simulation claims
+ */
+export interface UserWithSimulationClaims extends UserWithTier {
+  simulationClaims?: SimulationClaims;
+}
+
+/**
+ * Extended JWT payload with simulation claims
+ */
+interface SimulationJWTPayload extends JWTPayload {
+  simulation?: SimulationClaims;
+}
+
+/**
+ * Get default simulation claims based on tier
+ *
+ * @param tier - Subscription tier
+ * @returns Default simulation claims for tier
+ */
+export function getDefaultSimulationClaims(tier: SubscriptionTier): SimulationClaims {
+  switch (tier) {
+    case 'enterprise':
+      return {
+        simulationLimit: Infinity,
+        corrigible: true,
+        postAgencyEnabled: true,
+        utopiaFraming: true,
+        highStakeAccess: true,
+      };
+    case 'pro':
+      return {
+        simulationLimit: 100,
+        corrigible: true,
+        postAgencyEnabled: true,
+        utopiaFraming: true,
+        highStakeAccess: false,
+      };
+    case 'free':
+    default:
+      return {
+        simulationLimit: 10,
+        corrigible: true,
+        postAgencyEnabled: false,
+        utopiaFraming: true,
+        highStakeAccess: false,
+      };
+  }
+}
+
+/**
+ * Generate access token with simulation claims
+ *
+ * @param user - User with tier
+ * @param sessionId - Session identifier
+ * @param simulationClaims - Optional custom simulation claims
+ * @returns JWT access token with simulation claims
+ */
+export async function generateSimulationAccessToken(
+  user: UserWithTier,
+  sessionId: string,
+  simulationClaims?: Partial<SimulationClaims>
+): Promise<string> {
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET not configured');
+  }
+
+  const defaultClaims = getDefaultSimulationClaims(user.subscriptionTier);
+  const mergedClaims: SimulationClaims = { ...defaultClaims, ...simulationClaims };
+
+  const secret = new TextEncoder().encode(JWT_SECRET);
+
+  return await new SignJWT({
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    tier: user.subscriptionTier,
+    type: 'access',
+    sessionId,
+    simulation: mergedClaims,
+  } as SimulationJWTPayload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('15m')
+    .sign(secret);
+}
+
+/**
+ * Extract simulation claims from request
+ *
+ * @param req - Next.js request
+ * @returns User with simulation claims or null
+ */
+export async function getUserWithSimulationClaims(
+  req: NextRequest
+): Promise<UserWithSimulationClaims | null> {
+  const user = await getUserFromRequest(req);
+
+  if (!user) {
+    return null;
+  }
+
+  // Try to get simulation claims from token
+  const authHeader = req.headers.get('authorization');
+  const cookieToken = req.cookies.get('accessToken')?.value;
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : cookieToken;
+
+  if (!token || !JWT_SECRET) {
+    // Return user with default claims
+    return {
+      ...user,
+      simulationClaims: getDefaultSimulationClaims(user.subscriptionTier),
+    };
+  }
+
+  try {
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    const simPayload = payload as SimulationJWTPayload;
+
+    return {
+      ...user,
+      simulationClaims: simPayload.simulation ?? getDefaultSimulationClaims(user.subscriptionTier),
+    };
+  } catch (error) {
+    // Return user with default claims on verification failure
+    return {
+      ...user,
+      simulationClaims: getDefaultSimulationClaims(user.subscriptionTier),
+    };
+  }
+}
+
+/**
+ * Check if user requires MFA for high-stake predictions
+ *
+ * @param user - User with simulation claims
+ * @param stakeAmount - Proposed stake amount in USD
+ * @returns Whether MFA is required
+ */
+export function requiresMfaForStake(
+  user: UserWithSimulationClaims,
+  stakeAmount: number
+): boolean {
+  // Threshold for requiring MFA
+  const MFA_THRESHOLD_USD = 1000;
+  // MFA validity period (1 hour)
+  const MFA_VALIDITY_MS = 60 * 60 * 1000;
+
+  if (stakeAmount < MFA_THRESHOLD_USD) {
+    return false;
+  }
+
+  const claims = user.simulationClaims;
+  if (!claims) {
+    return true;
+  }
+
+  // Check if MFA was recently verified
+  if (claims.mfaVerified && claims.lastMfaAt) {
+    const mfaAge = Date.now() - claims.lastMfaAt;
+    if (mfaAge < MFA_VALIDITY_MS) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Check corrigibility status for agent operations
+ *
+ * @param user - User with simulation claims
+ * @returns Whether agent is corrigible (accepts shutdown/corrections)
+ */
+export function isCorrigible(user: UserWithSimulationClaims): boolean {
+  return user.simulationClaims?.corrigible ?? true;
 }
 
