@@ -1,7 +1,7 @@
 'use client';
 
 export const GridPattern = () => (
-  <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true">
+  <div className="absolute inset-0 opacity-40 pointer-events-none" aria-hidden="true">
     <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
       <defs>
         <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">

@@ -75,6 +75,6 @@ export const Starfield = () => {
     return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf); };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 opacity-70" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 opacity-30" aria-hidden="true" />;
 };
 
