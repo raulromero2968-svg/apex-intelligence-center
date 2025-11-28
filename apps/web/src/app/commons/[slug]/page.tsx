@@ -113,10 +113,13 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           {/* Hero Image */}
           {post.frontmatter.heroImage && (
             <div className="relative w-full h-[400px] overflow-hidden border-b border-cyan-500/20">
-              <img
+              <Image
                 src={post.frontmatter.heroImage}
                 alt={post.frontmatter.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               
