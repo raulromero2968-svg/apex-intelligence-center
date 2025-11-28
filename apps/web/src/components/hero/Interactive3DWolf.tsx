@@ -5,119 +5,165 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Create a proper 3D low-poly wolf head with depth and volume
+/**
+ * Creates a proper low-poly wolf head geometry based on real wolf anatomy
+ * Key features:
+ * - Elongated snout (40% of head length)
+ * - Defined jaw structure
+ * - Proper cranium shape
+ * - Triangular ears on top-back
+ * - Full 3D volume with depth
+ * - Tapered snout (wide at base, narrow at tip)
+ */
 function createWolfGeometry() {
   const geometry = new THREE.BufferGeometry();
   
-  // Define vertices for a FULL 3D wolf head (not just a mask)
-  // Organized by sections: snout, face, skull, ears, jaw
+  // 70 vertices for proper wolf head topology
+  // Organized by anatomical sections with proper proportions
   const vertices = new Float32Array([
-    // === FRONT SNOUT (0-7) ===
-    0, -0.4, 1.2,      // 0: snout bottom center
-    -0.25, -0.3, 1.1,  // 1: snout bottom left
-    0.25, -0.3, 1.1,   // 2: snout bottom right
-    0, -0.1, 1.3,      // 3: snout tip top
-    -0.3, -0.1, 1.0,   // 4: snout left side
-    0.3, -0.1, 1.0,    // 5: snout right side
-    -0.2, 0.1, 1.1,    // 6: snout bridge left
-    0.2, 0.1, 1.1,     // 7: snout bridge right
+    // === NOSE/SNOUT TIP (0-5) ===
+    0, -0.3, 1.5,        // 0: nose tip center
+    -0.15, -0.35, 1.45,  // 1: nose bottom left
+    0.15, -0.35, 1.45,   // 2: nose bottom right
+    -0.2, -0.2, 1.4,     // 3: nostril left
+    0.2, -0.2, 1.4,      // 4: nostril right
+    0, -0.15, 1.5,       // 5: nose bridge top
     
-    // === FACE/CHEEKS (8-15) ===
-    -0.6, 0, 0.7,      // 8: left cheek outer
-    0.6, 0, 0.7,       // 9: right cheek outer
-    -0.5, 0.3, 0.8,    // 10: left eye socket
-    0.5, 0.3, 0.8,     // 11: right eye socket
-    -0.4, 0.4, 0.7,    // 12: left eye inner
-    0.4, 0.4, 0.7,     // 13: right eye inner
-    -0.3, 0.5, 0.6,    // 14: left brow
-    0.3, 0.5, 0.6,     // 15: right brow
+    // === UPPER SNOUT/MUZZLE (6-13) ===
+    -0.3, -0.25, 1.2,    // 6: upper snout left
+    0.3, -0.25, 1.2,     // 7: upper snout right
+    -0.25, -0.05, 1.25,  // 8: snout bridge left
+    0.25, -0.05, 1.25,   // 9: snout bridge right
+    0, 0.05, 1.3,        // 10: snout bridge center top
+    -0.35, -0.4, 1.1,    // 11: lower snout left
+    0.35, -0.4, 1.1,     // 12: lower snout right
+    0, -0.45, 1.15,      // 13: lower snout center
     
-    // === FOREHEAD/TOP (16-21) ===
-    0, 0.7, 0.5,       // 16: forehead center
-    -0.4, 0.7, 0.4,    // 17: forehead left
-    0.4, 0.7, 0.4,     // 18: forehead right
-    0, 0.9, 0.3,       // 19: top of head center
-    -0.3, 0.9, 0.2,    // 20: top of head left
-    0.3, 0.9, 0.2,     // 21: top of head right
+    // === SNOUT BASE/CHEEKS (14-21) ===
+    -0.45, -0.15, 0.9,   // 14: snout base left
+    0.45, -0.15, 0.9,    // 15: snout base right
+    -0.55, 0, 0.75,      // 16: cheek left outer
+    0.55, 0, 0.75,       // 17: cheek right outer
+    -0.5, 0.15, 0.8,     // 18: upper cheek left
+    0.5, 0.15, 0.8,      // 19: upper cheek right
+    -0.4, -0.5, 0.85,    // 20: lower jaw left
+    0.4, -0.5, 0.85,     // 21: lower jaw right
     
-    // === EARS (22-29) ===
-    -0.6, 0.9, 0.2,    // 22: left ear base outer
-    -0.5, 0.9, 0.3,    // 23: left ear base inner
-    -0.7, 1.4, 0.1,    // 24: left ear tip outer
-    -0.6, 1.4, 0.2,    // 25: left ear tip inner
-    0.6, 0.9, 0.2,     // 26: right ear base outer
-    0.5, 0.9, 0.3,     // 27: right ear base inner
-    0.7, 1.4, 0.1,     // 28: right ear tip outer
-    0.6, 1.4, 0.2,     // 29: right ear tip inner
+    // === EYE REGION (22-29) ===
+    -0.45, 0.3, 0.7,     // 22: eye socket left outer
+    0.45, 0.3, 0.7,      // 23: eye socket right outer
+    -0.35, 0.35, 0.75,   // 24: eye left inner
+    0.35, 0.35, 0.75,    // 25: eye right inner
+    -0.4, 0.45, 0.65,    // 26: brow left
+    0.4, 0.45, 0.65,     // 27: brow right
+    -0.3, 0.25, 0.8,     // 28: eye bridge left
+    0.3, 0.25, 0.8,      // 29: eye bridge right
     
-    // === BACK OF HEAD/SKULL (30-37) ===
-    -0.7, 0.3, -0.2,   // 30: left side back
-    0.7, 0.3, -0.2,    // 31: right side back
-    -0.6, 0.6, -0.3,   // 32: left upper back
-    0.6, 0.6, -0.3,    // 33: right upper back
-    -0.4, 0.8, -0.4,   // 34: left top back
-    0.4, 0.8, -0.4,    // 35: right top back
-    0, 0.9, -0.3,      // 36: top back center
-    0, 0.5, -0.5,      // 37: back center mid
+    // === FOREHEAD/CRANIUM TOP (30-37) ===
+    0, 0.55, 0.6,        // 30: forehead center
+    -0.35, 0.6, 0.5,     // 31: forehead left
+    0.35, 0.6, 0.5,      // 32: forehead right
+    0, 0.75, 0.4,        // 33: top of cranium center
+    -0.3, 0.8, 0.3,      // 34: cranium top left
+    0.3, 0.8, 0.3,       // 35: cranium top right
+    -0.25, 0.85, 0.15,   // 36: back cranium left
+    0.25, 0.85, 0.15,    // 37: back cranium right
     
-    // === JAW/CHIN (38-43) ===
-    -0.5, -0.5, 0.6,   // 38: left jaw
-    0.5, -0.5, 0.6,    // 39: right jaw
-    -0.3, -0.6, 0.8,   // 40: left chin
-    0.3, -0.6, 0.8,    // 41: right chin
-    0, -0.7, 0.9,      // 42: chin point
-    0, -0.6, 0.5,      // 43: throat
+    // === EARS (38-45) ===
+    -0.5, 0.7, 0.25,     // 38: left ear base outer
+    -0.4, 0.75, 0.3,     // 39: left ear base inner
+    -0.6, 1.2, 0.2,      // 40: left ear tip outer
+    -0.5, 1.25, 0.25,    // 41: left ear tip inner
+    0.5, 0.7, 0.25,      // 42: right ear base outer
+    0.4, 0.75, 0.3,      // 43: right ear base inner
+    0.6, 1.2, 0.2,       // 44: right ear tip outer
+    0.5, 1.25, 0.25,     // 45: right ear tip inner
     
-    // === NECK CONNECTION (44-47) ===
-    -0.4, -0.7, 0.3,   // 44: left neck
-    0.4, -0.7, 0.3,    // 45: right neck
-    -0.3, -0.8, 0,     // 46: left neck back
-    0.3, -0.8, 0,      // 47: right neck back
+    // === BACK OF SKULL (46-53) ===
+    -0.6, 0.5, -0.1,     // 46: skull back left upper
+    0.6, 0.5, -0.1,      // 47: skull back right upper
+    -0.55, 0.3, -0.2,    // 48: skull back left mid
+    0.55, 0.3, -0.2,     // 49: skull back right mid
+    -0.45, 0.65, -0.25,  // 50: skull back left top
+    0.45, 0.65, -0.25,   // 51: skull back right top
+    0, 0.75, -0.2,       // 52: skull back center top
+    0, 0.4, -0.3,        // 53: skull back center mid
+    
+    // === JAW/CHIN (54-59) ===
+    -0.35, -0.6, 0.7,    // 54: jaw left
+    0.35, -0.6, 0.7,     // 55: jaw right
+    -0.25, -0.7, 0.9,    // 56: chin left
+    0.25, -0.7, 0.9,     // 57: chin right
+    0, -0.75, 1.0,       // 58: chin point
+    0, -0.65, 0.6,       // 59: throat
+    
+    // === NECK CONNECTION (60-69) ===
+    -0.45, -0.7, 0.4,    // 60: neck left upper
+    0.45, -0.7, 0.4,     // 61: neck right upper
+    -0.4, -0.8, 0.2,     // 62: neck left mid
+    0.4, -0.8, 0.2,      // 63: neck right mid
+    -0.35, -0.85, 0,     // 64: neck left lower
+    0.35, -0.85, 0,      // 65: neck right lower
+    0, -0.75, 0.3,       // 66: neck center upper
+    0, -0.85, 0.1,       // 67: neck center mid
+    -0.5, -0.5, -0.15,   // 68: neck back left
+    0.5, -0.5, -0.15,    // 69: neck back right
   ]);
   
-  // Define faces - creating proper 3D topology
+  // Define faces with proper topology following wolf anatomy
   const indices = new Uint16Array([
-    // SNOUT FRONT
-    0, 1, 3,  0, 3, 2,  1, 4, 3,  2, 3, 5,
-    3, 4, 6,  3, 6, 7,  3, 7, 5,
+    // NOSE TIP
+    0, 1, 5,  0, 5, 2,  1, 3, 5,  2, 5, 4,
+    3, 1, 6,  4, 7, 2,  5, 3, 8,  5, 8, 10,  5, 10, 9,  5, 9, 4,
     
-    // SNOUT TO FACE
-    4, 8, 6,  5, 7, 9,  6, 10, 7,  7, 10, 11,
-    7, 11, 9,  6, 8, 10,
+    // UPPER SNOUT
+    3, 6, 8,  4, 9, 7,  8, 6, 14,  9, 15, 7,
+    10, 8, 28,  10, 28, 29,  10, 29, 9,
+    6, 11, 14,  7, 15, 12,  11, 13, 14,  12, 14, 13,
+    1, 11, 6,  2, 7, 12,  1, 13, 11,  2, 12, 13,  0, 13, 1,  0, 2, 13,
     
-    // FACE/EYES
-    10, 8, 12,  11, 13, 9,  10, 12, 14,  11, 15, 13,
-    12, 14, 16,  13, 16, 15,  14, 17, 16,  15, 16, 18,
+    // SNOUT BASE TO FACE
+    14, 16, 18,  15, 19, 17,  14, 18, 28,  15, 29, 19,
+    28, 18, 22,  29, 23, 19,  28, 22, 24,  29, 25, 23,
+    11, 20, 14,  12, 15, 21,  20, 16, 14,  21, 15, 17,
     
-    // FOREHEAD TO TOP
-    16, 17, 19,  16, 19, 18,  17, 20, 19,  18, 19, 21,
+    // EYE REGION
+    22, 24, 26,  23, 27, 25,  24, 22, 18,  25, 19, 23,
+    24, 30, 26,  25, 27, 30,  26, 30, 31,  27, 32, 30,
+    22, 26, 31,  23, 32, 27,
+    
+    // FOREHEAD TO CRANIUM
+    30, 31, 33,  30, 33, 32,  31, 34, 33,  32, 33, 35,
+    33, 34, 36,  33, 36, 52,  33, 52, 37,  33, 37, 35,
     
     // EARS
-    20, 22, 23,  20, 23, 19,  22, 24, 25,  22, 25, 23,
-    21, 27, 26,  21, 19, 27,  26, 27, 29,  26, 29, 28,
+    34, 38, 39,  34, 39, 36,  38, 40, 41,  38, 41, 39,
+    40, 41, 45,  40, 45, 44,  39, 41, 36,  41, 52, 36,
+    35, 43, 42,  35, 37, 43,  42, 43, 45,  42, 45, 44,
+    43, 37, 52,  43, 52, 45,
     
-    // SIDES TO BACK
-    8, 30, 10,  9, 11, 31,  10, 30, 32,  11, 33, 31,
-    10, 32, 17,  11, 18, 33,
-    
-    // BACK OF HEAD
-    30, 37, 32,  31, 33, 37,  32, 37, 34,  33, 35, 37,
-    32, 34, 20,  33, 21, 35,  34, 36, 20,  35, 21, 36,
-    34, 35, 36,  20, 36, 19,  21, 19, 36,
+    // BACK OF SKULL
+    31, 46, 34,  32, 35, 47,  34, 46, 38,  35, 42, 47,
+    46, 48, 38,  47, 42, 49,  38, 48, 68,  42, 69, 49,
+    46, 50, 36,  47, 37, 51,  50, 52, 36,  51, 37, 52,
+    50, 52, 51,  46, 50, 48,  47, 49, 51,
+    48, 53, 68,  49, 69, 53,  50, 53, 48,  51, 49, 53,  50, 51, 53,
     
     // JAW
-    0, 38, 1,  0, 2, 39,  1, 38, 4,  2, 5, 39,
-    38, 8, 4,  39, 5, 9,  0, 40, 38,  0, 39, 41,
-    0, 42, 40,  0, 41, 42,
+    20, 54, 16,  21, 17, 55,  16, 54, 48,  17, 49, 55,
+    54, 56, 20,  55, 21, 57,  56, 58, 20,  57, 21, 58,
+    56, 58, 57,  20, 58, 11,  21, 12, 58,  11, 58, 13,  12, 13, 58,
     
-    // CHIN TO THROAT
-    40, 43, 38,  41, 39, 43,  42, 43, 40,  42, 41, 43,
+    // THROAT/NECK CONNECTION
+    54, 59, 56,  55, 57, 59,  54, 60, 59,  55, 59, 61,
+    59, 60, 66,  59, 66, 61,  60, 62, 66,  61, 66, 63,
+    62, 64, 66,  63, 66, 65,  64, 67, 66,  65, 66, 67,
     
-    // NECK
-    38, 44, 8,  39, 9, 45,  43, 44, 38,  43, 39, 45,
-    44, 46, 30,  45, 31, 47,  44, 30, 8,  45, 9, 31,
-    44, 43, 46,  45, 47, 43,  46, 37, 30,  47, 31, 37,
-    46, 43, 37,  47, 37, 43,
+    // NECK TO SKULL
+    60, 54, 16,  61, 17, 55,  60, 16, 48,  61, 49, 17,
+    60, 48, 68,  61, 69, 49,  60, 68, 62,  61, 63, 69,
+    62, 68, 64,  63, 65, 69,  68, 53, 64,  69, 65, 53,
+    64, 53, 67,  65, 67, 53,
   ]);
   
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -157,22 +203,26 @@ function WolfHead() {
       }
       
       // Pulsing prismatic glow effect
-      const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.2 + 0.8;
+      const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.15 + 0.85;
       if (edgesRef.current.material instanceof THREE.LineBasicMaterial) {
-        edgesRef.current.material.opacity = hovered || clicked ? 1 : pulse * 0.9;
+        edgesRef.current.material.opacity = (hovered || clicked) ? 1 : pulse * 0.9;
       }
       
-      // Animate prismatic color shift
+      // Animate prismatic color shift between cyan and purple
       if (meshRef.current.material instanceof THREE.MeshPhongMaterial) {
-        const colorShift = (Math.sin(state.clock.elapsedTime) + 1) / 2;
+        const colorShift = (Math.sin(state.clock.elapsedTime * 0.8) + 1) / 2;
         if (hovered || clicked) {
-          // Shift between cyan and purple
-          meshRef.current.material.color.setHex(
-            colorShift > 0.5 ? 0x06b6d4 : 0xa855f7
-          );
-          meshRef.current.material.emissive.setHex(
-            colorShift > 0.5 ? 0xa855f7 : 0x06b6d4
-          );
+          // Smooth transition between cyan and purple
+          const r = 0.024 + (0.659 - 0.024) * colorShift; // 06 -> a8
+          const g = 0.714 - (0.714 - 0.333) * colorShift; // b6 -> 55
+          const b = 0.831 + (0.969 - 0.831) * colorShift; // d4 -> f7
+          meshRef.current.material.color.setRGB(r, g, b);
+          
+          // Inverse for emissive
+          const er = 0.659 - (0.659 - 0.024) * colorShift;
+          const eg = 0.333 + (0.714 - 0.333) * colorShift;
+          const eb = 0.969 - (0.969 - 0.831) * colorShift;
+          meshRef.current.material.emissive.setRGB(er, eg, eb);
         }
       }
     }
@@ -192,10 +242,10 @@ function WolfHead() {
         <meshPhongMaterial
           color={hovered || clicked ? '#06b6d4' : '#0891b2'}
           emissive={hovered || clicked ? '#a855f7' : '#0e7490'}
-          emissiveIntensity={hovered || clicked ? 0.6 : 0.3}
+          emissiveIntensity={hovered || clicked ? 0.5 : 0.25}
           shininess={100}
           transparent
-          opacity={0.25}
+          opacity={0.2}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -205,7 +255,7 @@ function WolfHead() {
         <lineBasicMaterial
           color={hovered || clicked ? '#a855f7' : '#06b6d4'}
           transparent
-          opacity={0.9}
+          opacity={0.95}
           linewidth={2}
         />
       </lineSegments>
@@ -228,19 +278,19 @@ export default function Interactive3DWolf() {
       
       {/* 3D Canvas */}
       <Canvas
-        camera={{ position: [0, 0, 3.5], fov: 50 }}
+        camera={{ position: [0, 0, 4], fov: 45 }}
         className="cursor-grab active:cursor-grabbing"
       >
         {/* Prismatic Lighting */}
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1} color="#06b6d4" />
-        <pointLight position={[-10, -10, -10]} intensity={0.7} color="#a855f7" />
-        <pointLight position={[0, 10, -10]} intensity={0.5} color="#0891b2" />
+        <ambientLight intensity={0.3} />
+        <pointLight position={[10, 10, 10]} intensity={1.2} color="#06b6d4" />
+        <pointLight position={[-10, -10, -10]} intensity={0.8} color="#a855f7" />
+        <pointLight position={[0, 10, -10]} intensity={0.6} color="#0891b2" />
         <spotLight
-          position={[0, 5, 5]}
-          angle={0.3}
+          position={[0, 8, 5]}
+          angle={0.4}
           penumbra={1}
-          intensity={1.2}
+          intensity={1}
           color="#a855f7"
         />
         
