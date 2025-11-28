@@ -1316,6 +1316,8 @@ html.light canvas {
       transition: all 0.4s ease-out; /* Faster, simpler transition */
     }
     .scroll-reveal-active {
+      opacity: 1;
+      transform: translateY(0);
       animation: none; /* Remove glow animation on mobile */
     }
   }

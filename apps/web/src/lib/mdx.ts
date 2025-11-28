@@ -352,7 +352,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
 // Commons Page Functions (content/commons/)
 // ============================================================================
 
-const commonsDirectory = path.join(process.cwd(), '..', '..', 'content', 'commons');
+const commonsDirectory = path.join(process.cwd(), 'src', 'content', 'commons');
 
 export interface CommonsPostFrontmatter {
   title: string;

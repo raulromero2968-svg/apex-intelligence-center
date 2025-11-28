@@ -315,14 +315,6 @@ export default function RootLayout({
 
         <BackgroundStack />
 
-
-
-        {/* Theme Toggle */}
-
-        <ThemeToggle />
-
-
-
         <div className="flex-1 flex flex-col">
 
           {/* Main Content */}
