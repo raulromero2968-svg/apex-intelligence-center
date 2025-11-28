@@ -37,8 +37,7 @@ export default function CustomCursor() {
                 transform: 'translate(-50%, -50%)',
             }}
         >
-            {/* Simple cyan dot cursor */}
-            <div className="w-3 h-3 rounded-full bg-cyan-400/80 border border-cyan-300/60 shadow-[0_0_10px_rgba(34,211,238,0.6)]" />
+            {/* No visible cursor element - just tracking for potential future use */}
         </div>
     );
 }
