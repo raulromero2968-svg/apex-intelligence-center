@@ -3,7 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Terminal, Sparkles } from "lucide-react";
-import { WolfConstellation } from "@/components/hero/WolfConstellation";
+import dynamic from 'next/dynamic';
+
+const Interactive3DWolf = dynamic(
+  () => import('@/components/hero/Interactive3DWolf'),
+  { ssr: false, loading: () => <div className="w-full h-[400px] md:h-[500px] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div></div> }
+);
 import RouteTransition from "@/layout/RouteTransition";
 import SearchBar from "@/components/search/SearchBar";
 import HorizontalCarousel from "@/components/HorizontalCarousel";
@@ -179,9 +184,9 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Right Column: Wolf Constellation */}
+              {/* Right Column: Interactive 3D Wolf */}
               <div className="flex justify-center lg:justify-end">
-                <WolfConstellation />
+                <Interactive3DWolf />
               </div>
             </div>
           </section>
