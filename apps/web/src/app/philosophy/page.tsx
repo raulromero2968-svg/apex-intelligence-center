@@ -1,14 +1,46 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Globe, BarChart3, Sparkles, Box } from 'lucide-react';
+import { Brain, Heart, Eye, Shield, Microscope, FileWarning, Scale, Zap, Infinity, Dna, Network, Shell, AlertTriangle, DollarSign, Users, TrendingUp, Ban, Cpu, Rocket, Globe, BarChart3, Activity, Target, Sparkles, Box } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { FibonacciResearch } from '@/components/philosophy/FibonacciResearch';
+import type { Metadata } from 'next';
 
 export const revalidate = 3600;
 
-export const metadata = {
+// Dynamic OG metadata for simulation markets (KB-07 SEO patterns)
+export const metadata: Metadata = {
   title: "Our Philosophy | Apex Intelligence",
-  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance.",
+  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance. Explore our simulation markets for Bostrom-inspired existential scenario modeling.",
+  openGraph: {
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Explore TCG as cosmic prediction simulations. Bostrom-inspired existential scenarios with EGGROLL-trained models.',
+    images: [
+      {
+        url: '/og/philosophy-simulation.png',
+        width: 1200,
+        height: 630,
+        alt: 'Apex Intelligence Philosophy - Simulation Markets & Bostrom Trilemma',
+      },
+    ],
+    type: 'website',
+    siteName: 'Apex Intelligence',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Philosophy & Simulation Markets | Apex Intelligence',
+    description: 'Cosmic think tank: TCG sandbox for Bostrom-inspired prediction markets.',
+    images: ['/og/philosophy-simulation.png'],
+  },
+  keywords: [
+    'simulation hypothesis',
+    'Bostrom trilemma',
+    'prediction markets',
+    'EGGROLL training',
+    'existential risk',
+    'TCG market intelligence',
+    'AI ethics',
+    'longtermism',
+  ],
 };
 
 export default function PhilosophyPage() {
@@ -927,6 +959,53 @@ export default function PhilosophyPage() {
                   </ul>
                 </div>
 
+                {/* EGGROLL Training Section */}
+                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-indigo-400" />
+                    EGGROLL Training Methodology
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    <span className="text-indigo-400 font-bold">EGGROLL</span> (Evolutionary Gradient-free Gradient-like Rollout) enables stable prediction models without traditional backpropagation—using integer-weight evolution for reduced hallucinations.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-indigo-400 font-bold text-xs uppercase tracking-wider">Advantages</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Low compute (no gradients)
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Stable integer-weight representations
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-400">✓</span>
+                          Reduced hallucinations in forecasts
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-orange-400 font-bold text-xs uppercase tracking-wider">Trade-offs</span>
+                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Less precise than full backprop
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Best for initial models
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400">⚠</span>
+                          Fine-tune with LoRA for precision
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Simulation Markets Application */}
                 <div className="border-l-4 border-violet-500 bg-violet-950/20 rounded-r-lg p-6 mb-6">
                   <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
@@ -974,6 +1053,31 @@ export default function PhilosophyPage() {
                   </div>
                 </div>
 
+                {/* Prediction Markets Integration */}
+                <div className="border-l-4 border-cyan-500 bg-cyan-950/20 rounded-r-lg p-6 mb-6">
+                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-cyan-400" />
+                    Prediction Markets Integration
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    We integrate with major prediction market platforms for real-time probability calibration:
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-cyan-400 font-bold text-sm">Manifold</span>
+                      <p className="text-slate-500 text-xs mt-1">Play-money markets for calibration training</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-purple-400 font-bold text-sm">Polymarket</span>
+                      <p className="text-slate-500 text-xs mt-1">Crypto-based real-stakes forecasts</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-emerald-400 font-bold text-sm">Kalshi</span>
+                      <p className="text-slate-500 text-xs mt-1">CFTC-regulated event contracts</p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Trade-off Analysis */}
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
@@ -1003,7 +1107,32 @@ export default function PhilosophyPage() {
                   </div>
                 </div>
 
-                <p className="text-slate-500 text-sm italic text-center">
+                {/* Ethical Framework */}
+                <div className="border border-emerald-500/30 bg-emerald-950/20 rounded-lg p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Shield className="w-6 h-6 text-emerald-400" />
+                    <h4 className="text-md font-bold text-white font-mono">FHI Longtermism Alignment</h4>
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
+                    Our simulation markets align with the <span className="text-emerald-400 font-bold">Future of Humanity Institute&apos;s</span> longtermist ethics:
+                  </p>
+                  <ul className="space-y-2 text-slate-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Flourishing focus:</span> Simulations explore positive futures, not just doom scenarios</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Manipulation safeguards:</span> JWT/MFA authentication prevents market gaming</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-emerald-400">•</span>
+                      <span><span className="text-white">Sentient welfare:</span> Consider digital minds in simulations as potential moral patients</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-slate-500 text-sm italic text-center mt-6">
                   Apex Intelligence uses simulation theory as a <em>framework</em> for prediction under uncertainty—not metaphysics. We ground all predictions in empirical data while acknowledging the limits of any model.
                 </p>
               </div>
@@ -1017,11 +1146,11 @@ export default function PhilosophyPage() {
                 </div>
                 <div>
                   <h4 className="text-md font-bold text-white font-mono">SIMULATION THEORY RESEARCH CONSOLE</h4>
-                  <p className="text-slate-500 text-xs">Query our curated research on simulation theory, FHI, and prediction markets</p>
+                  <p className="text-slate-500 text-xs">Query our curated research on simulation theory, EGGROLL training, FHI, and prediction markets</p>
                 </div>
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-violet-500/50 pl-3">
-                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, MTBBench, or simulation markets. Try queries like: <span className="text-violet-400 font-mono">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-mono">&ldquo;prediction markets TCG&rdquo;</span>
+                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, EGGROLL methodology, or prediction markets. Try queries like: <span className="text-violet-400 font-mono">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-mono">&ldquo;EGGROLL training methodology&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>
