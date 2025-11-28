@@ -11,6 +11,9 @@ import { ScrollReveal } from '@/components/ScrollReveal';
 import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
 import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
 
+// Static import for cosmic banner - ensures image is bundled into build
+import cosmicHeroBanner from '../../public/images/cosmic-hero-banner.png';
+
 // Intelligence Feed Data - Mixing TCG Markets with Biology Research
 const INTEL_FEED = [
   { type: 'MARKET', content: 'Charizard Base Set 1st Ed (PSA 10) +4.2% | $420,000', delta: '+4.2%', positive: true },
@@ -123,10 +126,9 @@ export default function HomePage() {
               {/* Cosmic Banner Image */}
               <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
                 <Image
-                  src="/images/cosmic-hero-banner.png"
+                  src={cosmicHeroBanner}
                   alt="Cosmic ethereal landscape with holographic jellyfish, moon, and mystical trees"
-                  width={2400}
-                  height={600}
+                  placeholder="blur"
                   priority
                   className="w-full h-full object-cover object-center"
                 />
