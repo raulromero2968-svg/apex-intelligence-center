@@ -272,7 +272,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
               {/* Cosmic Sidebar Image */}
               <div className="relative overflow-hidden rounded-xl border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
                 <Image
-                  src="/images/cosmic-essay-sidebar.png"
+                  src="/images/cosmic-essay-sidebar.png?v=2"
                   alt="Cosmic ethereal landscape"
                   width={450}
                   height={1200}
