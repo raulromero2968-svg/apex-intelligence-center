@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useState, useMemo } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import React, { useRef, useState, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -60,14 +60,22 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
 
 // Sub-component to handle texture loading safely
 const CardFace = ({ imageUrl }: { imageUrl: string }) => {
-    const texture = useLoader(THREE.TextureLoader, imageUrl);
+    const [texture, setTexture] = useState<THREE.Texture | null>(null);
     
-    // Configure texture
-    useMemo(() => {
-        if (texture) {
-            texture.colorSpace = THREE.SRGBColorSpace;
-        }
-    }, [texture]);
+    useEffect(() => {
+        const loader = new THREE.TextureLoader();
+        loader.load(
+            imageUrl,
+            (loadedTexture) => {
+                loadedTexture.colorSpace = THREE.SRGBColorSpace;
+                setTexture(loadedTexture);
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading texture:', error);
+            }
+        );
+    }, [imageUrl]);
     
     return (
         <meshStandardMaterial 
