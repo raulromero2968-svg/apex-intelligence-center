@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Float, useTexture } from '@react-three/drei';
+import React, { useRef, useState, useMemo } from 'react';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface CardProps {
@@ -60,7 +60,14 @@ export const HolographicCard = ({ imageUrl }: CardProps) => {
 
 // Sub-component to handle texture loading safely
 const CardFace = ({ imageUrl }: { imageUrl: string }) => {
-    const texture = useTexture(imageUrl);
+    const texture = useLoader(THREE.TextureLoader, imageUrl);
+    
+    // Configure texture
+    useMemo(() => {
+        if (texture) {
+            texture.colorSpace = THREE.SRGBColorSpace;
+        }
+    }, [texture]);
     
     return (
         <meshStandardMaterial 
