@@ -141,6 +141,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.13",
     "prisma": "^6.19.0",
+    "sharp": "^0.34.5",
     "vercel": "^33.0.0",
     "vitest": "^4.0.10"
   }
