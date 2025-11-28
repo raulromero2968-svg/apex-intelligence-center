@@ -503,10 +503,10 @@ export default function HomePage() {
                   alt="Apex Wolf"
                   className="rounded-full mr-2"
                 />
-                <span className="text-prismatic">APEX INTELLIGENCE</span>
+                <span className="text-prismatic">INTRANATIONAL INTEL</span>
               </Link>
-              <p className="text-slate-500 text-sm font-mono">
-                A rogue think tank at the intersection of AI, markets, and biological systems.
+              <p className="text-slate-500 text-sm font-mono leading-relaxed">
+                A cosmos think tank at the intersection of AI, markets, and biological systems.
               </p>
             </div>
 
@@ -551,7 +551,7 @@ export default function HomePage() {
 
           {/* Bottom bar */}
           <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-sm font-mono">
-            <span>© 2025 APEX INTELLIGENCE. ALL RIGHTS RESERVED.</span>
+            <span>© 2025 INTRANATIONAL INTEL & AI RESEARCH CENTER. ALL RIGHTS RESERVED.</span>
             <div className="flex gap-6">
               <Link href="/privacy" className="hover:text-cyan-400 transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-cyan-400 transition-colors">Terms</Link>
