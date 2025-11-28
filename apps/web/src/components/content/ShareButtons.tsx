@@ -10,9 +10,17 @@ interface ShareButtonsProps {
 export function ShareButtons({ title, subtitle }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
+  // Get the canonical URL using custom domain
+  const getCanonicalUrl = () => {
+    if (typeof window === 'undefined') return '';
+    const path = window.location.pathname;
+    return `https://apexintelligence.io${path}`;
+  };
+
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      const canonicalUrl = getCanonicalUrl();
+      await navigator.clipboard.writeText(canonicalUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -23,10 +31,11 @@ export function ShareButtons({ title, subtitle }: ShareButtonsProps) {
   const handleShare = async () => {
     if (navigator.share) {
       try {
+        const canonicalUrl = getCanonicalUrl();
         await navigator.share({
           title: title,
           text: subtitle || title,
-          url: window.location.href,
+          url: canonicalUrl,
         });
       } catch (err) {
         console.error('Failed to share:', err);
