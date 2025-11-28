@@ -49,3 +49,13 @@ export {
   type UtopiaConfig,
   type UtopiaResponse,
 } from './utopia-prompt';
+
+// Bostrom Trilemma RAG Variants (KB-02 Simulation Markets)
+export {
+  bostromRAGVariants,
+  quickBostromVariants,
+  type BostromVariant,
+  type BostromRAGParams,
+  type BostromRAGResult,
+  type TrilemmaOutcome,
+} from './bostrom-variants';
