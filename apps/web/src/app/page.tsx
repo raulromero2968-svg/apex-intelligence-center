@@ -97,24 +97,27 @@ export default function HomePage() {
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
         <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-10 md:pt-16">
 
-          {/* System Status Badge - NEXUS Sigil Design */}
-          <div className="flex flex-col items-center gap-2 mb-8">
-            {/* Top Diamond Sigil */}
-            <div className="text-cyan-400/60 text-sm">◆</div>
+{/* System Status Badge - Diamond Sigil Design with Timestamp */}
+          <div className="flex flex-col items-center gap-1 mb-8">
+            {/* Top Diamond */}
+            <span className="text-cyan-400 text-lg animate-pulse">◆</span>
 
-            {/* Main Status Badge */}
+            {/* Main Status Bar */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-sm bg-black/40 backdrop-blur-md border border-cyan-500/40 text-cyan-400 font-mono shadow-[0_0_30px_rgba(6,182,212,0.2)] relative">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-              </span>
               <Terminal className="w-4 h-4" />
-              <span className="tracking-[0.3em] font-bold text-sm">NEXUS // ONLINE</span>
-              <Activity className="w-4 h-4 animate-pulse" />
+              <span className="tracking-widest font-bold text-sm">NEXUS</span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              </span>
+              <span className="tracking-widest font-bold text-sm">ONLINE</span>
+              <span className="text-cyan-400/40">|</span>
+              <span className="tracking-wide text-xs text-cyan-400/70">{currentTime}</span>
+              <Activity className="w-4 h-4" />
             </div>
 
-            {/* Bottom Diamond Sigil */}
-            <div className="text-cyan-400/60 text-sm">◆</div>
+            {/* Bottom Diamond */}
+            <span className="text-cyan-400 text-lg animate-pulse">◆</span>
           </div>
 
           {/* Main Title - Command Center Typography */}
