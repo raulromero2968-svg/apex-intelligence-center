@@ -101,13 +101,11 @@ export default function HomePage() {
           <div className="w-full max-w-7xl mx-auto mb-16 relative">
             <div className="relative overflow-hidden rounded-2xl border border-cyan-500/20 shadow-[0_0_60px_rgba(6,182,212,0.2)]">
               {/* Cosmic Banner Image */}
-              <div className="relative h-[200px] md:h-[300px] lg:h-[400px]">
-                <Image
+              <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
+                <img
                   src="/images/cosmic-hero-banner.png"
                   alt="Cosmic ethereal landscape with holographic jellyfish, moon, and mystical trees"
-                  fill
-                  className="object-cover object-center"
-                  priority
+                  className="w-full h-full object-cover object-center"
                 />
                 {/* Gradient overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
