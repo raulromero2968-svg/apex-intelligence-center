@@ -8,6 +8,8 @@ import DataCallout from '@/components/mdx/DataCallout';
 import VARCInsight from '@/components/mdx/VARCInsight';
 import TerminalSection from '@/components/mdx/TerminalSection';
 import { ShadowReflexTest } from '@/components/mdx/ShadowReflexTest';
+import GamingGlossary from '@/components/mdx/GamingGlossary';
+import RentismNetworkGraph from '@/components/mdx/RentismNetworkGraph';
 
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -22,6 +24,8 @@ export function getMDXComponents(components: MDXComponents = {}): MDXComponents 
     BarChartViz,
     AskFollowUp,
     ShadowReflexTest,
+    GamingGlossary,
+    RentismNetworkGraph,
     // VARC-style components
     DataCallout,
     VARCInsight,
