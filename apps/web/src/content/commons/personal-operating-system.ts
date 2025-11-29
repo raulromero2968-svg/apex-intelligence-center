@@ -524,3 +524,235 @@ export const personalOperatingSystem = {
 export type POSLayer = typeof personalOperatingSystem.architecture.layers[number];
 export type POSPhase = typeof personalOperatingSystem.deploymentRoadmap.phases[number];
 export type SecurityFactor = typeof personalOperatingSystem.securityHardening.factors[number];
+
+// ============================================================================
+// NIETZSCHEAN-ARISTOTELIAN EXPANSION TYPES
+// ============================================================================
+
+/**
+ * Expanded Aristotelian Virtues
+ * Beyond the core four, includes Magnificence and Magnanimity
+ */
+export type ExpandedAristotelianVirtue =
+  | 'courage'
+  | 'temperance'
+  | 'justice'
+  | 'phronesis'
+  | 'magnificence'
+  | 'magnanimity';
+
+/**
+ * Nietzschean Volitional Virtues
+ * From Thus Spoke Zarathustra and Beyond Good and Evil
+ */
+export type NietzscheanVolitionalVirtue =
+  | 'will_to_power'
+  | 'self_overcoming'
+  | 'eternal_recurrence'
+  | 'master_morality';
+
+/**
+ * Morality classification per Nietzsche
+ */
+export type MoralityType = 'master' | 'slave' | 'neutral';
+
+/**
+ * Actionable step for virtue/will practices
+ */
+export interface ActionableStep {
+  step: string;
+  action: () => void | string;
+  validate: () => boolean;
+}
+
+/**
+ * Aristotelian Practice Interface
+ * Complete middleware implementation for golden mean ethics
+ */
+export interface AristotelianPractice {
+  virtue: ExpandedAristotelianVirtue;
+  objective: string;
+  meanSteps: () => void;
+  excessAvoidance: (input: { [key: string]: unknown[] }) => {
+    excess: unknown[];
+    deficiency: unknown[];
+  };
+  eudaimonia: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => MetricTracker;
+  examples: AristotelianExample[];
+}
+
+/**
+ * Aristotelian Example with actionable steps
+ */
+export interface AristotelianExample {
+  scenario: string;
+  meaned: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Nietzschean Practice Interface
+ * Complete middleware implementation for volitional ethics
+ */
+export interface NietzscheanPractice {
+  virtue: NietzscheanVolitionalVirtue;
+  objective: string;
+  powerSteps: () => void;
+  slaveAvoidance: (input: { attitudes: unknown[] }) => {
+    master: unknown[];
+    slave: unknown[];
+  };
+  recurrence: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => MetricTracker;
+  examples: NietzscheanExample[];
+}
+
+/**
+ * Nietzschean Example with actionable steps
+ */
+export interface NietzscheanExample {
+  scenario: string;
+  willed: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Metric tracker for volitional-eudaimonic fusion
+ */
+export interface MetricTracker {
+  virtueNet?: number;
+  willNet?: number;
+  meanBalance?: number;
+  willFusion?: number;
+  meanFusion?: number;
+  eudaimonicGain?: number;
+  übermenschMetric?: number;
+  recurrenceNet?: number;
+  moralityNet?: number;
+}
+
+/**
+ * RRF Fusion Result
+ * Hybrid Aristotelian-Nietzschean fusion output
+ */
+export interface VolitionalFusionResult {
+  virtue: ExpandedAristotelianVirtue;
+  will: NietzscheanVolitionalVirtue;
+  rrfScore: number;
+  fusedAction: string;
+  eudaimonicGain: number;
+  übermenschMetric: number;
+}
+
+/**
+ * Volitional Rate Limiter Bucket
+ * Token bucket for preventing volitional overload
+ */
+export interface VolitionalBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+}
+
+/**
+ * Volitional State for rollback support
+ */
+export interface VolitionalState {
+  currentVirtue: ExpandedAristotelianVirtue;
+  currentWill: NietzscheanVolitionalVirtue;
+  meanBalance: number;
+  willPower: number;
+  timestamp: Date;
+}
+
+/**
+ * Übermensch Weekly Metrics
+ */
+export interface ÜbermenschWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  selfOvercomingEvents: number;
+  recurrenceAffirmations: number;
+  masterMoralityCreations: number;
+  magnificenceActs: number;
+  magnanimityMoments: number;
+  phronesisDecisions: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyÜbermenschScore: number;
+  weeklyEudaimonicScore: number;
+  übermenschTrend: 'ascending' | 'stable' | 'descending';
+  eudaimonicTrend: 'ascending' | 'stable' | 'descending';
+}
+
+// ============================================================================
+// VOLITIONAL FUSION UTILITIES
+// ============================================================================
+
+/**
+ * Calculate RRF score for virtue-will fusion
+ */
+export function calculateRRFScore(
+  virtueRank: number,
+  willRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + virtueRank) + 1 / (k + willRank);
+}
+
+/**
+ * Determine if volitional action should proceed
+ * Based on phronesis check and rate limiting
+ */
+export function shouldProceedWithWill(
+  bucket: VolitionalBucket,
+  meanBalance: number,
+  willPower: number
+): { proceed: boolean; reason: string } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Rate limit exceeded. Wait for token refill.' };
+  }
+
+  // Check phronesis balance
+  if (meanBalance < 0.3) {
+    return { proceed: false, reason: 'Mean balance too low. Recalibrate Aristotelian mean.' };
+  }
+
+  // Check for hubris
+  if (willPower > 90 && meanBalance < 0.5) {
+    return { proceed: false, reason: 'Potential hubris detected. Apply magnanimity check.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with affirmation.' };
+}
+
+/**
+ * POS Version with Nietzschean-Aristotelian expansion
+ */
+export const POS_VERSION = '1.5.0';
+
+/**
+ * POS Changelog Entry for v1.5.0
+ */
+export const POS_CHANGELOG_V1_5: ChangelogEntry = {
+  version: '1.5.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Magnificence virtue practice with 7-step actionable protocol' },
+    { type: 'added', description: 'Magnanimity virtue practice with relational/Apex examples' },
+    { type: 'added', description: 'Self-Overcoming Nietzschean practice' },
+    { type: 'added', description: 'Eternal Recurrence practice with affirmation metrics' },
+    { type: 'added', description: 'Master Morality practice with creative value generation' },
+    { type: 'added', description: 'RRF fusion schema for hybrid virtue-will matching' },
+    { type: 'added', description: 'Token bucket rate limiting for volitional calls' },
+    { type: 'added', description: 'Rollback protocol with phronesis audit logging' },
+    { type: 'added', description: 'All practices include NietzscheanFusion/AristotelianFusion integration' },
+  ],
+};

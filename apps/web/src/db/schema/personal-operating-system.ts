@@ -83,6 +83,37 @@ export const bravingElementEnum = pgEnum('braving_element', [
   'generosity',
 ]);
 
+// Nietzschean Volitional Enums
+export const volitionalVirtueEnum = pgEnum('volitional_virtue', [
+  'will_to_power',
+  'self_overcoming',
+  'eternal_recurrence',
+  'master_morality',
+]);
+
+export const aristotelianVirtueEnum = pgEnum('aristotelian_virtue', [
+  'courage',
+  'temperance',
+  'justice',
+  'phronesis',
+  'magnificence',
+  'magnanimity',
+]);
+
+export const moralityTypeEnum = pgEnum('morality_type', [
+  'master',
+  'slave',
+  'neutral',
+]);
+
+export const volitionalPracticeStatusEnum = pgEnum('volitional_practice_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'affirmed',
+  'rolled_back',
+]);
+
 // ============================================================================
 // TRUST SCORES TABLE (BRAVING Framework)
 // ============================================================================
@@ -678,8 +709,399 @@ export const bravingScans = pgTable(
 );
 
 // ============================================================================
+// NIETZSCHEAN VOLITIONAL PRACTICES TABLE
+// ============================================================================
+
+export const volitionalPractices = pgTable(
+  'pos_volitional_practices',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Practice configuration
+    virtue: volitionalVirtueEnum('virtue').notNull(),
+    objective: text('objective').notNull(),
+    scenario: text('scenario').notNull(),
+
+    // Status tracking
+    status: volitionalPracticeStatusEnum('status').default('scheduled').notNull(),
+    scheduledAt: timestamp('scheduled_at'),
+    startedAt: timestamp('started_at'),
+    completedAt: timestamp('completed_at'),
+
+    // Volitional metrics
+    willPower: real('will_power'), // 0-100 power affirmation score
+    recurrenceScore: real('recurrence_score'), // 0-100 eternal recurrence acceptance
+    moralityType: moralityTypeEnum('morality_type').default('neutral'),
+
+    // Actionable steps completion
+    stepsCompleted: jsonb('steps_completed').$type<Array<{
+      step: number;
+      action: string;
+      validation: string;
+      passed: boolean;
+      timestamp: string;
+    }>>().default([]),
+
+    // Fusion with Aristotelian
+    fusedWithVirtue: aristotelianVirtueEnum('fused_with_virtue'),
+    meanFusionScore: real('mean_fusion_score'), // 0-1 Aristotelian balance
+
+    // Outcome tracking
+    willedOutcome: jsonb('willed_outcome').$type<{
+      net: string;
+      affirmation: number;
+      übermensch: number;
+    }>(),
+    decidedAction: text('decided_action'),
+
+    // Error handling
+    rolledBack: boolean('rolled_back').default(false),
+    rollbackReason: text('rollback_reason'),
+    auditLog: jsonb('audit_log').$type<Array<{
+      event: string;
+      timestamp: string;
+      details: Record<string, unknown>;
+    }>>().default([]),
+
+    // Notes
+    notes: text('notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_volitional_user_idx').on(table.userId),
+    virtueIdx: index('pos_volitional_virtue_idx').on(table.virtue),
+    statusIdx: index('pos_volitional_status_idx').on(table.status),
+    scheduledIdx: index('pos_volitional_scheduled_idx').on(table.scheduledAt),
+  })
+);
+
+// ============================================================================
+// ARISTOTELIAN VIRTUE PRACTICES TABLE (Expanded)
+// ============================================================================
+
+export const aristotelianPractices = pgTable(
+  'pos_aristotelian_practices',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Practice configuration
+    virtue: aristotelianVirtueEnum('virtue').notNull(),
+    objective: text('objective').notNull(),
+    scenario: text('scenario').notNull(),
+
+    // Status tracking
+    status: drillStatusEnum('status').default('scheduled').notNull(),
+    scheduledAt: timestamp('scheduled_at'),
+    startedAt: timestamp('started_at'),
+    completedAt: timestamp('completed_at'),
+
+    // Mean calculation
+    excessIdentified: text('excess_identified'), // e.g., 'Lavish', 'Arrogant'
+    deficiencyIdentified: text('deficiency_identified'), // e.g., 'Cheap', 'Doubtful'
+    meanAchieved: text('mean_achieved'), // e.g., 'Thoughtful', 'Noble'
+    meanBalance: real('mean_balance'), // 0-1 score
+
+    // Actionable steps completion
+    stepsCompleted: jsonb('steps_completed').$type<Array<{
+      step: number;
+      action: string;
+      validation: string;
+      passed: boolean;
+      timestamp: string;
+    }>>().default([]),
+
+    // Fusion with Nietzschean
+    fusedWithWill: volitionalVirtueEnum('fused_with_will'),
+    willFusionScore: real('will_fusion_score'), // 0-1 Nietzschean affirmation
+
+    // Outcome tracking
+    meanedOutcome: jsonb('meaned_outcome').$type<{
+      net: string;
+      virtueGain: number;
+      eudaimonicScore: number;
+    }>(),
+    decidedAction: text('decided_action'),
+
+    // Flourishing metric
+    flourishingScore: real('flourishing_score'), // 0-100 eudaimonia
+
+    // Notes
+    notes: text('notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_aristotelian_user_idx').on(table.userId),
+    virtueIdx: index('pos_aristotelian_virtue_idx').on(table.virtue),
+    statusIdx: index('pos_aristotelian_status_idx').on(table.status),
+    scheduledIdx: index('pos_aristotelian_scheduled_idx').on(table.scheduledAt),
+  })
+);
+
+// ============================================================================
+// VOLITIONAL FUSION LOG TABLE (RRF Tracking)
+// ============================================================================
+
+export const volitionalFusionLogs = pgTable(
+  'pos_volitional_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Fusion timestamp
+    fusedAt: timestamp('fused_at').defaultNow().notNull(),
+
+    // Input rankings
+    virtueResults: jsonb('virtue_results').$type<Array<{
+      virtue: string;
+      score: number;
+      rank: number;
+    }>>().notNull(),
+    willResults: jsonb('will_results').$type<Array<{
+      will: string;
+      score: number;
+      rank: number;
+    }>>().notNull(),
+
+    // RRF output
+    rrfK: integer('rrf_k').default(60), // RRF constant
+    fusedResults: jsonb('fused_results').$type<Array<{
+      virtue: string;
+      will: string;
+      rrfScore: number;
+      fusedAction: string;
+      eudaimonicGain: number;
+      übermenschMetric: number;
+    }>>().notNull(),
+
+    // Selected action
+    selectedVirtue: aristotelianVirtueEnum('selected_virtue'),
+    selectedWill: volitionalVirtueEnum('selected_will'),
+    finalAction: text('final_action'),
+
+    // Outcome verification
+    outcomeVerified: boolean('outcome_verified').default(false),
+    outcomeNotes: text('outcome_notes'),
+
+    // Context
+    scenario: text('scenario'),
+    domain: text('domain'), // 'relational', 'apex', 'personal'
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_fusion_user_idx').on(table.userId),
+    fusedIdx: index('pos_fusion_fused_idx').on(table.fusedAt),
+    domainIdx: index('pos_fusion_domain_idx').on(table.domain),
+  })
+);
+
+// ============================================================================
+// VOLITIONAL RATE LIMITER TABLE (Token Bucket)
+// ============================================================================
+
+export const volitionalRateLimits = pgTable(
+  'pos_volitional_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Date tracking
+    date: timestamp('date').defaultNow().notNull(),
+
+    // Token bucket state
+    currentTokens: real('current_tokens').notNull().default(4),
+    maxTokens: integer('max_tokens').notNull().default(4),
+    refillRate: real('refill_rate').notNull().default(0.5), // tokens per hour
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Usage tracking
+    fusionsToday: integer('fusions_today').default(0),
+    lastFusion: timestamp('last_fusion'),
+
+    // Denied attempts
+    deniedAttempts: integer('denied_attempts').default(0),
+    lastDenied: timestamp('last_denied'),
+
+    // Configuration
+    refillPeriods: jsonb('refill_periods').$type<Array<{
+      startHour: number;
+      endHour: number;
+      multiplier: number;
+    }>>().default([
+      { startHour: 6, endHour: 10, multiplier: 1.5 },   // Morning boost
+      { startHour: 18, endHour: 22, multiplier: 1.2 }  // Evening reflection
+    ]),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_rate_limit_user_idx').on(table.userId),
+    dateIdx: index('pos_rate_limit_date_idx').on(table.date),
+    uniqueUserDate: uniqueIndex('pos_rate_limit_user_date_unique').on(table.userId, table.date),
+  })
+);
+
+// ============================================================================
+// VOLITIONAL STATE HISTORY TABLE (Rollback Support)
+// ============================================================================
+
+export const volitionalStateHistory = pgTable(
+  'pos_volitional_state_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // State snapshot
+    snapshotAt: timestamp('snapshot_at').defaultNow().notNull(),
+
+    // Current state
+    currentVirtue: aristotelianVirtueEnum('current_virtue'),
+    currentWill: volitionalVirtueEnum('current_will'),
+    meanBalance: real('mean_balance'), // 0-1
+    willPower: real('will_power'), // 0-100
+
+    // Übermensch metrics
+    übermenschScore: real('ubermensch_score'), // 0-100 overall volitional health
+    eudaimonicScore: real('eudaimonic_score'), // 0-100 flourishing metric
+
+    // Stability indicators
+    isStable: boolean('is_stable').default(true),
+    stabilityNotes: text('stability_notes'),
+
+    // Rollback metadata
+    isRollbackPoint: boolean('is_rollback_point').default(false),
+    rolledBackTo: boolean('rolled_back_to').default(false),
+    rollbackTrigger: text('rollback_trigger'),
+
+    // Phronesis audit
+    auditedBy: text('audited_by'), // 'self', 'therapist', 'peer'
+    auditNotes: text('audit_notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_state_history_user_idx').on(table.userId),
+    snapshotIdx: index('pos_state_history_snapshot_idx').on(table.snapshotAt),
+    rollbackIdx: index('pos_state_history_rollback_idx').on(table.isRollbackPoint),
+  })
+);
+
+// ============================================================================
+// ÜBERMENSCH METRICS TABLE (Weekly Tracking)
+// ============================================================================
+
+export const übermenschMetrics = pgTable(
+  'pos_ubermensch_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Nietzschean metrics
+    selfOvercomingEvents: integer('self_overcoming_events').default(0),
+    recurrenceAffirmations: integer('recurrence_affirmations').default(0),
+    masterMoralityCreations: integer('master_morality_creations').default(0),
+    ressentimentAvoidances: integer('ressentiment_avoidances').default(0),
+
+    // Aristotelian metrics
+    magnificenceActs: integer('magnificence_acts').default(0),
+    magnanimityMoments: integer('magnanimity_moments').default(0),
+    phronesisDecisions: integer('phronesis_decisions').default(0),
+    meanAchievements: integer('mean_achievements').default(0),
+
+    // Fusion metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    fusionSuccessRate: real('fusion_success_rate'), // 0-1
+
+    // Aggregate scores
+    weeklyÜbermenschScore: real('weekly_ubermensch_score'), // 0-100
+    weeklyEudaimonicScore: real('weekly_eudaimonic_score'), // 0-100
+    weeklyWillPower: real('weekly_will_power'), // 0-100
+    weeklyMeanBalance: real('weekly_mean_balance'), // 0-1
+
+    // Trend indicators
+    übermenschTrend: text('ubermensch_trend'), // 'ascending', 'stable', 'descending'
+    eudaimonicTrend: text('eudaimonic_trend'),
+
+    // Action items
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+    phronesisAuditsNeeded: integer('phronesis_audits_needed').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_ubermensch_user_idx').on(table.userId),
+    weekIdx: index('pos_ubermensch_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_ubermensch_user_week_unique').on(table.userId, table.weekStart),
+  })
+);
+
+// ============================================================================
 // RELATIONS
 // ============================================================================
+
+export const volitionalPracticesRelations = relations(volitionalPractices, ({ one }) => ({
+  user: one(users, {
+    fields: [volitionalPractices.userId],
+    references: [users.id],
+  }),
+}));
+
+export const aristotelianPracticesRelations = relations(aristotelianPractices, ({ one }) => ({
+  user: one(users, {
+    fields: [aristotelianPractices.userId],
+    references: [users.id],
+  }),
+}));
+
+export const volitionalFusionLogsRelations = relations(volitionalFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [volitionalFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const volitionalRateLimitsRelations = relations(volitionalRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [volitionalRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const volitionalStateHistoryRelations = relations(volitionalStateHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [volitionalStateHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+export const übermenschMetricsRelations = relations(übermenschMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [übermenschMetrics.userId],
+    references: [users.id],
+  }),
+}));
 
 export const trustScoresRelations = relations(trustScores, ({ one, many }) => ({
   user: one(users, {
@@ -809,3 +1231,17 @@ export type PatternFirewall = typeof patternFirewall.$inferSelect;
 export type NewPatternFirewall = typeof patternFirewall.$inferInsert;
 export type BravingScan = typeof bravingScans.$inferSelect;
 export type NewBravingScan = typeof bravingScans.$inferInsert;
+
+// Nietzschean-Aristotelian Types
+export type VolitionalPractice = typeof volitionalPractices.$inferSelect;
+export type NewVolitionalPractice = typeof volitionalPractices.$inferInsert;
+export type AristotelianPractice = typeof aristotelianPractices.$inferSelect;
+export type NewAristotelianPractice = typeof aristotelianPractices.$inferInsert;
+export type VolitionalFusionLog = typeof volitionalFusionLogs.$inferSelect;
+export type NewVolitionalFusionLog = typeof volitionalFusionLogs.$inferInsert;
+export type VolitionalRateLimit = typeof volitionalRateLimits.$inferSelect;
+export type NewVolitionalRateLimit = typeof volitionalRateLimits.$inferInsert;
+export type VolitionalStateHistory = typeof volitionalStateHistory.$inferSelect;
+export type NewVolitionalStateHistory = typeof volitionalStateHistory.$inferInsert;
+export type ÜbermenschMetric = typeof übermenschMetrics.$inferSelect;
+export type NewÜbermenschMetric = typeof übermenschMetrics.$inferInsert;
