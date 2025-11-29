@@ -1,0 +1,13 @@
+source_id,target_id,relationship_type,domain,evidence_tier,start_date,end_date,description,significance,evidence_link
+2,3,SOCIAL,BUSINESS,CONFIRMED,1991-01-01,2019-07-01,"Partner and co-conspirator in sex trafficking ring.",critical,"US v. Maxwell (2021) Conviction"
+7,8,LEGAL,GOVERNMENT,CONFIRMED,2007-09-01,2008-06-30,"Acosta authorized the NPA granting blanket immunity to potential co-conspirators.",critical,"DOJ Office of Professional Responsibility Report (2020)"
+8,2,LEGAL,GOVERNMENT,CONFIRMED,2008-06-30,,"Granted Epstein immunity from federal prosecution for trafficking charges.",critical,"2008 Non-Prosecution Agreement Text"
+4,2,SOCIAL,MEDIA,DOCUMENTED,1987-01-01,2004-01-01,"Close social friendship. Trump called him a 'terrific guy' in 2002 New York Magazine profile.",medium,"New York Magazine 2002 Profile"
+4,2,SOCIAL,BUSINESS,DOCUMENTED,1993-01-01,1997-01-01,"Trump flew on Epstein's jet 7 confirmed times per flight logs.",medium,"Flight Logs (Maxwell Trial Exhibits)"
+5,2,SOCIAL,BUSINESS,DOCUMENTED,2002-01-01,2003-01-01,"Clinton flew on Epstein's jet multiple times for Africa/Asia trips per flight logs.",medium,"Flight Logs (Maxwell Trial Exhibits)"
+9,2,FINANCIAL,BUSINESS,CONFIRMED,1998-01-01,2013-01-01,"Facilitated financial transactions. Paid $290M settlement to trafficking victims.",critical,"JPMorgan Settlement Agreement (2023)"
+10,2,FINANCIAL,BUSINESS,CONFIRMED,2013-01-01,2019-01-01,"Maintained banking relationship post-conviction. Paid $75M regulatory settlement.",high,"DFS Consent Order (2020)"
+6,2,SOCIAL,FAMILY,ALLEGED,1999-01-01,2011-01-01,"Close social ties documented. Stayed at Epstein properties. Civil settlement with accuser.",high,"Virginia Giuffre Legal Filings / BBC Interview"
+2,11,LEGAL,FAMILY,CONFIRMED,2001-01-01,2006-01-01,"Systematic abuse and trafficking of minors. Documented in federal indictment.",critical,"US v. Epstein (2019 Indictment)"
+3,11,LEGAL,FAMILY,CONFIRMED,2001-01-01,2006-01-01,"Facilitated trafficking and abuse. Convicted on five federal counts.",critical,"US v. Maxwell (2021) Conviction"
+1,11,IDEOLOGICAL,ARTS,CONFIRMED,,,"The Luminous Jellyfish Principle exists in service to survivors. Light persists for them.",critical,"Apex Intelligence Center Foundational Document"
