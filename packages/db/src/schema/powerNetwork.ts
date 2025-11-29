@@ -70,6 +70,7 @@ export const entityTypeEnum = pgEnum('power_entity_type', [
   'CONCEPT',      // Ideas, movements, ideologies (e.g., "Rentism", "Effective Altruism")
   'EVENT',        // Specific incidents, meetings, transactions
   'LOCATION',     // Physical places of power (e.g., "Little St. James", "Davos")
+  'SOLUTION',     // The Luminous Injection - verified interventions, programs, and resistance
 ]);
 
 /**
@@ -148,7 +149,6 @@ export const powerEntities = pgTable(
     // Ghost Protocol - Obfuscation Layer
     // When true, the entity's real identity is protected/anonymized in public views
     // Used for whistleblowers, vulnerable sources, or sensitive investigations
-    isObfuscated: text('is_obfuscated').default('false'), // 'true' | 'false' - Ghost Node status
     obfuscatedName: text('obfuscated_name'), // Display name when obfuscated (e.g., "Source Alpha")
     obfuscationReason: text('obfuscation_reason'), // Why this entity is a Ghost Node
 
@@ -314,8 +314,8 @@ export type NewPowerNetworkSnapshot = InferInsertModel<typeof powerNetworkSnapsh
 export type PowerClaim = InferSelectModel<typeof powerClaims>;
 export type NewPowerClaim = InferInsertModel<typeof powerClaims>;
 
-// Enum type exports for external use
+// Enum type exports for external use (includes both SPACE and SOLUTION)
 export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS' | 'SPACE';
-export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION';
+export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION' | 'SOLUTION';
 export type EvidenceTier = 'CONFIRMED' | 'DOCUMENTED' | 'ALLEGED' | 'SPECULATIVE';
 export type PowerRelationshipType = 'FINANCIAL' | 'EMPLOYMENT' | 'OWNERSHIP' | 'POLITICAL' | 'LEGAL' | 'SOCIAL' | 'FAMILIAL' | 'IDEOLOGICAL';
