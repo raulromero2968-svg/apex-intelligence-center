@@ -58,7 +58,7 @@ export const domainTypeEnum = pgEnum('power_domain_type', [
   'MEDIA',        // News outlets, social platforms, propaganda networks
   'ARTS',         // Entertainment, culture production, narrative control
   'BUSINESS',     // Corporations, finance, technology infrastructure
-  'SPACE',        // Space industry, orbital assets, extraterrestrial resources (The Frontier)
+  'SPACE',        // The Frontier: Satellites, orbital slots, off-world resources, launch monopolies
 ]);
 
 /**
