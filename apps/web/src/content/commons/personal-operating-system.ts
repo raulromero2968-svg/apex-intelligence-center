@@ -1363,12 +1363,14 @@ export const POS_CHANGELOG_V2_2: ChangelogEntry = {
 /**
  * Quantum Geometry States
  * From MIT SCIGEN AI tool for quantum materials in neuroscience
- * Fused for material resilience in cognitive architecture
+ * Fused with Schrödinger-like superpositions for decision ethics
  */
 export type QuantumGeometryState =
   | 'ground_state'
   | 'excited_state'
   | 'superposition'
+  | 'superposed'
+  | 'collapsed'
   | 'entangled'
   | 'coherent'
   | 'decoherent';
@@ -1384,6 +1386,16 @@ export type GeometryFlowType =
   | 'quantum_flow';
 
 /**
+ * Geometry source types (scientific material sources)
+ */
+export type GeometrySource =
+  | 'scigen_mit'
+  | 'arxiv_quantum'
+  | 'dmt_geometry'
+  | 'sacred_geometry'
+  | 'material_science';
+
+/**
  * Quantum Material Geometry Interface
  * Complete middleware for geometric-effortless decision-making
  */
@@ -1394,6 +1406,20 @@ export interface QuantumMaterialGeometry {
   entanglementStrength: number; // 0-1
   materialResilience: number; // 0-100
   geometricAccuracy: number; // 0-100
+}
+
+/**
+ * Quantum-Virtue Fusion Result
+ * Hybrid output from quantum geometry and POS virtue fusion
+ */
+export interface QuantumVirtueFusionResult {
+  virtue: string;
+  geometry: string;
+  state: QuantumGeometryState;
+  coherenceScore: number;
+  fusedAction: string;
+  uncertaintyMetric: number;
+  materialResonance: number;
 }
 
 /**
@@ -1411,6 +1437,43 @@ export interface GeometryResolverResult {
 }
 
 /**
+ * Geometry embedding for vector search
+ */
+export interface GeometryEmbedding {
+  id: string;
+  content: string;
+  source: GeometrySource;
+  embedding: number[];
+  coherence: number;
+  metadata: Record<string, unknown>;
+}
+
+/**
+ * Quantum superposition for decision ethics
+ * Represents multiple possible virtue states until observation/decision
+ */
+export interface QuantumVirtueSuperposition {
+  states: Array<{
+    virtue: string;
+    probability: number;
+    geometry: string;
+  }>;
+  collapsed: boolean;
+  collapseTime?: Date;
+}
+
+/**
+ * Quantum fusion configuration
+ */
+export interface QuantumFusionConfig {
+  tableName: string;
+  embeddingDimension: number;
+  coherenceThreshold: number;
+  maxResults: number;
+  rerankerEnabled: boolean;
+}
+
+/**
  * Quantum Geometry Metric Tracker
  */
 export interface QuantumGeometryMetricTracker {
@@ -1425,6 +1488,182 @@ export interface QuantumGeometryMetricTracker {
 }
 
 /**
+ * Quantum fusion metrics for monitoring
+ */
+export interface QuantumFusionMetrics {
+  totalFusions: number;
+  successfulFusions: number;
+  averageCoherence: number;
+  superpositionCollapses: number;
+  entanglementEvents: number;
+  lastFusionTime?: Date;
+}
+
+// ============================================================================
+// NEUROMORPHIC COMPUTING TYPES (v2.4.0)
+// ============================================================================
+
+/**
+ * Neuromorphic neuron state types
+ */
+export type NeuronState =
+  | 'resting'
+  | 'firing'
+  | 'refractory'
+  | 'potentiated'
+  | 'depressed';
+
+/**
+ * Spike encoding types for neuromorphic computation
+ */
+export type SpikeEncoding =
+  | 'rate'
+  | 'temporal'
+  | 'population'
+  | 'rank_order';
+
+/**
+ * Neuromorphic chip simulation types
+ */
+export type ChipType =
+  | 'truenorth'
+  | 'loihi'
+  | 'brainchip'
+  | 'simulated';
+
+/**
+ * Synaptic connection with plasticity
+ */
+export interface Synapse {
+  preNeuronId: string;
+  postNeuronId: string;
+  weight: number;
+  delay: number;
+  plasticity: 'hebbian' | 'stdp' | 'none';
+}
+
+/**
+ * Neuromorphic neuron model
+ */
+export interface NeuromorphicNeuron {
+  id: string;
+  state: NeuronState;
+  potential: number;
+  threshold: number;
+  restingPotential: number;
+  refractoryPeriod: number;
+  lastSpikeTime?: number;
+  synapses: Synapse[];
+}
+
+/**
+ * Spike event for event-driven processing
+ */
+export interface SpikeEvent {
+  neuronId: string;
+  timestamp: number;
+  amplitude: number;
+}
+
+/**
+ * Neuromorphic simulation result
+ */
+export interface NeuromorphicSimulationResult {
+  query: string;
+  result: string;
+  energyConsumption: number; // nanojoules
+  spikeCount: number;
+  latency: number; // milliseconds
+  chipType: ChipType;
+  efficiency: number; // spikes per nanojoule
+}
+
+/**
+ * Neuromorphic POS computation request
+ */
+export interface NeuromorphicPOSRequest {
+  query: string;
+  virtueContext?: string;
+  energyBudget?: number; // max nanojoules
+  latencyBudget?: number; // max milliseconds
+}
+
+/**
+ * Neuromorphic POS computation response
+ */
+export interface NeuromorphicPOSResponse {
+  result: string;
+  virtueState: string;
+  simulation: NeuromorphicSimulationResult;
+  recommendations: string[];
+}
+
+/**
+ * Energy budget tracker for mobile POS
+ */
+export interface EnergyBudget {
+  dailyBudget: number; // nanojoules
+  consumed: number;
+  remaining: number;
+  lastReset: Date;
+  queries: number;
+}
+
+// ============================================================================
+// QUANTUM-NEUROMORPHIC FUSION TYPES (v2.4.0)
+// ============================================================================
+
+/**
+ * Combined Quantum-Neuromorphic Practice Interface
+ * Fuses quantum geometry with neuromorphic computation for efficient virtue processing
+ */
+export interface QuantumNeuromorphicPractice {
+  quantumVirtue: string;
+  neuromorphicOutput: string;
+  coherenceScore: number;
+  energyEfficiency: number;
+  fusedAction: string;
+  examples: QuantumNeuromorphicExample[];
+}
+
+/**
+ * Quantum-Neuromorphic Example with actionable steps
+ */
+export interface QuantumNeuromorphicExample {
+  scenario: string;
+  quantum: { state: QuantumGeometryState; coherence: number };
+  neuromorphic: { spikes: number; energy: number };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Quantum-Neuromorphic Metric Tracker
+ */
+export interface QuantumNeuromorphicMetricTracker extends MetricTracker {
+  quantumCoherence?: number;
+  neuromorphicEfficiency?: number;
+  fusionScore?: number;
+  superpositionCount?: number;
+  spikeActivity?: number;
+  energyConsumed?: number;
+  materialResonance?: number;
+}
+
+/**
+ * Quantum-Neuromorphic RRF Fusion Result (v2.4.0)
+ */
+export interface QuantumNeuromorphicFusionResult {
+  quantum: QuantumVirtueFusionResult;
+  neuromorphic: NeuromorphicSimulationResult;
+  rrfScore: number;
+  fusedAction: string;
+  coherenceGain: number;
+  efficiencyGain: number;
+  materialMetric: number;
+}
+
+/**
  * Geometry Rate Limiter Bucket (v2.4.0)
  * Token bucket for preventing quantum-overload (5 fusions/day max)
  */
@@ -1435,6 +1674,19 @@ export interface GeometryBucket {
   lastRefill: Date;
   fusionCount: number;
   chaosOverloadCount: number;
+}
+
+/**
+ * Quantum-Neuromorphic Rate Limiter Bucket (v2.4.0)
+ * Token bucket for preventing quantum-neuromorphic overload
+ */
+export interface QuantumNeuromorphicBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  fusionCount: number;
+  energyConsumed: number;
 }
 
 /**
@@ -2436,14 +2688,115 @@ export interface AristotelianRenWeeklyMetrics {
   balanceTrend: 'harmonized' | 'mean-dominant' | 'ren-dominant' | 'fluctuating';
 }
 
+/**
+ * Quantum-Neuromorphic State for rollback support (v2.4.0)
+ */
+export interface QuantumNeuromorphicState {
+  quantumState: QuantumGeometryState;
+  neuromorphicState: NeuronState;
+  coherenceLevel: number;
+  energyLevel: number;
+  fusionScore: number;
+  timestamp: Date;
+}
+
+/**
+ * Quantum-Neuromorphic Weekly Metrics (v2.4.0)
+ */
+export interface QuantumNeuromorphicWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  quantumFusions: number;
+  neuromorphicComputations: number;
+  superpositionCollapses: number;
+  entanglementEvents: number;
+  totalSpikes: number;
+  totalEnergy: number;
+  averageCoherence: number;
+  averageEfficiency: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyQuantumScore: number;
+  weeklyNeuromorphicScore: number;
+  coherenceTrend: 'ascending' | 'stable' | 'descending';
+  efficiencyTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'quantum-dominant' | 'neuromorphic-dominant' | 'fluctuating';
+}
+
+// ============================================================================
+// QUANTUM-NEUROMORPHIC FUSION UTILITIES (v2.4.0)
+// ============================================================================
+
+/**
+ * Calculate RRF score for Quantum-Neuromorphic fusion
+ */
+export function calculateQuantumNeuromorphicRRF(
+  coherenceRank: number,
+  efficiencyRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + coherenceRank) + 1 / (k + efficiencyRank);
+}
+
+/**
+ * Determine if quantum-neuromorphic action should proceed
+ * Based on coherence check, energy budget, and rate limiting
+ */
+export function shouldProceedWithQuantumNeuromorphic(
+  bucket: QuantumNeuromorphicBucket,
+  coherenceLevel: number,
+  energyBudget: number,
+  estimatedEnergy: number
+): { proceed: boolean; reason: string } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Quantum-neuromorphic rate limit exceeded. Wait for token refill.' };
+  }
+
+  // Check coherence level
+  if (coherenceLevel < 0.3) {
+    return { proceed: false, reason: 'Coherence level too low. Recalibrate quantum state.' };
+  }
+
+  // Check energy budget
+  if (estimatedEnergy > energyBudget) {
+    return { proceed: false, reason: 'Energy budget exceeded. Use cached result or reduce complexity.' };
+  }
+
+  // Check for quantum decoherence
+  if (coherenceLevel > 0.9 && bucket.fusionCount > 10) {
+    return { proceed: false, reason: 'Potential decoherence detected. Allow quantum stabilization.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with quantum-neuromorphic fusion.' };
+}
+
 // ============================================================================
 // POS v2.4.0 CHANGELOG
 // ============================================================================
 
 /**
- * POS Version with Wu Wei-Geometry and Golden Mean-Ren expansion
+ * POS Version with Wu Wei-Geometry, Golden Mean-Ren, and Quantum-Neuromorphic expansion
  */
-export const POS_VERSION_2_4 = '2.4.0';
+export const POS_VERSION = '2.4.0';
+
+/**
+ * POS Changelog Entry for v2.3.0
+ */
+export const POS_CHANGELOG_V2_3: ChangelogEntry = {
+  version: '2.3.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Deepened Wu Wei Examples with Aristotelian Mean fusion (11-step protocols)' },
+    { type: 'added', description: 'Golden Mean practice with Ren fusion (Relational/Apex examples)' },
+    { type: 'added', description: 'RRF fusion schema for hybrid flow-mean matching' },
+    { type: 'added', description: 'Token bucket rate limiting for mean-effortless calls (4/day)' },
+    { type: 'added', description: 'Mean-effortless rollback protocol with eudaimonia audit logging' },
+    { type: 'added', description: 'MeanEffortlessExecutor class for combined practice execution' },
+    { type: 'added', description: 'A/B testing configuration for virtue efficacy' },
+    { type: 'added', description: 'PWA Service Worker for offline virtue access' },
+  ],
+};
 
 /**
  * POS Changelog Entry for v2.4.0
@@ -2452,6 +2805,7 @@ export const POS_CHANGELOG_V2_4: ChangelogEntry = {
   version: '2.4.0',
   date: '2025-11-29',
   changes: [
+    // Quantum Material Geometry (from main)
     { type: 'added', description: 'Quantum Material Geometry middleware with MIT SCIGEN-inspired patterns' },
     { type: 'added', description: 'Deepened Wu Wei Example 1: Relational Non-Force with 11-step protocol' },
     { type: 'added', description: 'Deepened Wu Wei Example 2: Apex Spontaneous Alignment with energy economy' },
@@ -2466,5 +2820,17 @@ export const POS_CHANGELOG_V2_4: ChangelogEntry = {
     { type: 'added', description: 'Aristotelian-Ren RRF fusion engine with benevolence metrics' },
     { type: 'added', description: 'Weekly metrics tracking for Wu Wei-Geometry and Aristotelian-Ren systems' },
     { type: 'added', description: 'All examples include trade-off documentation (good/bad/mitigation)' },
+    // Quantum-Neuromorphic Computing (from feature branch)
+    { type: 'added', description: 'Quantum Geometry Fusion Middleware with pgvector embeddings' },
+    { type: 'added', description: 'Neuromorphic Computing Explorer with LIF neuron simulation' },
+    { type: 'added', description: 'Quantum superposition types for decision ethics (Schrödinger-like states)' },
+    { type: 'added', description: 'IBM TrueNorth-inspired low-power computation for mobile PWA' },
+    { type: 'added', description: 'Cohere-style reranking for quantum-virtue fusion' },
+    { type: 'added', description: 'STDP synaptic plasticity for neuromorphic learning' },
+    { type: 'added', description: 'Energy budget tracking for mobile POS optimization' },
+    { type: 'added', description: 'LRU caching for offline neuromorphic results' },
+    { type: 'added', description: 'Quantum-Neuromorphic RRF fusion engine for hybrid outputs' },
+    { type: 'added', description: 'All practices include quantum coherence and neuromorphic efficiency metrics' },
+    { type: 'added', description: 'Production-ready scientific paper generation pipeline integration' },
   ],
 };
