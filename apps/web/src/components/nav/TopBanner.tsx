@@ -40,20 +40,25 @@ export const TopBanner = () => {
         </div>
 
         {/* Left: Logo/Brand */}
-        <Link href="/" className="flex items-center text-white font-bold text-sm md:text-xl tracking-tight font-mono transition-all z-50">
+        <Link href="/" className="flex items-center text-white font-bold tracking-tight font-mono transition-all z-50">
           <Image
             src="/images/apex-wolf-black-bg-final.png"
             width={36}
             height={36}
             alt="Apex Wolf"
-            className="rounded-full mr-1.5 md:mr-3 w-7 h-7 md:w-10 md:h-10"
+            className="rounded-full mr-2 md:mr-3 w-8 h-8 md:w-10 md:h-10"
           />
-          <span className="text-prismatic hidden sm:inline">
+          {/* Desktop: Single line */}
+          <span className="text-prismatic hidden sm:inline text-xl">
             <span className="hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">APEX</span>
             {' '}
             <span className="hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">INTELLIGENCE</span>
           </span>
-          <span className="text-prismatic text-xs sm:hidden hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">APEX</span>
+          {/* Mobile: Two lines stacked */}
+          <div className="flex flex-col sm:hidden text-prismatic leading-tight">
+            <span className="text-[11px] hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">APEX</span>
+            <span className="text-[11px] hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all">INTELLIGENCE</span>
+          </div>
         </Link>
 
         {/* Center: Nav Links (hidden on mobile) */}
@@ -77,10 +82,10 @@ export const TopBanner = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 font-mono text-[10px] md:text-sm whitespace-nowrap"
+            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1 md:py-2 font-mono text-[9px] md:text-sm whitespace-nowrap"
           >
             <span className="hidden sm:inline">[ ACCESS_TERMINAL ]</span>
-            <span className="sm:hidden text-[9px]">[ TERM ]</span>
+            <span className="sm:hidden">[ TERM ]</span>
           </Link>
 
           {/* Mobile Menu Toggle */}
