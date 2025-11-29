@@ -1,95 +1,94 @@
-import {
-  pgTable,
-  text,
-  uuid,
-  jsonb,
-  timestamp,
-  index,
-  pgEnum,
-} from 'drizzle-orm/pg-core';
+/**
+ * Power Network Schema - Seven Mountains Framework
+ *
+ * This schema maps power structures using the "Seven Mountains of Influence" model.
+ * It provides a graph-relational structure for tracking entities (People, Organizations, Concepts)
+ * and their relationships across domains of power.
+ *
+ * Use Case: Mapping networks like Epstein, Tech Plutocrats, and institutional power structures.
+ *
+ * @module powerNetwork
+ * @version 1.0.0
+ */
+
+import { pgTable, text, uuid, jsonb, timestamp, index, pgEnum, customType } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
-/**
- * Power Network Schema for Apex Intelligence Center
- *
- * Graph-Relational schema to map power structures and relationships.
- * Implements the "7 Domains of Power" framework with full provenance tracking.
- *
- * Key concepts:
- * - Entities: Nodes representing actors (Person, Institution, Asset)
- * - Relationships: Edges connecting entities with domain classification
- * - Confidence: Evidence quality tier for distinguishing truth from rumor
- * - Provenance: Source citations for all claims
- *
- * Trade-offs:
- * - GOOD: Enables precise querying by domain and confidence level
- * - BAD: Adds complexity; mitigate with clear UI filters
- * - ETHICAL: Required for "Bloomberg Terminal for Truth" - not a rumor mill
- *
- * @see "Seven Mountains of Influence" framework for domain classification
- */
+// =============================================================================
+// PGVECTOR SUPPORT
+// =============================================================================
+
+const vector768 = customType<{ data: number[]; driverData: string }>({
+  dataType() {
+    return 'vector(768)';
+  },
+  toDriver(value: number[]): string {
+    return `[${value.join(',')}]`;
+  },
+  fromDriver(value: string | number[]): number[] {
+    if (Array.isArray(value)) {
+      return value;
+    }
+    const cleaned = value.trim();
+    if (cleaned.startsWith('[') && cleaned.endsWith(']')) {
+      return cleaned.slice(1, -1).split(',').map(Number);
+    }
+    return JSON.parse(value);
+  },
+});
 
 // =============================================================================
 // ENUMS
 // =============================================================================
 
 /**
- * The 7 Domains of Power (Seven Mountains Framework)
- * Represents the spheres of societal influence
+ * The Seven Mountains of Influence (Dominionism Framework)
+ * These represent the key domains through which cultural power is exercised.
  */
-export const domainTypeEnum = pgEnum('domain_type', [
-  'RELIGION',    // Spiritual/moral authority
-  'FAMILY',      // Bloodlines, marriages, dynasties
-  'EDUCATION',   // Schools, universities, think tanks
-  'GOVERNMENT',  // Political offices, agencies, military
-  'MEDIA',       // News, entertainment, social platforms
-  'ARTS',        // Culture, entertainment, sports
-  'BUSINESS',    // Corporations, finance, trade
+export const domainTypeEnum = pgEnum('power_domain_type', [
+  'RELIGION',     // Churches, spiritual movements, theological influence
+  'FAMILY',       // Household, generational wealth, inheritance structures
+  'EDUCATION',    // Universities, think tanks, research institutions
+  'GOVERNMENT',   // Political office, regulatory agencies, law enforcement
+  'MEDIA',        // News outlets, social platforms, propaganda networks
+  'ARTS',         // Entertainment, culture production, narrative control
+  'BUSINESS',     // Corporations, finance, technology infrastructure
 ]);
 
 /**
- * Evidence Confidence Levels (The "Truth Tier")
- * Critical for distinguishing between rumor and fact
+ * Entity types in the power network
  */
-export const confidenceLevelEnum = pgEnum('confidence_level', [
-  'SPECULATIVE',    // Rumor, uncorroborated claim, anonymous allegation
-  'CIRCUMSTANTIAL', // Flight logs, social photos, co-location evidence
-  'DOCUMENTED',     // Legal filings, settlements, corporate records, emails
-  'ADJUDICATED',    // Criminal conviction, court ruling, official finding
+export const entityTypeEnum = pgEnum('power_entity_type', [
+  'PERSON',       // Individual actors
+  'ORGANIZATION', // Corporations, NGOs, foundations, agencies
+  'CONCEPT',      // Ideas, movements, ideologies (e.g., "Rentism", "Effective Altruism")
+  'EVENT',        // Specific incidents, meetings, transactions
+  'LOCATION',     // Physical places of power (e.g., "Little St. James", "Davos")
 ]);
 
 /**
- * Entity Type Classification
- * Distinguishes between different node types in the network
+ * Evidence tier for scandal/allegation tracking
+ * Based on journalistic standards of verification
  */
-export const entityTypeEnum = pgEnum('entity_type', [
-  'PERSON',       // Individual human actor
-  'INSTITUTION',  // Organization, corporation, agency
-  'ASSET',        // Property, vehicle, vessel, aircraft
-  'EVENT',        // Conference, meeting, gathering
-  'DOCUMENT',     // Contract, agreement, court filing
+export const evidenceTierEnum = pgEnum('evidence_tier', [
+  'CONFIRMED',    // Court documents, official records, direct evidence
+  'DOCUMENTED',   // Credible journalism, multiple sources
+  'ALLEGED',      // Single source, unverified but plausible
+  'SPECULATIVE',  // Pattern-based inference, requires more evidence
 ]);
 
 /**
- * Scandal Tier Classification
- * Allows immediate filtering by severity of allegations
+ * Relationship types between entities
  */
-export const scandalTierEnum = pgEnum('scandal_tier', [
-  'NONE',         // No known allegations
-  'MINOR',        // Minor infractions, civil matters
-  'MODERATE',     // Serious allegations, ongoing investigations
-  'SEVERE',       // Criminal charges, major scandals
-  'CRITICAL',     // Convictions for serious crimes
-]);
-
-/**
- * Relationship Status
- * Tracks whether a connection is current or historical
- */
-export const relationshipStatusEnum = pgEnum('relationship_status', [
-  'ACTIVE',       // Currently active relationship
-  'INACTIVE',     // Relationship has ended
-  'UNKNOWN',      // Status cannot be determined
+export const relationshipTypeEnum = pgEnum('power_relationship_type', [
+  'FINANCIAL',    // Money flows, investments, payments
+  'EMPLOYMENT',   // Works for, hired by
+  'OWNERSHIP',    // Owns, controls
+  'POLITICAL',    // Endorses, lobbies, appoints
+  'LEGAL',        // Represents, prosecutes, settles
+  'SOCIAL',       // Friends with, introduced by, traveled with
+  'FAMILIAL',     // Blood relation, marriage
+  'IDEOLOGICAL',  // Promotes, funds, aligns with
 ]);
 
 // =============================================================================
@@ -97,250 +96,186 @@ export const relationshipStatusEnum = pgEnum('relationship_status', [
 // =============================================================================
 
 /**
- * Entities table - The Nodes
- * Stores actors in the power network: people, institutions, assets
+ * Power Entities - Nodes in the graph
+ * Represents people, organizations, concepts, events, and locations
+ *
+ * Invariants:
+ * - name must not be empty
+ * - type must be valid entityTypeEnum value
+ * - embedding must be exactly 768 dimensions (enforced at application layer)
  */
-export const entities = pgTable(
+export const powerEntities = pgTable(
   'power_entities',
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    /** Display name of the entity */
+    // Core identity
     name: text('name').notNull(),
-
-    /** Classification of entity */
     type: entityTypeEnum('type').notNull(),
+    aliases: jsonb('aliases').default([]).$type<string[]>(), // Alternative names
 
-    /** Severity classification for filtering */
-    scandalTier: scandalTierEnum('scandal_tier').notNull().default('NONE'),
+    // Description and context
+    summary: text('summary'), // Brief description
+    biography: text('biography'), // Longer form for persons
 
-    /** Alternative names, aliases, or former names */
-    aliases: jsonb('aliases').notNull().default([]),
+    // Evidence and verification
+    evidenceTier: evidenceTierEnum('evidence_tier').default('DOCUMENTED'),
+    scandalNotes: text('scandal_notes'), // What they are implicated in
 
-    /** Brief description or biography */
-    description: text('description'),
+    // Domain classification (can operate across multiple)
+    primaryDomain: domainTypeEnum('primary_domain'),
+    secondaryDomains: jsonb('secondary_domains').default([]).$type<string[]>(),
 
-    /** External identifiers (Wikipedia, Wikidata, LinkedIn, etc.) */
-    externalIds: jsonb('external_ids').notNull().default({}),
-
-    /** Profile image URL */
+    // External references
+    wikipediaUrl: text('wikipedia_url'),
+    sourceUrls: jsonb('source_urls').default([]).$type<string[]>(),
     imageUrl: text('image_url'),
 
-    /** Structured metadata (birth date, founded date, etc.) */
-    metadata: jsonb('metadata').notNull().default({}),
+    // Semantic search embedding
+    embedding: vector768('embedding'),
 
-    /** Tags for categorization and search */
-    tags: jsonb('tags').notNull().default([]),
-
-    // Temporal tracking
+    // Metadata
+    metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }),
-
-    /** User who created this entity (for audit) */
-    createdBy: uuid('created_by'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     nameIdx: index('power_entities_name_idx').on(table.name),
     typeIdx: index('power_entities_type_idx').on(table.type),
-    scandalTierIdx: index('power_entities_scandal_tier_idx').on(table.scandalTier),
-    createdAtIdx: index('power_entities_created_at_idx').on(table.createdAt),
+    domainIdx: index('power_entities_domain_idx').on(table.primaryDomain),
+    evidenceIdx: index('power_entities_evidence_idx').on(table.evidenceTier),
   })
 );
 
 /**
- * Relationships table - The Edges
- * Stores connections between entities with full provenance tracking
+ * Power Relationships - Edges in the graph
+ * Connects two entities with typed, temporal, and evidenced relationships
+ *
+ * Invariants:
+ * - sourceId and targetId must reference valid power_entities
+ * - domain must be valid domainTypeEnum value
+ * - relationshipType must be valid relationshipTypeEnum value
  */
-export const relationships = pgTable(
+export const powerRelationships = pgTable(
   'power_relationships',
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    /** Source entity (edge origin) */
-    sourceId: uuid('source_id')
-      .references(() => entities.id, { onDelete: 'cascade' })
-      .notNull(),
+    // The connection
+    sourceId: uuid('source_id').references(() => powerEntities.id, { onDelete: 'cascade' }).notNull(),
+    targetId: uuid('target_id').references(() => powerEntities.id, { onDelete: 'cascade' }).notNull(),
 
-    /** Target entity (edge destination) */
-    targetId: uuid('target_id')
-      .references(() => entities.id, { onDelete: 'cascade' })
-      .notNull(),
-
-    /** Domain of power this relationship falls under */
+    // Classification
+    relationshipType: relationshipTypeEnum('relationship_type').notNull(),
     domain: domainTypeEnum('domain').notNull(),
 
-    /** Description of the relationship */
-    description: text('description').notNull(),
+    // Description and evidence
+    description: text('description'), // e.g., "Paid $290M settlement"
+    evidenceLink: text('evidence_link'), // URL to court doc, article
+    evidenceTier: evidenceTierEnum('evidence_tier').default('DOCUMENTED'),
 
-    /** Type of relationship (employed_by, owns, married_to, funded, etc.) */
-    relationshipType: text('relationship_type').notNull(),
-
-    /** Current status of relationship */
-    status: relationshipStatusEnum('status').notNull().default('UNKNOWN'),
-
-    // =========================================================================
-    // PROVENANCE TRACKING (Critical for truth verification)
-    // =========================================================================
-
-    /** Evidence quality classification */
-    confidence: confidenceLevelEnum('confidence').notNull().default('SPECULATIVE'),
-
-    /** Source citation for this relationship claim */
-    sourceCitation: text('source_citation'),
-
-    /** URL to primary source document */
-    sourceUrl: text('source_url'),
-
-    /** Date source was accessed/verified */
-    sourceVerifiedAt: timestamp('source_verified_at', { withTimezone: true }),
-
-    /** Additional supporting sources */
-    additionalSources: jsonb('additional_sources').notNull().default([]),
-
-    /** Notes on evidence quality or contradicting sources */
-    provenanceNotes: text('provenance_notes'),
-
-    // =========================================================================
-    // TEMPORAL DATA
-    // =========================================================================
-
-    /** When the relationship began */
+    // Temporal bounds (crucial for showing "before/after" conviction)
     startDate: timestamp('start_date', { withTimezone: true }),
-
-    /** When the relationship ended (null if ongoing) */
     endDate: timestamp('end_date', { withTimezone: true }),
+    isOngoing: text('is_ongoing').default('unknown'), // 'yes' | 'no' | 'unknown'
 
-    /** Temporal precision ('day', 'month', 'year', 'approximate') */
-    temporalPrecision: text('temporal_precision').default('unknown'),
+    // Relationship strength/significance
+    significance: text('significance').default('medium'), // 'low' | 'medium' | 'high' | 'critical'
 
-    // =========================================================================
-    // METADATA
-    // =========================================================================
+    // Financial details (when applicable)
+    financialAmount: text('financial_amount'), // Stored as text for flexibility (e.g., "$290M", "undisclosed")
+    financialCurrency: text('financial_currency').default('USD'),
 
-    /** Structured metadata (financial amounts, roles, etc.) */
-    metadata: jsonb('metadata').notNull().default({}),
+    // Source tracking
+    sourceUrls: jsonb('source_urls').default([]).$type<string[]>(),
 
-    /** Tags for categorization */
-    tags: jsonb('tags').notNull().default([]),
-
-    // Audit trail
+    // Metadata
+    metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }),
-
-    /** User who created this relationship (for audit) */
-    createdBy: uuid('created_by'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
-    sourceIdIdx: index('power_relationships_source_id_idx').on(table.sourceId),
-    targetIdIdx: index('power_relationships_target_id_idx').on(table.targetId),
+    sourceIdx: index('power_relationships_source_idx').on(table.sourceId),
+    targetIdx: index('power_relationships_target_idx').on(table.targetId),
+    typeIdx: index('power_relationships_type_idx').on(table.relationshipType),
     domainIdx: index('power_relationships_domain_idx').on(table.domain),
-    confidenceIdx: index('power_relationships_confidence_idx').on(table.confidence),
-    relationshipTypeIdx: index('power_relationships_type_idx').on(table.relationshipType),
-    createdAtIdx: index('power_relationships_created_at_idx').on(table.createdAt),
-    // Composite indexes for common queries
-    sourceDomainIdx: index('power_relationships_source_domain_idx').on(table.sourceId, table.domain),
-    domainConfidenceIdx: index('power_relationships_domain_confidence_idx').on(table.domain, table.confidence),
+    dateIdx: index('power_relationships_date_idx').on(table.startDate, table.endDate),
   })
 );
 
 /**
- * Evidence table
- * Stores individual pieces of evidence that support relationships
- * Allows multiple sources per relationship with individual confidence tracking
+ * Power Network Snapshots - Versioned state captures
+ * Allows tracking how the network evolves over time
  */
-export const evidence = pgTable(
-  'power_evidence',
+export const powerNetworkSnapshots = pgTable(
+  'power_network_snapshots',
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    /** Relationship this evidence supports */
-    relationshipId: uuid('relationship_id')
-      .references(() => relationships.id, { onDelete: 'cascade' })
-      .notNull(),
-
-    /** Evidence confidence level */
-    confidence: confidenceLevelEnum('confidence').notNull(),
-
-    /** Type of evidence (court_document, news_article, flight_log, photo, etc.) */
-    evidenceType: text('evidence_type').notNull(),
-
-    /** Title or brief description */
-    title: text('title').notNull(),
-
-    /** Full description of the evidence */
+    // Snapshot identity
+    name: text('name').notNull(), // e.g., "Epstein Network Pre-2008"
     description: text('description'),
+    snapshotDate: timestamp('snapshot_date', { withTimezone: true }).notNull(),
 
-    /** URL to source */
-    sourceUrl: text('source_url'),
+    // The frozen state
+    entityIds: jsonb('entity_ids').default([]).$type<string[]>(),
+    relationshipIds: jsonb('relationship_ids').default([]).$type<string[]>(),
 
-    /** Citation in academic format */
-    citation: text('citation'),
+    // Analysis results
+    analysisNotes: text('analysis_notes'),
+    keyFindings: jsonb('key_findings').default([]).$type<string[]>(),
 
-    /** Date of the source document */
-    sourceDate: timestamp('source_date', { withTimezone: true }),
-
-    /** Date this evidence was added and verified */
-    verifiedAt: timestamp('verified_at', { withTimezone: true }),
-
-    /** Who verified this evidence */
-    verifiedBy: uuid('verified_by'),
-
-    /** Structured metadata */
-    metadata: jsonb('metadata').notNull().default({}),
-
-    // Audit
+    // Metadata
+    metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-    createdBy: uuid('created_by'),
   },
   (table) => ({
-    relationshipIdIdx: index('power_evidence_relationship_id_idx').on(table.relationshipId),
-    confidenceIdx: index('power_evidence_confidence_idx').on(table.confidence),
-    evidenceTypeIdx: index('power_evidence_type_idx').on(table.evidenceType),
+    nameIdx: index('power_snapshots_name_idx').on(table.name),
+    dateIdx: index('power_snapshots_date_idx').on(table.snapshotDate),
   })
 );
 
 /**
- * Network Audit Log
- * Tracks all modifications to the power network for accountability
+ * Power Claims - Specific factual claims with citations
+ * Tracks individual assertions for fact-checking and provenance
  */
-export const networkAuditLog = pgTable(
-  'power_network_audit_log',
+export const powerClaims = pgTable(
+  'power_claims',
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    /** User who performed the action */
-    userId: uuid('user_id'),
+    // The claim
+    claimText: text('claim_text').notNull(), // The assertion
+    context: text('context'), // Where this fits in the larger narrative
 
-    /** Action performed (create, update, delete, verify) */
-    action: text('action').notNull(),
+    // Linked entities
+    subjectEntityId: uuid('subject_entity_id').references(() => powerEntities.id),
+    objectEntityId: uuid('object_entity_id').references(() => powerEntities.id),
+    relationshipId: uuid('relationship_id').references(() => powerRelationships.id),
 
-    /** Table affected (entities, relationships, evidence) */
-    tableName: text('table_name').notNull(),
+    // Verification
+    evidenceTier: evidenceTierEnum('evidence_tier').default('ALLEGED'),
+    verifiedAt: timestamp('verified_at', { withTimezone: true }),
+    verifiedBy: text('verified_by'), // Who verified (researcher name)
 
-    /** ID of the affected record */
-    recordId: uuid('record_id').notNull(),
+    // Sources
+    primarySourceUrl: text('primary_source_url'),
+    secondarySources: jsonb('secondary_sources').default([]).$type<string[]>(),
 
-    /** Previous state (for updates/deletes) */
-    previousState: jsonb('previous_state'),
+    // Status
+    status: text('status').default('pending'), // 'pending' | 'verified' | 'disputed' | 'debunked'
+    disputeNotes: text('dispute_notes'),
 
-    /** New state (for creates/updates) */
-    newState: jsonb('new_state'),
-
-    /** Reason for the change */
-    reason: text('reason'),
-
-    /** Session/request context */
-    sessionId: text('session_id'),
-    ipAddress: text('ip_address'),
-
+    // Metadata
+    metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
-    userIdIdx: index('power_audit_user_id_idx').on(table.userId),
-    actionIdx: index('power_audit_action_idx').on(table.action),
-    tableNameIdx: index('power_audit_table_name_idx').on(table.tableName),
-    recordIdIdx: index('power_audit_record_id_idx').on(table.recordId),
-    createdAtIdx: index('power_audit_created_at_idx').on(table.createdAt),
+    subjectIdx: index('power_claims_subject_idx').on(table.subjectEntityId),
+    objectIdx: index('power_claims_object_idx').on(table.objectEntityId),
+    statusIdx: index('power_claims_status_idx').on(table.status),
+    tierIdx: index('power_claims_tier_idx').on(table.evidenceTier),
   })
 );
 
@@ -348,25 +283,20 @@ export const networkAuditLog = pgTable(
 // TYPE EXPORTS
 // =============================================================================
 
-// Entity types
-export type PowerEntity = InferSelectModel<typeof entities>;
-export type NewPowerEntity = InferInsertModel<typeof entities>;
+export type PowerEntity = InferSelectModel<typeof powerEntities>;
+export type NewPowerEntity = InferInsertModel<typeof powerEntities>;
 
-// Relationship types
-export type PowerRelationship = InferSelectModel<typeof relationships>;
-export type NewPowerRelationship = InferInsertModel<typeof relationships>;
+export type PowerRelationship = InferSelectModel<typeof powerRelationships>;
+export type NewPowerRelationship = InferInsertModel<typeof powerRelationships>;
 
-// Evidence types
-export type PowerEvidence = InferSelectModel<typeof evidence>;
-export type NewPowerEvidence = InferInsertModel<typeof evidence>;
+export type PowerNetworkSnapshot = InferSelectModel<typeof powerNetworkSnapshots>;
+export type NewPowerNetworkSnapshot = InferInsertModel<typeof powerNetworkSnapshots>;
 
-// Audit log types
-export type PowerNetworkAuditLog = InferSelectModel<typeof networkAuditLog>;
-export type NewPowerNetworkAuditLog = InferInsertModel<typeof networkAuditLog>;
+export type PowerClaim = InferSelectModel<typeof powerClaims>;
+export type NewPowerClaim = InferInsertModel<typeof powerClaims>;
 
-// Enum value types for type safety
-export type DomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS';
-export type ConfidenceLevel = 'SPECULATIVE' | 'CIRCUMSTANTIAL' | 'DOCUMENTED' | 'ADJUDICATED';
-export type EntityType = 'PERSON' | 'INSTITUTION' | 'ASSET' | 'EVENT' | 'DOCUMENT';
-export type ScandalTier = 'NONE' | 'MINOR' | 'MODERATE' | 'SEVERE' | 'CRITICAL';
-export type RelationshipStatus = 'ACTIVE' | 'INACTIVE' | 'UNKNOWN';
+// Enum type exports for external use
+export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS';
+export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION';
+export type EvidenceTier = 'CONFIRMED' | 'DOCUMENTED' | 'ALLEGED' | 'SPECULATIVE';
+export type PowerRelationshipType = 'FINANCIAL' | 'EMPLOYMENT' | 'OWNERSHIP' | 'POLITICAL' | 'LEGAL' | 'SOCIAL' | 'FAMILIAL' | 'IDEOLOGICAL';

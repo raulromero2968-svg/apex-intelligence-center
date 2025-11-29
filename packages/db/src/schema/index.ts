@@ -55,34 +55,29 @@ export {
   type PostAgencyUpdateType,
 } from './alignmentData';
 
-// Power Network Schema (Graph-Relational v2.0)
+// Power Network - Seven Mountains Framework (Abyss Mapping)
 export {
+  // Tables
+  powerEntities,
+  powerRelationships,
+  powerNetworkSnapshots,
+  powerClaims,
   // Enums
   domainTypeEnum,
-  confidenceLevelEnum,
   entityTypeEnum,
-  scandalTierEnum,
-  relationshipStatusEnum,
-  // Tables
-  entities,
-  relationships,
-  evidence,
-  networkAuditLog,
+  evidenceTierEnum,
+  relationshipTypeEnum,
   // Types
   type PowerEntity,
   type NewPowerEntity,
   type PowerRelationship,
   type NewPowerRelationship,
-  type PowerEvidence,
-  type NewPowerEvidence,
-  type PowerNetworkAuditLog,
-  type NewPowerNetworkAuditLog,
-  type DomainType,
-  type ConfidenceLevel,
-  type EntityType,
-  type ScandalTier,
-  type RelationshipStatus,
+  type PowerNetworkSnapshot,
+  type NewPowerNetworkSnapshot,
+  type PowerClaim,
+  type NewPowerClaim,
+  type PowerDomainType,
+  type PowerEntityType,
+  type EvidenceTier,
+  type PowerRelationshipType,
 } from './powerNetwork';
-
-
-
