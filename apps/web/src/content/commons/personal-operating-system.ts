@@ -549,7 +549,21 @@ export type NietzscheanVolitionalVirtue =
   | 'will_to_power'
   | 'self_overcoming'
   | 'eternal_recurrence'
-  | 'master_morality';
+  | 'master_morality'
+  | 'dionysian_affirmation'
+  | 'eternal_recurrence_deepened'
+  | 'amor_fati_deepened';
+
+/**
+ * Zen Uncertainty Virtues
+ * From Zen Buddhism: mu, koan, zazen, satori
+ */
+export type ZenUncertaintyVirtue =
+  | 'mu_emptiness'
+  | 'koan_paradox'
+  | 'zazen_observation'
+  | 'satori_breakthrough'
+  | 'beginner_mind';
 
 /**
  * Morality classification per Nietzsche
@@ -634,6 +648,13 @@ export interface MetricTracker {
   übermenschMetric?: number;
   recurrenceNet?: number;
   moralityNet?: number;
+  // Zen-specific metrics (v1.7+)
+  muNet?: number;
+  muFusion?: number;
+  koanNet?: number;
+  zazenNet?: number;
+  satoriScore?: number;
+  emptinessBalance?: number;
 }
 
 /**
@@ -734,9 +755,9 @@ export function shouldProceedWithWill(
 }
 
 /**
- * POS Version with Nietzschean-Aristotelian expansion
+ * POS Version with Nietzschean-Zen expansion
  */
-export const POS_VERSION = '1.5.0';
+export const POS_VERSION = '1.7.0';
 
 /**
  * POS Changelog Entry for v1.5.0
@@ -754,5 +775,158 @@ export const POS_CHANGELOG_V1_5: ChangelogEntry = {
     { type: 'added', description: 'Token bucket rate limiting for volitional calls' },
     { type: 'added', description: 'Rollback protocol with phronesis audit logging' },
     { type: 'added', description: 'All practices include NietzscheanFusion/AristotelianFusion integration' },
+  ],
+};
+
+// ============================================================================
+// ZEN UNCERTAINTY INTEGRATION TYPES (v1.7.0)
+// ============================================================================
+
+/**
+ * Zen Practice Interface
+ * Complete middleware implementation for non-dual uncertainty
+ */
+export interface ZenPractice {
+  virtue: ZenUncertaintyVirtue;
+  objective: string;
+  emptinessSteps: () => void;
+  dualAvoidance: (input: { concepts: unknown[] }) => {
+    nonDual: unknown[];
+    dual: unknown[];
+  };
+  satori: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => MetricTracker;
+  examples: ZenExample[];
+}
+
+/**
+ * Zen Example with actionable steps
+ */
+export interface ZenExample {
+  scenario: string;
+  emptied: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Non-Dual Fusion Result
+ * Hybrid Nietzschean-Zen fusion output
+ */
+export interface NonDualFusionResult {
+  will: NietzscheanVolitionalVirtue;
+  zen: ZenUncertaintyVirtue;
+  rrfScore: number;
+  fusedAction: string;
+  willGain: number;
+  muGain: number;
+  satoriMetric: number;
+}
+
+/**
+ * Zen Rate Limiter Bucket
+ * Token bucket for preventing mu-overload
+ */
+export interface ZenBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  satoriCount: number;
+}
+
+/**
+ * Non-Dual State for rollback support
+ */
+export interface NonDualState {
+  currentWill: NietzscheanVolitionalVirtue;
+  currentZen: ZenUncertaintyVirtue;
+  willPower: number;
+  emptinessLevel: number;
+  satoriScore: number;
+  timestamp: Date;
+}
+
+/**
+ * Non-Dual Weekly Metrics
+ */
+export interface NonDualWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  dionysianAffirmations: number;
+  deepenedRecurrences: number;
+  muEmptyings: number;
+  koanResolutions: number;
+  zazenSessions: number;
+  satoriBreakthroughs: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyNonDualScore: number;
+  willTrend: 'ascending' | 'stable' | 'descending';
+  zenTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'will-dominant' | 'zen-dominant' | 'fluctuating';
+}
+
+/**
+ * Calculate RRF score for will-zen fusion
+ */
+export function calculateNonDualRRFScore(
+  willRank: number,
+  zenRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + willRank) + 1 / (k + zenRank);
+}
+
+/**
+ * Determine if non-dual action should proceed
+ * Based on satori check and rate limiting
+ */
+export function shouldProceedWithNonDual(
+  zenBucket: ZenBucket,
+  willPower: number,
+  emptinessLevel: number
+): { proceed: boolean; reason: string } {
+  // Check zen rate limit
+  if (zenBucket.tokens < 1) {
+    return { proceed: false, reason: 'Zen rate limit exceeded. Practice patience—wait for refill.' };
+  }
+
+  // Check for attachment imbalance
+  if (emptinessLevel < 0.3) {
+    return { proceed: false, reason: 'Emptiness level too low. Recalibrate with mu meditation.' };
+  }
+
+  // Check for striving trap
+  if (willPower > 90 && emptinessLevel < 0.4) {
+    return { proceed: false, reason: 'Potential striving trap detected. Apply zazen check.' };
+  }
+
+  // Check for over-emptiness
+  if (emptinessLevel > 90 && willPower < 0.3) {
+    return { proceed: false, reason: 'Over-emptiness detected. Ground with Dionysian affirmation.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with non-dual fusion.' };
+}
+
+/**
+ * POS Changelog Entry for v1.7.0
+ */
+export const POS_CHANGELOG_V1_7: ChangelogEntry = {
+  version: '1.7.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Dionysian Affirmation practice with 9-step actionable protocol' },
+    { type: 'added', description: 'Eternal Recurrence Deepened practice with zen fusion' },
+    { type: 'added', description: 'Mu Emptiness practice with volitional integration' },
+    { type: 'added', description: 'Koan Paradox practice with satori metrics' },
+    { type: 'added', description: 'Zazen Observation practice with mindful presence' },
+    { type: 'added', description: 'RRF fusion schema for hybrid will-zen matching' },
+    { type: 'added', description: 'Token bucket rate limiting for zen calls (3/day)' },
+    { type: 'added', description: 'Non-dual rollback protocol with satori audit logging' },
+    { type: 'added', description: 'NonDualExecutor class for combined practice execution' },
+    { type: 'added', description: 'Non-dual weekly metrics tracking' },
   ],
 };
