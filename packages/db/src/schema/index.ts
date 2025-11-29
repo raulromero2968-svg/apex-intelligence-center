@@ -81,6 +81,3 @@ export {
   type EvidenceTier,
   type PowerRelationshipType,
 } from './powerNetwork';
-
-
-
