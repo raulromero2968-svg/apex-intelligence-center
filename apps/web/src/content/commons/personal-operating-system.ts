@@ -755,9 +755,9 @@ export function shouldProceedWithWill(
 }
 
 /**
- * POS Version with Aristotelian-Stoic expansion
+ * POS Version with Wu Wei-Geometry and Golden Mean-Ren expansion
  */
-export const POS_VERSION = '2.2.0';
+export const POS_VERSION = '2.4.0';
 
 /**
  * POS Changelog Entry for v1.5.0
@@ -1353,5 +1353,1118 @@ export const POS_CHANGELOG_V2_2: ChangelogEntry = {
     { type: 'added', description: 'VirtueMeanExecutor class for combined practice execution' },
     { type: 'added', description: 'Virtue-mean weekly metrics tracking with eudaimonia monitoring' },
     { type: 'added', description: 'All practices include 10-11 step protocols with Aristotelian-Stoic fusion' },
+  ],
+};
+
+// ============================================================================
+// QUANTUM MATERIAL GEOMETRY TYPES (v2.4.0)
+// ============================================================================
+
+/**
+ * Quantum Geometry States
+ * From MIT SCIGEN AI tool for quantum materials in neuroscience
+ * Fused for material resilience in cognitive architecture
+ */
+export type QuantumGeometryState =
+  | 'ground_state'
+  | 'excited_state'
+  | 'superposition'
+  | 'entangled'
+  | 'coherent'
+  | 'decoherent';
+
+/**
+ * Geometry Flow Types
+ * Inspired by arXiv research on quantum geometry in cognition
+ */
+export type GeometryFlowType =
+  | 'material_flow'
+  | 'geometric_flow'
+  | 'topological_flow'
+  | 'quantum_flow';
+
+/**
+ * Quantum Material Geometry Interface
+ * Complete middleware for geometric-effortless decision-making
+ */
+export interface QuantumMaterialGeometry {
+  state: QuantumGeometryState;
+  flowType: GeometryFlowType;
+  coherence: number; // 0-1
+  entanglementStrength: number; // 0-1
+  materialResilience: number; // 0-100
+  geometricAccuracy: number; // 0-100
+}
+
+/**
+ * Geometry Resolver Result
+ * Fuses Wu Wei with quantum geometry for material-effortless outputs
+ */
+export interface GeometryResolverResult {
+  wuWeiScore: number;
+  geometryScore: number;
+  rrfScore: number;
+  resolvedAction: string;
+  materialGain: number;
+  effortlessGain: number;
+  coherenceMetric: number;
+}
+
+/**
+ * Quantum Geometry Metric Tracker
+ */
+export interface QuantumGeometryMetricTracker {
+  geometryNet?: number;
+  materialNet?: number;
+  coherenceNet?: number;
+  entanglementNet?: number;
+  wuWeiFusion?: number;
+  geometricGain?: number;
+  resilienceMetric?: number;
+  flowBalance?: number;
+}
+
+/**
+ * Geometry Rate Limiter Bucket (v2.4.0)
+ * Token bucket for preventing quantum-overload (5 fusions/day max)
+ */
+export interface GeometryBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  fusionCount: number;
+  chaosOverloadCount: number;
+}
+
+/**
+ * Geometry State for rollback support
+ */
+export interface GeometryState {
+  currentGeometry: QuantumGeometryState;
+  currentFlow: GeometryFlowType;
+  coherenceLevel: number;
+  materialResilience: number;
+  timestamp: Date;
+}
+
+// ============================================================================
+// CONFUCIAN REN TYPES FOR GOLDEN MEAN FUSION (v2.4.0)
+// ============================================================================
+
+/**
+ * Confucian Ren (Benevolence) Virtues
+ * From Analects: Ren (benevolence), Yi (righteousness), Li (ritual propriety)
+ */
+export type ConfucianRenVirtue =
+  | 'ren_benevolence'
+  | 'yi_righteousness'
+  | 'li_propriety'
+  | 'zhi_wisdom'
+  | 'xin_fidelity';
+
+/**
+ * Confucian Ren Practice Interface
+ */
+export interface ConfucianRenPractice {
+  virtue: ConfucianRenVirtue;
+  objective: string;
+  benevolenceSteps: () => void;
+  selfishnessAvoidance: (input: { actions: unknown[] }) => {
+    benevolent: unknown[];
+    selfish: unknown[];
+  };
+  harmony: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => RenMetricTracker;
+  examples: RenExample[];
+}
+
+/**
+ * Ren Example with actionable steps
+ */
+export interface RenExample {
+  scenario: string;
+  benevolent: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Ren Metric Tracker
+ */
+export interface RenMetricTracker {
+  renNet?: number;
+  yiNet?: number;
+  liNet?: number;
+  zhiNet?: number;
+  xinNet?: number;
+  meanFusion?: number;
+  benevolenceGain?: number;
+  harmonyMetric?: number;
+}
+
+/**
+ * Aristotelian-Ren RRF Fusion Result (v2.4.0)
+ * Hybrid golden mean-benevolence fusion output
+ */
+export interface AristotelianRenFusionResult {
+  aristotelian: AristotelianVirtueMean;
+  ren: ConfucianRenVirtue;
+  rrfScore: number;
+  fusedAction: string;
+  meanGain: number;
+  benevolenceGain: number;
+  eudaimoniaMetric: number;
+  harmonyMetric: number;
+}
+
+// ============================================================================
+// DEEPENED WU WEI TYPES (v2.4.0)
+// ============================================================================
+
+/**
+ * Deepened Wu Wei Virtue Types
+ * Extended from Taoism.net, Big Think, Shaolin-Yuntai sources
+ */
+export type DeepenedWuWeiVirtue =
+  | 'wu_wei_relational'
+  | 'wu_wei_spontaneous'
+  | 'wu_wei_energy_economy'
+  | 'wu_wei_non_interference'
+  | 'wu_wei_stress_reduction';
+
+/**
+ * Deepened Wu Wei Practice Interface
+ * Complete middleware with quantum geometry integration
+ */
+export interface DeepenedWuWeiPractice {
+  virtue: DeepenedWuWeiVirtue;
+  objective: string;
+  flowSteps: () => void;
+  forceAvoidance: (input: { actions: unknown[] }) => {
+    flow: unknown[];
+    force: unknown[];
+  };
+  harmony: () => void;
+  quantumIntegration: () => QuantumMaterialGeometry;
+  errorHandler: (err: Error) => void;
+  metrics: () => DeepenedWuWeiMetricTracker;
+  examples: DeepenedWuWeiExample[];
+}
+
+/**
+ * Deepened Wu Wei Example with 11-step actionable protocols
+ */
+export interface DeepenedWuWeiExample {
+  scenario: string;
+  flowed: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+  quantumGeometry: QuantumMaterialGeometry;
+  tradeoffs: { good: string; bad: string; mitigation: string };
+}
+
+/**
+ * Deepened Wu Wei Metric Tracker
+ */
+export interface DeepenedWuWeiMetricTracker {
+  wuWeiNet?: number;
+  spontaneousNet?: number;
+  energyEconomyNet?: number;
+  nonInterferenceNet?: number;
+  stressReductionNet?: number;
+  quantumFusion?: number;
+  geometryFusion?: number;
+  materialGain?: number;
+  effortlessGain?: number;
+  flowBalance?: number;
+  naturalBalance?: number;
+  harmonyMetric?: number;
+}
+
+/**
+ * Wu Wei-Quantum Geometry RRF Fusion Result
+ */
+export interface WuWeiQuantumFusionResult {
+  wuWei: DeepenedWuWeiVirtue;
+  geometry: QuantumGeometryState;
+  rrfScore: number;
+  fusedAction: string;
+  effortlessGain: number;
+  geometricGain: number;
+  materialResilience: number;
+  coherenceMetric: number;
+}
+
+// ============================================================================
+// DEEPENED GOLDEN MEAN TYPES (v2.4.0)
+// ============================================================================
+
+/**
+ * Deepened Golden Mean Virtue Types
+ */
+export type DeepenedGoldenMeanVirtue =
+  | 'courage_mean_deepened'
+  | 'temperance_mean_deepened'
+  | 'justice_mean_deepened'
+  | 'wisdom_mean_deepened'
+  | 'magnanimity_mean_deepened';
+
+/**
+ * Deepened Golden Mean Practice Interface
+ * Complete middleware with Ren fusion
+ */
+export interface DeepenedGoldenMeanPractice {
+  virtue: DeepenedGoldenMeanVirtue;
+  objective: string;
+  meanSteps: () => void;
+  extremeAvoidance: (input: { behaviors: unknown[] }) => {
+    mean: unknown[];
+    excess: unknown[];
+    deficiency: unknown[];
+  };
+  eudaimonia: () => void;
+  renIntegration: () => ConfucianRenVirtue;
+  errorHandler: (err: Error) => void;
+  metrics: () => DeepenedGoldenMeanMetricTracker;
+  examples: DeepenedGoldenMeanExample[];
+}
+
+/**
+ * Deepened Golden Mean Example with 10-step actionable protocols
+ */
+export interface DeepenedGoldenMeanExample {
+  scenario: string;
+  meaned: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+  renFusion: ConfucianRenVirtue;
+  tradeoffs: { good: string; bad: string; mitigation: string };
+}
+
+/**
+ * Deepened Golden Mean Metric Tracker
+ */
+export interface DeepenedGoldenMeanMetricTracker {
+  goldenMeanNet?: number;
+  courageNet?: number;
+  temperanceNet?: number;
+  justiceNet?: number;
+  wisdomNet?: number;
+  magnanimityNet?: number;
+  renFusion?: number;
+  benevolenceGain?: number;
+  eudaimoniaGain?: number;
+  meanBalance?: number;
+  harmonyMetric?: number;
+}
+
+// ============================================================================
+// ENHANCED RATE LIMITING (v2.4.0)
+// ============================================================================
+
+/**
+ * Enhanced Token Bucket with Geometry Checks
+ */
+export interface EnhancedGeometryBucket {
+  tokens: number;
+  maxTokens: number; // Default: 5 for geometry fusions/day
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  effortlessPeriodRefill: boolean; // Refill during post-wu wei reflection
+  fusionCount: number; // Track total fusions
+  geometryChecks: {
+    coherenceThreshold: number; // 0.3 minimum
+    materialResilienceThreshold: number; // 50 minimum
+    chaosOverloadPrevention: boolean;
+  };
+}
+
+/**
+ * Determine if geometry fusion should proceed
+ * Based on geometry checks and rate limiting
+ */
+export function shouldProceedWithGeometryFusion(
+  bucket: EnhancedGeometryBucket,
+  currentGeometry: QuantumMaterialGeometry,
+  wuWeiScore: number
+): { proceed: boolean; reason: string; rollbackState?: GeometryState } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return {
+      proceed: false,
+      reason: 'Geometry rate limit exceeded (5/day max). Wait for effortless period refill.',
+    };
+  }
+
+  // Check coherence threshold
+  if (currentGeometry.coherence < bucket.geometryChecks.coherenceThreshold) {
+    return {
+      proceed: false,
+      reason: `Coherence too low (${currentGeometry.coherence} < ${bucket.geometryChecks.coherenceThreshold}). Apply Wu Wei grounding.`,
+    };
+  }
+
+  // Check material resilience
+  if (currentGeometry.materialResilience < bucket.geometryChecks.materialResilienceThreshold) {
+    return {
+      proceed: false,
+      reason: `Material resilience insufficient (${currentGeometry.materialResilience} < ${bucket.geometryChecks.materialResilienceThreshold}). Build geometric foundation first.`,
+    };
+  }
+
+  // Check for chaos overload
+  if (bucket.geometryChecks.chaosOverloadPrevention && wuWeiScore < 30) {
+    return {
+      proceed: false,
+      reason: 'Potential chaos-overload detected. Wu Wei score too low for geometric fusion.',
+      rollbackState: {
+        currentGeometry: 'ground_state',
+        currentFlow: 'material_flow',
+        coherenceLevel: 0.5,
+        materialResilience: 60,
+        timestamp: new Date(),
+      },
+    };
+  }
+
+  return { proceed: true, reason: 'All geometry checks passed. Proceed with fusion.' };
+}
+
+// ============================================================================
+// COMPREHENSIVE ERROR HANDLING (v2.4.0)
+// ============================================================================
+
+/**
+ * POS Error Types
+ */
+export type POSErrorType =
+  | 'geometry_imbalance'
+  | 'wu_wei_excess'
+  | 'mean_deviation'
+  | 'coherence_failure'
+  | 'rollback_required'
+  | 'rate_limit_exceeded'
+  | 'chaos_overload';
+
+/**
+ * POS Error with rollback support
+ */
+export interface POSError extends Error {
+  type: POSErrorType;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  rollbackState?: GeometryState | VirtueState | MindfulEffortlessState;
+  auditLog: {
+    timestamp: Date;
+    action: string;
+    metrics: Record<string, number>;
+  };
+}
+
+/**
+ * Create POS Error with rollback
+ */
+export function createPOSError(
+  message: string,
+  type: POSErrorType,
+  severity: POSError['severity'],
+  rollbackState?: POSError['rollbackState'],
+  metrics?: Record<string, number>
+): POSError {
+  const error = new Error(message) as POSError;
+  error.type = type;
+  error.severity = severity;
+  error.rollbackState = rollbackState;
+  error.auditLog = {
+    timestamp: new Date(),
+    action: `Error: ${type} - ${message}`,
+    metrics: metrics ?? {},
+  };
+  return error;
+}
+
+/**
+ * Handle POS Error with async rollback
+ */
+export async function handlePOSErrorWithRollback(
+  error: POSError,
+  currentState: GeometryState | VirtueState
+): Promise<{ recovered: boolean; newState: GeometryState | VirtueState; log: string }> {
+  console.error(`POS Error [${error.type}]: ${error.message}`);
+
+  if (error.rollbackState) {
+    console.log('Rolling back to safe state...');
+    return {
+      recovered: true,
+      newState: error.rollbackState as GeometryState | VirtueState,
+      log: `Rolled back from ${error.type} to ${JSON.stringify(error.rollbackState)}`,
+    };
+  }
+
+  // Default Wu Wei rollback for geometry imbalances
+  if (error.type === 'geometry_imbalance' || error.type === 'wu_wei_excess') {
+    const wuWeiRollback: GeometryState = {
+      currentGeometry: 'ground_state',
+      currentFlow: 'material_flow',
+      coherenceLevel: 0.5,
+      materialResilience: 60,
+      timestamp: new Date(),
+    };
+    return {
+      recovered: true,
+      newState: wuWeiRollback,
+      log: 'Applied default Wu Wei rollback for geometry imbalance.',
+    };
+  }
+
+  return {
+    recovered: false,
+    newState: currentState,
+    log: 'Unable to recover. Manual intervention required.',
+  };
+}
+
+// ============================================================================
+// DEEPENED WU WEI EXAMPLES IMPLEMENTATION (v2.4.0)
+// ============================================================================
+
+/**
+ * Deepened Wu Wei Example 1: Relational Non-Force
+ * Sources: Taoism.net (spontaneous response), Big Think (daily flow)
+ */
+export const DEEPENED_WU_WEI_EXAMPLE_1: DeepenedWuWeiExample = {
+  scenario:
+    'Esteban non-force; deepened wu wei between meddle and detach, with daily spontaneous moderation.',
+  flowed: { net: '+27 (effortless bond)' },
+  decided: { action: 'Flow deepened wu wei' },
+  actionableSteps: [
+    {
+      step: 'Embrace Flow',
+      action: () => 'Wu wei to meddle: Release grip on outcome.',
+      validate: () => true,
+    },
+    {
+      step: 'Avoid Force',
+      action: () => 'Avoid meddle/detach extremes: Neither push nor abandon.',
+      validate: () => true,
+    },
+    {
+      step: 'Balance Harmony',
+      action: () => 'Harmony in response: Let relationship breathe.',
+      validate: () => true,
+    },
+    {
+      step: 'Execute Natural',
+      action: () => 'Respond without strain: Trust natural timing.',
+      validate: () => true,
+    },
+    {
+      step: 'Reflect Net',
+      action: () => 'Metrics net: Measure effortless bond gain.',
+      validate: () => true,
+    },
+    {
+      step: 'Fuse Material',
+      action: () => 'Quantum material fusion: Ground in geometric stability.',
+      validate: () => true,
+    },
+    {
+      step: 'Natural Flow Step',
+      action: () => 'Flow with nature: Align with relational Dao.',
+      validate: () => true,
+    },
+    {
+      step: 'Daily Spontaneous',
+      action: () => 'Practice spontaneous daily: Morning wu wei intention.',
+      validate: () => true,
+    },
+    {
+      step: 'Observe Flow',
+      action: () => 'Empty response: Witness without attachment.',
+      validate: () => true,
+    },
+    {
+      step: 'Deepen Spontaneous',
+      action: () => 'Apply in daily life: Let interactions emerge.',
+      validate: () => true,
+    },
+    {
+      step: 'Integrate Geometry',
+      action: () => 'Geometry in flow: Material resilience supports bond.',
+      validate: () => true,
+    },
+  ],
+  quantumGeometry: {
+    state: 'coherent',
+    flowType: 'geometric_flow',
+    coherence: 0.85,
+    entanglementStrength: 0.7,
+    materialResilience: 78,
+    geometricAccuracy: 82,
+  },
+  tradeoffs: {
+    good: 'Good for relational flow and effortless bonding',
+    bad: 'Bad if too detached—may miss genuine connection needs',
+    mitigation: 'Test daily with micro-observations; adjust geometry if bond weakens',
+  },
+};
+
+/**
+ * Deepened Wu Wei Example 2: Apex Spontaneous Alignment
+ * Sources: Shaolin-Yuntai (energy economy), Stephan Joppich (intuitive alignment)
+ */
+export const DEEPENED_WU_WEI_EXAMPLE_2: DeepenedWuWeiExample = {
+  scenario:
+    'Apex alignment; deepened wu wei between force and release, with energy economy for intuitive moderation.',
+  flowed: { net: '+25 (effortless insight)' },
+  decided: { action: 'Flow deepened wu wei' },
+  actionableSteps: [
+    {
+      step: 'Embrace Flow',
+      action: () => 'Wu wei to force: Release productivity anxiety.',
+      validate: () => true,
+    },
+    {
+      step: 'Avoid Force',
+      action: () => 'Avoid force/release extremes: Neither grind nor slack.',
+      validate: () => true,
+    },
+    {
+      step: 'Balance Harmony',
+      action: () => 'Harmony in work: Let insights emerge naturally.',
+      validate: () => true,
+    },
+    {
+      step: 'Execute Natural',
+      action: () => 'Allow insight: Trust creative incubation.',
+      validate: () => true,
+    },
+    {
+      step: 'Reflect Net',
+      action: () => 'Metrics net: Track effortless productivity gain.',
+      validate: () => true,
+    },
+    {
+      step: 'Fuse Material',
+      action: () => 'Quantum material fusion: Geometric stability for deep work.',
+      validate: () => true,
+    },
+    {
+      step: 'Energy Economy Step',
+      action: () => 'Economy energy: Reserve force for high-leverage moments.',
+      validate: () => true,
+    },
+    {
+      step: 'Intuitive Alignment',
+      action: () => 'Align intuitively daily: Follow energy, not schedule.',
+      validate: () => true,
+    },
+    {
+      step: 'Observe Flow',
+      action: () => 'Empty insight: Let solutions arise from stillness.',
+      validate: () => true,
+    },
+    {
+      step: 'Deepen Intuitive',
+      action: () => 'Apply in work life: Trust peak-state timing.',
+      validate: () => true,
+    },
+    {
+      step: 'Integrate Geometry',
+      action: () => 'Geometry in alignment: Material base enables spontaneity.',
+      validate: () => true,
+    },
+  ],
+  quantumGeometry: {
+    state: 'superposition',
+    flowType: 'quantum_flow',
+    coherence: 0.82,
+    entanglementStrength: 0.65,
+    materialResilience: 75,
+    geometricAccuracy: 79,
+  },
+  tradeoffs: {
+    good: 'Good for efficient insight and energy-optimal work',
+    bad: 'Bad if energy low—may need rest before wu wei practice',
+    mitigation: 'Check energy baseline first; rest if below 40%',
+  },
+};
+
+/**
+ * Deepened Wu Wei Example 3: Self-Doubt Flow
+ * Sources: Wikipedia (non-interference), UnbrokenSelf (stress reduction)
+ */
+export const DEEPENED_WU_WEI_EXAMPLE_3: DeepenedWuWeiExample = {
+  scenario:
+    'Self-doubt interference; deepened wu wei between self-force and self-release, with non-interference for stress reduction.',
+  flowed: { net: '+26 (effortless self-trust)' },
+  decided: { action: 'Flow deepened wu wei' },
+  actionableSteps: [
+    {
+      step: 'Embrace Flow',
+      action: () => 'Wu wei to doubt: Stop fighting inner critic.',
+      validate: () => true,
+    },
+    {
+      step: 'Avoid Force',
+      action: () => 'Avoid self-force/release: Neither suppress nor indulge.',
+      validate: () => true,
+    },
+    {
+      step: 'Balance Harmony',
+      action: () => 'Harmony in self: Let doubt pass like clouds.',
+      validate: () => true,
+    },
+    {
+      step: 'Execute Natural',
+      action: () => 'Allow self-acceptance: Trust inherent competence.',
+      validate: () => true,
+    },
+    {
+      step: 'Reflect Net',
+      action: () => 'Metrics net: Measure self-trust gain.',
+      validate: () => true,
+    },
+    {
+      step: 'Fuse Material',
+      action: () => 'Quantum material fusion: Ground in geometric self-stability.',
+      validate: () => true,
+    },
+    {
+      step: 'Non-Interference Step',
+      action: () => 'Non-interfere doubt: Observe without engagement.',
+      validate: () => true,
+    },
+    {
+      step: 'Stress Reduction',
+      action: () => 'Reduce stress daily: Wu wei breathing practice.',
+      validate: () => true,
+    },
+    {
+      step: 'Observe Flow',
+      action: () => 'Empty doubt: Witness impermanence of self-criticism.',
+      validate: () => true,
+    },
+    {
+      step: 'Deepen Stress',
+      action: () => 'Apply in self life: Build stress resilience through non-action.',
+      validate: () => true,
+    },
+    {
+      step: 'Integrate Geometry',
+      action: () => 'Geometry in self: Material foundation for inner peace.',
+      validate: () => true,
+    },
+  ],
+  quantumGeometry: {
+    state: 'ground_state',
+    flowType: 'material_flow',
+    coherence: 0.88,
+    entanglementStrength: 0.6,
+    materialResilience: 80,
+    geometricAccuracy: 85,
+  },
+  tradeoffs: {
+    good: 'Good for inner peace and self-compassion',
+    bad: 'Bad for urgent self-push scenarios requiring action',
+    mitigation: 'Use for reflection periods; switch to action mode when deadlines require',
+  },
+};
+
+// ============================================================================
+// GOLDEN MEAN WITH REN FUSION IMPLEMENTATION (v2.4.0)
+// ============================================================================
+
+/**
+ * Golden Mean Example 1: Relational Courage with Ren
+ */
+export const GOLDEN_MEAN_REN_EXAMPLE_1: DeepenedGoldenMeanExample = {
+  scenario: 'Relational extremes; golden mean virtue between rash and coward, with ren benevolence.',
+  meaned: { net: '+26 (virtuous bond)' },
+  decided: { action: 'Mean golden with ren' },
+  actionableSteps: [
+    {
+      step: 'Embrace Mean',
+      action: () => 'Golden to extremes: Find courage between rashness and cowardice.',
+      validate: () => true,
+    },
+    {
+      step: 'Avoid Extreme',
+      action: () => 'Avoid rash/coward: Neither reckless confrontation nor fearful withdrawal.',
+      validate: () => true,
+    },
+    {
+      step: 'Achieve Eudaimonia',
+      action: () => 'Flourish in mean: Courage enables authentic connection.',
+      validate: () => true,
+    },
+    {
+      step: 'Execute Balanced',
+      action: () => 'Respond meanly: Measured vulnerability, not exposure.',
+      validate: () => true,
+    },
+    {
+      step: 'Reflect Net',
+      action: () => 'Metrics net: Track virtuous bond gain.',
+      validate: () => true,
+    },
+    {
+      step: 'Fuse Ren',
+      action: () => 'Ren benevolent fusion: Courage serves others, not ego.',
+      validate: () => true,
+    },
+    {
+      step: 'Benevolent Mean Step',
+      action: () => 'Mean with ren: Balance self-protection with other-care.',
+      validate: () => true,
+    },
+    {
+      step: 'Li Mean Step',
+      action: () => 'Mean with li: Proper form in courageous action.',
+      validate: () => true,
+    },
+    {
+      step: 'Wu Wei Actionable',
+      action: () => 'Respond without force: Let virtue flow effortlessly.',
+      validate: () => true,
+    },
+    {
+      step: 'Observe Mean',
+      action: () => 'Empty virtue: Witness mean without attachment to outcome.',
+      validate: () => true,
+    },
+  ],
+  renFusion: 'ren_benevolence',
+  tradeoffs: {
+    good: 'Good for virtuous relational life and authentic connection',
+    bad: 'Bad for extreme situations requiring decisive action',
+    mitigation: 'Use for daily interactions; switch to situational ethics for emergencies',
+  },
+};
+
+/**
+ * Golden Mean Example 2: Apex Courage with Ren
+ */
+export const GOLDEN_MEAN_REN_EXAMPLE_2: DeepenedGoldenMeanExample = {
+  scenario: 'Apex extremes; golden mean virtue between reckless and timid, with ren righteousness.',
+  meaned: { net: '+24 (virtuous insight)' },
+  decided: { action: 'Mean golden with yi' },
+  actionableSteps: [
+    {
+      step: 'Embrace Mean',
+      action: () => 'Golden to work: Find courage between recklessness and timidity.',
+      validate: () => true,
+    },
+    {
+      step: 'Avoid Extreme',
+      action: () => 'Avoid reckless/timid: Neither impulsive shipping nor perfectionist paralysis.',
+      validate: () => true,
+    },
+    {
+      step: 'Achieve Eudaimonia',
+      action: () => 'Flourish in mean: Courage enables bold yet thoughtful action.',
+      validate: () => true,
+    },
+    {
+      step: 'Execute Balanced',
+      action: () => 'Work meanly: Ship when ready, not when anxious.',
+      validate: () => true,
+    },
+    {
+      step: 'Reflect Net',
+      action: () => 'Metrics net: Track virtuous productivity gain.',
+      validate: () => true,
+    },
+    {
+      step: 'Fuse Ren',
+      action: () => 'Yi righteous fusion: Work serves purpose, not vanity.',
+      validate: () => true,
+    },
+    {
+      step: 'Benevolent Mean Step',
+      action: () => 'Mean with yi: Balance ambition with ethical constraints.',
+      validate: () => true,
+    },
+    {
+      step: 'Li Mean Step',
+      action: () => 'Mean with li: Proper form in work output.',
+      validate: () => true,
+    },
+    {
+      step: 'Wu Wei Actionable',
+      action: () => 'Work without strain: Let excellence flow naturally.',
+      validate: () => true,
+    },
+    {
+      step: 'Observe Mean',
+      action: () => 'Empty work: Witness output without ego attachment.',
+      validate: () => true,
+    },
+  ],
+  renFusion: 'yi_righteousness',
+  tradeoffs: {
+    good: 'Good for sustainable high performance and meaningful work',
+    bad: 'Bad for pure speed scenarios where iteration beats deliberation',
+    mitigation: 'Use for important decisions; allow rapid iteration for low-stakes experiments',
+  },
+};
+
+// ============================================================================
+// GEOMETRY-FLOW MIDDLEWARE (v2.4.0)
+// ============================================================================
+
+/**
+ * Geometry Flow Middleware
+ * Inspired by MIT SCIGEN and arXiv quantum geometry research
+ */
+export class GeometryFlowMiddleware {
+  private bucket: EnhancedGeometryBucket;
+  private currentState: GeometryState;
+  private auditLog: Array<{ timestamp: Date; action: string; metrics: Record<string, number> }>;
+
+  constructor() {
+    this.bucket = {
+      tokens: 5,
+      maxTokens: 5,
+      refillRate: 0.21, // ~5 tokens per day
+      lastRefill: new Date(),
+      effortlessPeriodRefill: true,
+      fusionCount: 0,
+      geometryChecks: {
+        coherenceThreshold: 0.3,
+        materialResilienceThreshold: 50,
+        chaosOverloadPrevention: true,
+      },
+    };
+    this.currentState = {
+      currentGeometry: 'ground_state',
+      currentFlow: 'material_flow',
+      coherenceLevel: 0.5,
+      materialResilience: 60,
+      timestamp: new Date(),
+    };
+    this.auditLog = [];
+  }
+
+  /**
+   * Execute geometry fusion with Wu Wei
+   */
+  async executeGeometryFusion(
+    wuWeiPractice: DeepenedWuWeiPractice,
+    targetGeometry: QuantumMaterialGeometry
+  ): Promise<WuWeiQuantumFusionResult> {
+    const checkResult = shouldProceedWithGeometryFusion(this.bucket, targetGeometry, 70);
+
+    if (!checkResult.proceed) {
+      this.auditLog.push({
+        timestamp: new Date(),
+        action: `Fusion blocked: ${checkResult.reason}`,
+        metrics: { coherence: targetGeometry.coherence, resilience: targetGeometry.materialResilience },
+      });
+
+      if (checkResult.rollbackState) {
+        this.currentState = checkResult.rollbackState;
+      }
+
+      throw createPOSError(
+        checkResult.reason,
+        'geometry_imbalance',
+        'medium',
+        checkResult.rollbackState
+      );
+    }
+
+    // Execute fusion
+    this.bucket.tokens -= 1;
+    this.bucket.fusionCount += 1;
+
+    const rrfScore = calculateWuWeiGeometryRRF(1, 1); // Simplified ranking
+    const result: WuWeiQuantumFusionResult = {
+      wuWei: wuWeiPractice.virtue,
+      geometry: targetGeometry.state,
+      rrfScore,
+      fusedAction: `${wuWeiPractice.virtue} fused with ${targetGeometry.state}`,
+      effortlessGain: 25,
+      geometricGain: targetGeometry.geometricAccuracy * 0.3,
+      materialResilience: targetGeometry.materialResilience,
+      coherenceMetric: targetGeometry.coherence,
+    };
+
+    this.currentState = {
+      currentGeometry: targetGeometry.state,
+      currentFlow: targetGeometry.flowType,
+      coherenceLevel: targetGeometry.coherence,
+      materialResilience: targetGeometry.materialResilience,
+      timestamp: new Date(),
+    };
+
+    this.auditLog.push({
+      timestamp: new Date(),
+      action: `Fusion executed: ${result.fusedAction}`,
+      metrics: {
+        rrfScore: result.rrfScore,
+        effortlessGain: result.effortlessGain,
+        geometricGain: result.geometricGain,
+      },
+    });
+
+    return result;
+  }
+
+  /**
+   * Refill tokens during effortless period
+   */
+  refillDuringEffortlessPeriod(): void {
+    if (this.bucket.effortlessPeriodRefill) {
+      const hoursSinceRefill = (Date.now() - this.bucket.lastRefill.getTime()) / (1000 * 60 * 60);
+      const tokensToAdd = Math.floor(hoursSinceRefill * this.bucket.refillRate);
+      this.bucket.tokens = Math.min(this.bucket.maxTokens, this.bucket.tokens + tokensToAdd);
+      this.bucket.lastRefill = new Date();
+      console.log(`Effortless refill: ${tokensToAdd} tokens added. Current: ${this.bucket.tokens}`);
+    }
+  }
+
+  /**
+   * Get current state for inspection
+   */
+  getState(): { bucket: EnhancedGeometryBucket; state: GeometryState; auditLog: Array<{ timestamp: Date; action: string; metrics: Record<string, number> }> } {
+    return {
+      bucket: this.bucket,
+      state: this.currentState,
+      auditLog: this.auditLog,
+    };
+  }
+}
+
+/**
+ * Calculate RRF score for Wu Wei-Geometry fusion
+ */
+export function calculateWuWeiGeometryRRF(
+  wuWeiRank: number,
+  geometryRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + wuWeiRank) + 1 / (k + geometryRank);
+}
+
+/**
+ * Calculate RRF score for Aristotelian-Ren fusion
+ */
+export function calculateAristotelianRenRRF(
+  meanRank: number,
+  renRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + meanRank) + 1 / (k + renRank);
+}
+
+/**
+ * Determine if Aristotelian-Ren fusion should proceed
+ */
+export function shouldProceedWithAristotelianRen(
+  bucket: VirtueBucket,
+  meanBalance: number,
+  benevolenceLevel: number
+): { proceed: boolean; reason: string } {
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Virtue rate limit exceeded. Practice temperance—wait for refill.' };
+  }
+
+  if (meanBalance < 0.3) {
+    return { proceed: false, reason: 'Mean balance too low. Recalibrate with golden mean reflection.' };
+  }
+
+  if (benevolenceLevel < 0.4) {
+    return { proceed: false, reason: 'Benevolence level insufficient. Practice ren cultivation first.' };
+  }
+
+  if (meanBalance > 0.9 && benevolenceLevel < 0.5) {
+    return { proceed: false, reason: 'Potential self-righteousness. Balance mean with ren compassion.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with Aristotelian-Ren fusion.' };
+}
+
+// ============================================================================
+// WEEKLY METRICS (v2.4.0)
+// ============================================================================
+
+/**
+ * Wu Wei-Geometry Weekly Metrics
+ */
+export interface WuWeiGeometryWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  wuWeiMoments: number;
+  geometryFusions: number;
+  relationalFlows: number;
+  apexAlignments: number;
+  selfDoubtFlows: number;
+  materialGains: number;
+  effortlessGains: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyWuWeiScore: number;
+  weeklyGeometryScore: number;
+  wuWeiTrend: 'ascending' | 'stable' | 'descending';
+  geometryTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'wuwei-dominant' | 'geometry-dominant' | 'fluctuating';
+}
+
+/**
+ * Aristotelian-Ren Weekly Metrics
+ */
+export interface AristotelianRenWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  courageMeans: number;
+  temperanceMeans: number;
+  justiceMeans: number;
+  wisdomMeans: number;
+  renPractices: number;
+  yiPractices: number;
+  liPractices: number;
+  eudaimoniaAchievements: number;
+  harmonyMoments: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyMeanScore: number;
+  weeklyRenScore: number;
+  meanTrend: 'ascending' | 'stable' | 'descending';
+  renTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'mean-dominant' | 'ren-dominant' | 'fluctuating';
+}
+
+// ============================================================================
+// POS v2.4.0 CHANGELOG
+// ============================================================================
+
+/**
+ * POS Version with Wu Wei-Geometry and Golden Mean-Ren expansion
+ */
+export const POS_VERSION_2_4 = '2.4.0';
+
+/**
+ * POS Changelog Entry for v2.4.0
+ */
+export const POS_CHANGELOG_V2_4: ChangelogEntry = {
+  version: '2.4.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Quantum Material Geometry middleware with MIT SCIGEN-inspired patterns' },
+    { type: 'added', description: 'Deepened Wu Wei Example 1: Relational Non-Force with 11-step protocol' },
+    { type: 'added', description: 'Deepened Wu Wei Example 2: Apex Spontaneous Alignment with energy economy' },
+    { type: 'added', description: 'Deepened Wu Wei Example 3: Self-Doubt Flow with stress reduction' },
+    { type: 'added', description: 'Confucian Ren types (ren, yi, li, zhi, xin) for Golden Mean fusion' },
+    { type: 'added', description: 'Golden Mean-Ren Example 1: Relational Courage with benevolence' },
+    { type: 'added', description: 'Golden Mean-Ren Example 2: Apex Courage with righteousness' },
+    { type: 'added', description: 'GeometryFlowMiddleware class for material-effortless execution' },
+    { type: 'added', description: 'Enhanced rate limiting with geometry checks (5 fusions/day, coherence/resilience thresholds)' },
+    { type: 'added', description: 'Comprehensive error handling with POSError type and async rollback' },
+    { type: 'added', description: 'Wu Wei-Geometry RRF fusion engine with quantum state integration' },
+    { type: 'added', description: 'Aristotelian-Ren RRF fusion engine with benevolence metrics' },
+    { type: 'added', description: 'Weekly metrics tracking for Wu Wei-Geometry and Aristotelian-Ren systems' },
+    { type: 'added', description: 'All examples include trade-off documentation (good/bad/mitigation)' },
   ],
 };
