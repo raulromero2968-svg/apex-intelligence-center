@@ -156,6 +156,32 @@ export const volitionalPracticeStatusEnum = pgEnum('volitional_practice_status',
   'rolled_back',
 ]);
 
+// Mean-Effortless Fusion Enums (v2.3.0)
+export const meanEffortlessVirtueEnum = pgEnum('mean_effortless_virtue', [
+  'wu_wei_courage_mean',
+  'wu_wei_temperance_mean',
+  'wu_wei_justice_mean',
+  'wu_wei_wisdom_mean',
+  'harmony_courage_mean',
+  'harmony_temperance_mean',
+  'effortless_golden_mean',
+]);
+
+export const meanEffortlessPracticeStatusEnum = pgEnum('mean_effortless_practice_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'eudaimonia_achieved',
+  'rolled_back',
+]);
+
+export const meanEffortlessBalanceEnum = pgEnum('mean_effortless_balance', [
+  'harmonized',
+  'flow_dominant',
+  'mean_dominant',
+  'fluctuating',
+]);
+
 // ============================================================================
 // TRUST SCORES TABLE (BRAVING Framework)
 // ============================================================================
@@ -2082,6 +2108,275 @@ export const nonDualWeeklyMetricsRelations = relations(nonDualWeeklyMetrics, ({ 
   }),
 }));
 
+// ============================================================================
+// MEAN-EFFORTLESS FUSION TABLES (v2.3.0)
+// Wu Wei + Aristotelian Golden Mean Integration
+// ============================================================================
+
+export const meanEffortlessFusionLogs = pgTable(
+  'pos_mean_effortless_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Fusion details
+    fusedAt: timestamp('fused_at').defaultNow().notNull(),
+    fusionType: text('fusion_type').notNull(), // 'flow-mean', 'mean-flow', 'balanced'
+
+    // Wu Wei component
+    wuWeiVirtue: taoistVirtueEnum('wu_wei_virtue'),
+    wuWeiScore: real('wu_wei_score'), // 0-100
+    wuWeiRank: integer('wu_wei_rank'), // position in RRF
+
+    // Aristotelian component
+    aristotelianVirtue: aristotelianVirtueEnum('aristotelian_virtue'),
+    aristotelianScore: real('aristotelian_score'), // 0-100
+    aristotelianRank: integer('aristotelian_rank'), // position in RRF
+
+    // RRF fusion results
+    rrfScore: real('rrf_score'),
+    fusionK: integer('fusion_k').default(60), // RRF k parameter
+
+    // Outcome metrics
+    flowGain: real('flow_gain'),
+    meanGain: real('mean_gain'),
+    eudaimoniaMetric: real('eudaimonia_metric'),
+
+    // Balance analysis
+    balanceType: meanEffortlessBalanceEnum('balance_type'),
+    harmonyScore: real('harmony_score'), // 0-1, how balanced the fusion was
+
+    // Execution
+    fusedAction: text('fused_action'),
+    actionSuccessful: boolean('action_successful'),
+    successNotes: text('success_notes'),
+
+    // Context
+    domain: text('domain'), // 'relational', 'apex', 'personal'
+    urgency: text('urgency'), // 'low', 'medium', 'high'
+    scenarioDescription: text('scenario_description'),
+
+    // A/B Testing
+    abTestVariant: text('ab_test_variant'), // 'A' (Wu Wei only), 'B' (with Mean)
+    abTestId: text('ab_test_id'),
+
+    // Rate limiting impact
+    wuWeiTokensUsed: real('wu_wei_tokens_used'),
+    meanTokensUsed: real('mean_tokens_used'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_fusion_user_idx').on(table.userId),
+    fusedIdx: index('pos_mean_effortless_fusion_fused_idx').on(table.fusedAt),
+    typeIdx: index('pos_mean_effortless_fusion_type_idx').on(table.fusionType),
+    balanceIdx: index('pos_mean_effortless_fusion_balance_idx').on(table.balanceType),
+    abTestIdx: index('pos_mean_effortless_fusion_ab_test_idx').on(table.abTestId),
+  })
+);
+
+export const meanEffortlessRateLimits = pgTable(
+  'pos_mean_effortless_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Date tracking
+    date: timestamp('date').defaultNow().notNull(),
+
+    // Token bucket state
+    currentTokens: real('current_tokens').notNull().default(4),
+    maxTokens: integer('max_tokens').notNull().default(4),
+    refillRate: real('refill_rate').notNull().default(0.5), // tokens per hour (4/8 waking hours)
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Eudaimonia bonus tracking
+    eudaimoniaCount: integer('eudaimonia_count').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Usage tracking
+    fusionsToday: integer('fusions_today').default(0),
+    lastFusion: timestamp('last_fusion'),
+
+    // Denied attempts
+    deniedAttempts: integer('denied_attempts').default(0),
+    lastDenied: timestamp('last_denied'),
+
+    // Configuration - harmonious periods for refill boost
+    refillPeriods: jsonb('refill_periods').$type<Array<{
+      startHour: number;
+      endHour: number;
+      multiplier: number;
+    }>>().default([
+      { startHour: 6, endHour: 8, multiplier: 2.0 },   // Morning reflection boost
+      { startHour: 19, endHour: 21, multiplier: 1.5 } // Evening contemplation boost
+    ]),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_rate_limit_user_idx').on(table.userId),
+    dateIdx: index('pos_mean_effortless_rate_limit_date_idx').on(table.date),
+    uniqueUserDate: uniqueIndex('pos_mean_effortless_rate_limit_user_date_unique').on(table.userId, table.date),
+  })
+);
+
+export const meanEffortlessStateHistory = pgTable(
+  'pos_mean_effortless_state_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // State snapshot
+    snapshotAt: timestamp('snapshot_at').defaultNow().notNull(),
+
+    // Current wu wei state
+    currentFlow: taoistVirtueEnum('current_flow'),
+    flowLevel: real('flow_level'), // 0-100
+
+    // Current aristotelian state
+    currentMean: aristotelianVirtueEnum('current_mean'),
+    meanLevel: real('mean_level'), // 0-100
+
+    // Combined metrics
+    eudaimoniaScore: real('eudaimonia_score'), // 0-100
+    harmonyScore: real('harmony_score'), // 0-1
+
+    // Stability indicators
+    isStable: boolean('is_stable').default(true),
+    stabilityNotes: text('stability_notes'),
+    imbalanceType: text('imbalance_type'), // 'over-flow', 'over-mean', 'extreme', 'passive'
+
+    // Rollback metadata
+    isRollbackPoint: boolean('is_rollback_point').default(false),
+    rolledBackTo: boolean('rolled_back_to').default(false),
+    rollbackTrigger: text('rollback_trigger'),
+
+    // Eudaimonia audit
+    auditedBy: text('audited_by'), // 'self', 'therapist', 'peer'
+    auditNotes: text('audit_notes'),
+
+    // Default state info (for rollback)
+    defaultFlow: text('default_flow').default('wu_wei'),
+    defaultMean: text('default_mean').default('temperance'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_state_user_idx').on(table.userId),
+    snapshotIdx: index('pos_mean_effortless_state_snapshot_idx').on(table.snapshotAt),
+    rollbackIdx: index('pos_mean_effortless_state_rollback_idx').on(table.isRollbackPoint),
+    stabilityIdx: index('pos_mean_effortless_state_stability_idx').on(table.isStable),
+  })
+);
+
+export const meanEffortlessWeeklyMetrics = pgTable(
+  'pos_mean_effortless_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Wu Wei metrics
+    wuWeiFlows: integer('wu_wei_flows').default(0),
+    weiWuWeiFlows: integer('wei_wu_wei_flows').default(0),
+    harmonyFlows: integer('harmony_flows').default(0),
+
+    // Aristotelian metrics
+    courageMeans: integer('courage_means').default(0),
+    temperanceMeans: integer('temperance_means').default(0),
+    justiceMeans: integer('justice_means').default(0),
+    wisdomMeans: integer('wisdom_means').default(0),
+
+    // Fusion metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    fusionSuccessRate: real('fusion_success_rate'), // 0-1
+    eudaimoniaAchievements: integer('eudaimonia_achievements').default(0),
+
+    // Aggregate scores
+    weeklyMeanEffortlessScore: real('weekly_mean_effortless_score'), // 0-100
+    weeklyFlowLevel: real('weekly_flow_level'), // 0-100
+    weeklyMeanLevel: real('weekly_mean_level'), // 0-100
+    weeklyHarmonyScore: real('weekly_harmony_score'), // 0-1
+
+    // Trend indicators
+    flowTrend: text('flow_trend'), // 'ascending', 'stable', 'descending'
+    meanTrend: text('mean_trend'), // 'ascending', 'stable', 'descending'
+    balanceTrend: meanEffortlessBalanceEnum('balance_trend'),
+
+    // A/B test metrics
+    variantADecisions: integer('variant_a_decisions').default(0),
+    variantBDecisions: integer('variant_b_decisions').default(0),
+    variantASuccessRate: real('variant_a_success_rate'),
+    variantBSuccessRate: real('variant_b_success_rate'),
+
+    // Action items
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+    eudaimoniaAuditsNeeded: integer('eudaimonia_audits_needed').default(0),
+    extremesDetected: integer('extremes_detected').default(0),
+    passivityDetected: integer('passivity_detected').default(0),
+
+    // Rate limit impact
+    flowTokensDepleted: integer('flow_tokens_depleted').default(0),
+    meanTokensDepleted: integer('mean_tokens_depleted').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_metrics_user_idx').on(table.userId),
+    weekIdx: index('pos_mean_effortless_metrics_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_mean_effortless_metrics_user_week_unique').on(table.userId, table.weekStart),
+    balanceIdx: index('pos_mean_effortless_metrics_balance_idx').on(table.balanceTrend),
+  })
+);
+
+// ============================================================================
+// MEAN-EFFORTLESS RELATIONS
+// ============================================================================
+
+export const meanEffortlessFusionLogsRelations = relations(meanEffortlessFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessRateLimitsRelations = relations(meanEffortlessRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessStateHistoryRelations = relations(meanEffortlessStateHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessStateHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessWeeklyMetricsRelations = relations(meanEffortlessWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
+
 // Zazen-Taoist Types (v1.8.0)
 export type ZazenPracticeType = typeof zazenPractices.$inferSelect;
 export type NewZazenPracticeType = typeof zazenPractices.$inferInsert;
@@ -2095,3 +2390,13 @@ export type MindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory
 export type NewMindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory.$inferInsert;
 export type ZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferSelect;
 export type NewZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferInsert;
+
+// Mean-Effortless Types (v2.3.0)
+export type MeanEffortlessFusionLog = typeof meanEffortlessFusionLogs.$inferSelect;
+export type NewMeanEffortlessFusionLog = typeof meanEffortlessFusionLogs.$inferInsert;
+export type MeanEffortlessRateLimit = typeof meanEffortlessRateLimits.$inferSelect;
+export type NewMeanEffortlessRateLimit = typeof meanEffortlessRateLimits.$inferInsert;
+export type MeanEffortlessStateHistory = typeof meanEffortlessStateHistory.$inferSelect;
+export type NewMeanEffortlessStateHistory = typeof meanEffortlessStateHistory.$inferInsert;
+export type MeanEffortlessWeeklyMetric = typeof meanEffortlessWeeklyMetrics.$inferSelect;
+export type NewMeanEffortlessWeeklyMetric = typeof meanEffortlessWeeklyMetrics.$inferInsert;
