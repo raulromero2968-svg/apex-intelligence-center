@@ -139,6 +139,13 @@ export const powerEntities = pgTable(
     // Semantic search embedding
     embedding: vector768('embedding'),
 
+    // Ghost Protocol - Obfuscation Layer
+    // When true, the entity's real identity is protected/anonymized in public views
+    // Used for whistleblowers, vulnerable sources, or sensitive investigations
+    isObfuscated: text('is_obfuscated').default('false'), // 'true' | 'false' - Ghost Node status
+    obfuscatedName: text('obfuscated_name'), // Display name when obfuscated (e.g., "Source Alpha")
+    obfuscationReason: text('obfuscation_reason'), // Why this entity is a Ghost Node
+
     // Metadata
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -149,6 +156,7 @@ export const powerEntities = pgTable(
     typeIdx: index('power_entities_type_idx').on(table.type),
     domainIdx: index('power_entities_domain_idx').on(table.primaryDomain),
     evidenceIdx: index('power_entities_evidence_idx').on(table.evidenceTier),
+    ghostIdx: index('power_entities_ghost_idx').on(table.isObfuscated),
   })
 );
 
