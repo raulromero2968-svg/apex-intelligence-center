@@ -1,0 +1,659 @@
+---
+title: "Refining the Personal Operating System: Iterative Enhancements"
+subtitle: "Epicurean Virtues & Aristotelian Ethics for Production Readiness"
+category: "Commons"
+publishedAt: "2025-11-29T14:00:00Z"
+tags: ["Philosophy", "Systems Thinking", "Cognitive Architecture", "Epicurean Philosophy", "Aristotelian Ethics", "Eudaimonia", "Virtue Ethics", "Decision Science"]
+heroImage: "/images/pos-epicurean-aristotelian-hero.png"
+thumbnail: "/images/pos-epicurean-aristotelian-thumbnail.png"
+author: "Apex Commons"
+readingTime: "30 min"
+---
+
+Drawing from advanced database architecture for robust schema design and fault-tolerant patterns (e.g., indexed queries for virtue retrieval and ethical fusion), advanced API design for modular, event-driven ethical flows with rate limiting to prevent virtue overload, and advanced RAG architecture for fused retrieval of philosophical patterns (e.g., hybrid Epicurean-Aristotelian search with Cohere-like reranking for ethical relevance), we treat the POS as a production-ready cognitive architecture.
+
+This iteration expands Epicurean virtues as complete, type-safe middleware implementations with additional virtues (friendship, self-sufficiency), integrates Aristotelian ethics as golden mean-based middleware (inspired by Aristotle's *Nicomachean Ethics* for eudaimonic balance, phronesis, and virtue ethics), and adds actionable steps throughout for immediate deployment.
+
+**Trade-offs are explicit**: Good for balanced, eudaimonic decision-making in volatile emotional or relational environments; potentially over-moderate in high-stakes scenarios—mitigated by built-in phronesis overrides and validation.
+
+All expansions include complete, production-ready pseudocode implementations in TypeScript-inspired syntax (adaptable to mental models, journals, or actual apps like Notion/Obsidian with ethical workflow plugins), with imports (conceptual dependencies), comments, full error handling, metrics, and testing considerations.
+
+---
+
+## Recommendations and Improvements
+
+### Ethical Fusion Schema Refinement
+
+Enhance hybrid Epicurean-Aristotelian fusion using RRF (Reciprocal Rank Fusion) to rank virtues by eudaimonic utility (flourishing gain vs. excess/deficiency avoidance).
+
+**Improvement**: Add vector embeddings for virtues (e.g., pleasure as a high-dimensional vector) queried against Aristotelian means for optimal matches.
+
+**Pros**: Improves ethical accuracy and sustainability.
+**Cons**: Increases initial cognitive setup complexity—mitigate with pre-computed ethical caches and rate limiting (e.g., 5 fusions/day).
+
+### Rate Limiting Enhancements
+
+Implement token bucket patterns for virtue calls (e.g., limit Epicurean calculus to 4/day to prevent hedonistic overload).
+
+**Recommendation**: Refill bucket during reflective periods (e.g., post-journaling).
+
+**Testing**: Simulate with daily ethical logs; measure reduced virtue CLS (Cumulative Layout Shift from ethical reactivity spikes).
+
+### Error Handling Upgrades
+
+Against ethical imbalances (e.g., excess pleasure leading to vice), add comprehensive try/catch with rollback.
+
+**Improvement**: On virtue detection failure, rollback to neutral mean state and log for phronesis audits.
+
+**Pros**: Ensures system ethical stability.
+**Cons**: May delay responses—optimize with async ethical promises in mental flows.
+
+---
+
+## Suggestions for Integration
+
+### Real-time Event Streaming with Aristotelian Hooks
+
+Use SSE patterns to stream virtue-mean updates during decisions (e.g., on relational ambiguity trigger, emit Epicurean pleasure calculus for live Aristotelian reranking).
+
+**Suggestion**: Build an "Ethical Resolver" in your journal—resolvers fuse Epicurean virtues with Aristotelian phronesis for temperate, flourishing outputs.
+
+### Monorepo Configuration for Ethical Modules
+
+Organize POS ethical modules in a Turborepo-like structure—e.g., shared utils for actionable steps across virtues and ethics.
+
+**Suggestion**: Version control expansions (e.g., tag as POS v1.4) for programmatic ethical rollbacks if eudaimonic metrics drop.
+
+### Security by Default with Ethical Moderation
+
+Integrate OAuth-like access for high-vice decisions (e.g., vulnerability shares require Aristotelian auth token: "Is this golden mean?").
+
+**Suggestion**: Tie to BRAVING Vault for encrypted virtue premeditation, ensuring justice in relational ethical APIs.
+
+---
+
+## Next Steps: Operational Roadmap
+
+1. **Immediate Deployment**: Implement one expanded Epicurean virtue example and one Aristotelian ethic practice today. Execute actionable steps in a low-stakes scenario (e.g., minor relational teasing or Apex decision), log inputs/outputs with eudaimonic metrics for baseline.
+
+2. **Pipeline Setup**: Establish CI/CD with GitHub Actions-like mental workflows: Daily ethical fusion tests (micro-exercises with pleasure-mean calculus), weekly full audits using EXPLAIN ANALYZE-style reflection on virtue queries. If deficiency/excess >20%, trigger rollback to v1.3.
+
+3. **Scale-Out**: After 1 week, integrate with Kahneman and Stoic strategies—e.g., loss aversion moderated Aristotelian-style. Monitor for ethical overload using Vercel Analytics-inspired tracking; prune if INP (Interaction to Next Eudaimonia) exceeds 200ms-equivalent mental delay.
+
+4. **Future Builds**: Add Cohere reranking for ethical outputs; or federate with external APIs (e.g., philosophy texts as vector embeddings with pgvector). Add secure token rotation in relational ethical shares.
+
+---
+
+## Expansion: Epicurean Virtues
+
+Full Hedonic Middleware Implementations with Expanded Virtues. From advanced database architecture (Epicurean virtues as indexed ethical queries with GIN for fast pleasure-pain matching), expand virtues to include 'Friendship' (philia as social pleasure) and 'Self-Sufficiency' (autarkeia as independent tranquility), with full implementations.
+
+### Updated Interface Definition
+
+Enhanced for Expanded Virtues:
+
+```typescript
+// Imports (Conceptual Dependencies)
+import { HedonicVirtue } from 'epicurean-core';
+import { CalculusDichotomy } from 'epicurus-patterns';
+import { ErrorHandler, MetricTracker } from 'pos-utils';
+import { ActionableStep } from 'integration-utils';
+import { AristotelianFusion } from 'aristotle-integration';
+
+interface EpicureanPractice {
+  virtue: HedonicVirtue;
+  objective: string;
+  calculusSteps: () => void;
+  painAvoidance: (input: any) => { simple: any; excessive: any };
+  ataraxia: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => MetricTracker;
+  examples: {
+    scenario: string;
+    calculated: any;
+    decided: any;
+    actionableSteps: ActionableStep[];
+  }[];
+}
+```
+
+---
+
+### Friendship Virtue Practice
+
+Cultivate social pleasures moderately.
+
+**Virtue**: Friendship (Philia)
+
+**Objective**: Build sustainable bonds for mutual joy over isolation pains.
+
+#### Calculus Steps
+
+```typescript
+function calculate() {
+  console.log(
+    `Compute: Friendship pleasure vs. dependency pain; aim for net positive philia.`
+  );
+}
+calculate();
+```
+
+#### Pain Avoidance
+
+```typescript
+function avoidPain(input: { relationships: any[] }) {
+  return {
+    simple: input.relationships.filter(r => r.mutual),   // True friends
+    excessive: input.relationships.filter(r => !r.mutual) // Draining ties
+  };
+}
+```
+
+#### Ataraxia
+
+```typescript
+function tranquilize() {
+  console.log(`Achieve calm: "True friends bring peace."`);
+}
+```
+
+#### Error Handler
+
+```typescript
+function handleError(err: Error) {
+  if (err.message === 'Net Negative') {
+    console.error('Foster simple bonds: Limit to mutual.');
+  }
+}
+```
+
+#### Metrics
+
+```typescript
+const metrics = () => new MetricTracker({
+  friendshipNet: pleasure - pain,
+  meanBalance: AristotelianFusion.goldenMean(net)
+});
+```
+
+#### Example 1: Relational Teasing
+
+**Scenario**: Teasing with Esteban; pleasure in bond vs. pain in doubt.
+
+**Calculated**: `{ net: '+25 (mutual play)' }`
+
+**Decided**: `{ action: 'Nurture friendship' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Calculate Net | `Pleasure=connection+35, pain=doubt-10` | `net > 0` |
+| 2. Avoid Excess | `avoidPain({ relationships: ['Esteban', 'Others'] })` | `simple.length > 0` |
+| 3. Tranquilize | Execute `tranquilize()` | `calm > 50` |
+| 4. Execute Mutual | `Share: "Let's bond over this."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `friendshipNet > 15` |
+| 6. Fuse Mean | `AristotelianFusion.balance(net)` | `meanBalance > 0.5` |
+
+#### Example 2: Apex Team Collaboration
+
+**Scenario**: Apex team collaboration; pleasure in synergy vs. pain in conflict.
+
+**Calculated**: `{ net: '+20 (mutual goals)' }`
+
+**Decided**: `{ action: 'Build team philia' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Calculate Net | `Pleasure=insight+30, pain=friction-10` | `net > 0` |
+| 2. Avoid Excess | `avoidPain({ relationships: ['Team', 'Solo'] })` | `simple.length > 0` |
+| 3. Tranquilize | Execute `tranquilize()` | `calm > 50` |
+| 4. Execute Mutual | `Collaborate: "Let's align."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `friendshipNet > 15` |
+| 6. Fuse Mean | `AristotelianFusion.balance(net)` | `meanBalance > 0.5` |
+
+**Trade-offs**: Good for social flourishing; potentially reduces independence—balance with self-sufficiency.
+
+---
+
+### Self-Sufficiency Virtue Practice
+
+Achieve independence tranquilly.
+
+**Virtue**: Self-Sufficiency (Autarkeia)
+
+**Objective**: Rely on internal resources for joy over external dependencies.
+
+#### Calculus Steps
+
+```typescript
+function calculate() {
+  console.log(
+    `Compute: Internal pleasure vs. external pain; aim for autarkeia net.`
+  );
+}
+calculate();
+```
+
+#### Pain Avoidance
+
+```typescript
+function avoidPain(input: { dependencies: any[] }) {
+  return {
+    simple: input.dependencies.filter(d => d.internal),   // Self-reflection
+    excessive: input.dependencies.filter(d => !d.internal) // Validation needs
+  };
+}
+```
+
+#### Ataraxia
+
+```typescript
+function tranquilize() {
+  console.log(`Achieve calm: "Sufficiency brings freedom."`);
+}
+```
+
+#### Error Handler
+
+```typescript
+function handleError(err: Error) {
+  if (err.message === 'Dependency Overload') {
+    console.error('Build internal: Reduce externals.');
+  }
+}
+```
+
+#### Metrics
+
+```typescript
+const metrics = () => new MetricTracker({
+  sufficiencyNet: pleasure - pain,
+  meanBalance: AristotelianFusion.goldenMean(net)
+});
+```
+
+#### Example 1: Relational Doubt
+
+**Scenario**: Relational doubt; internal peace vs. external reassurance pain.
+
+**Calculated**: `{ net: '+18 (self-trust)' }`
+
+**Decided**: `{ action: 'Cultivate autarkeia' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Calculate Net | `Pleasure=self-trust+28, pain=need-10` | `net > 0` |
+| 2. Avoid Excess | `avoidPain({ dependencies: ['Esteban', 'Self'] })` | `simple.length > 0` |
+| 3. Tranquilize | Execute `tranquilize()` | `calm > 50` |
+| 4. Execute Internal | `Reflect: "I trust my judgment."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `sufficiencyNet > 12` |
+| 6. Fuse Mean | `AristotelianFusion.balance(net)` | `meanBalance > 0.5` |
+
+#### Example 2: Apex Uncertainty
+
+**Scenario**: Apex uncertainty; internal confidence vs. external feedback pain.
+
+**Calculated**: `{ net: '+22 (self-reliance)' }`
+
+**Decided**: `{ action: 'Build independence' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Calculate Net | `Pleasure=autonomy+32, pain=wait-10` | `net > 0` |
+| 2. Avoid Excess | `avoidPain({ dependencies: ['Team', 'Self'] })` | `simple.length > 0` |
+| 3. Tranquilize | Execute `tranquilize()` | `calm > 50` |
+| 4. Execute Internal | `Decide: "I know this pattern."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `sufficiencyNet > 12` |
+| 6. Fuse Mean | `AristotelianFusion.balance(net)` | `meanBalance > 0.5` |
+
+**Trade-offs**: Good for resilience; potentially limits collaboration—balance with friendship.
+
+---
+
+## Expansion: Aristotelian Ethics
+
+Full Eudaimonic Middleware Implementations. Integrate Aristotle's ethics (golden mean, eudaimonia as flourishing, phronesis as practical wisdom) as middleware, treating Aristotelian ethics as revocable virtue tokens for ethical access control.
+
+### Interface Definition
+
+```typescript
+// Imports
+import { EthicalVirtue } from 'aristotle-core';
+import { MeanDichotomy } from 'nicomachean-patterns';
+import { ErrorHandler, MetricTracker } from 'pos-utils';
+import { ActionableStep } from 'integration-utils';
+import { EpicureanFusion } from 'epicurus-integration';
+
+interface AristotelianPractice {
+  virtue: EthicalVirtue;
+  objective: string;
+  meanSteps: () => void;
+  excessAvoidance: (input: any) => { excess: any; deficiency: any };
+  eudaimonia: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => MetricTracker;
+  examples: {
+    scenario: string;
+    meaned: any;
+    decided: any;
+    actionableSteps: ActionableStep[];
+  }[];
+}
+```
+
+---
+
+### Phronesis Practice
+
+Apply practical wisdom justly.
+
+**Virtue**: Phronesis (Wisdom)
+
+**Objective**: Use reason for virtuous action in context.
+
+#### Mean Steps
+
+```typescript
+function findMean() {
+  console.log(`Find mean: Between rashness and cowardice for courage.`);
+}
+findMean();
+```
+
+#### Excess Avoidance
+
+```typescript
+function avoidExcess(input: { actions: any[] }) {
+  return {
+    excess: input.actions.filter(a => a.extremeHigh),     // Over-analysis
+    deficiency: input.actions.filter(a => a.extremeLow)  // Naivety
+  };
+}
+```
+
+#### Eudaimonia
+
+```typescript
+function flourish() {
+  console.log(`Achieve flourishing: "Virtue leads to eudaimonia."`);
+}
+```
+
+#### Error Handler
+
+```typescript
+function handleError(err: Error) {
+  if (err.message === 'Imbalance') {
+    console.error('Adjust to mean: Moderate action.');
+  }
+}
+```
+
+#### Metrics
+
+```typescript
+const metrics = () => new MetricTracker({
+  virtueNet: meanBalance,
+  eudaimonicGain: EpicureanFusion.pleasure(net)
+});
+```
+
+#### Example 1: Teasing Response
+
+**Scenario**: Teasing response; mean between over-seriousness and flippancy.
+
+**Meaned**: `{ net: '+20 (wise query)' }`
+
+**Decided**: `{ action: 'Respond phronetically' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Defensive, Deficiency=Ignore; Mean=Clarify` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['Snap', 'Laugh off', 'Ask'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Ask wisely: "Help me understand."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `virtueNet > 15` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `eudaimonicGain > 0.5` |
+
+#### Example 2: Apex Decision
+
+**Scenario**: Apex decision; mean between rash innovation and timid stasis.
+
+**Meaned**: `{ net: '+18 (wise test)' }`
+
+**Decided**: `{ action: 'Act phronetically' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Reckless, Deficiency=Inert; Mean=Prototype` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['Launch full', 'Abandon', 'Test'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Prototype moderately.` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `virtueNet > 15` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `eudaimonicGain > 0.5` |
+
+**Trade-offs**: Good for contextual wisdom; limited for absolutes—use for nuanced choices.
+
+---
+
+### Golden Mean Practice
+
+Balance virtues temperately.
+
+**Virtue**: Temperance
+
+**Objective**: Avoid excess/deficiency for eudaimonic life.
+
+#### Mean Steps
+
+```typescript
+function findMean() {
+  console.log(`Find mean: Temperate response in relations.`);
+}
+findMean();
+```
+
+#### Excess Avoidance
+
+```typescript
+function avoidExcess(input: { actions: any[] }) {
+  return {
+    excess: input.actions.filter(a => a.extremeHigh),
+    deficiency: input.actions.filter(a => a.extremeLow)
+  };
+}
+```
+
+#### Eudaimonia
+
+```typescript
+function flourish() {
+  console.log(`Achieve flourishing: "Temperance sustains virtue."`);
+}
+```
+
+#### Error Handler
+
+```typescript
+function handleError(err: Error) {
+  if (err.message === 'Imbalance') {
+    console.error('Temper to mean: Adjust moderately.');
+  }
+}
+```
+
+#### Metrics
+
+```typescript
+const metrics = () => new MetricTracker({
+  meanNet: balance,
+  eudaimonicGain: EpicureanFusion.pleasure(net)
+});
+```
+
+#### Example 1: Relational Vulnerability
+
+**Scenario**: Relational vulnerability; mean between rash openness and closed fear.
+
+**Meaned**: `{ net: '+22 (temperate share)' }`
+
+**Decided**: `{ action: 'Balance openly' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Over-share, Deficiency=Withdraw; Mean=Measured` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['Spill all', 'Hide', 'Share bit'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Share temperately: "This worries me because..."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `meanNet > 18` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `eudaimonicGain > 0.5` |
+
+#### Example 2: Apex Ambition
+
+**Scenario**: Apex ambition; mean between greedy overwork and lazy inaction.
+
+**Meaned**: `{ net: '+20 (temperate effort)' }`
+
+**Decided**: `{ action: 'Work balanced' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Burnout, Deficiency=Slack; Mean=Focused` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['All-night', 'Procrastinate', 'Scheduled'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Work temperately: Set hours.` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `meanNet > 18` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `eudaimonicGain > 0.5` |
+
+**Trade-offs**: Good for daily harmony; limited for extreme scenarios—use for routine ethics.
+
+---
+
+### Eudaimonia Practice
+
+Pursue flourishing courageously.
+
+**Virtue**: Courage
+
+**Objective**: Act virtuously for ultimate well-being.
+
+#### Mean Steps
+
+```typescript
+function findMean() {
+  console.log(`Find mean: Courageous action for flourishing.`);
+}
+findMean();
+```
+
+#### Excess Avoidance
+
+```typescript
+function avoidExcess(input: { actions: any[] }) {
+  return {
+    excess: input.actions.filter(a => a.extremeHigh),     // Recklessness
+    deficiency: input.actions.filter(a => a.extremeLow)  // Cowardice
+  };
+}
+```
+
+#### Eudaimonia
+
+```typescript
+function flourish() {
+  console.log(`Achieve flourishing: "Virtue is its own reward."`);
+}
+```
+
+#### Error Handler
+
+```typescript
+function handleError(err: Error) {
+  if (err.message === 'Imbalance') {
+    console.error('Find courage: Neither rash nor timid.');
+  }
+}
+```
+
+#### Metrics
+
+```typescript
+const metrics = () => new MetricTracker({
+  eudaimonicNet: flourishing - vice,
+  pleasureFusion: EpicureanFusion.balance(net)
+});
+```
+
+#### Example 1: Teasing Confrontation
+
+**Scenario**: Teasing confrontation; courageous mean between aggression and passivity.
+
+**Meaned**: `{ net: '+24 (brave clarity)' }`
+
+**Decided**: `{ action: 'Confront courageously' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Aggress, Deficiency=Passive; Mean=Assert` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['Fight', 'Ignore', 'Discuss'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Assert courageously: "This bothers me."` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `eudaimonicNet > 20` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `pleasureFusion > 0.5` |
+
+#### Example 2: Apex Risk
+
+**Scenario**: Apex risk; courageous mean between foolhardy and timid.
+
+**Meaned**: `{ net: '+21 (brave innovation)' }`
+
+**Decided**: `{ action: 'Innovate courageously' }`
+
+**Actionable Steps**:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1. Find Mean | `Excess=Reckless, Deficiency=Timid; Mean=Calculated` | `mean > 0` |
+| 2. Avoid Extremes | `avoidExcess({ actions: ['Rush', 'Delay', 'Plan'] })` | `mean.length > 0` |
+| 3. Flourish | Execute `flourish()` | `gain > 50` |
+| 4. Execute Mean | `Innovate calculatedly: Test plan.` | `!err` |
+| 5. Reflect Net | Execute `metrics()` | `eudaimonicNet > 20` |
+| 6. Fuse Pleasure | `EpicureanFusion.balance(net)` | `pleasureFusion > 0.5` |
+
+**Trade-offs**: Good for long-term well-being; limited for short-term gains—use for life ethics.
+
+---
+
+## Summary: Ethical Fusion Architecture
+
+The hybrid Epicurean-Aristotelian system provides:
+
+1. **Epicurean Layer**: Pleasure-pain calculus for immediate hedonic balance
+   - Friendship for social bonds
+   - Self-sufficiency for internal resilience
+
+2. **Aristotelian Layer**: Golden mean moderation for sustainable flourishing
+   - Phronesis for contextual wisdom
+   - Temperance for balanced responses
+   - Courage for virtuous action
+
+3. **Fusion Mechanism**: RRF-style ranking that queries Epicurean pleasure metrics against Aristotelian means, selecting the action that maximizes eudaimonic gain while minimizing vice (excess/deficiency).
+
+**Production Deployment**: Execute one practice from each layer daily, log metrics, and audit weekly for eudaimonic drift. Rollback to previous virtue caches if net balance drops below thresholds.
