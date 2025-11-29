@@ -89,6 +89,106 @@ export const priceHistory = pgTable('price_history', {
 }));
 
 // =============================================================================
+// RESEARCH PAPER GENERATION TABLES
+// =============================================================================
+// Scientific paper generation pipeline with RAG integration
+
+/**
+ * Research documents for paper generation
+ * Stores ingested PDFs, text files, and other research materials
+ */
+export const researchDocuments = pgTable('research_documents', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  contentType: text('content_type').notNull().default('text'), // 'text' | 'pdf' | 'markdown' | 'json'
+  sourceUrl: text('source_url'),
+  metadata: jsonb('metadata').default({}), // Author, date, tags, etc.
+  embedding: text('embedding'), // Stored as JSON string for pgvector compatibility
+  chunkIndex: integer('chunk_index').default(0), // For chunked documents
+  parentDocId: uuid('parent_doc_id'), // Reference to parent document if chunked
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('research_docs_user_idx').on(table.userId),
+  contentTypeIdx: index('research_docs_type_idx').on(table.contentType),
+}));
+
+/**
+ * Generated papers with full provenance tracking
+ */
+export const papers = pgTable('papers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id),
+  title: text('title').notNull(),
+  abstract: text('abstract'),
+  content: text('content').notNull(), // Full paper content (markdown/LaTeX)
+  format: text('format').notNull().default('markdown'), // 'markdown' | 'latex' | 'html'
+  status: text('status').notNull().default('draft'), // 'draft' | 'review' | 'published' | 'archived'
+  researchTopic: text('research_topic').notNull(),
+  citationStyle: text('citation_style').notNull().default('apa'), // 'apa' | 'mla' | 'chicago' | 'ieee'
+  metadata: jsonb('metadata').default({}), // Generation params, model used, etc.
+  sections: jsonb('sections').default([]), // Array of section objects
+  complianceReport: jsonb('compliance_report'), // EU AI Act compliance data
+  ipfsCid: text('ipfs_cid'), // IPFS content ID for provenance
+  traceHash: text('trace_hash'), // Provenance hash
+  citationCount: integer('citation_count').default(0),
+  synthesisCount: integer('synthesis_count').default(0),
+  validationErrors: jsonb('validation_errors').default([]),
+  isValid: boolean('is_valid').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  publishedAt: timestamp('published_at'),
+}, (table) => ({
+  userIdIdx: index('papers_user_idx').on(table.userId),
+  statusIdx: index('papers_status_idx').on(table.status),
+  topicIdx: index('papers_topic_idx').on(table.researchTopic),
+}));
+
+/**
+ * Paper citations linking papers to source documents
+ */
+export const paperCitations = pgTable('paper_citations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  paperId: uuid('paper_id').references(() => papers.id, { onDelete: 'cascade' }).notNull(),
+  sourceDocId: uuid('source_doc_id').references(() => researchDocuments.id),
+  externalSourceId: text('external_source_id'), // For external sources (URLs, DOIs)
+  citationNumber: integer('citation_number').notNull(),
+  citationText: text('citation_text').notNull(), // Formatted citation
+  claimText: text('claim_text'), // The claim this citation supports
+  sourceContent: text('source_content'), // Excerpt from source
+  rerankScore: decimal('rerank_score', { precision: 5, scale: 4 }), // Cohere rerank score
+  metadata: jsonb('metadata').default({}), // Source type, URL, etc.
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  paperIdIdx: index('citations_paper_idx').on(table.paperId),
+  sourceDocIdx: index('citations_source_idx').on(table.sourceDocId),
+}));
+
+/**
+ * Paper generation jobs for async processing
+ */
+export const paperGenerationJobs = pgTable('paper_generation_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id),
+  paperId: uuid('paper_id').references(() => papers.id),
+  status: text('status').notNull().default('pending'), // 'pending' | 'processing' | 'completed' | 'failed'
+  progress: integer('progress').default(0), // 0-100
+  currentSection: text('current_section'), // Section being generated
+  totalSections: integer('total_sections').default(6),
+  completedSections: integer('completed_sections').default(0),
+  errorMessage: text('error_message'),
+  config: jsonb('config').notNull(), // Generation configuration
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('gen_jobs_user_idx').on(table.userId),
+  statusIdx: index('gen_jobs_status_idx').on(table.status),
+}));
+
+// =============================================================================
 // EMERGENCY STUBS - Build Compatibility Layer
 // =============================================================================
 // These stub exports satisfy the TypeScript compiler for features under development.
