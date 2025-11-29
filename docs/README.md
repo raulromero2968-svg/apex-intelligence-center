@@ -7,6 +7,15 @@
 3. **Deployment**: See [DEPLOYMENT.md](./DEPLOYMENT.md)
 4. **RAG Architecture**: See [RAG_ARCHITECTURE.md](./RAG_ARCHITECTURE.md)
 
+## Research Methodology (Personal OS)
+
+The framework for conducting rigorous research while protecting sanity and relationships:
+
+- [Research Overview](./research/README.md) - Quick start guide to the research framework
+- [Methodology Overview](./research/METHODOLOGY_OVERVIEW.md) - Double Helix Protocol, Truth Tiers, Luminous Jellyfish
+- [Personal Apex OS](./research/APEX_PERSONAL_OS.md) - Daily rhythms, safety rules, relationship protection
+- [Master Prompt Templates](./research/MASTER_PROMPT_TEMPLATE.md) - Copy-pasteable prompts for AI sessions
+
 ## Ecosystem (Company Soul)
 
 The foundational documents defining Apex Intelligence's mission, strategy, and direction:
