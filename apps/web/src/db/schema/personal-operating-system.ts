@@ -156,6 +156,103 @@ export const volitionalPracticeStatusEnum = pgEnum('volitional_practice_status',
   'rolled_back',
 ]);
 
+// Mean-Effortless Fusion Enums (v2.3.0)
+export const meanEffortlessVirtueEnum = pgEnum('mean_effortless_virtue', [
+  'wu_wei_courage_mean',
+  'wu_wei_temperance_mean',
+  'wu_wei_justice_mean',
+  'wu_wei_wisdom_mean',
+  'harmony_courage_mean',
+  'harmony_temperance_mean',
+  'effortless_golden_mean',
+]);
+
+export const meanEffortlessPracticeStatusEnum = pgEnum('mean_effortless_practice_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'eudaimonia_achieved',
+  'rolled_back',
+]);
+
+export const meanEffortlessBalanceEnum = pgEnum('mean_effortless_balance', [
+  'harmonized',
+  'flow_dominant',
+  'mean_dominant',
+  'fluctuating',
+]);
+
+// Quantum Geometry Enums (v2.4.0)
+export const quantumGeometryStateEnum = pgEnum('quantum_geometry_state', [
+  'ground_state',
+  'excited_state',
+  'superposition',
+  'entangled',
+  'coherent',
+  'decoherent',
+]);
+
+export const geometryFlowTypeEnum = pgEnum('geometry_flow_type', [
+  'material_flow',
+  'geometric_flow',
+  'topological_flow',
+  'quantum_flow',
+]);
+
+export const geometryFusionStatusEnum = pgEnum('geometry_fusion_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'coherence_achieved',
+  'rolled_back',
+]);
+
+// Confucian Ren Enums (v2.4.0)
+export const confucianRenVirtueEnum = pgEnum('confucian_ren_virtue', [
+  'ren_benevolence',
+  'yi_righteousness',
+  'li_propriety',
+  'zhi_wisdom',
+  'xin_fidelity',
+]);
+
+export const aristotelianRenFusionStatusEnum = pgEnum('aristotelian_ren_fusion_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'harmony_achieved',
+  'rolled_back',
+]);
+
+// Deepened Wu Wei Enums (v2.4.0)
+export const deepenedWuWeiVirtueEnum = pgEnum('deepened_wu_wei_virtue', [
+  'wu_wei_relational',
+  'wu_wei_spontaneous',
+  'wu_wei_energy_economy',
+  'wu_wei_non_interference',
+  'wu_wei_stress_reduction',
+]);
+
+// Deepened Golden Mean Enums (v2.4.0)
+export const deepenedGoldenMeanVirtueEnum = pgEnum('deepened_golden_mean_virtue', [
+  'courage_mean_deepened',
+  'temperance_mean_deepened',
+  'justice_mean_deepened',
+  'wisdom_mean_deepened',
+  'magnanimity_mean_deepened',
+]);
+
+// POS Error Type Enum (v2.4.0)
+export const posErrorTypeEnum = pgEnum('pos_error_type', [
+  'geometry_imbalance',
+  'wu_wei_excess',
+  'mean_deviation',
+  'coherence_failure',
+  'rollback_required',
+  'rate_limit_exceeded',
+  'chaos_overload',
+]);
+
 // ============================================================================
 // TRUST SCORES TABLE (BRAVING Framework)
 // ============================================================================
@@ -2082,6 +2179,275 @@ export const nonDualWeeklyMetricsRelations = relations(nonDualWeeklyMetrics, ({ 
   }),
 }));
 
+// ============================================================================
+// MEAN-EFFORTLESS FUSION TABLES (v2.3.0)
+// Wu Wei + Aristotelian Golden Mean Integration
+// ============================================================================
+
+export const meanEffortlessFusionLogs = pgTable(
+  'pos_mean_effortless_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Fusion details
+    fusedAt: timestamp('fused_at').defaultNow().notNull(),
+    fusionType: text('fusion_type').notNull(), // 'flow-mean', 'mean-flow', 'balanced'
+
+    // Wu Wei component
+    wuWeiVirtue: taoistVirtueEnum('wu_wei_virtue'),
+    wuWeiScore: real('wu_wei_score'), // 0-100
+    wuWeiRank: integer('wu_wei_rank'), // position in RRF
+
+    // Aristotelian component
+    aristotelianVirtue: aristotelianVirtueEnum('aristotelian_virtue'),
+    aristotelianScore: real('aristotelian_score'), // 0-100
+    aristotelianRank: integer('aristotelian_rank'), // position in RRF
+
+    // RRF fusion results
+    rrfScore: real('rrf_score'),
+    fusionK: integer('fusion_k').default(60), // RRF k parameter
+
+    // Outcome metrics
+    flowGain: real('flow_gain'),
+    meanGain: real('mean_gain'),
+    eudaimoniaMetric: real('eudaimonia_metric'),
+
+    // Balance analysis
+    balanceType: meanEffortlessBalanceEnum('balance_type'),
+    harmonyScore: real('harmony_score'), // 0-1, how balanced the fusion was
+
+    // Execution
+    fusedAction: text('fused_action'),
+    actionSuccessful: boolean('action_successful'),
+    successNotes: text('success_notes'),
+
+    // Context
+    domain: text('domain'), // 'relational', 'apex', 'personal'
+    urgency: text('urgency'), // 'low', 'medium', 'high'
+    scenarioDescription: text('scenario_description'),
+
+    // A/B Testing
+    abTestVariant: text('ab_test_variant'), // 'A' (Wu Wei only), 'B' (with Mean)
+    abTestId: text('ab_test_id'),
+
+    // Rate limiting impact
+    wuWeiTokensUsed: real('wu_wei_tokens_used'),
+    meanTokensUsed: real('mean_tokens_used'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_fusion_user_idx').on(table.userId),
+    fusedIdx: index('pos_mean_effortless_fusion_fused_idx').on(table.fusedAt),
+    typeIdx: index('pos_mean_effortless_fusion_type_idx').on(table.fusionType),
+    balanceIdx: index('pos_mean_effortless_fusion_balance_idx').on(table.balanceType),
+    abTestIdx: index('pos_mean_effortless_fusion_ab_test_idx').on(table.abTestId),
+  })
+);
+
+export const meanEffortlessRateLimits = pgTable(
+  'pos_mean_effortless_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Date tracking
+    date: timestamp('date').defaultNow().notNull(),
+
+    // Token bucket state
+    currentTokens: real('current_tokens').notNull().default(4),
+    maxTokens: integer('max_tokens').notNull().default(4),
+    refillRate: real('refill_rate').notNull().default(0.5), // tokens per hour (4/8 waking hours)
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Eudaimonia bonus tracking
+    eudaimoniaCount: integer('eudaimonia_count').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Usage tracking
+    fusionsToday: integer('fusions_today').default(0),
+    lastFusion: timestamp('last_fusion'),
+
+    // Denied attempts
+    deniedAttempts: integer('denied_attempts').default(0),
+    lastDenied: timestamp('last_denied'),
+
+    // Configuration - harmonious periods for refill boost
+    refillPeriods: jsonb('refill_periods').$type<Array<{
+      startHour: number;
+      endHour: number;
+      multiplier: number;
+    }>>().default([
+      { startHour: 6, endHour: 8, multiplier: 2.0 },   // Morning reflection boost
+      { startHour: 19, endHour: 21, multiplier: 1.5 } // Evening contemplation boost
+    ]),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_rate_limit_user_idx').on(table.userId),
+    dateIdx: index('pos_mean_effortless_rate_limit_date_idx').on(table.date),
+    uniqueUserDate: uniqueIndex('pos_mean_effortless_rate_limit_user_date_unique').on(table.userId, table.date),
+  })
+);
+
+export const meanEffortlessStateHistory = pgTable(
+  'pos_mean_effortless_state_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // State snapshot
+    snapshotAt: timestamp('snapshot_at').defaultNow().notNull(),
+
+    // Current wu wei state
+    currentFlow: taoistVirtueEnum('current_flow'),
+    flowLevel: real('flow_level'), // 0-100
+
+    // Current aristotelian state
+    currentMean: aristotelianVirtueEnum('current_mean'),
+    meanLevel: real('mean_level'), // 0-100
+
+    // Combined metrics
+    eudaimoniaScore: real('eudaimonia_score'), // 0-100
+    harmonyScore: real('harmony_score'), // 0-1
+
+    // Stability indicators
+    isStable: boolean('is_stable').default(true),
+    stabilityNotes: text('stability_notes'),
+    imbalanceType: text('imbalance_type'), // 'over-flow', 'over-mean', 'extreme', 'passive'
+
+    // Rollback metadata
+    isRollbackPoint: boolean('is_rollback_point').default(false),
+    rolledBackTo: boolean('rolled_back_to').default(false),
+    rollbackTrigger: text('rollback_trigger'),
+
+    // Eudaimonia audit
+    auditedBy: text('audited_by'), // 'self', 'therapist', 'peer'
+    auditNotes: text('audit_notes'),
+
+    // Default state info (for rollback)
+    defaultFlow: text('default_flow').default('wu_wei'),
+    defaultMean: text('default_mean').default('temperance'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_state_user_idx').on(table.userId),
+    snapshotIdx: index('pos_mean_effortless_state_snapshot_idx').on(table.snapshotAt),
+    rollbackIdx: index('pos_mean_effortless_state_rollback_idx').on(table.isRollbackPoint),
+    stabilityIdx: index('pos_mean_effortless_state_stability_idx').on(table.isStable),
+  })
+);
+
+export const meanEffortlessWeeklyMetrics = pgTable(
+  'pos_mean_effortless_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Wu Wei metrics
+    wuWeiFlows: integer('wu_wei_flows').default(0),
+    weiWuWeiFlows: integer('wei_wu_wei_flows').default(0),
+    harmonyFlows: integer('harmony_flows').default(0),
+
+    // Aristotelian metrics
+    courageMeans: integer('courage_means').default(0),
+    temperanceMeans: integer('temperance_means').default(0),
+    justiceMeans: integer('justice_means').default(0),
+    wisdomMeans: integer('wisdom_means').default(0),
+
+    // Fusion metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    fusionSuccessRate: real('fusion_success_rate'), // 0-1
+    eudaimoniaAchievements: integer('eudaimonia_achievements').default(0),
+
+    // Aggregate scores
+    weeklyMeanEffortlessScore: real('weekly_mean_effortless_score'), // 0-100
+    weeklyFlowLevel: real('weekly_flow_level'), // 0-100
+    weeklyMeanLevel: real('weekly_mean_level'), // 0-100
+    weeklyHarmonyScore: real('weekly_harmony_score'), // 0-1
+
+    // Trend indicators
+    flowTrend: text('flow_trend'), // 'ascending', 'stable', 'descending'
+    meanTrend: text('mean_trend'), // 'ascending', 'stable', 'descending'
+    balanceTrend: meanEffortlessBalanceEnum('balance_trend'),
+
+    // A/B test metrics
+    variantADecisions: integer('variant_a_decisions').default(0),
+    variantBDecisions: integer('variant_b_decisions').default(0),
+    variantASuccessRate: real('variant_a_success_rate'),
+    variantBSuccessRate: real('variant_b_success_rate'),
+
+    // Action items
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+    eudaimoniaAuditsNeeded: integer('eudaimonia_audits_needed').default(0),
+    extremesDetected: integer('extremes_detected').default(0),
+    passivityDetected: integer('passivity_detected').default(0),
+
+    // Rate limit impact
+    flowTokensDepleted: integer('flow_tokens_depleted').default(0),
+    meanTokensDepleted: integer('mean_tokens_depleted').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mean_effortless_metrics_user_idx').on(table.userId),
+    weekIdx: index('pos_mean_effortless_metrics_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_mean_effortless_metrics_user_week_unique').on(table.userId, table.weekStart),
+    balanceIdx: index('pos_mean_effortless_metrics_balance_idx').on(table.balanceTrend),
+  })
+);
+
+// ============================================================================
+// MEAN-EFFORTLESS RELATIONS
+// ============================================================================
+
+export const meanEffortlessFusionLogsRelations = relations(meanEffortlessFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessRateLimitsRelations = relations(meanEffortlessRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessStateHistoryRelations = relations(meanEffortlessStateHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessStateHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+export const meanEffortlessWeeklyMetricsRelations = relations(meanEffortlessWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [meanEffortlessWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
+
 // Zazen-Taoist Types (v1.8.0)
 export type ZazenPracticeType = typeof zazenPractices.$inferSelect;
 export type NewZazenPracticeType = typeof zazenPractices.$inferInsert;
@@ -2095,3 +2461,379 @@ export type MindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory
 export type NewMindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory.$inferInsert;
 export type ZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferSelect;
 export type NewZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferInsert;
+
+// Mean-Effortless Types (v2.3.0)
+export type MeanEffortlessFusionLog = typeof meanEffortlessFusionLogs.$inferSelect;
+export type NewMeanEffortlessFusionLog = typeof meanEffortlessFusionLogs.$inferInsert;
+export type MeanEffortlessRateLimit = typeof meanEffortlessRateLimits.$inferSelect;
+export type NewMeanEffortlessRateLimit = typeof meanEffortlessRateLimits.$inferInsert;
+export type MeanEffortlessStateHistory = typeof meanEffortlessStateHistory.$inferSelect;
+export type NewMeanEffortlessStateHistory = typeof meanEffortlessStateHistory.$inferInsert;
+export type MeanEffortlessWeeklyMetric = typeof meanEffortlessWeeklyMetrics.$inferSelect;
+export type NewMeanEffortlessWeeklyMetric = typeof meanEffortlessWeeklyMetrics.$inferInsert;
+
+// ============================================================================
+// QUANTUM GEOMETRY FUSION TABLES (v2.4.0)
+// ============================================================================
+
+export const quantumGeometryFusionLogs = pgTable(
+  'pos_quantum_geometry_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Wu Wei context
+    wuWeiVirtue: deepenedWuWeiVirtueEnum('wu_wei_virtue').notNull(),
+    wuWeiScore: real('wu_wei_score').notNull(), // 0-100
+
+    // Geometry context
+    geometryState: quantumGeometryStateEnum('geometry_state').notNull(),
+    flowType: geometryFlowTypeEnum('flow_type').notNull(),
+    coherence: real('coherence').notNull(), // 0-1
+    entanglementStrength: real('entanglement_strength'), // 0-1
+    materialResilience: real('material_resilience').notNull(), // 0-100
+    geometricAccuracy: real('geometric_accuracy').notNull(), // 0-100
+
+    // Fusion result
+    status: geometryFusionStatusEnum('status').notNull(),
+    rrfScore: real('rrf_score').notNull(),
+    fusedAction: text('fused_action').notNull(),
+    effortlessGain: real('effortless_gain'), // 0-100
+    geometricGain: real('geometric_gain'), // 0-100
+
+    // Trade-off analysis
+    tradeoffGood: text('tradeoff_good'),
+    tradeoffBad: text('tradeoff_bad'),
+    tradeoffMitigation: text('tradeoff_mitigation'),
+
+    // Error handling
+    errorType: posErrorTypeEnum('error_type'),
+    rollbackTriggered: boolean('rollback_triggered').default(false),
+    rollbackState: jsonb('rollback_state'),
+
+    // Audit
+    auditLog: jsonb('audit_log').$type<Array<{
+      timestamp: string;
+      action: string;
+      metrics: Record<string, number>;
+    }>>(),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_quantum_geometry_fusion_user_idx').on(table.userId),
+    wuWeiIdx: index('pos_quantum_geometry_fusion_wuwei_idx').on(table.wuWeiVirtue),
+    geometryIdx: index('pos_quantum_geometry_fusion_geometry_idx').on(table.geometryState),
+    statusIdx: index('pos_quantum_geometry_fusion_status_idx').on(table.status),
+  })
+);
+
+// ============================================================================
+// ARISTOTELIAN-REN FUSION TABLES (v2.4.0)
+// ============================================================================
+
+export const aristotelianRenFusionLogs = pgTable(
+  'pos_aristotelian_ren_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Golden Mean context
+    goldenMeanVirtue: deepenedGoldenMeanVirtueEnum('golden_mean_virtue').notNull(),
+    meanBalance: real('mean_balance').notNull(), // 0-1
+
+    // Ren context
+    renVirtue: confucianRenVirtueEnum('ren_virtue').notNull(),
+    benevolenceLevel: real('benevolence_level').notNull(), // 0-1
+
+    // Fusion result
+    status: aristotelianRenFusionStatusEnum('status').notNull(),
+    rrfScore: real('rrf_score').notNull(),
+    fusedAction: text('fused_action').notNull(),
+    meanGain: real('mean_gain'), // 0-100
+    benevolenceGain: real('benevolence_gain'), // 0-100
+    eudaimoniaMetric: real('eudaimonia_metric'), // 0-100
+    harmonyMetric: real('harmony_metric'), // 0-1
+
+    // Trade-off analysis
+    tradeoffGood: text('tradeoff_good'),
+    tradeoffBad: text('tradeoff_bad'),
+    tradeoffMitigation: text('tradeoff_mitigation'),
+
+    // Error handling
+    errorType: posErrorTypeEnum('error_type'),
+    rollbackTriggered: boolean('rollback_triggered').default(false),
+    rollbackState: jsonb('rollback_state'),
+
+    // Audit
+    auditLog: jsonb('audit_log').$type<Array<{
+      timestamp: string;
+      action: string;
+      metrics: Record<string, number>;
+    }>>(),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_aristotelian_ren_fusion_user_idx').on(table.userId),
+    meanIdx: index('pos_aristotelian_ren_fusion_mean_idx').on(table.goldenMeanVirtue),
+    renIdx: index('pos_aristotelian_ren_fusion_ren_idx').on(table.renVirtue),
+    statusIdx: index('pos_aristotelian_ren_fusion_status_idx').on(table.status),
+  })
+);
+
+// ============================================================================
+// QUANTUM GEOMETRY RATE LIMITS (v2.4.0)
+// ============================================================================
+
+export const quantumGeometryRateLimits = pgTable(
+  'pos_quantum_geometry_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Token bucket
+    tokens: integer('tokens').notNull().default(5),
+    maxTokens: integer('max_tokens').notNull().default(5),
+    refillRate: real('refill_rate').notNull().default(0.21), // ~5 tokens per day
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Effortless period refill
+    effortlessPeriodRefill: boolean('effortless_period_refill').default(true),
+
+    // Geometry checks
+    coherenceThreshold: real('coherence_threshold').notNull().default(0.3),
+    materialResilienceThreshold: real('material_resilience_threshold').notNull().default(50),
+    chaosOverloadPrevention: boolean('chaos_overload_prevention').default(true),
+
+    // Usage stats
+    fusionCount: integer('fusion_count').default(0),
+    chaosOverloadCount: integer('chaos_overload_count').default(0),
+    dailyFusions: integer('daily_fusions').default(0),
+    lastDailyReset: timestamp('last_daily_reset').defaultNow(),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: uniqueIndex('pos_quantum_geometry_rate_limits_user_idx').on(table.userId),
+  })
+);
+
+// ============================================================================
+// ARISTOTELIAN-REN RATE LIMITS (v2.4.0)
+// ============================================================================
+
+export const aristotelianRenRateLimits = pgTable(
+  'pos_aristotelian_ren_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Token bucket
+    tokens: integer('tokens').notNull().default(5),
+    maxTokens: integer('max_tokens').notNull().default(5),
+    refillRate: real('refill_rate').notNull().default(0.21), // ~5 tokens per day
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Balance checks
+    meanBalanceThreshold: real('mean_balance_threshold').notNull().default(0.3),
+    benevolenceThreshold: real('benevolence_threshold').notNull().default(0.4),
+
+    // Usage stats
+    fusionCount: integer('fusion_count').default(0),
+    eudaimoniaCount: integer('eudaimonia_count').default(0),
+    dailyFusions: integer('daily_fusions').default(0),
+    lastDailyReset: timestamp('last_daily_reset').defaultNow(),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: uniqueIndex('pos_aristotelian_ren_rate_limits_user_idx').on(table.userId),
+  })
+);
+
+// ============================================================================
+// QUANTUM GEOMETRY WEEKLY METRICS (v2.4.0)
+// ============================================================================
+
+export const quantumGeometryWeeklyMetrics = pgTable(
+  'pos_quantum_geometry_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Wu Wei metrics
+    wuWeiMoments: integer('wu_wei_moments').default(0),
+    relationalFlows: integer('relational_flows').default(0),
+    apexAlignments: integer('apex_alignments').default(0),
+    selfDoubtFlows: integer('self_doubt_flows').default(0),
+
+    // Geometry metrics
+    geometryFusions: integer('geometry_fusions').default(0),
+    materialGains: integer('material_gains').default(0),
+    effortlessGains: integer('effortless_gains').default(0),
+
+    // Aggregate metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    weeklyWuWeiScore: real('weekly_wu_wei_score'), // 0-100
+    weeklyGeometryScore: real('weekly_geometry_score'), // 0-100
+
+    // Trend indicators
+    wuWeiTrend: text('wu_wei_trend'), // 'ascending', 'stable', 'descending'
+    geometryTrend: text('geometry_trend'), // 'ascending', 'stable', 'descending'
+    balanceTrend: text('balance_trend'), // 'harmonized', 'wuwei-dominant', 'geometry-dominant', 'fluctuating'
+
+    // Error tracking
+    errorsOccurred: integer('errors_occurred').default(0),
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_quantum_geometry_weekly_user_idx').on(table.userId),
+    weekIdx: index('pos_quantum_geometry_weekly_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_quantum_geometry_weekly_user_week_unique').on(table.userId, table.weekStart),
+  })
+);
+
+// ============================================================================
+// ARISTOTELIAN-REN WEEKLY METRICS (v2.4.0)
+// ============================================================================
+
+export const aristotelianRenWeeklyMetrics = pgTable(
+  'pos_aristotelian_ren_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Golden Mean metrics
+    courageMeans: integer('courage_means').default(0),
+    temperanceMeans: integer('temperance_means').default(0),
+    justiceMeans: integer('justice_means').default(0),
+    wisdomMeans: integer('wisdom_means').default(0),
+
+    // Ren metrics
+    renPractices: integer('ren_practices').default(0),
+    yiPractices: integer('yi_practices').default(0),
+    liPractices: integer('li_practices').default(0),
+
+    // Achievement metrics
+    eudaimoniaAchievements: integer('eudaimonia_achievements').default(0),
+    harmonyMoments: integer('harmony_moments').default(0),
+
+    // Aggregate metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    weeklyMeanScore: real('weekly_mean_score'), // 0-100
+    weeklyRenScore: real('weekly_ren_score'), // 0-100
+
+    // Trend indicators
+    meanTrend: text('mean_trend'), // 'ascending', 'stable', 'descending'
+    renTrend: text('ren_trend'), // 'ascending', 'stable', 'descending'
+    balanceTrend: text('balance_trend'), // 'harmonized', 'mean-dominant', 'ren-dominant', 'fluctuating'
+
+    // Error tracking
+    errorsOccurred: integer('errors_occurred').default(0),
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_aristotelian_ren_weekly_user_idx').on(table.userId),
+    weekIdx: index('pos_aristotelian_ren_weekly_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_aristotelian_ren_weekly_user_week_unique').on(table.userId, table.weekStart),
+  })
+);
+
+// ============================================================================
+// v2.4.0 RELATIONS
+// ============================================================================
+
+export const quantumGeometryFusionLogsRelations = relations(quantumGeometryFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [quantumGeometryFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const aristotelianRenFusionLogsRelations = relations(aristotelianRenFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [aristotelianRenFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const quantumGeometryRateLimitsRelations = relations(quantumGeometryRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [quantumGeometryRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const aristotelianRenRateLimitsRelations = relations(aristotelianRenRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [aristotelianRenRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const quantumGeometryWeeklyMetricsRelations = relations(quantumGeometryWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [quantumGeometryWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
+
+export const aristotelianRenWeeklyMetricsRelations = relations(aristotelianRenWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [aristotelianRenWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
+// v2.4.0 TYPES
+// ============================================================================
+
+// Quantum Geometry Types (v2.4.0)
+export type QuantumGeometryFusionLog = typeof quantumGeometryFusionLogs.$inferSelect;
+export type NewQuantumGeometryFusionLog = typeof quantumGeometryFusionLogs.$inferInsert;
+export type QuantumGeometryRateLimit = typeof quantumGeometryRateLimits.$inferSelect;
+export type NewQuantumGeometryRateLimit = typeof quantumGeometryRateLimits.$inferInsert;
+export type QuantumGeometryWeeklyMetric = typeof quantumGeometryWeeklyMetrics.$inferSelect;
+export type NewQuantumGeometryWeeklyMetric = typeof quantumGeometryWeeklyMetrics.$inferInsert;
+
+// Aristotelian-Ren Types (v2.4.0)
+export type AristotelianRenFusionLog = typeof aristotelianRenFusionLogs.$inferSelect;
+export type NewAristotelianRenFusionLog = typeof aristotelianRenFusionLogs.$inferInsert;
+export type AristotelianRenRateLimit = typeof aristotelianRenRateLimits.$inferSelect;
+export type NewAristotelianRenRateLimit = typeof aristotelianRenRateLimits.$inferInsert;
+export type AristotelianRenWeeklyMetric = typeof aristotelianRenWeeklyMetrics.$inferSelect;
+export type NewAristotelianRenWeeklyMetric = typeof aristotelianRenWeeklyMetrics.$inferInsert;

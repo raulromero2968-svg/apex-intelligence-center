@@ -7,6 +7,16 @@
 3. **Deployment**: See [DEPLOYMENT.md](./DEPLOYMENT.md)
 4. **RAG Architecture**: See [RAG_ARCHITECTURE.md](./RAG_ARCHITECTURE.md)
 
+## Ecosystem (Company Soul)
+
+The foundational documents defining Apex Intelligence's mission, strategy, and direction:
+
+- [01 Company Vision & Mission](./ecosystem/01_Company_Vision_Mission.md) - The "Why" (Bloomberg Terminal for Truth)
+- [03 Target Audience](./ecosystem/03_Target_Audience.md) - The System Analyst & TCG Investor personas
+- [05 Product & Features](./ecosystem/05_Product_Features.md) - The "What" (Truth Terminal, Ghost Nodes, Investigator Notebook)
+- [09 AI Research & Strategy](./ecosystem/09_AI_Research_Strategy.md) - Double Helix Protocol & Truth Tier Architecture
+- [10 Future Roadmap](./ecosystem/10_Future_Roadmap.md) - The "When" (H1 2026 Civilizational Analytics pivot)
+
 ## Project Documentation
 
 ### Development
@@ -139,4 +149,4 @@ For issues or questions:
 
 ---
 
-*Last updated: November 17, 2025*
+*Last updated: November 29, 2025*

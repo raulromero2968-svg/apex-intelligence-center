@@ -1,0 +1,26 @@
+source_id,target_id,relationship_type,domain,evidence_tier,description,source_citation,start_date,end_date,significance,financial_amount
+2,3,OWNERSHIP,BUSINESS,CONFIRMED,"Co-founded Palantir in 2003. Remains chairman and major shareholder.",SEC filings,2003-01-01,,critical,
+2,17,LEGAL,MEDIA,CONFIRMED,"Secretly funded Hulk Hogan lawsuit that bankrupted Gawker Media for $140M judgment.",New York Times reporting,2012-01-01,2016-06-10,critical,$10M+
+2,16,OWNERSHIP,EDUCATION,CONFIRMED,"Founded and funds the Thiel Fellowship. Anti-credentialism initiative.",Public records,2010-09-01,,high,
+3,10,FINANCIAL,BUSINESS,ALLEGED,"Palantir technology reportedly used in supply chain tracking. Indirect connection to cobalt extraction monitoring.",Investigative journalism,2015-01-01,,medium,
+5,6,EMPLOYMENT,BUSINESS,CONFIRMED,"Larry Fink has been CEO of BlackRock since its founding.",SEC filings,1988-01-01,,critical,
+5,7,SOCIAL,GOVERNMENT,CONFIRMED,"BlackRock executives regularly attend and speak at World Economic Forum.",WEF public records,2000-01-01,,high,
+6,7,SOCIAL,GOVERNMENT,CONFIRMED,"Larry Fink is a regular participant and speaker at Davos.",WEF public schedules,1995-01-01,,high,
+7,8,OWNERSHIP,GOVERNMENT,CONFIRMED,"Klaus Schwab founded and leads the World Economic Forum.",WEF charter,1971-01-01,,critical,
+9,14,IDEOLOGICAL,EDUCATION,DOCUMENTED,"Effective Altruism movement has provided significant funding and talent to AI safety efforts including at OpenAI.",Open Philanthropy grants,2015-01-01,,high,
+14,15,EMPLOYMENT,BUSINESS,CONFIRMED,"Sam Altman is CEO of OpenAI.",Public records,2019-03-01,,critical,
+2,14,FINANCIAL,BUSINESS,DOCUMENTED,"Thiel was early investor through Founders Fund. Complex relationship with AI acceleration.",Crunchbase,2016-01-01,,high,
+19,20,SOCIAL,BUSINESS,CONFIRMED,"Ghislaine Maxwell was Jeffrey Epstein's longtime associate and convicted co-conspirator.",Court documents,1991-01-01,2019-07-06,critical,
+19,18,OWNERSHIP,BUSINESS,CONFIRMED,"Jeffrey Epstein owned Little St. James island from 1998 until death.",Property records,1998-01-01,2019-08-10,critical,
+19,21,FINANCIAL,BUSINESS,CONFIRMED,"Leon Black paid Jeffrey Epstein $158 million for financial and tax advice.",Apollo internal review,2012-01-01,2017-01-01,critical,$158M
+19,22,FINANCIAL,BUSINESS,CONFIRMED,"JP Morgan maintained Epstein accounts despite internal warnings. $290M settlement.",Court settlement documents,1998-01-01,2013-01-01,critical,$290M
+19,23,FINANCIAL,BUSINESS,CONFIRMED,"Les Wexner gave Epstein power of attorney. Transferred NYC mansion and significant assets.",Deposition testimony,1991-01-01,2007-01-01,critical,$77M+
+19,24,FINANCIAL,EDUCATION,CONFIRMED,"MIT Media Lab accepted donations from Epstein after 2008 conviction. Deliberately obscured source.",New Yorker investigation,2013-01-01,2019-01-01,high,$1.7M
+20,18,SOCIAL,BUSINESS,CONFIRMED,"Maxwell was frequent presence on Little St. James. Key organizer of activities there.",Witness testimony,1998-01-01,2019-01-01,critical,
+4,26,IDEOLOGICAL,GOVERNMENT,SPECULATIVE,"Rentism as economic model relies on civilizational immunity rhetoric to resist regulation.",Analytical synthesis,,,,
+4,25,IDEOLOGICAL,GOVERNMENT,SPECULATIVE,"Rentism leads to Enclave Society as elites separate from regulated masses.",Analytical synthesis,,,,
+12,7,IDEOLOGICAL,RELIGION,SPECULATIVE,"Seven Mountains Framework parallels WEF's multi-sector influence model. Different ideology same structure.",Analytical comparison,,,,
+1,4,IDEOLOGICAL,EDUCATION,DOCUMENTED,"Luminous Jellyfish Principle provides ethical counter-framework to Rentism. Hope against extraction.",Apex Intelligence Center,,,,
+11,10,FINANCIAL,BUSINESS,CONFIRMED,"Cobalt supply chain originates in DRC. 70% of global cobalt comes from Congo.",USGS reports,2000-01-01,,critical,
+11,14,FINANCIAL,BUSINESS,DOCUMENTED,"AI companies depend on hardware requiring cobalt. Supply chain ethics gap.",Industry analysis,2015-01-01,,high,
+13,7,SOCIAL,GOVERNMENT,DOCUMENTED,"CFR and WEF have overlapping membership and coordinated policy discussions.",Public membership lists,1971-01-01,,medium,
