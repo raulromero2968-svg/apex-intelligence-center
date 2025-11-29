@@ -19,6 +19,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Llama** | Meta | Open-source foundation models, local inference capabilities |
 | **Perplexity** | Perplexity AI | Real-time search, citation-backed research, fact verification |
 | **Claude (Opus 4)** | Anthropic | Final structuring, documentation, git integration, code-level implementation |
+| **Cursor** | Cursor Inc. | AI-native code editor, inline completions, codebase-aware refactoring |
 | **Manus** | Manus AI | Autonomous task execution, multi-step workflow handling |
 
 ### Infrastructure & Platforms
@@ -26,6 +27,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | Platform | Role |
 |----------|------|
 | **GitHub** | Version control, branch management, PR workflows, repository hosting |
+| **VS Code** | Primary IDE, extensions ecosystem, integrated terminal, GitHub Copilot host |
 | **Vercel** | Deployment infrastructure, preview environments, production hosting |
 | **Zapier** | Automation glue, cross-platform triggers, workflow orchestration |
 | **Opera Browser** | Multi-agent interface, session management, AI sidebar integration |
@@ -349,5 +351,5 @@ Two possible paths:
 ---
 
 *Framework finalized: November 2024*
-*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Manus + Claude (Anthropic)*
-*Infrastructure: GitHub + Vercel + Zapier + Opera Browser*
+*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Claude (Anthropic) + Cursor + Manus*
+*Infrastructure: GitHub + VS Code + Vercel + Zapier + Opera Browser*
