@@ -1245,3 +1245,389 @@ export type VolitionalStateHistory = typeof volitionalStateHistory.$inferSelect;
 export type NewVolitionalStateHistory = typeof volitionalStateHistory.$inferInsert;
 export type ÜbermenschMetric = typeof übermenschMetrics.$inferSelect;
 export type NewÜbermenschMetric = typeof übermenschMetrics.$inferInsert;
+
+// Zen Integration Types (v1.7.0)
+export type ZenPractice = typeof zenPractices.$inferSelect;
+export type NewZenPractice = typeof zenPractices.$inferInsert;
+export type ZenRateLimit = typeof zenRateLimits.$inferSelect;
+export type NewZenRateLimit = typeof zenRateLimits.$inferInsert;
+export type NonDualFusionLog = typeof nonDualFusionLogs.$inferSelect;
+export type NewNonDualFusionLog = typeof nonDualFusionLogs.$inferInsert;
+export type NonDualStateHistory = typeof nonDualStateHistory.$inferSelect;
+export type NewNonDualStateHistory = typeof nonDualStateHistory.$inferInsert;
+export type NonDualWeeklyMetric = typeof nonDualWeeklyMetrics.$inferSelect;
+export type NewNonDualWeeklyMetric = typeof nonDualWeeklyMetrics.$inferInsert;
+
+// ============================================================================
+// ZEN UNCERTAINTY INTEGRATION (v1.7.0)
+// ============================================================================
+
+/**
+ * Zen Uncertainty Virtue Enum
+ * Virtues from Zen Buddhism: mu (emptiness), koan (paradox), zazen (observation)
+ */
+export const zenUncertaintyVirtueEnum = pgEnum('zen_uncertainty_virtue', [
+  'mu_emptiness',
+  'koan_paradox',
+  'zazen_observation',
+  'satori_breakthrough',
+  'beginner_mind',
+]);
+
+/**
+ * Balance Trend Enum for Non-Dual Metrics
+ */
+export const balanceTrendEnum = pgEnum('balance_trend', [
+  'harmonized',
+  'will_dominant',
+  'zen_dominant',
+  'fluctuating',
+]);
+
+// ============================================================================
+// ZEN PRACTICES TABLE
+// ============================================================================
+
+export const zenPractices = pgTable(
+  'pos_zen_practices',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Practice identification
+    virtue: zenUncertaintyVirtueEnum('virtue').notNull(),
+    practiceName: text('practice_name').notNull(),
+    objective: text('objective'),
+
+    // Practice execution
+    practicedAt: timestamp('practiced_at').defaultNow().notNull(),
+    duration: integer('duration'), // minutes
+    context: text('context'), // 'relational', 'apex', 'personal'
+
+    // Emptiness metrics (0-100)
+    emptinessScore: real('emptiness_score'),
+    satoriAchieved: boolean('satori_achieved').default(false),
+    dualAvoidanceSuccess: boolean('dual_avoidance_success'),
+
+    // Non-dual balance
+    preEmptinessLevel: real('pre_emptiness_level'), // before practice
+    postEmptinessLevel: real('post_emptiness_level'), // after practice
+    emptinessGain: real('emptiness_gain'), // delta
+
+    // Koan specific
+    koanUsed: text('koan_used'),
+    koanResolved: boolean('koan_resolved'),
+    resolutionInsight: text('resolution_insight'),
+
+    // Zazen specific
+    breathCount: integer('breath_count'),
+    thoughtCount: integer('thought_count'),
+    observationQuality: real('observation_quality'), // 0-100
+
+    // Actionable steps completed
+    stepsCompleted: integer('steps_completed'),
+    totalSteps: integer('total_steps'),
+    validationsPassed: integer('validations_passed'),
+
+    // Nietzschean fusion
+    fusedWithWill: boolean('fused_with_will').default(false),
+    fusedVirtue: volitionalVirtueEnum('fused_virtue'),
+    fusionScore: real('fusion_score'),
+
+    // Scenario details
+    scenarioDescription: text('scenario_description'),
+    decision: text('decision'),
+    outcome: text('outcome'),
+    outcomeRating: integer('outcome_rating'), // 1-10
+
+    // Notes
+    reflectionNotes: text('reflection_notes'),
+    practitionerNotes: text('practitioner_notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_zen_user_idx').on(table.userId),
+    virtueIdx: index('pos_zen_virtue_idx').on(table.virtue),
+    practicedIdx: index('pos_zen_practiced_idx').on(table.practicedAt),
+    satoriIdx: index('pos_zen_satori_idx').on(table.satoriAchieved),
+  })
+);
+
+// ============================================================================
+// ZEN RATE LIMITER TABLE (Token Bucket for Mu-Overload Prevention)
+// ============================================================================
+
+export const zenRateLimits = pgTable(
+  'pos_zen_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Date tracking
+    date: timestamp('date').defaultNow().notNull(),
+
+    // Token bucket state
+    currentTokens: real('current_tokens').notNull().default(3),
+    maxTokens: integer('max_tokens').notNull().default(3),
+    refillRate: real('refill_rate').notNull().default(0.375), // tokens per hour (3/8 waking hours)
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Satori bonus tracking
+    satoriCount: integer('satori_count').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Usage tracking
+    meditationsToday: integer('meditations_today').default(0),
+    lastMeditation: timestamp('last_meditation'),
+
+    // Denied attempts
+    deniedAttempts: integer('denied_attempts').default(0),
+    lastDenied: timestamp('last_denied'),
+
+    // Configuration - mindful periods for refill boost
+    refillPeriods: jsonb('refill_periods').$type<Array<{
+      startHour: number;
+      endHour: number;
+      multiplier: number;
+    }>>().default([
+      { startHour: 5, endHour: 7, multiplier: 2.0 },   // Dawn meditation boost
+      { startHour: 20, endHour: 22, multiplier: 1.5 } // Evening zazen boost
+    ]),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_zen_rate_limit_user_idx').on(table.userId),
+    dateIdx: index('pos_zen_rate_limit_date_idx').on(table.date),
+    uniqueUserDate: uniqueIndex('pos_zen_rate_limit_user_date_unique').on(table.userId, table.date),
+  })
+);
+
+// ============================================================================
+// NON-DUAL FUSION LOGS TABLE
+// ============================================================================
+
+export const nonDualFusionLogs = pgTable(
+  'pos_non_dual_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Fusion details
+    fusedAt: timestamp('fused_at').defaultNow().notNull(),
+    fusionType: text('fusion_type').notNull(), // 'will-zen', 'zen-will', 'balanced'
+
+    // Will component
+    willVirtue: volitionalVirtueEnum('will_virtue'),
+    willScore: real('will_score'), // 0-100
+    willRank: integer('will_rank'), // position in RRF
+
+    // Zen component
+    zenVirtue: zenUncertaintyVirtueEnum('zen_virtue'),
+    zenScore: real('zen_score'), // 0-100
+    zenRank: integer('zen_rank'), // position in RRF
+
+    // RRF fusion results
+    rrfScore: real('rrf_score'),
+    fusionK: integer('fusion_k').default(60), // RRF k parameter
+
+    // Outcome metrics
+    willGain: real('will_gain'),
+    muGain: real('mu_gain'),
+    satoriMetric: real('satori_metric'),
+
+    // Balance analysis
+    balanceType: balanceTrendEnum('balance_type'),
+    harmonyScore: real('harmony_score'), // 0-1, how balanced the fusion was
+
+    // Execution
+    fusedAction: text('fused_action'),
+    actionSuccessful: boolean('action_successful'),
+    successNotes: text('success_notes'),
+
+    // Context
+    domain: text('domain'), // 'relational', 'apex', 'personal'
+    urgency: text('urgency'), // 'low', 'medium', 'high'
+    scenarioDescription: text('scenario_description'),
+
+    // Rate limiting impact
+    willTokensUsed: real('will_tokens_used'),
+    zenTokensUsed: real('zen_tokens_used'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_non_dual_fusion_user_idx').on(table.userId),
+    fusedIdx: index('pos_non_dual_fusion_fused_idx').on(table.fusedAt),
+    typeIdx: index('pos_non_dual_fusion_type_idx').on(table.fusionType),
+    balanceIdx: index('pos_non_dual_fusion_balance_idx').on(table.balanceType),
+  })
+);
+
+// ============================================================================
+// NON-DUAL STATE HISTORY TABLE (Rollback Support)
+// ============================================================================
+
+export const nonDualStateHistory = pgTable(
+  'pos_non_dual_state_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // State snapshot
+    snapshotAt: timestamp('snapshot_at').defaultNow().notNull(),
+
+    // Current will state
+    currentWill: volitionalVirtueEnum('current_will'),
+    willPower: real('will_power'), // 0-100
+
+    // Current zen state
+    currentZen: zenUncertaintyVirtueEnum('current_zen'),
+    emptinessLevel: real('emptiness_level'), // 0-100
+
+    // Combined metrics
+    satoriScore: real('satori_score'), // 0-100
+    harmonyScore: real('harmony_score'), // 0-1
+
+    // Stability indicators
+    isStable: boolean('is_stable').default(true),
+    stabilityNotes: text('stability_notes'),
+    imbalanceType: text('imbalance_type'), // 'over-will', 'over-emptiness', 'striving', 'attachment'
+
+    // Rollback metadata
+    isRollbackPoint: boolean('is_rollback_point').default(false),
+    rolledBackTo: boolean('rolled_back_to').default(false),
+    rollbackTrigger: text('rollback_trigger'),
+
+    // Satori audit
+    auditedBy: text('audited_by'), // 'self', 'therapist', 'peer'
+    auditNotes: text('audit_notes'),
+
+    // Default state info (for rollback)
+    defaultWill: text('default_will').default('amor_fati_deepened'),
+    defaultZen: text('default_zen').default('mu_emptiness'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_non_dual_state_user_idx').on(table.userId),
+    snapshotIdx: index('pos_non_dual_state_snapshot_idx').on(table.snapshotAt),
+    rollbackIdx: index('pos_non_dual_state_rollback_idx').on(table.isRollbackPoint),
+    stabilityIdx: index('pos_non_dual_state_stability_idx').on(table.isStable),
+  })
+);
+
+// ============================================================================
+// NON-DUAL WEEKLY METRICS TABLE
+// ============================================================================
+
+export const nonDualWeeklyMetrics = pgTable(
+  'pos_non_dual_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Nietzschean expanded metrics
+    dionysianAffirmations: integer('dionysian_affirmations').default(0),
+    deepenedRecurrences: integer('deepened_recurrences').default(0),
+    amorFatiDeepened: integer('amor_fati_deepened').default(0),
+
+    // Zen metrics
+    muEmptyings: integer('mu_emptyings').default(0),
+    koanResolutions: integer('koan_resolutions').default(0),
+    zazenSessions: integer('zazen_sessions').default(0),
+    satoriBreakthroughs: integer('satori_breakthroughs').default(0),
+    beginnerMindMoments: integer('beginner_mind_moments').default(0),
+
+    // Non-dual fusion metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    fusionSuccessRate: real('fusion_success_rate'), // 0-1
+
+    // Aggregate scores
+    weeklyNonDualScore: real('weekly_non_dual_score'), // 0-100
+    weeklyWillPower: real('weekly_will_power'), // 0-100
+    weeklyEmptinessLevel: real('weekly_emptiness_level'), // 0-100
+    weeklyHarmonyScore: real('weekly_harmony_score'), // 0-1
+
+    // Trend indicators
+    willTrend: trendEnum('will_trend'),
+    zenTrend: trendEnum('zen_trend'),
+    balanceTrend: balanceTrendEnum('balance_trend'),
+
+    // Action items
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+    satoriAuditsNeeded: integer('satori_audits_needed').default(0),
+    strivingTrapsDetected: integer('striving_traps_detected').default(0),
+    overEmptinessDetected: integer('over_emptiness_detected').default(0),
+
+    // Rate limit impact
+    willTokensDepleted: integer('will_tokens_depleted').default(0),
+    zenTokensDepleted: integer('zen_tokens_depleted').default(0),
+    bonusTokensEarned: integer('bonus_tokens_earned').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_non_dual_metrics_user_idx').on(table.userId),
+    weekIdx: index('pos_non_dual_metrics_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_non_dual_metrics_user_week_unique').on(table.userId, table.weekStart),
+    balanceIdx: index('pos_non_dual_metrics_balance_idx').on(table.balanceTrend),
+  })
+);
+
+// ============================================================================
+// ZEN RELATIONS
+// ============================================================================
+
+export const zenPracticesRelations = relations(zenPractices, ({ one }) => ({
+  user: one(users, {
+    fields: [zenPractices.userId],
+    references: [users.id],
+  }),
+}));
+
+export const zenRateLimitsRelations = relations(zenRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [zenRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const nonDualFusionLogsRelations = relations(nonDualFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [nonDualFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const nonDualStateHistoryRelations = relations(nonDualStateHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [nonDualStateHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+export const nonDualWeeklyMetricsRelations = relations(nonDualWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [nonDualWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
