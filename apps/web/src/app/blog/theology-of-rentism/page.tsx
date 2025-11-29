@@ -16,6 +16,9 @@ import { NetworkGraph } from '@/../../components/power-network/NetworkGraph';
 import { InvestigatorNotebook } from '@/../../components/power-network/InvestigatorNotebook';
 import { SourceCard } from '@/../../components/power-network/SourceCard';
 
+// Force dynamic rendering to avoid SSG issues with client components
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'The Antichrist and the Algorithm | Apex Intelligence',
   description: 'How Silicon Valley is building a theology to defend Rentism. A Double Helix analysis of power, ideology, and supply chains.',
