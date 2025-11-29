@@ -20,6 +20,56 @@ export type {
   POSLayer,
   POSPhase,
   SecurityFactor,
+  // Nietzschean-Aristotelian Types (v1.5.0)
+  ExpandedAristotelianVirtue,
+  NietzscheanVolitionalVirtue,
+  MoralityType,
+  ActionableStep,
+  AristotelianPractice,
+  AristotelianExample,
+  NietzscheanPractice,
+  NietzscheanExample,
+  MetricTracker,
+  VolitionalFusionResult,
+  VolitionalBucket,
+  VolitionalState,
+  ÜbermenschWeeklyMetrics,
+  // Zen Uncertainty Types (v1.7.0)
+  ZenPractice,
+  ZenExample,
+  NonDualFusionResult,
+  ZenBucket,
+  NonDualState,
+  NonDualWeeklyMetrics,
+  // Zazen-Taoist Types (v1.8.0)
+  ZazenMindfulnessVirtue,
+  TaoistEffortlessVirtue,
+  DualityType,
+  FlowForceType,
+  ZazenPractice,
+  ZazenExample,
+  ZazenMetricTracker,
+  TaoistPractice,
+  TaoistExample,
+  TaoistMetricTracker,
+  ZazenTaoistFusionResult,
+  MindfulEffortlessBucket,
+  MindfulEffortlessState,
+  ZazenTaoistWeeklyMetrics,
+} from './personal-operating-system';
+
+// POS Version and Changelog exports
+export {
+  POS_VERSION,
+  POS_CHANGELOG_V1_5,
+  POS_CHANGELOG_V1_7,
+  POS_CHANGELOG_V1_8,
+  calculateRRFScore,
+  shouldProceedWithWill,
+  calculateNonDualRRFScore,
+  shouldProceedWithNonDual,
+  calculateZazenTaoistRRF,
+  shouldProceedWithWuWei,
 } from './personal-operating-system';
 
 // BRAVING Protocol (Trust Operations)

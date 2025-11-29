@@ -106,6 +106,48 @@ export const moralityTypeEnum = pgEnum('morality_type', [
   'neutral',
 ]);
 
+// Zazen Mindfulness Enums (v1.6.0)
+export const zazenVirtueEnum = pgEnum('zazen_virtue', [
+  'shikantaza',
+  'kinhin',
+  'mu',
+  'koan',
+  'zazen',
+]);
+
+// Taoist Effortless Enums (v1.6.0)
+export const taoistVirtueEnum = pgEnum('taoist_virtue', [
+  'wu_wei',
+  'wei_wu_wei',
+  'harmony_flow',
+]);
+
+export const dualityTypeEnum = pgEnum('duality_type', [
+  'dual',
+  'non_dual',
+]);
+
+export const flowForceTypeEnum = pgEnum('flow_force_type', [
+  'flow',
+  'force',
+]);
+
+export const zazenPracticeStatusEnum = pgEnum('zazen_practice_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'satori_achieved',
+  'rolled_back',
+]);
+
+export const taoistPracticeStatusEnum = pgEnum('taoist_practice_status', [
+  'scheduled',
+  'in_progress',
+  'completed',
+  'harmony_achieved',
+  'rolled_back',
+]);
+
 export const volitionalPracticeStatusEnum = pgEnum('volitional_practice_status', [
   'scheduled',
   'in_progress',
@@ -1058,8 +1100,416 @@ export const übermenschMetrics = pgTable(
 );
 
 // ============================================================================
+// ZAZEN PRACTICES TABLE (v1.6.0)
+// ============================================================================
+
+export const zazenPractices = pgTable(
+  'pos_zazen_practices',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Practice configuration
+    virtue: zazenVirtueEnum('virtue').notNull(),
+    objective: text('objective').notNull(),
+    scenario: text('scenario').notNull(),
+
+    // Status tracking
+    status: zazenPracticeStatusEnum('status').default('scheduled').notNull(),
+    scheduledAt: timestamp('scheduled_at'),
+    startedAt: timestamp('started_at'),
+    completedAt: timestamp('completed_at'),
+
+    // Mindfulness metrics
+    emptinessScore: real('emptiness_score'), // 0-100 mu balance
+    presenceBalance: real('presence_balance'), // 0-1 goal-less presence
+    dynamicBalance: real('dynamic_balance'), // 0-1 for kinhin movement
+    dualityType: dualityTypeEnum('duality_type').default('non_dual'),
+
+    // Actionable steps completion
+    stepsCompleted: jsonb('steps_completed').$type<Array<{
+      step: number;
+      action: string;
+      validation: string;
+      passed: boolean;
+      timestamp: string;
+    }>>().default([]),
+
+    // Fusion with Taoist
+    fusedWithFlow: taoistVirtueEnum('fused_with_flow'),
+    wuWeiFusionScore: real('wu_wei_fusion_score'), // 0-1 Taoist harmony
+
+    // Outcome tracking
+    emptiedOutcome: jsonb('emptied_outcome').$type<{
+      net: string;
+      satori: number;
+      emptiness: number;
+    }>(),
+    decidedAction: text('decided_action'),
+
+    // Satori achievement
+    satoriAchieved: boolean('satori_achieved').default(false),
+    satoriNotes: text('satori_notes'),
+
+    // Error handling
+    rolledBack: boolean('rolled_back').default(false),
+    rollbackReason: text('rollback_reason'),
+    auditLog: jsonb('audit_log').$type<Array<{
+      event: string;
+      timestamp: string;
+      details: Record<string, unknown>;
+    }>>().default([]),
+
+    // Notes
+    notes: text('notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_zazen_user_idx').on(table.userId),
+    virtueIdx: index('pos_zazen_virtue_idx').on(table.virtue),
+    statusIdx: index('pos_zazen_status_idx').on(table.status),
+    scheduledIdx: index('pos_zazen_scheduled_idx').on(table.scheduledAt),
+  })
+);
+
+// ============================================================================
+// TAOIST PRACTICES TABLE (v1.6.0)
+// ============================================================================
+
+export const taoistPractices = pgTable(
+  'pos_taoist_practices',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Practice configuration
+    virtue: taoistVirtueEnum('virtue').notNull(),
+    objective: text('objective').notNull(),
+    scenario: text('scenario').notNull(),
+
+    // Status tracking
+    status: taoistPracticeStatusEnum('status').default('scheduled').notNull(),
+    scheduledAt: timestamp('scheduled_at'),
+    startedAt: timestamp('started_at'),
+    completedAt: timestamp('completed_at'),
+
+    // Effortless metrics
+    harmonyScore: real('harmony_score'), // 0-100 flow balance
+    flowBalance: real('flow_balance'), // 0-1 effortless action
+    nonActionBalance: real('non_action_balance'), // 0-1 for wei wu wei
+    flowForceType: flowForceTypeEnum('flow_force_type').default('flow'),
+
+    // Actionable steps completion
+    stepsCompleted: jsonb('steps_completed').$type<Array<{
+      step: number;
+      action: string;
+      validation: string;
+      passed: boolean;
+      timestamp: string;
+    }>>().default([]),
+
+    // Fusion with Zazen
+    fusedWithPractice: zazenVirtueEnum('fused_with_practice'),
+    muFusionScore: real('mu_fusion_score'), // 0-1 Zazen emptiness
+
+    // Outcome tracking
+    flowedOutcome: jsonb('flowed_outcome').$type<{
+      net: string;
+      harmony: number;
+      effortless: number;
+    }>(),
+    decidedAction: text('decided_action'),
+
+    // Harmony achievement
+    harmonyAchieved: boolean('harmony_achieved').default(false),
+    harmonyNotes: text('harmony_notes'),
+
+    // Error handling
+    rolledBack: boolean('rolled_back').default(false),
+    rollbackReason: text('rollback_reason'),
+    auditLog: jsonb('audit_log').$type<Array<{
+      event: string;
+      timestamp: string;
+      details: Record<string, unknown>;
+    }>>().default([]),
+
+    // Notes
+    notes: text('notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_taoist_user_idx').on(table.userId),
+    virtueIdx: index('pos_taoist_virtue_idx').on(table.virtue),
+    statusIdx: index('pos_taoist_status_idx').on(table.status),
+    scheduledIdx: index('pos_taoist_scheduled_idx').on(table.scheduledAt),
+  })
+);
+
+// ============================================================================
+// ZAZEN-TAOIST FUSION LOG TABLE (RRF Tracking - v1.6.0)
+// ============================================================================
+
+export const zazenTaoistFusionLogs = pgTable(
+  'pos_zazen_taoist_fusion_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Fusion timestamp
+    fusedAt: timestamp('fused_at').defaultNow().notNull(),
+
+    // Input rankings
+    zazenResults: jsonb('zazen_results').$type<Array<{
+      practice: string;
+      score: number;
+      rank: number;
+    }>>().notNull(),
+    taoistResults: jsonb('taoist_results').$type<Array<{
+      flow: string;
+      score: number;
+      rank: number;
+    }>>().notNull(),
+
+    // RRF output
+    rrfK: integer('rrf_k').default(60), // RRF constant
+    fusedResults: jsonb('fused_results').$type<Array<{
+      practice: string;
+      flow: string;
+      rrfScore: number;
+      fusedAction: string;
+      emptinessGain: number;
+      harmonyMetric: number;
+    }>>().notNull(),
+
+    // Selected action
+    selectedPractice: zazenVirtueEnum('selected_practice'),
+    selectedFlow: taoistVirtueEnum('selected_flow'),
+    finalAction: text('final_action'),
+
+    // Outcome verification
+    outcomeVerified: boolean('outcome_verified').default(false),
+    outcomeNotes: text('outcome_notes'),
+
+    // Context
+    scenario: text('scenario'),
+    domain: text('domain'), // 'relational', 'apex', 'personal'
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_zazen_taoist_fusion_user_idx').on(table.userId),
+    fusedIdx: index('pos_zazen_taoist_fusion_fused_idx').on(table.fusedAt),
+    domainIdx: index('pos_zazen_taoist_fusion_domain_idx').on(table.domain),
+  })
+);
+
+// ============================================================================
+// MINDFUL-EFFORTLESS RATE LIMITER TABLE (Token Bucket - v1.6.0)
+// ============================================================================
+
+export const mindfulEffortlessRateLimits = pgTable(
+  'pos_mindful_effortless_rate_limits',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Date tracking
+    date: timestamp('date').defaultNow().notNull(),
+
+    // Token bucket state
+    currentTokens: real('current_tokens').notNull().default(3),
+    maxTokens: integer('max_tokens').notNull().default(3),
+    refillRate: real('refill_rate').notNull().default(0.5), // tokens per hour
+    lastRefill: timestamp('last_refill').defaultNow().notNull(),
+
+    // Usage tracking
+    fusionsToday: integer('fusions_today').default(0),
+    lastFusion: timestamp('last_fusion'),
+
+    // Denied attempts
+    deniedAttempts: integer('denied_attempts').default(0),
+    lastDenied: timestamp('last_denied'),
+
+    // Configuration (refill during kinhin periods)
+    refillPeriods: jsonb('refill_periods').$type<Array<{
+      startHour: number;
+      endHour: number;
+      multiplier: number;
+      activity: 'kinhin' | 'shikantaza' | 'harmony_flow';
+    }>>().default([
+      { startHour: 6, endHour: 8, multiplier: 1.5, activity: 'shikantaza' },   // Morning meditation
+      { startHour: 12, endHour: 13, multiplier: 1.2, activity: 'kinhin' },     // Midday walk
+      { startHour: 18, endHour: 20, multiplier: 1.3, activity: 'harmony_flow' } // Evening flow
+    ]),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mindful_rate_limit_user_idx').on(table.userId),
+    dateIdx: index('pos_mindful_rate_limit_date_idx').on(table.date),
+    uniqueUserDate: uniqueIndex('pos_mindful_rate_limit_user_date_unique').on(table.userId, table.date),
+  })
+);
+
+// ============================================================================
+// MINDFUL-EFFORTLESS STATE HISTORY TABLE (Rollback Support - v1.6.0)
+// ============================================================================
+
+export const mindfulEffortlessStateHistory = pgTable(
+  'pos_mindful_effortless_state_history',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // State snapshot
+    snapshotAt: timestamp('snapshot_at').defaultNow().notNull(),
+
+    // Current state
+    currentPractice: zazenVirtueEnum('current_practice'),
+    currentFlow: taoistVirtueEnum('current_flow'),
+    emptinessBalance: real('emptiness_balance'), // 0-1
+    harmonyPower: real('harmony_power'), // 0-100
+
+    // Mindful-effortless metrics
+    satoriScore: real('satori_score'), // 0-100 enlightenment metric
+    wuWeiScore: real('wu_wei_score'), // 0-100 effortless flow metric
+
+    // Stability indicators
+    isStable: boolean('is_stable').default(true),
+    stabilityNotes: text('stability_notes'),
+
+    // Rollback metadata
+    isRollbackPoint: boolean('is_rollback_point').default(false),
+    rolledBackTo: boolean('rolled_back_to').default(false),
+    rollbackTrigger: text('rollback_trigger'),
+
+    // Kinhin audit (movement check)
+    auditedBy: text('audited_by'), // 'self', 'therapist', 'peer'
+    auditNotes: text('audit_notes'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_mindful_state_history_user_idx').on(table.userId),
+    snapshotIdx: index('pos_mindful_state_history_snapshot_idx').on(table.snapshotAt),
+    rollbackIdx: index('pos_mindful_state_history_rollback_idx').on(table.isRollbackPoint),
+  })
+);
+
+// ============================================================================
+// ZAZEN-TAOIST WEEKLY METRICS TABLE (v1.6.0)
+// ============================================================================
+
+export const zazenTaoistWeeklyMetrics = pgTable(
+  'pos_zazen_taoist_weekly_metrics',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+
+    // Week tracking
+    weekStart: timestamp('week_start').notNull(),
+    weekEnd: timestamp('week_end').notNull(),
+
+    // Zazen metrics
+    shikantazaSessions: integer('shikantaza_sessions').default(0),
+    kinhinSessions: integer('kinhin_sessions').default(0),
+    muMoments: integer('mu_moments').default(0),
+    satoriAchievements: integer('satori_achievements').default(0),
+
+    // Taoist metrics
+    wuWeiMoments: integer('wu_wei_moments').default(0),
+    weiWuWeiMoments: integer('wei_wu_wei_moments').default(0),
+    harmonyFlowPeriods: integer('harmony_flow_periods').default(0),
+    effortlessActions: integer('effortless_actions').default(0),
+
+    // Fusion metrics
+    totalFusions: integer('total_fusions').default(0),
+    successfulFusions: integer('successful_fusions').default(0),
+    fusionSuccessRate: real('fusion_success_rate'), // 0-1
+
+    // Aggregate scores
+    weeklyEmptinessScore: real('weekly_emptiness_score'), // 0-100
+    weeklyHarmonyScore: real('weekly_harmony_score'), // 0-100
+    weeklySatoriBalance: real('weekly_satori_balance'), // 0-100
+    weeklyWuWeiBalance: real('weekly_wu_wei_balance'), // 0-1
+
+    // Trend indicators
+    emptinessTrend: text('emptiness_trend'), // 'ascending', 'stable', 'descending'
+    harmonyTrend: text('harmony_trend'),
+
+    // Action items
+    rollbacksTriggered: integer('rollbacks_triggered').default(0),
+    kinhinAuditsNeeded: integer('kinhin_audits_needed').default(0),
+
+    // Notes
+    weeklyReflection: text('weekly_reflection'),
+
+    // Timestamps
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index('pos_zazen_taoist_weekly_user_idx').on(table.userId),
+    weekIdx: index('pos_zazen_taoist_weekly_week_idx').on(table.weekStart),
+    uniqueUserWeek: uniqueIndex('pos_zazen_taoist_weekly_user_week_unique').on(table.userId, table.weekStart),
+  })
+);
+
+// ============================================================================
 // RELATIONS
 // ============================================================================
+
+export const zazenPracticesRelations = relations(zazenPractices, ({ one }) => ({
+  user: one(users, {
+    fields: [zazenPractices.userId],
+    references: [users.id],
+  }),
+}));
+
+export const taoistPracticesRelations = relations(taoistPractices, ({ one }) => ({
+  user: one(users, {
+    fields: [taoistPractices.userId],
+    references: [users.id],
+  }),
+}));
+
+export const zazenTaoistFusionLogsRelations = relations(zazenTaoistFusionLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [zazenTaoistFusionLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const mindfulEffortlessRateLimitsRelations = relations(mindfulEffortlessRateLimits, ({ one }) => ({
+  user: one(users, {
+    fields: [mindfulEffortlessRateLimits.userId],
+    references: [users.id],
+  }),
+}));
+
+export const mindfulEffortlessStateHistoryRelations = relations(mindfulEffortlessStateHistory, ({ one }) => ({
+  user: one(users, {
+    fields: [mindfulEffortlessStateHistory.userId],
+    references: [users.id],
+  }),
+}));
+
+export const zazenTaoistWeeklyMetricsRelations = relations(zazenTaoistWeeklyMetrics, ({ one }) => ({
+  user: one(users, {
+    fields: [zazenTaoistWeeklyMetrics.userId],
+    references: [users.id],
+  }),
+}));
 
 export const volitionalPracticesRelations = relations(volitionalPractices, ({ one }) => ({
   user: one(users, {
@@ -1631,3 +2081,17 @@ export const nonDualWeeklyMetricsRelations = relations(nonDualWeeklyMetrics, ({ 
     references: [users.id],
   }),
 }));
+
+// Zazen-Taoist Types (v1.8.0)
+export type ZazenPracticeType = typeof zazenPractices.$inferSelect;
+export type NewZazenPracticeType = typeof zazenPractices.$inferInsert;
+export type TaoistPracticeType = typeof taoistPractices.$inferSelect;
+export type NewTaoistPracticeType = typeof taoistPractices.$inferInsert;
+export type ZazenTaoistFusionLog = typeof zazenTaoistFusionLogs.$inferSelect;
+export type NewZazenTaoistFusionLog = typeof zazenTaoistFusionLogs.$inferInsert;
+export type MindfulEffortlessRateLimit = typeof mindfulEffortlessRateLimits.$inferSelect;
+export type NewMindfulEffortlessRateLimit = typeof mindfulEffortlessRateLimits.$inferInsert;
+export type MindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory.$inferSelect;
+export type NewMindfulEffortlessStateHistory = typeof mindfulEffortlessStateHistory.$inferInsert;
+export type ZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferSelect;
+export type NewZazenTaoistWeeklyMetric = typeof zazenTaoistWeeklyMetrics.$inferInsert;

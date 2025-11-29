@@ -755,9 +755,9 @@ export function shouldProceedWithWill(
 }
 
 /**
- * POS Version with Nietzschean-Zen expansion
+ * POS Version with Nietzschean-Zen-Taoist expansion
  */
-export const POS_VERSION = '1.7.0';
+export const POS_VERSION = '1.8.0';
 
 /**
  * POS Changelog Entry for v1.5.0
@@ -800,6 +800,58 @@ export interface ZenPractice {
   examples: ZenExample[];
 }
 
+// ============================================================================
+// ZAZEN-TAOIST WU WEI EXPANSION TYPES (v1.8.0)
+// ============================================================================
+
+/**
+ * Zazen Mindfulness Virtues
+ * From Zen Buddhism: Shikantaza (just-sitting), Kinhin (walking meditation)
+ */
+export type ZazenMindfulnessVirtue =
+  | 'shikantaza'
+  | 'kinhin'
+  | 'mu'
+  | 'koan'
+  | 'zazen';
+
+/**
+ * Taoist Effortless Virtues
+ * From Tao Te Ching: Wu Wei (non-striving), Wei Wu Wei (action through non-action)
+ */
+export type TaoistEffortlessVirtue =
+  | 'wu_wei'
+  | 'wei_wu_wei'
+  | 'harmony_flow';
+
+/**
+ * Dual/Non-Dual classification for Zazen practices
+ */
+export type DualityType = 'dual' | 'non_dual';
+
+/**
+ * Force/Flow classification for Taoist practices
+ */
+export type FlowForceType = 'flow' | 'force';
+
+/**
+ * Zazen Practice Interface
+ * Complete middleware implementation for mindful non-dual ethics
+ */
+export interface ZazenPractice {
+  virtue: ZazenMindfulnessVirtue;
+  objective: string;
+  emptinessSteps: () => void;
+  dualAvoidance: (input: { thoughts?: unknown[]; movements?: unknown[] }) => {
+    nonDual: unknown[];
+    dual: unknown[];
+  };
+  satori: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => ZazenMetricTracker;
+  examples: ZazenExample[];
+}
+
 /**
  * Zen Example with actionable steps
  */
@@ -811,7 +863,72 @@ export interface ZenExample {
 }
 
 /**
- * Non-Dual Fusion Result
+ * Zazen Example with actionable steps
+ */
+export interface ZazenExample {
+  scenario: string;
+  emptied: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Zazen Metric Tracker
+ */
+export interface ZazenMetricTracker {
+  shikantazaNet?: number;
+  kinhinNet?: number;
+  wuWeiFusion?: number;
+  emptinessGain?: number;
+  harmonyMetric?: number;
+  presenceBalance?: number;
+  dynamicBalance?: number;
+}
+
+/**
+ * Taoist Practice Interface
+ * Complete middleware implementation for effortless action ethics
+ */
+export interface TaoistPractice {
+  virtue: TaoistEffortlessVirtue;
+  objective: string;
+  flowSteps: () => void;
+  forceAvoidance: (input: { actions: unknown[] }) => {
+    flow: unknown[];
+    force: unknown[];
+  };
+  harmony: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => TaoistMetricTracker;
+  examples: TaoistExample[];
+}
+
+/**
+ * Taoist Example with actionable steps
+ */
+export interface TaoistExample {
+  scenario: string;
+  flowed: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Taoist Metric Tracker
+ */
+export interface TaoistMetricTracker {
+  wuWeiNet?: number;
+  weiNet?: number;
+  harmonyNet?: number;
+  muFusion?: number;
+  emptinessGain?: number;
+  harmonyMetric?: number;
+  flowBalance?: number;
+  nonActionBalance?: number;
+}
+
+/**
+ * Non-Dual Fusion Result (v1.7.0)
  * Hybrid Nietzschean-Zen fusion output
  */
 export interface NonDualFusionResult {
@@ -825,7 +942,20 @@ export interface NonDualFusionResult {
 }
 
 /**
- * Zen Rate Limiter Bucket
+ * Zazen-Taoist RRF Fusion Result (v1.8.0)
+ * Hybrid mindful-effortless fusion output
+ */
+export interface ZazenTaoistFusionResult {
+  practice: ZazenMindfulnessVirtue;
+  flow: TaoistEffortlessVirtue;
+  rrfScore: number;
+  fusedAction: string;
+  emptinessGain: number;
+  harmonyMetric: number;
+}
+
+/**
+ * Zen Rate Limiter Bucket (v1.7.0)
  * Token bucket for preventing mu-overload
  */
 export interface ZenBucket {
@@ -837,7 +967,18 @@ export interface ZenBucket {
 }
 
 /**
- * Non-Dual State for rollback support
+ * Mindful-Effortless Rate Limiter Bucket (v1.8.0)
+ * Token bucket for preventing non-action overload
+ */
+export interface MindfulEffortlessBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+}
+
+/**
+ * Non-Dual State for rollback support (v1.7.0)
  */
 export interface NonDualState {
   currentWill: NietzscheanVolitionalVirtue;
@@ -849,7 +990,18 @@ export interface NonDualState {
 }
 
 /**
- * Non-Dual Weekly Metrics
+ * Mindful-Effortless State for rollback support (v1.8.0)
+ */
+export interface MindfulEffortlessState {
+  currentPractice: ZazenMindfulnessVirtue;
+  currentFlow: TaoistEffortlessVirtue;
+  emptinessBalance: number;
+  harmonyPower: number;
+  timestamp: Date;
+}
+
+/**
+ * Non-Dual Weekly Metrics (v1.7.0)
  */
 export interface NonDualWeeklyMetrics {
   weekStart: Date;
@@ -869,7 +1021,26 @@ export interface NonDualWeeklyMetrics {
 }
 
 /**
- * Calculate RRF score for will-zen fusion
+ * Zazen-Taoist Weekly Metrics (v1.8.0)
+ */
+export interface ZazenTaoistWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  shikantazaSessions: number;
+  kinhinSessions: number;
+  wuWeiMoments: number;
+  weiWuWeiMoments: number;
+  harmonyFlowPeriods: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyEmptinessScore: number;
+  weeklyHarmonyScore: number;
+  emptinessTrend: 'ascending' | 'stable' | 'descending';
+  harmonyTrend: 'ascending' | 'stable' | 'descending';
+}
+
+/**
+ * Calculate RRF score for will-zen fusion (v1.7.0)
  */
 export function calculateNonDualRRFScore(
   willRank: number,
@@ -880,7 +1051,7 @@ export function calculateNonDualRRFScore(
 }
 
 /**
- * Determine if non-dual action should proceed
+ * Determine if non-dual action should proceed (v1.7.0)
  * Based on satori check and rate limiting
  */
 export function shouldProceedWithNonDual(
@@ -911,6 +1082,48 @@ export function shouldProceedWithNonDual(
   return { proceed: true, reason: 'All checks passed. Proceed with non-dual fusion.' };
 }
 
+// ============================================================================
+// ZAZEN-TAOIST FUSION UTILITIES (v1.8.0)
+// ============================================================================
+
+/**
+ * Calculate RRF score for Zazen-Taoist fusion
+ */
+export function calculateZazenTaoistRRF(
+  emptinessRank: number,
+  harmonyRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + emptinessRank) + 1 / (k + harmonyRank);
+}
+
+/**
+ * Determine if wu wei action should proceed
+ * Based on harmony check and rate limiting
+ */
+export function shouldProceedWithWuWei(
+  bucket: MindfulEffortlessBucket,
+  harmonyBalance: number,
+  emptinessScore: number
+): { proceed: boolean; reason: string } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Rate limit exceeded. Wait for token refill during kinhin.' };
+  }
+
+  // Check harmony balance
+  if (harmonyBalance < 0.3) {
+    return { proceed: false, reason: 'Harmony balance too low. Recalibrate with shikantaza.' };
+  }
+
+  // Check for stagnation (excess non-action)
+  if (emptinessScore > 90 && harmonyBalance < 0.5) {
+    return { proceed: false, reason: 'Potential stagnation detected. Apply kinhin movement check.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with wu wei.' };
+}
+
 /**
  * POS Changelog Entry for v1.7.0
  */
@@ -928,5 +1141,25 @@ export const POS_CHANGELOG_V1_7: ChangelogEntry = {
     { type: 'added', description: 'Non-dual rollback protocol with satori audit logging' },
     { type: 'added', description: 'NonDualExecutor class for combined practice execution' },
     { type: 'added', description: 'Non-dual weekly metrics tracking' },
+  ],
+};
+
+/**
+ * POS Changelog Entry for v1.8.0
+ */
+export const POS_CHANGELOG_V1_8: ChangelogEntry = {
+  version: '1.8.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Shikantaza practice with 9-step actionable protocol for just-sitting meditation' },
+    { type: 'added', description: 'Kinhin practice with dynamic walking meditation and movement awareness' },
+    { type: 'added', description: 'Wu Wei practice with effortless action middleware' },
+    { type: 'added', description: 'Wei Wu Wei practice for action through non-action' },
+    { type: 'added', description: 'Harmony Flow practice for Tao rhythm alignment' },
+    { type: 'added', description: 'Zazen-Taoist RRF fusion engine for hybrid mindful-effortless outputs' },
+    { type: 'added', description: 'Token bucket rate limiting for wu wei calls (3/day max)' },
+    { type: 'added', description: 'Error handling with shikantaza rollback on effortless imbalance' },
+    { type: 'added', description: 'Real-time event streaming with Effortless Resolver' },
+    { type: 'added', description: 'All practices include ZenFusion/TaoistFusion integration' },
   ],
 };
