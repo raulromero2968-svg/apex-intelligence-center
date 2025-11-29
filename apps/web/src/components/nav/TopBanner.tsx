@@ -82,10 +82,9 @@ export const TopBanner = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1 md:py-2 font-mono text-[9px] md:text-sm whitespace-nowrap"
+            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 font-mono text-[8px] md:text-sm whitespace-nowrap"
           >
-            <span className="hidden sm:inline">[ ACCESS_TERMINAL ]</span>
-            <span className="sm:hidden">[ TERM ]</span>
+            [ ACCESS_TERMINAL ]
           </Link>
 
           {/* Mobile Menu Toggle */}
