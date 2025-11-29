@@ -42,8 +42,9 @@ const vector768 = customType<{ data: number[]; driverData: string }>({
 // =============================================================================
 
 /**
- * The Seven Mountains of Influence (Dominionism Framework)
+ * The Eight Mountains of Influence (Expanded Dominionism Framework)
  * These represent the key domains through which cultural power is exercised.
+ * Updated to include SPACE as the final frontier of power consolidation.
  */
 export const domainTypeEnum = pgEnum('power_domain_type', [
   'RELIGION',     // Churches, spiritual movements, theological influence
@@ -53,6 +54,7 @@ export const domainTypeEnum = pgEnum('power_domain_type', [
   'MEDIA',        // News outlets, social platforms, propaganda networks
   'ARTS',         // Entertainment, culture production, narrative control
   'BUSINESS',     // Corporations, finance, technology infrastructure
+  'SPACE',        // The Frontier: Satellites, orbital slots, off-world resources, launch monopolies
 ]);
 
 /**
@@ -301,7 +303,7 @@ export type PowerClaim = InferSelectModel<typeof powerClaims>;
 export type NewPowerClaim = InferInsertModel<typeof powerClaims>;
 
 // Enum type exports for external use
-export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS';
+export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS' | 'SPACE';
 export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION';
 export type EvidenceTier = 'CONFIRMED' | 'DOCUMENTED' | 'ALLEGED' | 'SPECULATIVE';
 export type PowerRelationshipType = 'FINANCIAL' | 'EMPLOYMENT' | 'OWNERSHIP' | 'POLITICAL' | 'LEGAL' | 'SOCIAL' | 'FAMILIAL' | 'IDEOLOGICAL';
