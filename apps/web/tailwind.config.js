@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI Variable Display"', '"Segoe UI"', 'Helvetica', '"Apple Color Emoji"', 'Arial', 'sans-serif', '"Segoe UI Emoji"', '"Segoe UI Symbol"'],
         mono: ['var(--font-mono)', '"JetBrains Mono"', 'monospace'],
         'holo-mono': ['var(--font-mono)', '"JetBrains Mono"', 'monospace'],
       },

@@ -1,14 +1,16 @@
-import { Inter, JetBrains_Mono } from 'next/font/google';
-
-// Primary sans-serif font for body text
-export const fontSans = Inter({
-  subsets: ['latin'],
+// System font stack matching Apex Commons
+// Uses native fonts for optimal performance and consistent cross-platform appearance
+export const fontSans = {
+  style: {
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"',
+  },
   variable: '--font-sans',
-  display: 'swap',
-});
+};
 
-// Monospace font for Intel/Terminal aesthetic
+// Keep monospace font for technical/terminal aesthetic
 // Used in headers, labels, classification badges, and technical content
+import { JetBrains_Mono } from 'next/font/google';
+
 export const fontMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',

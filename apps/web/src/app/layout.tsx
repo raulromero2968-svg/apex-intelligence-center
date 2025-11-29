@@ -257,8 +257,6 @@ export default function RootLayout({
 
           'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
 
-          fontSans.variable,
-
           fontMono.variable,
 
           'font-sans',
