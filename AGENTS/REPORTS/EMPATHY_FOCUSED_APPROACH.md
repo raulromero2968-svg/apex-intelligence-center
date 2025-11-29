@@ -45,6 +45,8 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Science** | Peer-reviewed research, scientific breakthroughs, empirical studies |
 | **Nature** | Multidisciplinary science, cutting-edge research, global findings |
 | **National Geographic** | Science storytelling, exploration, environmental research |
+| **ArcGIS** | Geographic information systems, spatial analysis, data visualization |
+| **ArcGIS StoryMaps** | Narrative cartography, visual storytelling, location-based insights |
 | **Opera Browser** | Multi-agent interface, session management, AI sidebar integration |
 
 ### Claude's Specific Role (Anthropic)
@@ -368,4 +370,4 @@ Two possible paths:
 *Framework finalized: November 2024*
 *Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Claude (Anthropic) + Cursor + GitHub Copilot + Manus + AntiGravity*
 *Infrastructure: GitHub + VS Code + Windows PowerShell + Vercel + Zapier + Notion + X + YouTube + Opera Browser*
-*Research sources: The Atlantic + Jacobin + Vox + The Guardian + Aeon + The Truth of the Matter + Science + Nature + National Geographic*
+*Research sources: The Atlantic + Jacobin + Vox + The Guardian + Aeon + The Truth of the Matter + Science + Nature + National Geographic + ArcGIS/StoryMaps*
