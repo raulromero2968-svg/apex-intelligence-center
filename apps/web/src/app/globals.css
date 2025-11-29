@@ -1809,3 +1809,15 @@ html.light canvas {
 .animate-border-rotate {
   animation: border-rotate 3s linear infinite;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   HIDE DEFAULT CURSOR - Force hide system cursor globally
+   ═══════════════════════════════════════════════════════════════════ */
+* {
+  cursor: none !important;
+}
+
+/* Allow pointer events on interactive elements but still hide cursor */
+a, button, input, textarea, select, [role="button"], [onclick] {
+  cursor: none !important;
+}

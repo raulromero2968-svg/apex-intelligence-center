@@ -255,7 +255,7 @@ export default function RootLayout({
 
         className={cn(
 
-          'min-h-screen bg-background text-foreground antialiased cursor-none flex flex-col',
+          'min-h-screen bg-background text-foreground antialiased flex flex-col',
 
           fontMono.variable,
 
