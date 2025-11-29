@@ -55,5 +55,32 @@ export {
   type PostAgencyUpdateType,
 } from './alignmentData';
 
+// Power Network - Seven Mountains Framework (Abyss Mapping)
+export {
+  // Tables
+  powerEntities,
+  powerRelationships,
+  powerNetworkSnapshots,
+  powerClaims,
+  // Enums
+  domainTypeEnum,
+  entityTypeEnum,
+  evidenceTierEnum,
+  relationshipTypeEnum,
+  // Types
+  type PowerEntity,
+  type NewPowerEntity,
+  type PowerRelationship,
+  type NewPowerRelationship,
+  type PowerNetworkSnapshot,
+  type NewPowerNetworkSnapshot,
+  type PowerClaim,
+  type NewPowerClaim,
+  type PowerDomainType,
+  type PowerEntityType,
+  type EvidenceTier,
+  type PowerRelationshipType,
+} from './powerNetwork';
+
 
 
