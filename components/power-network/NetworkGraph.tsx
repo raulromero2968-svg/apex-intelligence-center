@@ -50,6 +50,7 @@ export interface GraphNode {
   primaryDomain: PowerDomainType;
   summary?: string;
   scandalNotes?: string;
+  isObfuscated?: boolean; // Ghost Protocol: Hidden actors (e.g., "Unnamed Co-Conspirator")
   val?: number; // Node size
   x?: number;
   y?: number;
@@ -184,6 +185,45 @@ export function NetworkGraph({ data, onNodeClick, height = 600 }: NetworkGraphPr
     const label = node.name;
     const fontSize = Math.max(12 / globalScale, 3);
     const nodeSize = Math.sqrt(node.val || 5) * 2;
+
+    // =========================================================================
+    // GHOST PROTOCOL: Obfuscated Node Rendering
+    // Dashed, translucent circles for unknown actors (e.g., "Unnamed Co-Conspirator")
+    // =========================================================================
+    if (node.isObfuscated) {
+      // Ghost node - dashed border, very faint fill
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, nodeSize, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.1)'; // Slate-400, 10% opacity - spectral fill
+      ctx.fill();
+
+      // Dashed border for ghost nodes
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, nodeSize, 0, 2 * Math.PI, false);
+      ctx.lineWidth = 2 / globalScale;
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)'; // Slate-400, 50% opacity
+      ctx.setLineDash([4 / globalScale, 2 / globalScale]); // Dashed line pattern
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset dash pattern
+
+      // Ghost label - faded text
+      ctx.font = `${fontSize}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.7)'; // Faded label
+      ctx.fillText(label, node.x, node.y + nodeSize + 3);
+
+      // Ghost icon indicator
+      ctx.font = `${fontSize * 0.8}px sans-serif`;
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.5)';
+      ctx.fillText('👻', node.x, node.y - nodeSize - fontSize);
+
+      return; // Exit early - ghost nodes have their own complete rendering
+    }
+
+    // =========================================================================
+    // STANDARD NODE RENDERING
+    // =========================================================================
 
     // Draw node circle
     ctx.beginPath();
@@ -337,17 +377,28 @@ export function NetworkGraph({ data, onNodeClick, height = 600 }: NetworkGraphPr
             />
           ) : selectedNode ? (
             <div className="space-y-4">
-              <div className="bg-slate-800/50 rounded-lg p-4">
+              {/* Ghost Protocol Banner */}
+              {selectedNode.isObfuscated && (
+                <div className="bg-slate-800/80 border border-dashed border-slate-600 rounded-lg p-3 flex items-center gap-3">
+                  <span className="text-2xl">👻</span>
+                  <div>
+                    <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">Ghost Node</p>
+                    <p className="text-xs text-slate-500">Protected identity - legal obfuscation active</p>
+                  </div>
+                </div>
+              )}
+
+              <div className={`rounded-lg p-4 ${selectedNode.isObfuscated ? 'bg-slate-800/30 border border-dashed border-slate-700' : 'bg-slate-800/50'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: entityTypeColors[selectedNode.type] }}
+                    className={`w-4 h-4 rounded-full ${selectedNode.isObfuscated ? 'border-2 border-dashed border-slate-500 bg-transparent' : ''}`}
+                    style={selectedNode.isObfuscated ? {} : { backgroundColor: entityTypeColors[selectedNode.type] }}
                   />
                   <span className="text-xs font-mono text-slate-400 uppercase">
                     {selectedNode.type}
                   </span>
                 </div>
-                <h4 className="text-lg font-semibold text-white mb-1">
+                <h4 className={`text-lg font-semibold mb-1 ${selectedNode.isObfuscated ? 'text-slate-400 italic' : 'text-white'}`}>
                   {selectedNode.name}
                 </h4>
                 <p className="text-xs text-slate-400">
@@ -420,6 +471,14 @@ export function NetworkGraph({ data, onNodeClick, height = 600 }: NetworkGraphPr
               <span className="text-amber-400 ml-1">
                 {processedData.links.filter(l => l.evidenceTier === 'ALLEGED').length}
               </span>
+            </div>
+            {/* Ghost Protocol Stats */}
+            <div className="col-span-2 pt-2 border-t border-slate-700 mt-2">
+              <span className="text-slate-500">👻 Obfuscated:</span>
+              <span className="text-slate-400 ml-1">
+                {processedData.nodes.filter(n => n.isObfuscated).length}
+              </span>
+              <span className="text-slate-600 ml-1 text-[10px]">(hidden actors)</span>
             </div>
           </div>
         </div>

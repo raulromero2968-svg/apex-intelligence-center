@@ -11,7 +11,7 @@
  * @version 1.0.0
  */
 
-import { pgTable, text, uuid, jsonb, timestamp, index, pgEnum, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, uuid, jsonb, timestamp, index, pgEnum, customType, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // =============================================================================
@@ -121,6 +121,11 @@ export const powerEntities = pgTable(
     // Evidence and verification
     evidenceTier: evidenceTierEnum('evidence_tier').default('DOCUMENTED'),
     scandalNotes: text('scandal_notes'), // What they are implicated in
+
+    // Ghost Protocol: Obfuscated entities
+    // If TRUE, this node represents a hidden actor (e.g., "Unnamed Co-Conspirator")
+    // Protected by legal instruments like NPAs, sealed indictments, or redacted documents
+    isObfuscated: boolean('is_obfuscated').default(false).notNull(),
 
     // Domain classification (can operate across multiple)
     primaryDomain: domainTypeEnum('primary_domain'),
