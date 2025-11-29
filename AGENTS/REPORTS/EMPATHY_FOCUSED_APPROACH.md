@@ -20,6 +20,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Perplexity** | Perplexity AI | Real-time search, citation-backed research, fact verification |
 | **Claude (Opus 4)** | Anthropic | Final structuring, documentation, git integration, code-level implementation |
 | **Cursor** | Cursor Inc. | AI-native code editor, inline completions, codebase-aware refactoring |
+| **GitHub Copilot** | GitHub/Microsoft | Inline code suggestions, chat assistance, PR summaries |
 | **Manus** | Manus AI | Autonomous task execution, multi-step workflow handling |
 | **AntiGravity** | AntiGravity AI | Experimental agent (limited current use, future collaboration potential) |
 
@@ -32,6 +33,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Windows PowerShell** | Shell scripting, system automation, CLI operations on Windows |
 | **Vercel** | Deployment infrastructure, preview environments, production hosting |
 | **Zapier** | Automation glue, cross-platform triggers, workflow orchestration |
+| **Notion** | Knowledge base, documentation hub, project management, AI Q&A |
 | **Opera Browser** | Multi-agent interface, session management, AI sidebar integration |
 
 ### Claude's Specific Role (Anthropic)
@@ -353,5 +355,5 @@ Two possible paths:
 ---
 
 *Framework finalized: November 2024*
-*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Claude (Anthropic) + Cursor + Manus + AntiGravity*
-*Infrastructure: GitHub + VS Code + Windows PowerShell + Vercel + Zapier + Opera Browser*
+*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Claude (Anthropic) + Cursor + GitHub Copilot + Manus + AntiGravity*
+*Infrastructure: GitHub + VS Code + Windows PowerShell + Vercel + Zapier + Notion + Opera Browser*
