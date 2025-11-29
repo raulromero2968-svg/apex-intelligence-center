@@ -55,5 +55,34 @@ export {
   type PostAgencyUpdateType,
 } from './alignmentData';
 
+// Power Network Schema (Graph-Relational v2.0)
+export {
+  // Enums
+  domainTypeEnum,
+  confidenceLevelEnum,
+  entityTypeEnum,
+  scandalTierEnum,
+  relationshipStatusEnum,
+  // Tables
+  entities,
+  relationships,
+  evidence,
+  networkAuditLog,
+  // Types
+  type PowerEntity,
+  type NewPowerEntity,
+  type PowerRelationship,
+  type NewPowerRelationship,
+  type PowerEvidence,
+  type NewPowerEvidence,
+  type PowerNetworkAuditLog,
+  type NewPowerNetworkAuditLog,
+  type DomainType,
+  type ConfidenceLevel,
+  type EntityType,
+  type ScandalTier,
+  type RelationshipStatus,
+} from './powerNetwork';
+
 
 
