@@ -8,3 +8,4 @@
 
 export { NetworkGraph, type NetworkGraphProps, type GraphData, type GraphNode, type GraphLink } from './NetworkGraph';
 export { SourceCard, type SourceCardProps, type EvidenceTier } from './SourceCard';
+export { InvestigatorNotebook, type InvestigatorNotebookProps } from './InvestigatorNotebook';
