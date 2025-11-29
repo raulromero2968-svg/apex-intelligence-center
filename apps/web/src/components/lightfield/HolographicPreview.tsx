@@ -209,7 +209,7 @@ export function HolographicPreview({
         />
 
         {/* View indicator */}
-        <div className="absolute top-2 right-2 px-2 py-1 bg-slate-900/80 rounded text-xs font-mono">
+        <div className="absolute top-2 right-2 px-2 py-1 bg-slate-900/80 rounded text-xs font-sans">
           <span className="text-cyan-300">View</span>{" "}
           <span className="text-white">{currentView + 1}</span>
           <span className="text-slate-400">/{quiltConfig.viewCount}</span>
@@ -268,21 +268,21 @@ export function HolographicPreview({
           <div className="grid grid-cols-4 gap-4 text-sm">
             <div>
               <div className="text-xs text-slate-400">FPS</div>
-              <div className={`font-mono ${fps >= 30 ? "text-emerald-300" : "text-amber-300"}`}>
+              <div className={`font-sans ${fps >= 30 ? "text-emerald-300" : "text-amber-300"}`}>
                 <HoloNumber value={fps} />
               </div>
             </div>
             <div>
               <div className="text-xs text-slate-400">Views</div>
-              <div className="font-mono text-slate-200">{getEffectiveViewCount()}</div>
+              <div className="font-sans text-slate-200">{getEffectiveViewCount()}</div>
             </div>
             <div>
               <div className="text-xs text-slate-400">View Cone</div>
-              <div className="font-mono text-slate-200">{quiltConfig.viewCone}°</div>
+              <div className="font-sans text-slate-200">{quiltConfig.viewCone}°</div>
             </div>
             <div>
               <div className="text-xs text-slate-400">Depth</div>
-              <div className="font-mono text-slate-200">{quiltConfig.depthiness.toFixed(1)}x</div>
+              <div className="font-sans text-slate-200">{quiltConfig.depthiness.toFixed(1)}x</div>
             </div>
           </div>
         </div>

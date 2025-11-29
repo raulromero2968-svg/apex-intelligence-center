@@ -13,7 +13,7 @@ export const Footer = () => {
           <div className="md:col-span-1">
             <Link 
               href="/" 
-              className="flex items-center text-white font-bold text-base tracking-tight font-mono mb-4 hover:text-cyan-400 transition-colors group"
+              className="flex items-center text-white font-bold text-base tracking-tight font-sans mb-4 hover:text-cyan-400 transition-colors group"
             >
               <Image
                 src="/images/apex-wolf-black-bg-final.png"
@@ -24,19 +24,19 @@ export const Footer = () => {
               />
               <span className="text-sm">INTRANATIONAL INTEL</span>
             </Link>
-            <p className="text-slate-500 text-xs font-mono leading-relaxed">
+            <p className="text-slate-500 text-xs font-sans leading-relaxed">
               A cosmic think tank at the intersection of AI, markets, and biological systems.
             </p>
           </div>
 
           {/* Column 2: Navigate */}
           <div>
-            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ NAVIGATE ]</h4>
+            <h4 className="font-sans text-xs mb-4 text-cyan-400 tracking-wider">[ NAVIGATE ]</h4>
             <ul className="space-y-2">
               <li>
                 <Link 
                   href="/intel" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Intel
                 </Link>
@@ -44,7 +44,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/lab" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Lab
                 </Link>
@@ -52,7 +52,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/portfolio" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Portfolio
                 </Link>
@@ -60,7 +60,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/commons" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Commons
                 </Link>
@@ -70,12 +70,12 @@ export const Footer = () => {
 
           {/* Column 3: Research */}
           <div>
-            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ RESEARCH ]</h4>
+            <h4 className="font-sans text-xs mb-4 text-cyan-400 tracking-wider">[ RESEARCH ]</h4>
             <ul className="space-y-2">
               <li>
                 <Link 
                   href="/about" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   About
                 </Link>
@@ -83,7 +83,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/philosophy" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Philosophy
                 </Link>
@@ -91,7 +91,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/research" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Research
                 </Link>
@@ -99,7 +99,7 @@ export const Footer = () => {
               <li>
                 <Link 
                   href="/blog" 
-                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-mono block"
+                  className="text-slate-400 hover:text-cyan-400 text-xs transition-colors font-sans block"
                 >
                   Blog
                 </Link>
@@ -109,7 +109,7 @@ export const Footer = () => {
 
           {/* Column 4: Connect */}
           <div>
-            <h4 className="font-mono text-xs mb-4 text-cyan-400 tracking-wider">[ CONNECT ]</h4>
+            <h4 className="font-sans text-xs mb-4 text-cyan-400 tracking-wider">[ CONNECT ]</h4>
             <div className="flex gap-3">
               <a 
                 href="https://twitter.com/apexintel" 
@@ -149,7 +149,7 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-xs font-mono">
+        <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-xs font-sans">
           <div className="flex items-center gap-4">
             <span>© 2025 INTRANATIONAL INTEL & AI RESEARCH CENTER. ALL RIGHTS RESERVED.</span>
           </div>

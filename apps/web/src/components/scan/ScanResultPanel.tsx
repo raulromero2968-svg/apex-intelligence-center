@@ -68,11 +68,11 @@ export function ScanResultPanel({ result, isLoading, error }: ScanResultPanelPro
         <div className="mb-4 space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Hash Version</span>
-            <span className="font-mono text-gray-900 dark:text-white">{fingerprint.hashVersion}</span>
+            <span className="font-sans text-gray-900 dark:text-white">{fingerprint.hashVersion}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Fingerprint</span>
-            <span className="font-mono text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-sans text-xs text-gray-500 dark:text-gray-400">
               {fingerprint.fingerprintHex.slice(0, 16)}...
             </span>
           </div>
@@ -145,7 +145,7 @@ export function ScanResultPanel({ result, isLoading, error }: ScanResultPanelPro
                         Grade: {duplicate.grade.toFixed(1)}
                       </p>
                     )}
-                    <p className="text-xs font-mono text-gray-400 dark:text-gray-500 mt-1">
+                    <p className="text-xs font-sans text-gray-400 dark:text-gray-500 mt-1">
                       {duplicate.fingerprintHex.slice(0, 16)}...
                     </p>
                   </div>

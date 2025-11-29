@@ -289,7 +289,7 @@ export function OODADashboard({
                     <td className="py-2 text-slate-400">
                       {new Date(metric.timestamp).toLocaleTimeString()}
                     </td>
-                    <td className="py-2 font-mono text-xs">{metric.pipelineId}</td>
+                    <td className="py-2 font-sans text-xs">{metric.pipelineId}</td>
                     <td className="py-2">
                       <span className={`px-1.5 py-0.5 rounded text-xs ${
                         metric.processingType === "edge"
@@ -301,7 +301,7 @@ export function OODADashboard({
                         {metric.processingType}
                       </span>
                     </td>
-                    <td className="py-2 text-right font-mono">{metric.totalLatencyMs}ms</td>
+                    <td className="py-2 text-right font-sans">{metric.totalLatencyMs}ms</td>
                     <td className={`py-2 text-right capitalize ${PHASE_COLORS[metric.bottleneckPhase].text}`}>
                       {metric.bottleneckPhase}
                     </td>

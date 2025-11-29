@@ -217,7 +217,7 @@ export default function PwaDebugPage() {
           <div className="space-y-2 text-sm">
             <div>
               <span className="text-white/70">User Agent: </span>
-              <span className="text-white/90 font-mono text-xs break-all">
+              <span className="text-white/90 font-sans text-xs break-all">
                 {status.userAgent}
               </span>
             </div>

@@ -162,7 +162,7 @@ export default function PortfolioPage() {
       <section className="relative z-10 px-6 md:px-12 pt-32 pb-16">
         <div className="max-w-6xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -184,7 +184,7 @@ export default function PortfolioPage() {
             A universal platform for passionate collectors. From trading cards to sneakers, gemstones to cultural artifacts—showcase your curated collections and discover what others are preserving.
           </p>
 
-          <div className="flex items-center justify-center gap-6 text-sm text-slate-500 font-mono">
+          <div className="flex items-center justify-center gap-6 text-sm text-slate-500 font-sans">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-cyan-400" />
               <span>{collections.length} Collections</span>
@@ -210,7 +210,7 @@ export default function PortfolioPage() {
             {/* Section Header */}
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="flex items-center gap-3 text-2xl tracking-wider font-mono">
+              <h2 className="flex items-center gap-3 text-2xl tracking-wider font-sans">
                 <Trophy className="w-6 h-6 text-purple-400" />
                 <span className="text-holographic">[ COMMUNITY SPOTLIGHT ]</span>
               </h2>
@@ -238,7 +238,7 @@ export default function PortfolioPage() {
             {/* Section Header */}
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-              <h2 className="flex items-center gap-3 text-2xl tracking-wider font-mono">
+              <h2 className="flex items-center gap-3 text-2xl tracking-wider font-sans">
                 <Sparkles 
                   className="w-6 h-6" 
                   strokeWidth={2.5} 
@@ -259,7 +259,7 @@ export default function PortfolioPage() {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-lg text-sm font-mono whitespace-nowrap transition-all ${
+                    className={`px-4 py-2 rounded-lg text-sm font-sans whitespace-nowrap transition-all ${
                       selectedCategory === category
                         ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
                         : 'bg-black/40 text-slate-400 border border-slate-700/50 hover:text-white hover:border-slate-600'
@@ -273,13 +273,13 @@ export default function PortfolioPage() {
 
             {/* Sort Controls */}
             <div className="flex items-center justify-between mb-8">
-              <p className="text-sm text-slate-500 font-mono">
+              <p className="text-sm text-slate-500 font-sans">
                 {sortedCommunity.length} collection{sortedCommunity.length !== 1 ? 's' : ''} found
               </p>
               <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-lg p-1">
                 <button
                   onClick={() => setSortBy('votes')}
-                  className={`px-4 py-2 rounded-md text-sm font-mono transition-all ${
+                  className={`px-4 py-2 rounded-md text-sm font-sans transition-all ${
                     sortBy === 'votes'
                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
                       : 'text-slate-400 hover:text-white'
@@ -289,7 +289,7 @@ export default function PortfolioPage() {
                 </button>
                 <button
                   onClick={() => setSortBy('views')}
-                  className={`px-4 py-2 rounded-md text-sm font-mono transition-all ${
+                  className={`px-4 py-2 rounded-md text-sm font-sans transition-all ${
                     sortBy === 'views'
                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
                       : 'text-slate-400 hover:text-white'
@@ -299,7 +299,7 @@ export default function PortfolioPage() {
                 </button>
                 <button
                   onClick={() => setSortBy('newest')}
-                  className={`px-4 py-2 rounded-md text-sm font-mono transition-all ${
+                  className={`px-4 py-2 rounded-md text-sm font-sans transition-all ${
                     sortBy === 'newest'
                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
                       : 'text-slate-400 hover:text-white'
@@ -336,7 +336,7 @@ export default function PortfolioPage() {
           <div className="max-w-3xl mx-auto">
             <div className="relative overflow-hidden rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-950/20 to-cyan-950/20 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/60 hover:shadow-lg hover:shadow-purple-500/10">
               <div className="text-center p-8">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-6">
                   <Award className="w-4 h-4" />
                   SUBMIT YOUR COLLECTION
                 </div>
@@ -352,14 +352,14 @@ export default function PortfolioPage() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
                     href="/submit-collection"
-                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(147,51,234,0.5)] font-mono"
+                    className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(147,51,234,0.5)] font-sans"
                   >
                     <ArrowUpRight className="w-5 h-5" />
                     SUBMIT COLLECTION
                   </Link>
                   <Link
                     href="/about"
-                    className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-mono"
+                    className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans"
                   >
                     LEARN MORE
                   </Link>
@@ -414,7 +414,7 @@ function CollectionCard({ collection, featured = false }: { collection: any; fea
       <div className="p-6">
         {/* Category & Theme Badges */}
         <div className="flex items-center gap-2 mb-3">
-          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-mono">
+          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-sans">
             {collection.category}
           </div>
           <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30">
@@ -462,7 +462,7 @@ function CollectionCard({ collection, featured = false }: { collection: any; fea
 
         {/* Actions */}
         <div className="flex gap-2">
-          <button className="flex-1 px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 transition-all text-sm font-mono">
+          <button className="flex-1 px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30 transition-all text-sm font-sans">
             VIEW COLLECTION
           </button>
           <button className="px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-400 hover:bg-purple-500/30 transition-all">

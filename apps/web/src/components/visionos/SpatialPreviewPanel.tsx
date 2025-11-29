@@ -355,13 +355,13 @@ export function SpatialPreviewPanel({
         <div className="grid grid-cols-4 gap-3">
           <div className="text-center">
             <div className="text-xs text-slate-400">FPS</div>
-            <div className={`text-lg font-mono ${fps >= 85 ? "text-emerald-300" : "text-amber-300"}`}>
+            <div className={`text-lg font-sans ${fps >= 85 ? "text-emerald-300" : "text-amber-300"}`}>
               <HoloNumber value={fps} />
             </div>
           </div>
           <div className="text-center">
             <div className="text-xs text-slate-400">Entities</div>
-            <div className="text-lg font-mono text-slate-200">{entities.length}</div>
+            <div className="text-lg font-sans text-slate-200">{entities.length}</div>
           </div>
           <div className="text-center">
             <div className="text-xs text-slate-400">Gaze</div>
@@ -379,7 +379,7 @@ export function SpatialPreviewPanel({
 
         {/* Debug info */}
         {showDebugInfo && (
-          <div className="mt-3 p-2 bg-slate-800/50 rounded text-xs font-mono text-slate-400">
+          <div className="mt-3 p-2 bg-slate-800/50 rounded text-xs font-sans text-slate-400">
             <div>Cursor: [{Math.round(gazeCursor.position[0])}, {Math.round(gazeCursor.position[1])}]</div>
             <div>Target: {gazeCursor.targetEntityId ?? "none"}</div>
             <div>Dwell: {(gazeCursor.dwellProgress * 100).toFixed(0)}%</div>

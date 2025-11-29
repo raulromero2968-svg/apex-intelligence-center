@@ -23,7 +23,7 @@ export default function IntelPage() {
         <ScrollReveal>
           <div className="relative">
             {/* Status Bar */}
-            <div className="flex items-center gap-3 mb-6 font-mono text-xs">
+            <div className="flex items-center gap-3 mb-6 font-sans text-xs">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-cyan-950/30 border border-cyan-500/30 text-cyan-400">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
@@ -56,7 +56,7 @@ export default function IntelPage() {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                   <Eye className="w-8 h-8 text-cyan-400" />
-                  <span className="text-cyan-400 font-mono text-sm tracking-wider">APEX_INTEL_PROTOCOL</span>
+                  <span className="text-cyan-400 font-sans text-sm tracking-wider">APEX_INTEL_PROTOCOL</span>
                 </div>
                 
                 <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
@@ -64,7 +64,7 @@ export default function IntelPage() {
                   <span className="text-holographic">Intelligence Center</span>
                 </h1>
                 
-                <p className="text-lg md:text-xl text-slate-300 max-w-3xl leading-relaxed font-mono">
+                <p className="text-lg md:text-xl text-slate-300 max-w-3xl leading-relaxed font-sans">
                   Real-time optical analysis and market velocity tracking. Inspect assets with our{" "}
                   <span className="text-cyan-400 font-bold">VARC-3D</span> rendering engine.
                   Zero latency. Full transparency.
@@ -73,20 +73,20 @@ export default function IntelPage() {
                 {/* Metrics Bar */}
                 <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="border border-cyan-500/20 bg-black/40 rounded-lg p-4">
-                    <div className="text-cyan-400 text-2xl font-bold font-mono">24/7</div>
-                    <div className="text-slate-500 text-xs mt-1 font-mono">LIVE MONITORING</div>
+                    <div className="text-cyan-400 text-2xl font-bold font-sans">24/7</div>
+                    <div className="text-slate-500 text-xs mt-1 font-sans">LIVE MONITORING</div>
                   </div>
                   <div className="border border-purple-500/20 bg-black/40 rounded-lg p-4">
-                    <div className="text-purple-400 text-2xl font-bold font-mono">247</div>
-                    <div className="text-slate-500 text-xs mt-1 font-mono">DATA SOURCES</div>
+                    <div className="text-purple-400 text-2xl font-bold font-sans">247</div>
+                    <div className="text-slate-500 text-xs mt-1 font-sans">DATA SOURCES</div>
                   </div>
                   <div className="border border-emerald-500/20 bg-black/40 rounded-lg p-4">
-                    <div className="text-emerald-400 text-2xl font-bold font-mono">98.7%</div>
-                    <div className="text-slate-500 text-xs mt-1 font-mono">ACCURACY RATE</div>
+                    <div className="text-emerald-400 text-2xl font-bold font-sans">98.7%</div>
+                    <div className="text-slate-500 text-xs mt-1 font-sans">ACCURACY RATE</div>
                   </div>
                   <div className="border border-orange-500/20 bg-black/40 rounded-lg p-4">
-                    <div className="text-orange-400 text-2xl font-bold font-mono">&lt;50ms</div>
-                    <div className="text-slate-500 text-xs mt-1 font-mono">LATENCY</div>
+                    <div className="text-orange-400 text-2xl font-bold font-sans">&lt;50ms</div>
+                    <div className="text-slate-500 text-xs mt-1 font-sans">LATENCY</div>
                   </div>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export default function IntelPage() {
                 <div className="border-b border-purple-500/30 bg-black/60 px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-purple-400" />
-                    <span className="text-purple-400 font-mono text-xs tracking-wider">VARC-3D VIEWER</span>
+                    <span className="text-purple-400 font-sans text-xs tracking-wider">VARC-3D VIEWER</span>
                   </div>
                   <div className="flex gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-red-500/50" />
@@ -119,7 +119,7 @@ export default function IntelPage() {
 
                 {/* Footer Info */}
                 <div className="border-t border-purple-500/30 bg-black/60 px-4 py-2">
-                  <div className="text-[10px] text-slate-500 font-mono">
+                  <div className="text-[10px] text-slate-500 font-sans">
                     RENDERING: REAL-TIME | QUALITY: ULTRA | FPS: 60
                   </div>
                 </div>
@@ -131,19 +131,19 @@ export default function IntelPage() {
                 <div className="border-b border-cyan-500/30 bg-black/60 px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-cyan-400" />
-                    <span className="text-cyan-400 font-mono text-xs tracking-wider">MARKET_TERMINAL</span>
+                    <span className="text-cyan-400 font-sans text-xs tracking-wider">MARKET_TERMINAL</span>
                   </div>
-                  <div className="text-cyan-400 text-[10px] font-mono">LIVE</div>
+                  <div className="text-cyan-400 text-[10px] font-sans">LIVE</div>
                 </div>
 
                 {/* Stats */}
                 <div className="p-6 space-y-6">
                   <div>
                     <div className="flex justify-between items-baseline mb-2">
-                      <span className="text-slate-400 font-mono text-sm">CURRENT_PRICE</span>
-                      <span className="text-3xl font-bold text-white font-mono">$420,000</span>
+                      <span className="text-slate-400 font-sans text-sm">CURRENT_PRICE</span>
+                      <span className="text-3xl font-bold text-white font-sans">$420,000</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-mono">
+                    <div className="flex items-center gap-2 text-xs font-sans">
                       <span className="text-emerald-400">▲ 12.5%</span>
                       <span className="text-slate-600">|</span>
                       <span className="text-slate-500">24H CHANGE</span>
@@ -157,7 +157,7 @@ export default function IntelPage() {
                         <div className="absolute inset-0 bg-white/20 animate-pulse" />
                       </div>
                     </div>
-                    <div className="flex justify-between text-[10px] text-slate-500 mt-2 font-mono">
+                    <div className="flex justify-between text-[10px] text-slate-500 mt-2 font-sans">
                       <span>LOW: $380K</span>
                       <span>HIGH: $450K</span>
                     </div>
@@ -166,20 +166,20 @@ export default function IntelPage() {
                   {/* Additional Metrics */}
                   <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-800">
                     <div>
-                      <div className="text-slate-500 text-[10px] font-mono mb-1">VOLUME_24H</div>
-                      <div className="text-white font-mono text-sm">$2.4M</div>
+                      <div className="text-slate-500 text-[10px] font-sans mb-1">VOLUME_24H</div>
+                      <div className="text-white font-sans text-sm">$2.4M</div>
                     </div>
                     <div>
-                      <div className="text-slate-500 text-[10px] font-mono mb-1">TRADES</div>
-                      <div className="text-white font-mono text-sm">1,247</div>
+                      <div className="text-slate-500 text-[10px] font-sans mb-1">TRADES</div>
+                      <div className="text-white font-sans text-sm">1,247</div>
                     </div>
                     <div>
-                      <div className="text-slate-500 text-[10px] font-mono mb-1">AVG_SALE</div>
-                      <div className="text-white font-mono text-sm">$395K</div>
+                      <div className="text-slate-500 text-[10px] font-sans mb-1">AVG_SALE</div>
+                      <div className="text-white font-sans text-sm">$395K</div>
                     </div>
                     <div>
-                      <div className="text-slate-500 text-[10px] font-mono mb-1">VOLATILITY</div>
-                      <div className="text-orange-400 font-mono text-sm">HIGH</div>
+                      <div className="text-slate-500 text-[10px] font-sans mb-1">VOLATILITY</div>
+                      <div className="text-orange-400 font-sans text-sm">HIGH</div>
                     </div>
                   </div>
                 </div>
@@ -202,14 +202,14 @@ export default function IntelPage() {
                 <div className="border-b border-purple-500/30 bg-black/60 px-6 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Radio className="w-4 h-4 text-purple-400" />
-                    <span className="text-purple-400 font-mono text-sm tracking-wider">LIVE_INTEL_FEED</span>
+                    <span className="text-purple-400 font-sans text-sm tracking-wider">LIVE_INTEL_FEED</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                     </span>
-                    <span className="text-purple-400 text-xs font-mono">STREAMING</span>
+                    <span className="text-purple-400 text-xs font-sans">STREAMING</span>
                   </div>
                 </div>
 
@@ -243,7 +243,7 @@ export default function IntelPage() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                              <span className={`text-[10px] font-sans px-2 py-0.5 rounded ${
                                 item.priority === 'CRITICAL' ? 'bg-red-950/50 border border-red-500/30 text-red-400' :
                                 item.priority === 'HIGH' ? 'bg-orange-950/50 border border-orange-500/30 text-orange-400' :
                                 'bg-cyan-950/50 border border-cyan-500/30 text-cyan-400'
@@ -251,12 +251,12 @@ export default function IntelPage() {
                                 {item.priority}
                               </span>
                               <span className="text-slate-600 text-xs">•</span>
-                              <span className="text-slate-500 text-xs font-mono">{item.date}</span>
+                              <span className="text-slate-500 text-xs font-sans">{item.date}</span>
                             </div>
                             <div className="text-cyan-400 text-sm font-medium mb-1 group-hover:text-cyan-300 transition-colors">
                               {item.title}
                             </div>
-                            <div className="text-slate-500 text-xs font-mono">
+                            <div className="text-slate-500 text-xs font-sans">
                               SOURCE: {item.source}
                             </div>
                           </div>

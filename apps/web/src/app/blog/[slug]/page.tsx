@@ -94,7 +94,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
         <div className="max-w-4xl mx-auto mb-8">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-mono text-sm"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-sans text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             BACK_TO_BLOG
@@ -105,7 +105,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
         <section className="max-w-4xl mx-auto mb-12">
           <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8">
             {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
             </h1>
 
             {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 font-mono mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 font-sans mb-6">
               {article.frontmatter.author && (
                 <>
                   <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                 {article.frontmatter.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-300 font-mono"
+                    className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-300 font-sans"
                   >
                     {tag}
                   </span>
@@ -275,7 +275,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
             </p>
             <Link
               href="/blog"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-mono"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
             >
               [ VIEW_ALL_POSTS ]
             </Link>

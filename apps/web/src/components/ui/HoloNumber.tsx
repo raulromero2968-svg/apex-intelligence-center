@@ -74,7 +74,7 @@ export const HoloNumber: FC<HoloNumberProps> = ({
     <span
       className={`
         inline-block
-        font-holo-mono
+        font-sans
         font-bold
         tabular-nums
         transition-all

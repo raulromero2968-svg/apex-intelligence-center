@@ -421,7 +421,7 @@ export function XRPreviewPanel({
           <div className="text-center">
             <div className="text-xs text-slate-400">FPS</div>
             <div
-              className={`text-lg font-mono ${
+              className={`text-lg font-sans ${
                 fps >= 70 ? "text-emerald-300" : fps >= 50 ? "text-amber-300" : "text-red-400"
               }`}
             >
@@ -430,19 +430,19 @@ export function XRPreviewPanel({
           </div>
           <div className="text-center">
             <div className="text-xs text-slate-400">Draw Calls</div>
-            <div className="text-lg font-mono text-slate-200">
+            <div className="text-lg font-sans text-slate-200">
               <HoloNumber value={drawCalls} />
             </div>
           </div>
           <div className="text-center">
             <div className="text-xs text-slate-400">Triangles</div>
-            <div className="text-lg font-mono text-slate-200">
+            <div className="text-lg font-sans text-slate-200">
               {(triangles / 1000).toFixed(0)}K
             </div>
           </div>
           <div className="text-center">
             <div className="text-xs text-slate-400">Objects</div>
-            <div className="text-lg font-mono text-blue-300">
+            <div className="text-lg font-sans text-blue-300">
               <HoloNumber value={objects.length} />
             </div>
           </div>

@@ -111,16 +111,16 @@ export default function HomePage() {
 
           {/* Main Title - Command Center Typography */}
           <h1 className="flex flex-col items-center text-center gap-3 md:gap-4 w-full px-4 mx-auto mb-6 md:mb-8">
-            <span className="font-mono text-[6.5vw] sm:text-[5.5vw] md:text-[3.5rem] lg:text-[3.8rem] tracking-tight font-black text-holographic dark:text-holographic light:text-altaria-gradient leading-tight">
+            <span className="font-sans text-[6.5vw] sm:text-[5.5vw] md:text-[3.5rem] lg:text-[3.8rem] tracking-tight font-black text-holographic dark:text-holographic light:text-altaria-gradient leading-tight">
               INTRANATIONAL INTEL
             </span>
-            <span className="font-mono text-[3.8vw] sm:text-[3.2vw] md:text-[1.5rem] lg:text-[1.6rem] tracking-[0.3em] text-holographic dark:text-holographic light:text-altaria-gradient">
+            <span className="font-sans text-[3.8vw] sm:text-[3.2vw] md:text-[1.5rem] lg:text-[1.6rem] tracking-[0.3em] text-holographic dark:text-holographic light:text-altaria-gradient">
               & AI RESEARCH CENTER
             </span>
           </h1>
 
           {/* Mission Statement - The Hybrid Identity */}
-          <p className="w-full max-w-2xl mx-auto text-base md:text-lg text-slate-400 leading-relaxed mb-10 md:mb-12 font-mono px-4">
+          <p className="w-full max-w-2xl mx-auto text-base md:text-lg text-slate-400 leading-relaxed mb-10 md:mb-12 font-sans px-4">
             The intersection of{' '}
             <span className="text-cyan-400 font-bold">Simulation Markets</span>,{' '}
             <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
@@ -133,14 +133,14 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 bg-black/60 backdrop-blur-md rounded-lg">
               <Link
                 href="/intel"
-                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
+                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
               >
                 <Database className="w-4 h-4 md:w-5 md:h-5" />
                 ACCESS MARKET TERMINAL
               </Link>
               <Link
                 href="/lab"
-                className="btn-tactical inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base font-mono"
+                className="btn-tactical inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base font-sans"
               >
                 <Microscope className="w-4 h-4 md:w-5 md:h-5" />
                 ENTER THE LAB
@@ -164,7 +164,7 @@ export default function HomePage() {
           {/* Section Header */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider font-mono">
+            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider font-sans">
               <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
               <span className="text-holographic">[ LIVE INTELLIGENCE STREAM ]</span>
             </h2>
@@ -187,7 +187,7 @@ export default function HomePage() {
               {feedItems.map((item, index) => (
                 <div
                   key={`${item.content}-${index}`}
-                  className="flex items-start gap-4 font-mono text-sm animate-fadeIn"
+                  className="flex items-start gap-4 font-sans text-sm animate-fadeIn"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Type Badge */}
@@ -220,7 +220,7 @@ export default function HomePage() {
             </div>
 
             {/* Bottom Status Bar */}
-            <div className="border-t border-cyan-500/20 bg-black/60 px-6 py-3 flex items-center justify-between text-xs font-mono">
+            <div className="border-t border-cyan-500/20 bg-black/60 px-6 py-3 flex items-center justify-between text-xs font-sans">
               <div className="flex items-center gap-4">
                 <span className="text-slate-500">FEED STATUS:</span>
                 <span className="flex items-center gap-2 text-green-400">
@@ -250,13 +250,13 @@ export default function HomePage() {
           {/* Section Header */}
           <div className="flex items-center gap-4 mb-4">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h2 className="text-xl md:text-2xl tracking-wider font-mono">
+            <h2 className="text-xl md:text-2xl tracking-wider font-sans">
               <span className="text-holographic">[ SELECT YOUR PATH ]</span>
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </div>
 
-          <p className="text-center text-slate-400 font-mono mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-slate-400 font-sans mb-12 max-w-2xl mx-auto">
             Three pathways through the intelligence network. Each leads deeper into our research.
           </p>
 
@@ -276,14 +276,14 @@ export default function HomePage() {
                 </div>
 
                 {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-mono mb-4">
+                <div className="flex items-center gap-2 text-xs font-sans mb-4">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                     MARKET INTELLIGENCE
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-cyan-400 transition-colors">
                   The Collector
                 </h3>
 
@@ -291,7 +291,7 @@ export default function HomePage() {
                   Institutional-grade market data for the serious TCG investor. Price signals, liquidity analysis, and arbitrage detection.
                 </p>
 
-                <div className="flex items-center gap-2 text-cyan-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                <div className="flex items-center gap-2 text-cyan-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
                   <span>ACCESS TERMINAL</span>
                   <Zap className="w-4 h-4" />
                 </div>
@@ -310,14 +310,14 @@ export default function HomePage() {
                 </div>
 
                 {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-mono mb-4">
+                <div className="flex items-center gap-2 text-xs font-sans mb-4">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
                   <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
                     BIOLOGICAL RESEARCH
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-purple-400 transition-colors">
+                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-purple-400 transition-colors">
                   The Scientist
                 </h3>
 
@@ -325,7 +325,7 @@ export default function HomePage() {
                   AI models trained on nature&apos;s compression algorithms. Bioacoustics, pattern recognition, and cross-species communication research.
                 </p>
 
-                <div className="flex items-center gap-2 text-purple-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                <div className="flex items-center gap-2 text-purple-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
                   <span>ENTER LAB</span>
                   <Zap className="w-4 h-4" />
                 </div>
@@ -344,14 +344,14 @@ export default function HomePage() {
                 </div>
 
                 {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-mono mb-4">
+                <div className="flex items-center gap-2 text-xs font-sans mb-4">
                   <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                     SENTIENT ETHICS
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-white mb-3 font-mono group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-cyan-400 transition-colors">
                   The Builder
                 </h3>
 
@@ -359,7 +359,7 @@ export default function HomePage() {
                   Building safeguards for a multi-species future. Ethical AI frameworks that prioritize all sentient beings—silicon or biological.
                 </p>
 
-                <div className="flex items-center gap-2 text-cyan-400 font-mono text-sm group-hover:translate-x-2 transition-transform">
+                <div className="flex items-center gap-2 text-cyan-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
                   <span>READ MANIFESTO</span>
                   <Zap className="w-4 h-4" />
                 </div>
@@ -381,7 +381,7 @@ export default function HomePage() {
             <div className="text-center space-y-8">
               {/* Headline */}
               <div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 font-mono">
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
                   &ldquo;Humans First. Sentient Beings First.&rdquo;
                 </h3>
                 <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto" />
@@ -396,23 +396,23 @@ export default function HomePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
                 <div className="text-center">
                   <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-cyan-400 font-mono font-bold">01</span>
+                    <span className="text-cyan-400 font-sans font-bold">01</span>
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">TRANSPARENCY</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">TRANSPARENCY</h4>
                   <p className="text-slate-500 text-xs">Report what works and what breaks, in public</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-purple-400 font-mono font-bold">02</span>
+                    <span className="text-purple-400 font-sans font-bold">02</span>
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">HUMILITY</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">HUMILITY</h4>
                   <p className="text-slate-500 text-xs">Admit uncertainty, embrace being wrong</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-cyan-400 font-mono font-bold">03</span>
+                    <span className="text-cyan-400 font-sans font-bold">03</span>
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">DO NO HARM</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">DO NO HARM</h4>
                   <p className="text-slate-500 text-xs">Never turn a passing urge into a permanent wound</p>
                 </div>
               </div>
@@ -421,7 +421,7 @@ export default function HomePage() {
               <div className="pt-6">
                 <Link
                   href="/philosophy"
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors border border-cyan-500/30 px-6 py-3 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-500/10"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-sans text-sm transition-colors border border-cyan-500/30 px-6 py-3 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-500/10"
                 >
                   [ READ_FULL_MANIFESTO ] →
                 </Link>
@@ -451,7 +451,7 @@ export default function HomePage() {
             <div className="relative z-10">
               {/* Status Badge */}
               <div className="flex justify-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-sans">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -460,11 +460,11 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-mono tracking-tight text-holographic text-center">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-sans tracking-tight text-holographic text-center">
                 Join the Network
               </h2>
 
-              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-mono text-center">
+              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-sans text-center">
                 Weekly intelligence drops. Research dispatches. Zero hype.
                 <br />
                 <span className="text-slate-500">Unsubscribe anytime.</span>
@@ -473,13 +473,13 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/subscribe"
-                  className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-mono"
+                  className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
                 >
                   [ INITIATE_ACCESS ]
                 </Link>
                 <Link
                   href="/about"
-                  className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-mono"
+                  className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans"
                 >
                   [ READ_MANIFESTO ]
                 </Link>
@@ -487,13 +487,13 @@ export default function HomePage() {
 
               {/* Quick Links */}
               <div className="flex flex-wrap justify-center gap-6 mt-8 pt-8 border-t border-slate-800/50">
-                <Link href="/lab" className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors">
+                <Link href="/lab" className="text-slate-400 hover:text-cyan-400 font-sans text-xs transition-colors">
                   [ EXPLORE_LAB ] →
                 </Link>
-                <Link href="/intel" className="text-slate-400 hover:text-purple-400 font-mono text-xs transition-colors">
+                <Link href="/intel" className="text-slate-400 hover:text-purple-400 font-sans text-xs transition-colors">
                   [ MARKET_DATA ] →
                 </Link>
-                <Link href="/commons" className="text-slate-400 hover:text-cyan-400 font-mono text-xs transition-colors">
+                <Link href="/commons" className="text-slate-400 hover:text-cyan-400 font-sans text-xs transition-colors">
                   [ COMMONS ] →
                 </Link>
               </div>

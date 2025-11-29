@@ -42,7 +42,7 @@ export function DissertationChapterBadge({
             <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
           </div>
           <div className="text-xs">
-            <span className="text-purple-400 font-mono">CH.{chapter.number}</span>
+            <span className="text-purple-400 font-sans">CH.{chapter.number}</span>
             <span className="text-slate-500 mx-1">|</span>
             <span className="text-slate-400">{chapter.title}</span>
           </div>
@@ -58,7 +58,7 @@ export function DissertationChapterBadge({
       title={`PhD Framework - ${chapter.description}`}
     >
       <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
-      <span className="text-purple-400 font-mono text-xs">
+      <span className="text-purple-400 font-sans text-xs">
         CHAPTER {chapter.number}: {chapter.title.toUpperCase()}
       </span>
     </Link>

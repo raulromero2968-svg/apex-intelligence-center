@@ -40,7 +40,7 @@ export const TopBanner = () => {
         </div>
 
         {/* Left: Logo/Brand */}
-        <Link href="/" className="flex items-center text-white font-bold tracking-tight font-mono transition-all z-50">
+        <Link href="/" className="flex items-center text-white font-bold tracking-tight font-sans transition-all z-50">
           <Image
             src="/images/apex-wolf-black-bg-final.png"
             width={36}
@@ -82,7 +82,7 @@ export const TopBanner = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 font-mono text-xs md:text-sm whitespace-nowrap"
+            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 font-sans text-xs md:text-sm whitespace-nowrap"
           >
             [ ACCESS_TERMINAL ]
           </Link>

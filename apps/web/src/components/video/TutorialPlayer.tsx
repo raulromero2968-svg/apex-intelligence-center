@@ -286,7 +286,7 @@ Success in TCG investing requires patience, research, and continuous learning.`,
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-white">Extracted Key Points</h4>
               <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-                <pre className="text-gray-300 text-sm whitespace-pre-wrap font-mono">
+                <pre className="text-gray-300 text-sm whitespace-pre-wrap font-sans">
                   {tutorial.tutorial.subtitles}
                 </pre>
               </div>

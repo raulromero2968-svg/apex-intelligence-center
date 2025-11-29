@@ -118,7 +118,7 @@ export function BreakModeButton() {
                 </div>
               </div>
               <div className="text-center md:text-right">
-                <div className="text-5xl font-bold text-white mb-1 font-mono tabular-nums">
+                <div className="text-5xl font-bold text-white mb-1 font-sans tabular-nums">
                   {timeRemaining || 'Calculating...'}
                 </div>
                 <p className="text-sm text-gray-400">

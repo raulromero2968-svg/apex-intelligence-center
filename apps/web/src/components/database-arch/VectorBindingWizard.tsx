@@ -214,7 +214,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                 type="text"
                 value={state.tableName}
                 onChange={(e) => updateState({ tableName: e.target.value })}
-                className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white font-mono"
+                className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white font-sans"
                 placeholder="documents"
               />
             </div>
@@ -225,7 +225,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                 type="text"
                 value={state.columnName}
                 onChange={(e) => updateState({ columnName: e.target.value })}
-                className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white font-mono"
+                className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white font-sans"
                 placeholder="embedding"
               />
             </div>
@@ -371,7 +371,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                         : 'bg-gray-800 border-gray-700 hover:border-gray-600'
                     }`}
                   >
-                    <div className="font-mono text-sm">{DISTANCE_OPERATORS[metric]}</div>
+                    <div className="font-sans text-sm">{DISTANCE_OPERATORS[metric]}</div>
                     <div className="text-xs text-gray-400 capitalize mt-1">{metric}</div>
                   </button>
                 ))}
@@ -488,11 +488,11 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                 </div>
                 <div>
                   <span className="text-gray-500">Table:</span>{' '}
-                  <span className="text-white font-mono">{state.tableName}</span>
+                  <span className="text-white font-sans">{state.tableName}</span>
                 </div>
                 <div>
                   <span className="text-gray-500">Column:</span>{' '}
-                  <span className="text-white font-mono">{state.columnName}</span>
+                  <span className="text-white font-sans">{state.columnName}</span>
                 </div>
               </div>
             </div>
@@ -515,7 +515,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                   Copy
                 </button>
               </div>
-              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-mono overflow-x-auto">
+              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-sans overflow-x-auto">
                 {generatedSql}
               </pre>
             </div>
@@ -531,7 +531,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                   Copy
                 </button>
               </div>
-              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-mono overflow-x-auto max-h-48">
+              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-sans overflow-x-auto max-h-48">
                 {generatedDrizzleSchema}
               </pre>
             </div>
@@ -547,7 +547,7 @@ export function VectorBindingWizard({ onComplete, onCancel }: VectorBindingWizar
                   Copy
                 </button>
               </div>
-              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-mono overflow-x-auto max-h-64">
+              <pre className="p-3 bg-gray-800 rounded-lg text-xs font-sans overflow-x-auto max-h-64">
                 {generatedDrizzleSearch}
               </pre>
             </div>

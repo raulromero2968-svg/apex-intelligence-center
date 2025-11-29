@@ -40,11 +40,11 @@ export default function DigitalFolderWrapper({ title, subtitle, children }: Digi
             <div className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors cursor-pointer" />
             <div className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors cursor-pointer" />
           </div>
-          <span className="text-cyan-400 font-mono text-sm uppercase tracking-wider">
+          <span className="text-cyan-400 font-sans text-sm uppercase tracking-wider">
             APEX_COMMONS_DOCUMENT_VIEWER
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+        <div className="flex items-center gap-2 text-xs text-slate-500 font-sans">
           <span>●</span>
           <span>SECURE_READ</span>
         </div>
@@ -64,7 +64,7 @@ export default function DigitalFolderWrapper({ title, subtitle, children }: Digi
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-xl text-cyan-300/80 font-mono">
+                <p className="text-xl text-cyan-300/80 font-sans">
                   {subtitle}
                 </p>
               )}
@@ -78,7 +78,7 @@ export default function DigitalFolderWrapper({ title, subtitle, children }: Digi
         </div>
 
         {/* Terminal Footer */}
-        <div className="border-t border-cyan-500/30 bg-black/40 px-6 py-2 flex items-center justify-between text-xs text-slate-500 font-mono">
+        <div className="border-t border-cyan-500/30 bg-black/40 px-6 py-2 flex items-center justify-between text-xs text-slate-500 font-sans">
           <span>SCROLL: ▼ {scrollPercent}%</span>
           <span>ENCODING: UTF-8</span>
           <span>LINES: {lineCount}</span>

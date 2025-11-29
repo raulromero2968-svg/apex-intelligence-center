@@ -24,7 +24,7 @@ export default function LabPage() {
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -42,7 +42,7 @@ export default function LabPage() {
             </span>
           </h1>
 
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-mono">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-sans">
             Three research streams. One mission: build systems that benefit all sentient beings.
             <span className="inline-block w-3 h-5 bg-purple-400 ml-1 animate-pulse align-middle" />
           </p>
@@ -58,7 +58,7 @@ export default function LabPage() {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-cyan-400">[</span> STREAM 01 <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -74,8 +74,8 @@ export default function LabPage() {
                         <TrendingUp className="w-7 h-7 text-cyan-400" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white font-mono">MARKET SYSTEMS &amp; FORECASTING</h3>
-                        <p className="text-slate-500 text-sm font-mono">TCG Markets as a Live-Fire Testbed</p>
+                        <h3 className="text-2xl font-bold text-white font-sans">MARKET SYSTEMS &amp; FORECASTING</h3>
+                        <p className="text-slate-500 text-sm font-sans">TCG Markets as a Live-Fire Testbed</p>
                       </div>
                     </div>
 
@@ -84,22 +84,22 @@ export default function LabPage() {
                     </p>
 
                     <div className="space-y-4">
-                      <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
+                      <h4 className="text-white font-sans text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Price prediction experiments &amp; validation
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Liquidity &amp; volatility studies
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Postmortems on where our forecasts failed
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Model calibration benchmarks
                         </li>
                       </ul>
@@ -111,7 +111,7 @@ export default function LabPage() {
                       <div className="absolute inset-0 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite]" />
                       <div className="absolute inset-4 border border-cyan-500/20 rounded-full animate-[spin_7s_linear_infinite_reverse]" />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-cyan-400 font-mono text-xs text-center">MARKET<br/>DATA</span>
+                        <span className="text-cyan-400 font-sans text-xs text-center">MARKET<br/>DATA</span>
                       </div>
                     </div>
                   </div>
@@ -123,7 +123,7 @@ export default function LabPage() {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-purple-400">[</span> STREAM 02 <span className="text-purple-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -139,8 +139,8 @@ export default function LabPage() {
                         <Brain className="w-7 h-7 text-purple-400" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white font-mono">AI &amp; ANIMAL WELFARE</h3>
-                        <p className="text-slate-500 text-sm font-mono">Tracking the AI x Animals Field</p>
+                        <h3 className="text-2xl font-bold text-white font-sans">AI &amp; ANIMAL WELFARE</h3>
+                        <p className="text-slate-500 text-sm font-sans">Tracking the AI x Animals Field</p>
                       </div>
                     </div>
 
@@ -149,22 +149,22 @@ export default function LabPage() {
                     </p>
 
                     <div className="space-y-4">
-                      <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
+                      <h4 className="text-white font-sans text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">-&gt;</span>
+                          <span className="text-purple-400 font-sans">-&gt;</span>
                           State-of-the-field reports on AI x animals
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">-&gt;</span>
+                          <span className="text-purple-400 font-sans">-&gt;</span>
                           Ethics briefs (&ldquo;If you build X, here&apos;s your risk checklist&rdquo;)
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">-&gt;</span>
+                          <span className="text-purple-400 font-sans">-&gt;</span>
                           Commentaries on ESP, Sentient Futures, Faunalytics, ACE
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-purple-400 font-mono">-&gt;</span>
+                          <span className="text-purple-400 font-sans">-&gt;</span>
                           NatureLM-audio and bioacoustics analysis
                         </li>
                       </ul>
@@ -176,7 +176,7 @@ export default function LabPage() {
                       <div className="absolute inset-0 border border-purple-500/30 rounded-full animate-[spin_12s_linear_infinite]" />
                       <div className="absolute inset-4 border border-purple-500/20 rounded-full animate-[spin_8s_linear_infinite_reverse]" />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-purple-400 font-mono text-xs text-center">BIO<br/>SIGNALS</span>
+                        <span className="text-purple-400 font-sans text-xs text-center">BIO<br/>SIGNALS</span>
                       </div>
                     </div>
                   </div>
@@ -188,7 +188,7 @@ export default function LabPage() {
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-cyan-400">[</span> STREAM 03 <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -205,8 +205,8 @@ export default function LabPage() {
                         <Users className="w-7 h-7 text-cyan-400" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white font-mono">SENTIENT-FIRST SYSTEM DESIGN</h3>
-                        <p className="text-slate-500 text-sm font-mono">Systems That Treat All Beings as Stakeholders</p>
+                        <h3 className="text-2xl font-bold text-white font-sans">SENTIENT-FIRST SYSTEM DESIGN</h3>
+                        <p className="text-slate-500 text-sm font-sans">Systems That Treat All Beings as Stakeholders</p>
                       </div>
                     </div>
 
@@ -215,22 +215,22 @@ export default function LabPage() {
                     </p>
 
                     <div className="space-y-4">
-                      <h4 className="text-white font-mono text-sm font-bold">OUTPUTS:</h4>
+                      <h4 className="text-white font-sans text-sm font-bold">OUTPUTS:</h4>
                       <ul className="space-y-2">
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Design patterns for &ldquo;ethical defaults&rdquo;
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Protocols for avoiding harm and aggregating welfare
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Models of AI safety + animal ethics + market design
                         </li>
                         <li className="flex items-start gap-3 text-slate-400 text-sm">
-                          <span className="text-cyan-400 font-mono">-&gt;</span>
+                          <span className="text-cyan-400 font-sans">-&gt;</span>
                           Digital minds moral consideration frameworks
                         </li>
                       </ul>
@@ -242,7 +242,7 @@ export default function LabPage() {
                       <div className="absolute inset-0 border border-cyan-500/30 rounded-lg rotate-45 animate-[spin_15s_linear_infinite]" />
                       <div className="absolute inset-4 border border-purple-500/20 rounded-lg rotate-45 animate-[spin_10s_linear_infinite_reverse]" />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-cyan-400 font-mono text-xs text-center">SYSTEM<br/>DESIGN</span>
+                        <span className="text-cyan-400 font-sans text-xs text-center">SYSTEM<br/>DESIGN</span>
                       </div>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function LabPage() {
           <ElectronicFolder title="ECOSYSTEM ALIGNMENT" classification="PARTNERS // COLLABORATORS">
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                 <span className="text-purple-400">[</span> WORKING WITH THE FIELD <span className="text-purple-400">]</span>
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -275,11 +275,11 @@ export default function LabPage() {
                 <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4">
                   <Microscope className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 font-mono">TECHNICAL LABS</h3>
+                <h3 className="text-lg font-bold text-white mb-3 font-sans">TECHNICAL LABS</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-4">
                   Like Earth Species Project building bioacoustic foundation models (NatureLM-audio).
                 </p>
-                <p className="text-slate-500 text-xs font-mono">
+                <p className="text-slate-500 text-xs font-sans">
                   WE INTERPRET &amp; CONTEXTUALIZE
                 </p>
               </div>
@@ -289,11 +289,11 @@ export default function LabPage() {
                 <div className="w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-4">
                   <Handshake className="w-6 h-6 text-purple-400" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 font-mono">FIELD BUILDERS</h3>
+                <h3 className="text-lg font-bold text-white mb-3 font-sans">FIELD BUILDERS</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-4">
                   Like Sentient Futures running coordination, conferences, and fellowships.
                 </p>
-                <p className="text-slate-500 text-xs font-mono">
+                <p className="text-slate-500 text-xs font-sans">
                   WE AMPLIFY &amp; SYNTHESIZE
                 </p>
               </div>
@@ -303,11 +303,11 @@ export default function LabPage() {
                 <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4">
                   <FileText className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 font-mono">RESEARCH NONPROFITS</h3>
+                <h3 className="text-lg font-bold text-white mb-3 font-sans">RESEARCH NONPROFITS</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-4">
                   Like Faunalytics, Animal Charity Evaluators, and Open Paws.
                 </p>
-                <p className="text-slate-500 text-xs font-mono">
+                <p className="text-slate-500 text-xs font-sans">
                   WE TRANSLATE FOR PRACTITIONERS
                 </p>
               </div>
@@ -315,27 +315,27 @@ export default function LabPage() {
 
             {/* Our Role */}
             <div className="relative border border-slate-700/50 bg-slate-900/30 backdrop-blur-sm rounded-xl p-8">
-              <h3 className="text-lg font-bold text-white mb-6 font-mono text-center">OUR ROLE IN THE ECOSYSTEM</h3>
+              <h3 className="text-lg font-bold text-white mb-6 font-sans text-center">OUR ROLE IN THE ECOSYSTEM</h3>
               <div className="grid md:grid-cols-3 gap-6 text-center">
                 <div>
                   <div className="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
                     <BookOpen className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">SYNTHESIZE</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">SYNTHESIZE</h4>
                   <p className="text-slate-500 text-xs">Curate and interpret research for practitioners</p>
                 </div>
                 <div>
                   <div className="w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mx-auto mb-3">
                     <TrendingUp className="w-5 h-5 text-purple-400" />
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">STRESS-TEST</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">STRESS-TEST</h4>
                   <p className="text-slate-500 text-xs">Experiment in smaller, bounded domains</p>
                 </div>
                 <div>
                   <div className="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
                     <MessageSquare className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <h4 className="text-white font-mono text-sm mb-2">DOCUMENT</h4>
+                  <h4 className="text-white font-sans text-sm mb-2">DOCUMENT</h4>
                   <p className="text-slate-500 text-xs">Report what works and what breaks, in public</p>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function LabPage() {
       {/* CTA Section */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-6">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -355,7 +355,7 @@ export default function LabPage() {
             JOIN THE NETWORK
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-mono">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
             Interested in Our Research?
           </h2>
 
@@ -366,7 +366,7 @@ export default function LabPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/subscribe"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-sans"
             >
               [ GET_UPDATES ]
             </Link>

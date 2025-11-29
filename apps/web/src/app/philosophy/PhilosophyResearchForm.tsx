@@ -93,7 +93,7 @@ export default function PhilosophyResearchForm() {
                     className="p-3 bg-black/40 border border-gray-700 rounded-lg"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center text-sm font-mono">
+                      <span className="flex-shrink-0 w-6 h-6 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center text-sm font-sans">
                         {source.id}
                       </span>
                       <p className="text-gray-400 text-sm leading-relaxed">

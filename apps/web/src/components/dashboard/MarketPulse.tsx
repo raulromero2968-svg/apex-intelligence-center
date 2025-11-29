@@ -132,7 +132,7 @@ export const MarketPulse: React.FC = () => {
           className="text-cyan-100"
         />
 
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-cyan-300/80">
+        <div className="flex flex-wrap items-center gap-3 text-xs font-sans text-cyan-300/80">
           <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 uppercase tracking-widest">
             LIVE FEED
           </span>
@@ -153,14 +153,14 @@ export const MarketPulse: React.FC = () => {
 
                 <div className="flex items-center gap-4">
                   {/* Rank Badge */}
-                  <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-950 border border-slate-700 font-mono text-lg font-bold text-cyan-500 group-hover:text-white group-hover:bg-cyan-600 group-hover:border-cyan-400 transition-colors">
+                  <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-950 border border-slate-700 font-sans text-lg font-bold text-cyan-500 group-hover:text-white group-hover:bg-cyan-600 group-hover:border-cyan-400 transition-colors">
                     {card.rank}
                   </div>
 
                   {/* Card Info */}
                   <div>
                     <h3 className="font-bold text-slate-100 group-hover:text-cyan-200 transition-colors">{card.cardName}</h3>
-                    <p className="text-xs font-mono text-slate-500">
+                    <p className="text-xs font-sans text-slate-500">
                       {card.set} · <HoloNumber value={card.price} type="price" colorScheme="cyan" glitchIntensity="low" className="text-sm" />
                     </p>
                   </div>
@@ -168,7 +168,7 @@ export const MarketPulse: React.FC = () => {
 
                 {/* Metrics */}
                 <div className="text-right">
-                    <div className="font-mono font-bold text-lg">
+                    <div className="font-sans font-bold text-lg">
                         <HoloNumber
                           value={card.changeWeek}
                           type="percent"
@@ -186,7 +186,7 @@ export const MarketPulse: React.FC = () => {
 
         {/* Right: Terminal Analysis */}
         <div className="flex flex-col gap-4">
-           <div className="h-full min-h-[200px] rounded-xl border border-slate-800 bg-black/90 p-4 font-mono text-xs text-emerald-500 shadow-inner">
+           <div className="h-full min-h-[200px] rounded-xl border border-slate-800 bg-black/90 p-4 font-sans text-xs text-emerald-500 shadow-inner">
               <TerminalStream
                 lines={terminalLines}
                 typingSpeed={15}

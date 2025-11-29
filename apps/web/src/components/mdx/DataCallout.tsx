@@ -26,7 +26,7 @@ export default function DataCallout({
             <div className="text-5xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-cyan-500 mb-2">
               {metric}
             </div>
-            <div className="text-sm uppercase tracking-wider text-gray-300 font-mono">
+            <div className="text-sm uppercase tracking-wider text-gray-300 font-sans">
               {label}
             </div>
             {confidence && (
@@ -37,7 +37,7 @@ export default function DataCallout({
                     style={{ width: `${confidence * 100}%` }}
                   />
                 </div>
-                <span className="text-xs text-cyan-400 font-mono">
+                <span className="text-xs text-cyan-400 font-sans">
                   {(confidence * 100).toFixed(0)}% confidence
                 </span>
               </div>

@@ -156,7 +156,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono text-sm font-medium text-blue-400">{table.name}</span>
+                      <span className="font-sans text-sm font-medium text-blue-400">{table.name}</span>
                       <span className="text-xs text-gray-500">{table.columns.length} columns</span>
                     </div>
 
@@ -166,7 +166,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
                           <div key={col.name} className="flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2">
                               {col.isPrimary && <span className="text-yellow-400">🔑</span>}
-                              <span className="font-mono">{col.name}</span>
+                              <span className="font-sans">{col.name}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="text-gray-500">{col.type}</span>
@@ -180,7 +180,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
                           <div className="mt-2 pt-2 border-t border-gray-700">
                             <div className="text-xs text-gray-500 mb-1">Indexes:</div>
                             {table.indexes.map((idx) => (
-                              <div key={idx} className="text-xs text-green-400 font-mono">
+                              <div key={idx} className="text-xs text-green-400 font-sans">
                                 📊 {idx}
                               </div>
                             ))}
@@ -203,7 +203,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
               <textarea
                 value={queryInput}
                 onChange={(e) => setQueryInput(e.target.value)}
-                className="w-full h-24 p-3 bg-gray-800 border border-gray-700 rounded-lg font-mono text-sm"
+                className="w-full h-24 p-3 bg-gray-800 border border-gray-700 rounded-lg font-sans text-sm"
                 placeholder="SELECT * FROM users WHERE email = $1"
               />
             </div>
@@ -213,7 +213,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
               <textarea
                 value={explainInput}
                 onChange={(e) => setExplainInput(e.target.value)}
-                className="w-full h-32 p-3 bg-gray-800 border border-gray-700 rounded-lg font-mono text-xs"
+                className="w-full h-32 p-3 bg-gray-800 border border-gray-700 rounded-lg font-sans text-xs"
                 placeholder="Paste EXPLAIN ANALYZE output here..."
               />
             </div>
@@ -284,7 +284,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
                         </div>
                         <div className="text-sm">{suggestion.message}</div>
                         {suggestion.suggestedFix && (
-                          <pre className="mt-2 p-2 bg-gray-900 rounded text-xs font-mono overflow-x-auto">
+                          <pre className="mt-2 p-2 bg-gray-900 rounded text-xs font-sans overflow-x-auto">
                             {suggestion.suggestedFix}
                           </pre>
                         )}
@@ -328,11 +328,11 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
                 {recommendations.map((rec, idx) => (
                   <div key={idx} className="bg-gray-800 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-sm text-blue-400">{rec.tableName}</span>
+                      <span className="font-sans text-sm text-blue-400">{rec.tableName}</span>
                       {getImpactBadge(rec.impact)}
                     </div>
                     <div className="text-sm text-gray-300 mb-2">{rec.reason}</div>
-                    <pre className="p-2 bg-gray-900 rounded text-xs font-mono overflow-x-auto">
+                    <pre className="p-2 bg-gray-900 rounded text-xs font-sans overflow-x-auto">
                       {rec.createStatement}
                     </pre>
                   </div>
@@ -348,7 +348,7 @@ export function SchemaPreviewPanel({ tables = [], onQueryAnalyzed }: SchemaPrevi
             {selectedTable && (
               <div className="mt-6">
                 <h4 className="text-sm font-medium mb-2">Generated Drizzle Query</h4>
-                <pre className="p-3 bg-gray-800 rounded-lg text-xs font-mono overflow-x-auto">
+                <pre className="p-3 bg-gray-800 rounded-lg text-xs font-sans overflow-x-auto">
                   {generateOptimizedDrizzleQuery(selectedTable, 'select', {
                     columns: ['*'],
                     conditions: [{ column: 'id', operator: '=', value: 'id' }],

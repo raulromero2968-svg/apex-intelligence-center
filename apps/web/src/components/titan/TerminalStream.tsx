@@ -48,7 +48,7 @@ export const TerminalStream: React.FC<TerminalStreamProps> = ({
   }, [currentLineIndex, currentCharIndex, lines, typingSpeed]);
 
   return (
-    <div className={`font-mono whitespace-pre-wrap ${className}`}>
+    <div className={`font-sans whitespace-pre-wrap ${className}`}>
       {displayedLines.map((line, index) => (
         <div key={index} className="leading-relaxed">
           {line}

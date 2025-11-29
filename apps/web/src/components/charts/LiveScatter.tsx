@@ -61,22 +61,22 @@ export default function LiveScatter({
         <div className="border-b border-cyan-500/30 bg-black/60 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-cyan-400" />
-            <span className="text-cyan-400 font-mono text-xs tracking-wider">LIVE_INTEL_FEED</span>
+            <span className="text-cyan-400 font-sans text-xs tracking-wider">LIVE_INTEL_FEED</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            <span className="text-cyan-400 text-xs font-mono">STREAMING</span>
+            <span className="text-cyan-400 text-xs font-sans">STREAMING</span>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-6 relative z-0">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-white font-mono">{title}</h3>
-            <p className="text-sm text-cyan-400/80 font-mono">{subtitle}</p>
+            <h3 className="text-lg font-semibold text-white font-sans">{title}</h3>
+            <p className="text-sm text-cyan-400/80 font-sans">{subtitle}</p>
           </div>
           
           <div className="h-64 bg-black/40 rounded-lg border border-cyan-500/20 p-2">
@@ -164,7 +164,7 @@ export default function LiveScatter({
 
           {/* Footer Tip */}
           <div className="mt-4 border-t border-cyan-500/20 pt-3">
-            <p className="text-xs text-slate-400 font-mono">
+            <p className="text-xs text-slate-400 font-sans">
               Tip for teens: dots higher and to the right often mean stronger potential—but bigger swings. Start small, track
               results, and let data be your coach.
             </p>

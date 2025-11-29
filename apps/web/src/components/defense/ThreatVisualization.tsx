@@ -266,7 +266,7 @@ export function ThreatVisualization({
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                         <div>
                           <div className="text-slate-400 text-xs">Technique</div>
-                          <div className="text-slate-300 font-mono">
+                          <div className="text-slate-300 font-sans">
                             {threat.techniqueId ?? "—"}
                           </div>
                         </div>

@@ -73,7 +73,7 @@ const HoloCard: FC<HoloCardProps> = ({
 
       {/* Category badge */}
       <div className="mb-4">
-        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wide">
+        <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wide">
           <span className={`w-2 h-2 ${indicatorColor} rounded-full animate-pulse`} />
           <span className={`px-3 py-1 rounded-full bg-gradient-to-r ${categoryGradient} text-white`}>
             {category}

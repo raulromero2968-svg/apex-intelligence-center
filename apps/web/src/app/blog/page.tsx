@@ -19,7 +19,7 @@ export default async function BlogPage() {
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -103,7 +103,7 @@ export default async function BlogPage() {
                 <p className="text-slate-400 mb-6">Intelligence is being gathered. Check back soon.</p>
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-sans text-sm transition-colors"
                 >
                   <span>←</span> RETURN_TO_BASE
                 </Link>
@@ -117,7 +117,7 @@ export default async function BlogPage() {
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-3xl mx-auto">
           <HoloCard intensity="high" className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -135,7 +135,7 @@ export default async function BlogPage() {
 
             <Link
               href="/subscribe"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-sans"
             >
               [ SUBSCRIBE_NOW ]
               <ArrowRight className="w-5 h-5" />
@@ -167,7 +167,7 @@ function BlogCard({ post }: { post: any }) {
       <div className="p-6 flex-1">
         {/* Header */}
         <div className="mb-4">
-          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 mb-3 font-mono">
+          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 mb-3 font-sans">
             BLOG
           </div>
           <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
@@ -212,7 +212,7 @@ function BlogCard({ post }: { post: any }) {
         )}
 
         {/* Read more */}
-        <div className="mt-4 text-sm text-cyan-400 group-hover:text-cyan-300 transition-colors font-mono">
+        <div className="mt-4 text-sm text-cyan-400 group-hover:text-cyan-300 transition-colors font-sans">
           READ_MORE <span className="group-hover:translate-x-1 inline-block transition-transform">→</span>
         </div>
       </div>

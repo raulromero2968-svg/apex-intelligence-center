@@ -49,7 +49,7 @@ export default async function Page() {
             const displayKey = k.split(':')[0] + ':' + (k.length > 40 ? '...' : k.split(':')[1]);
             return (
               <div key={k} className="flex items-center justify-between gap-4">
-                <span className="truncate text-xs font-mono text-white/70 flex-1">
+                <span className="truncate text-xs font-sans text-white/70 flex-1">
                   {displayKey}
                 </span>
                 <SparklineDual hits={series.hits} misses={series.misses} />
@@ -91,7 +91,7 @@ export default async function Page() {
       <section className="space-y-4">
         <h2 className="text-lg font-medium text-white/90">Cache Tags</h2>
         <div className="rounded-2xl border border-cyan-500/20 bg-black/40 p-6">
-          <div className="space-y-3 text-sm font-mono">
+          <div className="space-y-3 text-sm font-sans">
             <div className="flex items-center gap-3">
               <code className="text-cyan-400">collection:&lt;slug&gt;</code>
               <span className="text-white/60">Single collection details & items</span>
@@ -121,15 +121,15 @@ export default async function Page() {
         <div className="rounded-2xl border border-cyan-500/20 bg-black/40 p-6 space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-white/60">Next.js Version</span>
-            <span className="text-white font-mono">14.2.x</span>
+            <span className="text-white font-sans">14.2.x</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-white/60">Runtime</span>
-            <span className="text-white font-mono">Edge (search), Node (actions)</span>
+            <span className="text-white font-sans">Edge (search), Node (actions)</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-white/60">Sentry Trace Sampling</span>
-            <span className="text-white font-mono">Server: 10%, Client: 5%</span>
+            <span className="text-white font-sans">Server: 10%, Client: 5%</span>
           </div>
         </div>
       </section>

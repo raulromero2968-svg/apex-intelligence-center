@@ -58,7 +58,7 @@ export function TerminalLoadingScreen({ onComplete, duration = 3000 }: TerminalL
       {/* Loading Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
         {/* Logo/Brand */}
-        <div className="text-white font-bold text-2xl tracking-tight font-mono mb-12">
+        <div className="text-white font-bold text-2xl tracking-tight font-sans mb-12">
           APEX<span className="text-cyan-400">_</span>INTEL
         </div>
 
@@ -71,13 +71,13 @@ export function TerminalLoadingScreen({ onComplete, duration = 3000 }: TerminalL
         </div>
 
         {/* Loading Text */}
-        <div className="text-cyan-400 font-mono text-sm tracking-wider animate-pulse">
+        <div className="text-cyan-400 font-sans text-sm tracking-wider animate-pulse">
           {loadingText}
           <span className="inline-block w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />
         </div>
 
         {/* Percentage */}
-        <div className="text-slate-500 font-mono text-xs mt-4">
+        <div className="text-slate-500 font-sans text-xs mt-4">
           {progress}%
         </div>
 

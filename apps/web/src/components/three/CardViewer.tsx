@@ -13,7 +13,7 @@ export const CardViewer = () => {
       <div className="absolute top-4 left-4 z-10">
         <div className="flex items-center gap-2">
            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-           <span className="text-xs text-cyan-400 font-mono tracking-widest">LIVE PREVIEW // GL-CANVAS</span>
+           <span className="text-xs text-cyan-400 font-sans tracking-widest">LIVE PREVIEW // GL-CANVAS</span>
         </div>
         <h3 className="text-white font-bold text-xl mt-1">Charizard G-Spec</h3>
         <p className="text-slate-400 text-sm">Holographic // Mint Condition</p>

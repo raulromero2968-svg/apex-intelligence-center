@@ -19,7 +19,7 @@ export default function TerminalSection({
 
   return (
     <div className="my-8">
-      <div className="border border-cyan-500/30 bg-black/80 rounded-lg overflow-hidden font-mono">
+      <div className="border border-cyan-500/30 bg-black/80 rounded-lg overflow-hidden font-sans">
         {/* Terminal Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-cyan-500/20 bg-gradient-to-r from-cyan-950/40 to-transparent">
           <div className="flex gap-1.5">

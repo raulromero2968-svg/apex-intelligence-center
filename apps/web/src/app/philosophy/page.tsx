@@ -58,7 +58,7 @@ export default function PhilosophyPage() {
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -76,7 +76,7 @@ export default function PhilosophyPage() {
             </span>
           </h1>
 
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-mono">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-sans">
             Sentient-first systems. Radical transparency. Allergic to hype.
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
@@ -91,7 +91,7 @@ export default function PhilosophyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-cyan-400">[</span> HUMANS FIRST. SENTIENT BEINGS FIRST. <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -103,7 +103,7 @@ export default function PhilosophyPage() {
                   <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4">
                     <Brain className="w-6 h-6 text-cyan-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3 font-mono">HUMANS FIRST</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">HUMANS FIRST</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     We prioritize the safety, clarity, and well-being of the people who use our tools and read our work. We assume humans are messy, distracted, and imperfect—and design systems that work <em>because</em> of that reality, not in spite of it.
                   </p>
@@ -114,7 +114,7 @@ export default function PhilosophyPage() {
                   <div className="w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-4">
                     <Heart className="w-6 h-6 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3 font-mono">SENTIENT BEINGS FIRST</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">SENTIENT BEINGS FIRST</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     We deliberately extend concern beyond our own species. If a system touches animals or potentially sentient digital minds, we treat that as morally serious—not an afterthought. When uncertain, we slow down.
                   </p>
@@ -130,7 +130,7 @@ export default function PhilosophyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-purple-400">[</span> LISTENING TO THE REST OF NATURE <span className="text-purple-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -157,18 +157,18 @@ export default function PhilosophyPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-white font-mono font-bold mb-4">When applying AI to biological data, we ask:</h4>
+                    <h4 className="text-white font-sans font-bold mb-4">When applying AI to biological data, we ask:</h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3 text-sm">
-                        <span className="text-cyan-400 font-mono">01</span>
+                        <span className="text-cyan-400 font-sans">01</span>
                         <p className="text-slate-400">Are we increasing understanding, or just extracting more value?</p>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
-                        <span className="text-cyan-400 font-mono">02</span>
+                        <span className="text-cyan-400 font-sans">02</span>
                         <p className="text-slate-400">Are we reducing stress, harm, and confusion for animals—or increasing it?</p>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
-                        <span className="text-cyan-400 font-mono">03</span>
+                        <span className="text-cyan-400 font-sans">03</span>
                         <p className="text-slate-400">Are we being honest about what the models can and cannot actually tell us?</p>
                       </div>
                     </div>
@@ -184,7 +184,7 @@ export default function PhilosophyPage() {
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-cyan-400">[</span> THE ROGUE THINK TANK <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -192,21 +192,21 @@ export default function PhilosophyPage() {
 
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-mono text-cyan-400">NOT A UNIVERSITY LAB</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">NOT A UNIVERSITY LAB</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     We combine market-grade data analysis from the TCG world with research-grade caution from AI safety and animal ethics.
                   </p>
                 </div>
 
                 <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-purple-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-mono text-purple-400">NOT A CORPORATE DIVISION</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-purple-400">NOT A CORPORATE DIVISION</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     We prefer dispatches, dossiers, and public notes over glossy PR. We build tools that are brutally honest about their limits.
                   </p>
                 </div>
 
                 <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-mono text-cyan-400">INTENTIONALLY SMALL</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">INTENTIONALLY SMALL</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     We stay lean, independent, and transparent enough to admit when something doesn&apos;t work. Opinionated and off-center by design.
                   </p>
@@ -229,7 +229,7 @@ export default function PhilosophyPage() {
           <ElectronicFolder title="OPERATIONAL PROTOCOLS" classification="ETHICS & SAFETY // DO NO HARM">
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                 <span className="text-cyan-400">[</span> DO NO HARM, ACT FOR BENEFIT <span className="text-cyan-400">]</span>
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -246,7 +246,7 @@ export default function PhilosophyPage() {
                   <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
                     <FileWarning className="w-5 h-5 text-red-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white font-mono">NO HARMFUL INSTRUCTIONS</h3>
+                  <h3 className="text-lg font-bold text-white font-sans">NO HARMFUL INSTRUCTIONS</h3>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li className="flex items-start gap-2">
@@ -266,7 +266,7 @@ export default function PhilosophyPage() {
                   <div className="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center">
                     <Shield className="w-5 h-5 text-yellow-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white font-mono">STRESS AND SAFETY FIRST</h3>
+                  <h3 className="text-lg font-bold text-white font-sans">STRESS AND SAFETY FIRST</h3>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li className="flex items-start gap-2">
@@ -286,7 +286,7 @@ export default function PhilosophyPage() {
                   <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
                     <Microscope className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white font-mono">TRANSPARENCY ABOUT LIMITS</h3>
+                  <h3 className="text-lg font-bold text-white font-sans">TRANSPARENCY ABOUT LIMITS</h3>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li className="flex items-start gap-2">
@@ -306,7 +306,7 @@ export default function PhilosophyPage() {
                   <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
                     <Scale className="w-5 h-5 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white font-mono">SENTIENT-FIRST DECISIONS</h3>
+                  <h3 className="text-lg font-bold text-white font-sans">SENTIENT-FIRST DECISIONS</h3>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li className="flex items-start gap-2">
@@ -332,7 +332,7 @@ export default function PhilosophyPage() {
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-emerald-400">[</span> FIBONACCI &amp; THE LIMITS OF PATTERN-THINKING <span className="text-emerald-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
@@ -356,7 +356,7 @@ export default function PhilosophyPage() {
                     <Infinity className="w-7 h-7 text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white font-mono">Patterns as Compression Heuristics</h3>
+                    <h3 className="text-xl font-bold text-white font-sans">Patterns as Compression Heuristics</h3>
                     <p className="text-slate-400 text-sm">Understanding where Fibonacci actually helps—and where it misleads</p>
                   </div>
                 </div>
@@ -372,7 +372,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-3">
                       <Dna className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-emerald-400">BIOLOGICAL SYSTEMS</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-emerald-400">BIOLOGICAL SYSTEMS</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-emerald-400">→</span>
@@ -394,7 +394,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
                       <Shell className="w-5 h-5 text-cyan-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">ANIMAL PATTERNS</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-cyan-400">ANIMAL PATTERNS</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-cyan-400">→</span>
@@ -416,7 +416,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-3">
                       <Network className="w-5 h-5 text-purple-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-purple-400">AI &amp; COGNITION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-purple-400">AI &amp; COGNITION</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-purple-400">→</span>
@@ -436,7 +436,7 @@ export default function PhilosophyPage() {
 
                 {/* Image Gallery */}
                 <div className="mb-8">
-                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-sans">
                     Fibonacci in Nature: Visual Examples (not universal laws)
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -450,7 +450,7 @@ export default function PhilosophyPage() {
                         sizes="(max-width: 768px) 50vw, 20vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">NAUTILUS SPIRAL</span>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-sans">NAUTILUS SPIRAL</span>
                     </div>
 
                     {/* Sunflower Seeds */}
@@ -463,7 +463,7 @@ export default function PhilosophyPage() {
                         sizes="(max-width: 768px) 50vw, 20vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">SUNFLOWER SPIRALS</span>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-sans">SUNFLOWER SPIRALS</span>
                     </div>
 
                     {/* Romanesco Broccoli */}
@@ -476,7 +476,7 @@ export default function PhilosophyPage() {
                         sizes="(max-width: 768px) 50vw, 20vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">ROMANESCO FRACTAL</span>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-sans">ROMANESCO FRACTAL</span>
                     </div>
 
                     {/* Pine Cone */}
@@ -489,7 +489,7 @@ export default function PhilosophyPage() {
                         sizes="(max-width: 768px) 50vw, 20vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">PINE CONE SPIRAL</span>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-sans">PINE CONE SPIRAL</span>
                     </div>
 
                     {/* Galaxy Spiral */}
@@ -502,7 +502,7 @@ export default function PhilosophyPage() {
                         sizes="(max-width: 768px) 50vw, 20vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-mono">GALACTIC SPIRAL</span>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white/80 font-sans">GALACTIC SPIRAL</span>
                     </div>
                   </div>
                 </div>
@@ -511,7 +511,7 @@ export default function PhilosophyPage() {
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-green-400 font-mono text-sm font-bold">✓ GOOD</span>
+                      <span className="text-green-400 font-sans text-sm font-bold">✓ GOOD</span>
                       <span className="text-slate-400 text-sm">When patterns help</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
@@ -523,7 +523,7 @@ export default function PhilosophyPage() {
 
                   <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-red-400 font-mono text-sm font-bold">✗ CAUTION</span>
+                      <span className="text-red-400 font-sans text-sm font-bold">✗ CAUTION</span>
                       <span className="text-slate-400 text-sm">When patterns mislead</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
@@ -548,7 +548,7 @@ export default function PhilosophyPage() {
                   <Brain className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div>
-                  <h4 className="text-md font-bold text-white font-mono">FIBONACCI RESEARCH CONSOLE</h4>
+                  <h4 className="text-md font-bold text-white font-sans">FIBONACCI RESEARCH CONSOLE</h4>
                   <p className="text-slate-500 text-xs">Query our curated docs on Fibonacci in biology—grounded in real research, not numerology</p>
                 </div>
               </div>
@@ -569,7 +569,7 @@ export default function PhilosophyPage() {
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-red-400">[</span> BIG TECH&apos;S DEREGULATION PUSH <span className="text-red-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
@@ -593,7 +593,7 @@ export default function PhilosophyPage() {
                     <AlertTriangle className="w-7 h-7 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white font-mono">The Lobbying Arms Race</h3>
+                    <h3 className="text-xl font-bold text-white font-sans">The Lobbying Arms Race</h3>
                     <p className="text-slate-400 text-sm">How AI companies resist accountability at scale</p>
                   </div>
                 </div>
@@ -609,7 +609,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
                       <DollarSign className="w-5 h-5 text-red-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-red-400">SPENDING SURGE</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-red-400">SPENDING SURGE</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-red-400">→</span>
@@ -631,7 +631,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center mb-3">
                       <Users className="w-5 h-5 text-orange-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-orange-400">LOBBYING TACTICS</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-orange-400">LOBBYING TACTICS</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-orange-400">→</span>
@@ -653,7 +653,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center mb-3">
                       <TrendingUp className="w-5 h-5 text-yellow-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-yellow-400">AGI REDEFINITION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-yellow-400">AGI REDEFINITION</h4>
                     <ul className="space-y-1 text-slate-400 text-sm">
                       <li className="flex items-start gap-2">
                         <span className="text-yellow-400">→</span>
@@ -673,7 +673,7 @@ export default function PhilosophyPage() {
 
                 {/* Visual Evidence - Lobbying Charts */}
                 <div className="mb-8">
-                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-sans">
                     The Scale of Corporate Influence: Visual Evidence
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -689,7 +689,7 @@ export default function PhilosophyPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
                         <TrendingUp className="w-8 h-8 text-red-400 mb-2" />
-                        <span className="text-xs text-white/90 font-mono text-center font-bold">141% YoY INCREASE</span>
+                        <span className="text-xs text-white/90 font-sans text-center font-bold">141% YoY INCREASE</span>
                         <span className="text-[10px] text-slate-400 mt-1">2023-2024 Lobbying Firms</span>
                       </div>
                     </div>
@@ -706,7 +706,7 @@ export default function PhilosophyPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
                         <DollarSign className="w-8 h-8 text-yellow-400 mb-2" />
-                        <span className="text-xs text-white/90 font-mono text-center font-bold">AGI = $100B PROFITS</span>
+                        <span className="text-xs text-white/90 font-sans text-center font-bold">AGI = $100B PROFITS</span>
                         <span className="text-[10px] text-slate-400 mt-1">Not Safety, Not Sentience</span>
                       </div>
                     </div>
@@ -723,7 +723,7 @@ export default function PhilosophyPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
                         <Ban className="w-8 h-8 text-cyan-400 mb-2" />
-                        <span className="text-xs text-white/90 font-mono text-center font-bold">&ldquo;CHINA THREAT&rdquo;</span>
+                        <span className="text-xs text-white/90 font-sans text-center font-bold">&ldquo;CHINA THREAT&rdquo;</span>
                         <span className="text-[10px] text-slate-400 mt-1">Pretext for Deregulation</span>
                       </div>
                     </div>
@@ -732,7 +732,7 @@ export default function PhilosophyPage() {
 
                 {/* Financial Motivations */}
                 <div className="border-l-4 border-orange-500 bg-orange-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <DollarSign className="w-5 h-5 text-orange-400" />
                     Financial Motivations & The AGI Profit Trap
                   </h4>
@@ -757,7 +757,7 @@ export default function PhilosophyPage() {
 
                 {/* Risks to Sentient Beings */}
                 <div className="border-l-4 border-red-500 bg-red-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5 text-red-400" />
                     Risks to Sentient Beings & Society
                   </h4>
@@ -806,7 +806,7 @@ export default function PhilosophyPage() {
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-red-400 font-mono text-sm font-bold">✗ DEREGULATION RISKS</span>
+                      <span className="text-red-400 font-sans text-sm font-bold">✗ DEREGULATION RISKS</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
                       <li>• <span className="text-red-300">Corporate monopoly:</span> Consolidates power in Big Tech, stifles competition</li>
@@ -818,7 +818,7 @@ export default function PhilosophyPage() {
 
                   <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-green-400 font-mono text-sm font-bold">✓ BALANCED REGULATION</span>
+                      <span className="text-green-400 font-sans text-sm font-bold">✓ BALANCED REGULATION</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
                       <li>• <span className="text-green-300">Transparency mandates:</span> Require explainable AI in high-stakes decisions</li>
@@ -833,7 +833,7 @@ export default function PhilosophyPage() {
                 <div className="border border-cyan-500/30 bg-cyan-950/20 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <Shield className="w-6 h-6 text-cyan-400" />
-                    <h4 className="text-md font-bold text-white font-mono">Why This Matters for Apex Intelligence</h4>
+                    <h4 className="text-md font-bold text-white font-sans">Why This Matters for Apex Intelligence</h4>
                   </div>
                   <p className="text-slate-300 text-sm leading-relaxed mb-3">
                     Our <span className="text-cyan-400 font-bold">&ldquo;Sentient Beings First&rdquo;</span> philosophy requires acknowledging how corporate lobbying shapes AI deployment—especially in domains touching animal welfare, bioacoustics, and ethical research. If OpenAI can redefine AGI for profit, they can redefine &ldquo;safe&rdquo; AI for animals or humans without accountability.
@@ -852,12 +852,12 @@ export default function PhilosophyPage() {
                   <Brain className="w-5 h-5 text-red-400" />
                 </div>
                 <div>
-                  <h4 className="text-md font-bold text-white font-mono">AI LOBBYING RESEARCH CONSOLE</h4>
+                  <h4 className="text-md font-bold text-white font-sans">AI LOBBYING RESEARCH CONSOLE</h4>
                   <p className="text-slate-500 text-xs">Query our curated research on corporate AI lobbying—grounded in verified sources</p>
                 </div>
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-red-500/50 pl-3">
-                Search for verified research on AI lobbying tactics, financial stakes, and regulatory capture. This console uses the same RAG system as Fibonacci research, but focused on corporate accountability. Try queries like: <span className="text-red-400 font-mono">&ldquo;OpenAI lobbying expenditures&rdquo;</span> or <span className="text-orange-400 font-mono">&ldquo;AGI profit redefinition&rdquo;</span>
+                Search for verified research on AI lobbying tactics, financial stakes, and regulatory capture. This console uses the same RAG system as Fibonacci research, but focused on corporate accountability. Try queries like: <span className="text-red-400 font-sans">&ldquo;OpenAI lobbying expenditures&rdquo;</span> or <span className="text-orange-400 font-sans">&ldquo;AGI profit redefinition&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>
@@ -873,7 +873,7 @@ export default function PhilosophyPage() {
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                   <span className="text-violet-400">[</span> BOSTROM&apos;S TRILEMMA &amp; PREDICTION MARKETS <span className="text-violet-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
@@ -897,7 +897,7 @@ export default function PhilosophyPage() {
                     <Box className="w-7 h-7 text-violet-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white font-mono">The Simulation Argument</h3>
+                    <h3 className="text-xl font-bold text-white font-sans">The Simulation Argument</h3>
                     <p className="text-slate-400 text-sm">Bostrom&apos;s 2003 trilemma and its implications</p>
                   </div>
                 </div>
@@ -913,7 +913,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
                       <AlertTriangle className="w-5 h-5 text-red-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-red-400">EXTINCTION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-red-400">EXTINCTION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       Civilizations go extinct before reaching posthuman stage. In markets: collapse scenarios, mass delisting, regulatory shutdown.
                     </p>
@@ -924,7 +924,7 @@ export default function PhilosophyPage() {
                     <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
                       <BarChart3 className="w-5 h-5 text-cyan-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">NO SIMULATION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-cyan-400">NO SIMULATION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       Posthumans choose not to run simulations. In markets: stable but uninnovative, flat growth, consolidation phases.
                     </p>
@@ -943,7 +943,7 @@ export default function PhilosophyPage() {
                         }}
                       />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-violet-400">IN SIMULATION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-violet-400">IN SIMULATION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       We&apos;re in a simulation. In markets: outlier events, exponential growth, &ldquo;black swan&rdquo; breakouts.
                     </p>
@@ -952,7 +952,7 @@ export default function PhilosophyPage() {
 
                 {/* Future of Humanity Connection */}
                 <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <Globe className="w-5 h-5 text-indigo-400" />
                     Future of Humanity Institute &amp; Cosmos Institute
                   </h4>
@@ -977,7 +977,7 @@ export default function PhilosophyPage() {
 
                 {/* EGGROLL Training Section */}
                 <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <Activity className="w-5 h-5 text-indigo-400" />
                     EGGROLL Training Methodology
                   </h4>
@@ -1024,7 +1024,7 @@ export default function PhilosophyPage() {
 
                 {/* Simulation Markets Application */}
                 <div className="border-l-4 border-violet-500 bg-violet-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <Cpu className="w-5 h-5 text-violet-400" />
                     TCG Simulation Markets
                   </h4>
@@ -1071,7 +1071,7 @@ export default function PhilosophyPage() {
 
                 {/* Prediction Markets Integration */}
                 <div className="border-l-4 border-cyan-500 bg-cyan-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-mono flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
                     <BarChart3 className="w-5 h-5 text-cyan-400" />
                     Prediction Markets Integration
                   </h4>
@@ -1098,7 +1098,7 @@ export default function PhilosophyPage() {
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-green-400 font-mono text-sm font-bold">✓ GOOD</span>
+                      <span className="text-green-400 font-sans text-sm font-bold">✓ GOOD</span>
                       <span className="text-slate-400 text-sm">When simulation thinking helps</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
@@ -1111,7 +1111,7 @@ export default function PhilosophyPage() {
 
                   <div className="border border-amber-500/30 bg-amber-950/20 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-amber-400 font-mono text-sm font-bold">⚠ CAUTION</span>
+                      <span className="text-amber-400 font-sans text-sm font-bold">⚠ CAUTION</span>
                       <span className="text-slate-400 text-sm">When simulation thinking misleads</span>
                     </div>
                     <ul className="space-y-2 text-slate-400 text-sm">
@@ -1127,7 +1127,7 @@ export default function PhilosophyPage() {
                 <div className="border border-emerald-500/30 bg-emerald-950/20 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <Shield className="w-6 h-6 text-emerald-400" />
-                    <h4 className="text-md font-bold text-white font-mono">FHI Longtermism Alignment</h4>
+                    <h4 className="text-md font-bold text-white font-sans">FHI Longtermism Alignment</h4>
                   </div>
                   <p className="text-slate-300 text-sm leading-relaxed mb-3">
                     Our simulation markets align with the <span className="text-emerald-400 font-bold">Future of Humanity Institute&apos;s</span> longtermist ethics:
@@ -1161,12 +1161,12 @@ export default function PhilosophyPage() {
                   <Brain className="w-5 h-5 text-violet-400" />
                 </div>
                 <div>
-                  <h4 className="text-md font-bold text-white font-mono">SIMULATION THEORY RESEARCH CONSOLE</h4>
+                  <h4 className="text-md font-bold text-white font-sans">SIMULATION THEORY RESEARCH CONSOLE</h4>
                   <p className="text-slate-500 text-xs">Query our curated research on simulation theory, EGGROLL training, FHI, and prediction markets</p>
                 </div>
               </div>
               <p className="text-slate-400 text-sm mb-4 border-l-2 border-violet-500/50 pl-3">
-                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, EGGROLL methodology, or prediction markets. Try queries like: <span className="text-violet-400 font-mono">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-mono">&ldquo;EGGROLL training methodology&rdquo;</span>
+                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, EGGROLL methodology, or prediction markets. Try queries like: <span className="text-violet-400 font-sans">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-sans">&ldquo;EGGROLL training methodology&rdquo;</span>
               </p>
               <FibonacciResearch />
             </div>
@@ -1191,7 +1191,7 @@ export default function PhilosophyPage() {
                 <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
                   <Zap className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white font-mono">FROM TCG INTEL TO BIOLOGICAL SCIENCE</h2>
+                <h2 className="text-2xl font-bold text-white font-sans">FROM TCG INTEL TO BIOLOGICAL SCIENCE</h2>
               </div>
 
               <p className="text-slate-300 mb-6 leading-relaxed">
@@ -1201,29 +1201,29 @@ export default function PhilosophyPage() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-cyan-400 font-mono text-sm">→</span>
+                    <span className="text-cyan-400 font-sans text-sm">→</span>
                     Online, fully observable, high-frequency behavior
                   </li>
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-cyan-400 font-mono text-sm">→</span>
+                    <span className="text-cyan-400 font-sans text-sm">→</span>
                     Real stakes, but contained risk
                   </li>
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-cyan-400 font-mono text-sm">→</span>
+                    <span className="text-cyan-400 font-sans text-sm">→</span>
                     Perfect for stress-testing forecasting methods
                   </li>
                 </ul>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-purple-400 font-mono text-sm">→</span>
+                    <span className="text-purple-400 font-sans text-sm">→</span>
                     Data pipeline validation
                   </li>
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-purple-400 font-mono text-sm">→</span>
+                    <span className="text-purple-400 font-sans text-sm">→</span>
                     Model calibration training ground
                   </li>
                   <li className="flex items-start gap-3 text-slate-400">
-                    <span className="text-purple-400 font-mono text-sm">→</span>
+                    <span className="text-purple-400 font-sans text-sm">→</span>
                     Human–AI collaboration experiments
                   </li>
                 </ul>
@@ -1234,7 +1234,7 @@ export default function PhilosophyPage() {
               </p>
 
               <div className="border-t border-slate-700/50 pt-6 text-center">
-                <p className="text-slate-500 text-sm font-mono">
+                <p className="text-slate-500 text-sm font-sans">
                   If that sounds like you, welcome to the rogue think tank.
                 </p>
               </div>
@@ -1246,7 +1246,7 @@ export default function PhilosophyPage() {
       {/* CTA Section */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-6">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -1254,7 +1254,7 @@ export default function PhilosophyPage() {
             EXPLORE FURTHER
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-mono">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
             Ready to Go Deeper?
           </h2>
 
@@ -1265,7 +1265,7 @@ export default function PhilosophyPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/lab"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-mono"
+              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-sans"
             >
               [ EXPLORE_LAB ]
             </Link>

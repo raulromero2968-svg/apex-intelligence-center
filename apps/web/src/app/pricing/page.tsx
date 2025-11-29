@@ -114,7 +114,7 @@ export default function PricingPage() {
         {/* Header Section */}
         <section className="text-center mb-16 space-y-6">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -139,7 +139,7 @@ export default function PricingPage() {
           </p>
 
           {/* Terminal Prompt */}
-          <div className="font-mono text-sm text-cyan-400/60 max-w-2xl mx-auto text-left bg-slate-900/50 border border-cyan-500/20 rounded-lg p-4">
+          <div className="font-sans text-sm text-cyan-400/60 max-w-2xl mx-auto text-left bg-slate-900/50 border border-cyan-500/20 rounded-lg p-4">
             <span className="text-purple-400">apex@pricing</span>
             <span className="text-slate-500">:</span>
             <span className="text-cyan-400">~</span>
@@ -167,7 +167,7 @@ export default function PricingPage() {
                   >
                     {/* Popular Badge */}
                     {tier.popular && (
-                      <div className="absolute top-0 right-0 bg-gradient-to-r from-cyan-500 to-purple-500 text-white text-xs font-bold px-4 py-1 rounded-bl-lg font-mono">
+                      <div className="absolute top-0 right-0 bg-gradient-to-r from-cyan-500 to-purple-500 text-white text-xs font-bold px-4 py-1 rounded-bl-lg font-sans">
                         MOST POPULAR
                       </div>
                     )}
@@ -184,13 +184,13 @@ export default function PricingPage() {
                     <h3 className={`text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r ${tier.gradient} mb-1`}>
                       {tier.name}
                     </h3>
-                    <p className="text-sm text-slate-500 font-mono mb-4">{tier.tagline}</p>
+                    <p className="text-sm text-slate-500 font-sans mb-4">{tier.tagline}</p>
 
                     {/* Price */}
                     <div className="mb-4">
                       <div className="flex items-baseline gap-2">
                         <span className="text-4xl font-black text-white">{tier.price}</span>
-                        <span className="text-sm text-slate-500 font-mono">/ {tier.period}</span>
+                        <span className="text-sm text-slate-500 font-sans">/ {tier.period}</span>
                       </div>
                     </div>
 
@@ -212,7 +212,7 @@ export default function PricingPage() {
                     {/* CTA Button */}
                     <Link
                       href={tier.ctaLink}
-                      className={`group/btn inline-flex items-center justify-center gap-2 bg-gradient-to-r ${tier.gradient} hover:opacity-90 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl font-mono text-sm`}
+                      className={`group/btn inline-flex items-center justify-center gap-2 bg-gradient-to-r ${tier.gradient} hover:opacity-90 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl font-sans text-sm`}
                     >
                       [ {tier.cta.toUpperCase()} ]
                       <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -283,14 +283,14 @@ export default function PricingPage() {
                 href="https://apexomnis.io"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-mono"
+                className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
               >
                 [ CONTACT_SALES ]
                 <ArrowRight className="w-5 h-5" />
               </a>
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center gap-2 bg-slate-900/50 hover:bg-slate-800/50 border border-cyan-500/30 hover:border-cyan-400/60 text-white font-medium px-8 py-4 rounded-lg transition-all backdrop-blur-sm font-mono"
+                className="inline-flex items-center justify-center gap-2 bg-slate-900/50 hover:bg-slate-800/50 border border-cyan-500/30 hover:border-cyan-400/60 text-white font-medium px-8 py-4 rounded-lg transition-all backdrop-blur-sm font-sans"
               >
                 [ BACK_TO_DASHBOARD ]
               </Link>

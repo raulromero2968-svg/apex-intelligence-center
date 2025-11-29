@@ -501,7 +501,7 @@ export const QuantumNetworkVisualization: React.FC<QuantumNetworkVizProps> = ({
 
       {/* Info overlay */}
       <div
-        className="absolute bottom-4 left-4 text-sm font-mono"
+        className="absolute bottom-4 left-4 text-sm font-sans"
         style={{ color: colors.primary }}
       >
         Nodes: {cards.length} | Quality: {quality}

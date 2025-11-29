@@ -41,7 +41,7 @@ export default function VARCInsight({ children, type = 'neutral' }: VARCInsightP
           </div>
         </div>
         <div className="flex-1">
-          <div className="text-xs uppercase tracking-wider text-gray-400 font-mono mb-2">
+          <div className="text-xs uppercase tracking-wider text-gray-400 font-sans mb-2">
             [ VARC ANALYSIS ]
           </div>
           <div className="text-gray-200 leading-relaxed">

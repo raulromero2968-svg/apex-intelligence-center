@@ -65,7 +65,7 @@ export default function PhDFrameworkPage() {
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -83,7 +83,7 @@ export default function PhDFrameworkPage() {
             </span>
           </h1>
 
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-mono">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-sans">
             A living dissertation: psycho-neural collaboration between human and AI intelligence.
             <span className="inline-block w-3 h-5 bg-purple-400 ml-1 animate-pulse align-middle" />
           </p>
@@ -97,7 +97,7 @@ export default function PhDFrameworkPage() {
           <div className="border border-cyan-500/30 rounded-sm bg-black/40 backdrop-blur-md overflow-hidden">
             {/* Terminal Header */}
             <div className="flex items-center justify-between px-4 py-2 border-b border-cyan-500/20 bg-black/60">
-              <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono">
+              <div className="flex items-center gap-2 text-cyan-400 text-xs font-sans">
                 <FileText className="w-4 h-4" />
                 <span>DISSERTATION_VIEWER</span>
               </div>
@@ -116,7 +116,7 @@ export default function PhDFrameworkPage() {
                   <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center">
                     <Target className="w-5 h-5 text-purple-400" />
                   </div>
-                  <h2 className="text-2xl font-bold text-white font-mono">THESIS_STATEMENT</h2>
+                  <h2 className="text-2xl font-bold text-white font-sans">THESIS_STATEMENT</h2>
                 </div>
 
                 <div className="border-l-4 border-purple-500 bg-purple-950/20 rounded-r-lg p-6">
@@ -125,7 +125,7 @@ export default function PhDFrameworkPage() {
                   </p>
                 </div>
 
-                <p className="text-slate-400 text-sm font-mono">
+                <p className="text-slate-400 text-sm font-sans">
                   <span className="text-cyan-400">&gt;</span> The Apex platform itself is the dissertation: a living, evolving proof that emerges through the collaborative act of building.
                 </p>
               </div>
@@ -136,7 +136,7 @@ export default function PhDFrameworkPage() {
                   <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
                     <Lightbulb className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-white font-mono">CORE_RESEARCH_QUESTIONS</h2>
+                  <h2 className="text-xl font-bold text-white font-sans">CORE_RESEARCH_QUESTIONS</h2>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -150,7 +150,7 @@ export default function PhDFrameworkPage() {
                       key={item.num}
                       className={`border border-${item.color}-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-4`}
                     >
-                      <span className={`text-${item.color}-400 font-mono text-sm font-bold`}>{item.num}</span>
+                      <span className={`text-${item.color}-400 font-sans text-sm font-bold`}>{item.num}</span>
                       <p className="text-slate-300 text-sm mt-2 leading-relaxed">{item.question}</p>
                     </div>
                   ))}
@@ -168,7 +168,7 @@ export default function PhDFrameworkPage() {
             {/* Section Header */}
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                 <span className="text-cyan-400">[</span> SITE → DISSERTATION MAPPING <span className="text-cyan-400">]</span>
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
@@ -297,7 +297,7 @@ export default function PhDFrameworkPage() {
           <ElectronicFolder title="METHODOLOGY" classification="PSYCHO-NEURAL COLLABORATION // APEX_PROTOCOL">
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                 <span className="text-purple-400">[</span> THE PSYCHO-NEURAL METHODOLOGY <span className="text-purple-400">]</span>
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
@@ -314,7 +314,7 @@ export default function PhDFrameworkPage() {
                     <Brain className="w-7 h-7 text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white font-mono">What is Psycho-Neural Collaboration?</h3>
+                    <h3 className="text-xl font-bold text-white font-sans">What is Psycho-Neural Collaboration?</h3>
                     <p className="text-slate-400 text-sm">A structured framework for human-AI research partnership</p>
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function PhDFrameworkPage() {
                     <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
                       <Network className="w-5 h-5 text-cyan-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-cyan-400">ITERATIVE DIALOGUE</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-cyan-400">ITERATIVE DIALOGUE</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       Research emerges through conversation, not extraction. Each exchange refines understanding on both sides.
                     </p>
@@ -339,7 +339,7 @@ export default function PhDFrameworkPage() {
                     <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-3">
                       <GitBranch className="w-5 h-5 text-purple-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-purple-400">TRANSPARENT ATTRIBUTION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-purple-400">TRANSPARENT ATTRIBUTION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       Clear documentation of which insights emerged from human direction, AI synthesis, or collaborative emergence.
                     </p>
@@ -349,7 +349,7 @@ export default function PhDFrameworkPage() {
                     <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-3">
                       <Microscope className="w-5 h-5 text-emerald-400" />
                     </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-mono text-emerald-400">LIVING VALIDATION</h4>
+                    <h4 className="text-md font-bold text-white mb-2 font-sans text-emerald-400">LIVING VALIDATION</h4>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       The platform itself serves as ongoing proof—users can inspect, critique, and build upon the work.
                     </p>
@@ -358,7 +358,7 @@ export default function PhDFrameworkPage() {
 
                 {/* Process Diagram */}
                 <div className="border border-slate-700 bg-slate-900/80 rounded-lg p-6">
-                  <h4 className="text-sm font-bold text-slate-400 font-mono mb-4">COLLABORATION CYCLE</h4>
+                  <h4 className="text-sm font-bold text-slate-400 font-sans mb-4">COLLABORATION CYCLE</h4>
                   <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
                     <div className="px-4 py-2 rounded bg-purple-950/50 border border-purple-500/30 text-purple-300">
                       Human Intent
@@ -388,7 +388,7 @@ export default function PhDFrameworkPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="border border-red-500/30 bg-red-950/20 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-red-400 font-mono text-sm font-bold">✗ TRADITIONAL PHD</span>
+                  <span className="text-red-400 font-sans text-sm font-bold">✗ TRADITIONAL PHD</span>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li>• Single author, closed development</li>
@@ -401,7 +401,7 @@ export default function PhDFrameworkPage() {
 
               <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-green-400 font-mono text-sm font-bold">✓ LIVING DISSERTATION</span>
+                  <span className="text-green-400 font-sans text-sm font-bold">✓ LIVING DISSERTATION</span>
                 </div>
                 <ul className="space-y-2 text-slate-400 text-sm">
                   <li>• Collaborative authorship, open process</li>
@@ -422,7 +422,7 @@ export default function PhDFrameworkPage() {
           <ElectronicFolder title="ROADMAP" classification="PROJECT TIMELINE // APEX_MILESTONES">
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-              <h2 className="text-xl font-bold tracking-wider text-white font-mono">
+              <h2 className="text-xl font-bold tracking-wider text-white font-sans">
                 <span className="text-emerald-400">[</span> DISSERTATION ROADMAP <span className="text-emerald-400">]</span>
               </h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
@@ -502,7 +502,7 @@ export default function PhDFrameworkPage() {
       {/* CTA Section */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-6">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -510,7 +510,7 @@ export default function PhDFrameworkPage() {
             JOIN THE RESEARCH
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-mono">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
             Explore the Living Dissertation
           </h2>
 
@@ -521,14 +521,14 @@ export default function PhDFrameworkPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/commons"
-              className="inline-flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-400 text-white font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:shadow-[0_0_50px_rgba(147,51,234,0.8)] font-mono"
+              className="inline-flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-400 text-white font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:shadow-[0_0_50px_rgba(147,51,234,0.8)] font-sans"
             >
               <BookOpen className="w-5 h-5" />
               [ READ_ESSAYS ]
             </Link>
             <Link
               href="/philosophy"
-              className="inline-flex items-center justify-center gap-2 border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-semibold px-8 py-4 rounded-lg transition-all text-lg font-mono"
+              className="inline-flex items-center justify-center gap-2 border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-semibold px-8 py-4 rounded-lg transition-all text-lg font-sans"
             >
               <Brain className="w-5 h-5" />
               [ VIEW_METHODOLOGY ]
@@ -581,9 +581,9 @@ function ChapterMapping({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
-            <span className={`${styles.text} font-mono text-xs font-bold`}>CHAPTER {chapterNum}</span>
+            <span className={`${styles.text} font-sans text-xs font-bold`}>CHAPTER {chapterNum}</span>
             <span className="text-slate-600">|</span>
-            <span className="text-white font-mono text-sm font-bold">{chapterTitle}</span>
+            <span className="text-white font-sans text-sm font-bold">{chapterTitle}</span>
           </div>
           <div className={`${styles.text} text-sm font-semibold mb-1 group-hover:underline`}>
             {sitePage} <ArrowRight className="w-3 h-3 inline ml-1" />
@@ -629,15 +629,15 @@ function PhaseCard({
     <div className={`relative md:pl-20 border ${styles.border} ${styles.bg} rounded-lg p-6`}>
       {/* Phase marker */}
       <div className="hidden md:flex absolute left-0 top-6 w-16 items-center justify-center">
-        <div className={`w-10 h-10 rounded-full ${styles.badgeBg} border flex items-center justify-center ${styles.text} font-mono text-sm font-bold z-10 bg-slate-950`}>
+        <div className={`w-10 h-10 rounded-full ${styles.badgeBg} border flex items-center justify-center ${styles.text} font-sans text-sm font-bold z-10 bg-slate-950`}>
           {phase}
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
-        <span className={`md:hidden ${styles.text} font-mono text-xs font-bold`}>PHASE {phase}</span>
-        <h3 className="text-lg font-bold text-white font-mono">{title}</h3>
-        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono ${statusStyles[status]}`}>
+        <span className={`md:hidden ${styles.text} font-sans text-xs font-bold`}>PHASE {phase}</span>
+        <h3 className="text-lg font-bold text-white font-sans">{title}</h3>
+        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans ${statusStyles[status]}`}>
           {status === 'IN_PROGRESS' && (
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>

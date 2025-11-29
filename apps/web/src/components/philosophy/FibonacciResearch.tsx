@@ -166,14 +166,14 @@ export function FibonacciResearch({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Research Fibonacci patterns in nature and biology..."
-            className="w-full bg-black/50 border border-cyan-500/30 rounded-lg pl-12 pr-28 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 font-mono text-sm"
+            className="w-full bg-black/50 border border-cyan-500/30 rounded-lg pl-12 pr-28 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 font-sans text-sm"
             aria-label="Research query"
           />
           <button
             type="button"
             onClick={() => handleResearch()}
             disabled={loading || !query.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-mono font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-sans font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
           >
             {loading ? (
               <>
@@ -191,7 +191,7 @@ export function FibonacciResearch({
 
         {/* Suggested Queries */}
         <div className="mt-4">
-          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-mono">
+          <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-sans">
             Suggested queries:
           </div>
           <div className="flex flex-wrap gap-2">
@@ -201,7 +201,7 @@ export function FibonacciResearch({
                 type="button"
                 onClick={() => handleSuggestionClick(sq)}
                 disabled={loading}
-                className="px-3 py-1.5 text-xs bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/30 hover:border-cyan-500/30 rounded-full text-slate-400 hover:text-cyan-400 transition-all font-mono disabled:opacity-50 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
+                className="px-3 py-1.5 text-xs bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/30 hover:border-cyan-500/30 rounded-full text-slate-400 hover:text-cyan-400 transition-all font-sans disabled:opacity-50 focus:outline-none focus:ring-1 focus:ring-cyan-400/50"
               >
                 {sq}
               </button>
@@ -265,7 +265,7 @@ export function FibonacciResearch({
           >
             <div className="flex items-center gap-2 mb-4">
               <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
-              <span className="text-xs text-cyan-400 font-mono uppercase tracking-wider">
+              <span className="text-xs text-cyan-400 font-sans uppercase tracking-wider">
                 Processing research query...
               </span>
             </div>
@@ -290,7 +290,7 @@ export function FibonacciResearch({
             <div className="p-6 bg-slate-900/50 border border-cyan-500/30 rounded-lg">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="w-4 h-4 text-cyan-400" />
-                <span className="text-xs text-cyan-400 font-mono uppercase tracking-wider">
+                <span className="text-xs text-cyan-400 font-sans uppercase tracking-wider">
                   Research Results
                 </span>
               </div>
@@ -302,7 +302,7 @@ export function FibonacciResearch({
             {/* Sources */}
             {result.sources.length > 0 && (
               <div className="p-4 bg-slate-950/50 border border-slate-700/50 rounded-lg">
-                <div className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-mono">
+                <div className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-sans">
                   Sources ({result.sources.length})
                 </div>
                 <div className="space-y-2">
@@ -312,7 +312,7 @@ export function FibonacciResearch({
                       className="flex items-center justify-between p-2 bg-slate-800/30 rounded text-sm"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-cyan-400 font-mono">[{source.index}]</span>
+                        <span className="text-cyan-400 font-sans">[{source.index}]</span>
                         <span className="text-slate-300">{source.title}</span>
                       </div>
                       <div className="flex items-center gap-3">
@@ -346,7 +346,7 @@ export function FibonacciResearch({
           <div className="text-4xl mb-4 opacity-30">
             <Sparkles className="w-12 h-12 mx-auto text-cyan-400" />
           </div>
-          <p className="text-slate-500 text-sm max-w-md mx-auto font-mono">
+          <p className="text-slate-500 text-sm max-w-md mx-auto font-sans">
             Query our knowledge base to explore Fibonacci patterns in biology,
             animal sentience, and the universal mathematics of nature.
           </p>

@@ -329,7 +329,7 @@ export const QuantumVizPreview: React.FC<QuantumVizPreviewProps> = ({
           {title}
         </h3>
         <span
-          className="text-xs font-mono"
+          className="text-xs font-sans"
           style={{ color: colors.accent }}
         >
           {cards.length} nodes
@@ -338,7 +338,7 @@ export const QuantumVizPreview: React.FC<QuantumVizPreviewProps> = ({
 
       {/* Stats overlay */}
       <div
-        className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono"
+        className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-sans"
         style={{ color: colors.primary }}
       >
         <span>Total: ${totalValue.toFixed(0)}</span>

@@ -314,7 +314,7 @@ export function AgentPreviewPanel({
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400/60" />
           <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
         </div>
-        <div className="flex-1 px-2 py-1 bg-slate-800/50 rounded text-xs text-slate-300 font-mono truncate">
+        <div className="flex-1 px-2 py-1 bg-slate-800/50 rounded text-xs text-slate-300 font-sans truncate">
           {currentAction?.type === "navigate" ? currentAction.target : currentUrl}
         </div>
         <button className="p-1 text-slate-400 hover:text-slate-200">
@@ -363,7 +363,7 @@ export function AgentPreviewPanel({
                   : "border-slate-700/50"
               }`}
             >
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-400 font-sans">
                 {isTyping || typedText ? typedText : "Search..."}
                 {isTyping && <span className="animate-pulse">|</span>}
               </span>
@@ -578,25 +578,25 @@ export function AgentPreviewPanel({
       <div className="px-3 pb-3 grid grid-cols-4 gap-3">
         <div className="text-center">
           <div className="text-xs text-slate-400">Time</div>
-          <div className="text-lg font-mono text-slate-200">
+          <div className="text-lg font-sans text-slate-200">
             <HoloNumber value={Math.round(elapsedTime / 1000)} />s
           </div>
         </div>
         <div className="text-center">
           <div className="text-xs text-slate-400">Progress</div>
-          <div className="text-lg font-mono text-indigo-300">
+          <div className="text-lg font-sans text-indigo-300">
             <HoloNumber value={Math.round(progress)} />%
           </div>
         </div>
         <div className="text-center">
           <div className="text-xs text-slate-400">Success</div>
-          <div className={`text-lg font-mono ${successRate >= 80 ? "text-emerald-300" : "text-amber-300"}`}>
+          <div className={`text-lg font-sans ${successRate >= 80 ? "text-emerald-300" : "text-amber-300"}`}>
             <HoloNumber value={Math.round(successRate)} />%
           </div>
         </div>
         <div className="text-center">
           <div className="text-xs text-slate-400">Actions</div>
-          <div className="text-lg font-mono text-cyan-300">
+          <div className="text-lg font-sans text-cyan-300">
             <HoloNumber value={completedCount} />
           </div>
         </div>

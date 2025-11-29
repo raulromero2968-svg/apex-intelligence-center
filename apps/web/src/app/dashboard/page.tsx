@@ -122,7 +122,7 @@ export default function DashboardPage() {
               {/* Left Column: Terminal Header */}
               <div className="space-y-8">
                 {/* Status Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-mono">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
 
                 {/* Terminal Header */}
                 <div className="space-y-4">
-                  <div className="font-mono text-sm text-cyan-400/60">
+                  <div className="font-sans text-sm text-cyan-400/60">
                     <span className="text-purple-400">apex@intelligence</span>
                     <span className="text-slate-500">:</span>
                     <span className="text-cyan-400">~</span>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
                     </span>
                   </h1>
 
-                  <div className="flex items-center gap-2 text-lg font-mono text-slate-400">
+                  <div className="flex items-center gap-2 text-lg font-sans text-slate-400">
                     <span className="text-purple-400">for</span>
                     <span className="text-white font-bold">Serious Collectors</span>
                     <span className="inline-block w-2 h-5 bg-cyan-400 animate-pulse" />
@@ -158,7 +158,7 @@ export default function DashboardPage() {
 
                 <p className="text-lg text-slate-400 max-w-xl leading-relaxed border-l-2 border-cyan-500/30 pl-4">
                   Premium TCG market analysis, data-driven insights, and exclusive intelligence.
-                  <span className="block mt-2 text-cyan-400/80 font-mono text-sm">
+                  <span className="block mt-2 text-cyan-400/80 font-sans text-sm">
                     Alpha signals from the underground—delivered to your inbox.
                   </span>
                 </p>
@@ -167,14 +167,14 @@ export default function DashboardPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/intel" 
-                    className="group inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-mono"
+                    className="group inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
                   >
                     [ GET_FREE_INTEL ]
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
                     href="/pricing"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] font-mono"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] font-sans"
                   >
                     <Terminal className="w-5 h-5" />
                     [ UPGRADE_TO_PRO ]
@@ -187,19 +187,19 @@ export default function DashboardPage() {
                     <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-600">
                       1.2K+
                     </div>
-                    <div className="text-xs text-slate-500 font-mono uppercase tracking-wider">Collectors</div>
+                    <div className="text-xs text-slate-500 font-sans uppercase tracking-wider">Collectors</div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
                       50+
                     </div>
-                    <div className="text-xs text-slate-500 font-mono uppercase tracking-wider">Intel Drops</div>
+                    <div className="text-xs text-slate-500 font-sans uppercase tracking-wider">Intel Drops</div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-pink-600">
                       $2M+
                     </div>
-                    <div className="text-xs text-slate-500 font-mono uppercase tracking-wider">Cards Tracked</div>
+                    <div className="text-xs text-slate-500 font-sans uppercase tracking-wider">Cards Tracked</div>
                   </div>
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                           filter: 'drop-shadow(0 0 6px #a855f7) drop-shadow(0 0 12px #06b6d4)'
                         }}
                       />
-                      <p className="text-slate-400 font-mono text-sm">
+                      <p className="text-slate-400 font-sans text-sm">
                         Market insights, research, and analysis from industry experts
                       </p>
                     </div>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
                         {/* Top accent line */}
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
-                        <div className="text-xs text-cyan-400/60 font-mono mb-3 uppercase tracking-wider">
+                        <div className="text-xs text-cyan-400/60 font-sans mb-3 uppercase tracking-wider">
                           {p.date}
                         </div>
                         <div className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-3 leading-tight">
@@ -282,7 +282,7 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Read more indicator */}
-                        <div className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 transition-colors font-mono">
+                        <div className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 transition-colors font-sans">
                           READ_MORE <span className="group-hover:translate-x-1 inline-block transition-transform">→</span>
                         </div>
                       </Link>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
                 <div className="mt-8 text-center">
                   <Link 
                     href="/blog" 
-                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors group"
+                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-sans text-sm transition-colors group"
                   >
                     <span>[ VIEW_ALL_INSIGHTS ]</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

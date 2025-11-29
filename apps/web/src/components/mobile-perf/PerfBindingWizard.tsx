@@ -376,7 +376,7 @@ export function PerfBindingWizard({ onComplete, onCancel }: PerfBindingWizardPro
               <textarea
                 value={state.componentCode}
                 onChange={(e) => setState((prev) => ({ ...prev, componentCode: e.target.value }))}
-                className="w-full h-64 p-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono text-sm"
+                className="w-full h-64 p-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-sans text-sm"
                 placeholder={`// Paste your React Native component code here
 function CardList({ cards }) {
   return (
@@ -535,7 +535,7 @@ function CardList({ cards }) {
                   Copy
                 </button>
               </div>
-              <pre className="p-4 text-sm font-mono overflow-x-auto max-h-96">
+              <pre className="p-4 text-sm font-sans overflow-x-auto max-h-96">
                 {state.optimizedCode || state.componentCode}
               </pre>
             </div>
@@ -582,13 +582,13 @@ function CardList({ cards }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-gray-800 rounded-lg p-4">
                 <h4 className="text-sm font-medium text-gray-400 mb-2">Original</h4>
-                <pre className="text-xs font-mono overflow-x-auto max-h-48 text-red-300">
+                <pre className="text-xs font-sans overflow-x-auto max-h-48 text-red-300">
                   {state.componentCode.substring(0, 500)}...
                 </pre>
               </div>
               <div className="bg-gray-800 rounded-lg p-4">
                 <h4 className="text-sm font-medium text-gray-400 mb-2">Optimized</h4>
-                <pre className="text-xs font-mono overflow-x-auto max-h-48 text-green-300">
+                <pre className="text-xs font-sans overflow-x-auto max-h-48 text-green-300">
                   {(state.optimizedCode || state.componentCode).substring(0, 500)}...
                 </pre>
               </div>

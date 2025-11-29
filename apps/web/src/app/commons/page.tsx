@@ -28,7 +28,7 @@ export default async function CommonsPage() {
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -113,7 +113,7 @@ export default async function CommonsPage() {
                 <p className="text-slate-400 mb-6">The commons is being prepared. Check back soon.</p>
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-mono text-sm transition-colors"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-sans text-sm transition-colors"
                 >
                   <span>←</span> RETURN_TO_BASE
                 </Link>
@@ -127,7 +127,7 @@ export default async function CommonsPage() {
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-3xl mx-auto">
           <HoloCard intensity="high" className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-mono mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-sm font-sans mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -190,7 +190,7 @@ function EssayCard({ post }: { post: any }) {
       <div className="p-6 flex-1">
         {/* Header */}
         <div className="mb-4">
-          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30 mb-3 font-mono">
+          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30 mb-3 font-sans">
             {post.frontmatter.category}
           </div>
           <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2">
@@ -235,7 +235,7 @@ function EssayCard({ post }: { post: any }) {
         )}
 
         {/* Read more */}
-        <div className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 transition-colors font-mono">
+        <div className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 transition-colors font-sans">
           READ_MORE <span className="group-hover:translate-x-1 inline-block transition-transform">→</span>
         </div>
       </div>

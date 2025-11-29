@@ -29,9 +29,9 @@ export default function ArticleCard({ a }: { a: Article }) {
         <div className="border-b border-purple-500/30 bg-black/60 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="w-3 h-3 text-purple-400" />
-            <span className="text-purple-400 font-mono text-[10px] tracking-wider">INTEL_NOTE</span>
+            <span className="text-purple-400 font-sans text-[10px] tracking-wider">INTEL_NOTE</span>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
+          <div className="flex items-center gap-2 text-[10px] font-sans text-slate-500">
             <span>{new Date(a.date).toLocaleDateString('en-US', { month: "short", day: "numeric", year: "numeric"})}</span>
             <span className="text-slate-700">•</span>
             <span>{a.read}</span>
@@ -40,10 +40,10 @@ export default function ArticleCard({ a }: { a: Article }) {
 
         {/* Content */}
         <Link href={a.href} className="block p-5">
-          <h3 className="text-lg font-semibold leading-snug text-white group-hover:text-cyan-400 transition-colors font-mono">
+          <h3 className="text-lg font-semibold leading-snug text-white group-hover:text-cyan-400 transition-colors font-sans">
             {a.title}
             {a.badge && (
-              <span className="ml-2 align-middle rounded border border-cyan-400/40 bg-cyan-400/10 px-2 py-0.5 text-[10px] text-cyan-400 font-mono">
+              <span className="ml-2 align-middle rounded border border-cyan-400/40 bg-cyan-400/10 px-2 py-0.5 text-[10px] text-cyan-400 font-sans">
                 {a.badge}
               </span>
             )}
@@ -58,7 +58,7 @@ export default function ArticleCard({ a }: { a: Article }) {
           <div className="px-5 pb-4">
             <ul className="flex flex-wrap gap-2">
               {a.tags.map(t => (
-                <li key={t} className="rounded border border-purple-500/30 bg-purple-950/30 px-2.5 py-1 text-[10px] text-purple-300 font-mono uppercase tracking-wider">
+                <li key={t} className="rounded border border-purple-500/30 bg-purple-950/30 px-2.5 py-1 text-[10px] text-purple-300 font-sans uppercase tracking-wider">
                   {t}
                 </li>
               ))}
@@ -68,7 +68,7 @@ export default function ArticleCard({ a }: { a: Article }) {
 
         {/* Footer Status Bar */}
         <div className="border-t border-purple-500/20 bg-black/40 px-4 py-2">
-          <div className="text-[9px] text-slate-600 font-mono">
+          <div className="text-[9px] text-slate-600 font-sans">
             STATUS: ARCHIVED | ACCESS: PUBLIC
           </div>
         </div>

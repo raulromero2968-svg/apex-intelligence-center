@@ -52,19 +52,19 @@ export default function HelpFAB() {
       {/* Tutorial Prompt - Only show if logged in AND hasn't seen tutorial */}
       {!hasSeenTutorial && (
         <div className="absolute bottom-20 right-0 mb-2 min-w-[240px] rounded-xl bg-black/90 backdrop-blur-md border border-cyan-400/30 shadow-lg shadow-cyan-400/20 overflow-hidden p-4">
-          <p className="text-cyan-300 text-sm font-mono mb-3">
+          <p className="text-cyan-300 text-sm font-sans mb-3">
             Welcome to APEX. Take a quick tour?
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleRestartTour}
-              className="flex-1 px-3 py-2 text-xs font-mono bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 rounded hover:bg-cyan-500/30 transition-colors"
+              className="flex-1 px-3 py-2 text-xs font-sans bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 rounded hover:bg-cyan-500/30 transition-colors"
             >
               Start Tour
             </button>
             <button
               onClick={handleDismissTutorial}
-              className="flex-1 px-3 py-2 text-xs font-mono bg-slate-500/20 border border-slate-500/40 text-slate-300 rounded hover:bg-slate-500/30 transition-colors"
+              className="flex-1 px-3 py-2 text-xs font-sans bg-slate-500/20 border border-slate-500/40 text-slate-300 rounded hover:bg-slate-500/30 transition-colors"
             >
               Dismiss
             </button>
@@ -77,14 +77,14 @@ export default function HelpFAB() {
         <div className="absolute bottom-20 right-0 mb-2 min-w-[200px] rounded-xl bg-black/90 backdrop-blur-md border border-cyan-400/30 shadow-lg shadow-cyan-400/20 overflow-hidden">
           <button
             onClick={handleRestartTour}
-            className="w-full px-4 py-3 text-left text-white hover:bg-cyan-400/10 transition-colors duration-200 border-b border-white/10 font-mono text-sm"
+            className="w-full px-4 py-3 text-left text-white hover:bg-cyan-400/10 transition-colors duration-200 border-b border-white/10 font-sans text-sm"
           >
             🎯 Restart Tour
           </button>
           <Link
             href="/tutorial"
             onClick={() => setIsOpen(false)}
-            className="block w-full px-4 py-3 text-left text-white hover:bg-cyan-400/10 transition-colors duration-200 font-mono text-sm"
+            className="block w-full px-4 py-3 text-left text-white hover:bg-cyan-400/10 transition-colors duration-200 font-sans text-sm"
           >
             📚 View Tutorial
           </Link>

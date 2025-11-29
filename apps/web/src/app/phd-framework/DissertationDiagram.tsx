@@ -130,7 +130,7 @@ export function DissertationDiagram() {
           <DetailPanel chapter={chapters.find(c => c.id === activeChapter)!} />
         ) : (
           <div className="border border-slate-700/50 bg-slate-900/30 rounded-xl p-8 text-center">
-            <p className="text-slate-500 font-mono text-sm">
+            <p className="text-slate-500 font-sans text-sm">
               Hover or click a chapter node above to see details
             </p>
           </div>
@@ -139,7 +139,7 @@ export function DissertationDiagram() {
 
       {/* Flow Arrows - Mobile/Tablet */}
       <div className="lg:hidden flex justify-center">
-        <div className="flex items-center gap-2 text-slate-600 font-mono text-xs">
+        <div className="flex items-center gap-2 text-slate-600 font-sans text-xs">
           <span>ABSTRACT</span>
           <ArrowRight className="w-4 h-4" />
           <span>...</span>
@@ -189,7 +189,7 @@ function ChapterNodeComponent({
     >
       {/* Chapter Number */}
       <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full ${iconBg} border flex items-center justify-center`}>
-        <span className={`${iconColor} font-mono text-xs font-bold`}>{chapter.chapter}</span>
+        <span className={`${iconColor} font-sans text-xs font-bold`}>{chapter.chapter}</span>
       </div>
 
       {/* Icon */}
@@ -198,12 +198,12 @@ function ChapterNodeComponent({
       </div>
 
       {/* Title */}
-      <span className="text-white text-xs font-mono text-center leading-tight">
+      <span className="text-white text-xs font-sans text-center leading-tight">
         {chapter.title}
       </span>
 
       {/* Component Label */}
-      <span className={`${iconColor} text-[10px] font-mono mt-1 opacity-70`}>
+      <span className={`${iconColor} text-[10px] font-sans mt-1 opacity-70`}>
         {chapter.component}
       </span>
 
@@ -236,10 +236,10 @@ function DetailPanel({ chapter }: { chapter: ChapterNode }) {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className={`${accentColor} font-mono text-xs`}>CHAPTER {chapter.chapter}</span>
+                <span className={`${accentColor} font-sans text-xs`}>CHAPTER {chapter.chapter}</span>
               </div>
-              <h3 className="text-xl font-bold text-white font-mono">{chapter.title}</h3>
-              <p className={`${accentColor} text-sm font-mono`}>→ {chapter.component}</p>
+              <h3 className="text-xl font-bold text-white font-sans">{chapter.title}</h3>
+              <p className={`${accentColor} text-sm font-sans`}>→ {chapter.component}</p>
             </div>
           </div>
 
@@ -248,14 +248,14 @@ function DetailPanel({ chapter }: { chapter: ChapterNode }) {
               href={chapter.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`inline-flex items-center gap-2 ${accentColor} hover:text-white font-mono text-sm transition-colors`}
+              className={`inline-flex items-center gap-2 ${accentColor} hover:text-white font-sans text-sm transition-colors`}
             >
               [ VIEW_CHAPTER ] →
             </a>
           ) : (
             <Link
               href={chapter.link}
-              className={`inline-flex items-center gap-2 ${accentColor} hover:text-white font-mono text-sm transition-colors`}
+              className={`inline-flex items-center gap-2 ${accentColor} hover:text-white font-sans text-sm transition-colors`}
             >
               [ VIEW_CHAPTER ] →
             </Link>
@@ -266,7 +266,7 @@ function DetailPanel({ chapter }: { chapter: ChapterNode }) {
 
         {/* Contribution to Thesis */}
         <div className="mt-4 pt-4 border-t border-slate-700/50">
-          <h4 className={`${accentColor} font-mono text-xs mb-2`}>CONTRIBUTION TO THESIS</h4>
+          <h4 className={`${accentColor} font-sans text-xs mb-2`}>CONTRIBUTION TO THESIS</h4>
           <p className="text-slate-500 text-sm">
             {getContributionText(chapter.id)}
           </p>

@@ -77,7 +77,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
       <div className="max-w-5xl mx-auto px-6 mb-8 relative z-10">
         <Link
           href="/commons"
-          className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors font-mono border border-cyan-500/30 px-4 py-2 rounded hover:border-cyan-400/50 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
+          className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors font-sans border border-cyan-500/30 px-4 py-2 rounded hover:border-cyan-400/50 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)]"
         >
           <ArrowLeft className="w-4 h-4" />
           [ RETURN_TO_COMMONS ]
@@ -102,7 +102,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           {/* Terminal Title Bar */}
           <div className="bg-black/60 border-b border-cyan-500/30 px-6 py-3 flex items-center gap-3">
             <Terminal className="w-5 h-5 text-cyan-400" />
-            <span className="text-cyan-400 font-mono text-sm">APEX_COMMONS_DOCUMENT_VIEWER</span>
+            <span className="text-cyan-400 font-sans text-sm">APEX_COMMONS_DOCUMENT_VIEWER</span>
             <div className="ml-auto flex gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500/50" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
@@ -124,18 +124,18 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
               {/* Overlay Title on Image */}
               <div className="absolute inset-0 flex items-end p-8">
                 <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-mono backdrop-blur-sm">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-purple-950/60 border border-purple-500/40 text-purple-300 text-xs font-sans backdrop-blur-sm">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                     </span>
                     {post.frontmatter.category || 'COMMONS'}
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tight text-holographic font-mono">
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tight text-holographic font-sans">
                     {post.frontmatter.title}
                   </h1>
                   {post.frontmatter.subtitle && (
-                    <p className="text-xl text-cyan-300 font-mono">
+                    <p className="text-xl text-cyan-300 font-sans">
                       {post.frontmatter.subtitle}
                     </p>
                   )}
@@ -146,7 +146,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
 
           {/* Meta Information Bar */}
           <div className="bg-black/40 border-b border-cyan-500/20 px-6 py-4">
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-mono">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 font-sans">
               {post.frontmatter.author && (
                 <>
                   <div className="flex items-center gap-2">
@@ -193,7 +193,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           {/* Document Content - Digital Scroll */}
           <div className="px-8 py-12 bg-black/20">
             <Suspense fallback={
-              <div className="essay-content prose prose-invert prose-lg max-w-none font-mono">
+              <div className="essay-content prose prose-invert prose-lg max-w-none font-sans">
                 <div className="animate-pulse space-y-4">
                   <div className="h-4 bg-cyan-500/10 rounded w-3/4"></div>
                   <div className="h-4 bg-cyan-500/10 rounded w-full"></div>
@@ -201,8 +201,8 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 </div>
               </div>
             }>
-              <div className="essay-content prose prose-invert prose-lg max-w-none font-mono
-                prose-headings:text-cyan-300 prose-headings:font-bold prose-headings:font-mono
+              <div className="essay-content prose prose-invert prose-lg max-w-none font-sans
+                prose-headings:text-cyan-300 prose-headings:font-bold prose-headings:font-sans
                 prose-h1:text-4xl prose-h1:mt-0 prose-h1:mb-8 prose-h1:text-holographic prose-h1:hidden
                 prose-h2:text-2xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:pb-4 prose-h2:border-b prose-h2:border-cyan-500/30
                 prose-h3:text-xl prose-h3:mt-12 prose-h3:mb-6 prose-h3:text-purple-300
@@ -212,7 +212,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
                 prose-strong:text-white prose-strong:font-bold
                 prose-em:text-slate-200 prose-em:italic
                 prose-blockquote:border-l-4 prose-blockquote:border-purple-400/50 prose-blockquote:pl-6 prose-blockquote:py-3 prose-blockquote:my-8 prose-blockquote:italic prose-blockquote:text-purple-200 prose-blockquote:bg-purple-950/20 prose-blockquote:rounded-r
-                prose-code:text-cyan-300 prose-code:bg-black/60 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-[''] prose-code:after:content-['']
+                prose-code:text-cyan-300 prose-code:bg-black/60 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-sans prose-code:before:content-[''] prose-code:after:content-['']
                 prose-pre:bg-black/80 prose-pre:border prose-pre:border-cyan-500/30 prose-pre:rounded-lg prose-pre:shadow-[0_0_20px_rgba(6,182,212,0.1)]
                 prose-ul:list-none prose-ul:pl-0 prose-ul:space-y-3 prose-ul:text-slate-300
                 prose-ol:list-none prose-ol:pl-0 prose-ol:space-y-3 prose-ol:text-slate-300
@@ -228,7 +228,7 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
 
           {/* Terminal Footer with Share Actions */}
           <div className="bg-black/60 border-t border-cyan-500/30 px-6 py-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans">
               <span className="text-slate-500">END_OF_DOCUMENT</span>
               
               {/* Share Actions */}
@@ -247,12 +247,12 @@ export default async function CommonsPostPage({ params }: CommonsPageProps) {
           <div className="mt-12 pt-8 border-t border-cyan-500/20">
             <div className="flex flex-col items-center gap-6">
               <div className="text-center">
-                <p className="text-slate-400 mb-4 font-mono text-sm">
+                <p className="text-slate-400 mb-4 font-sans text-sm">
                   [ EXPLORE_MORE_DOCUMENTS ]
                 </p>
                 <Link
                   href="/commons"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-400/40 hover:border-purple-400/70 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-400/20 font-mono text-sm"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-400/40 hover:border-purple-400/70 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-400/20 font-sans text-sm"
                 >
                   <BookOpen className="w-5 h-5" />
                   COMMONS_ARCHIVE

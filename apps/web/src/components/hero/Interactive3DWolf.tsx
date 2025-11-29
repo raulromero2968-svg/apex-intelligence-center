@@ -328,7 +328,7 @@ export default function Interactive3DWolf() {
       
       {/* Instructions */}
       <div className="absolute top-4 left-4 z-10 bg-slate-900/80 backdrop-blur-sm border border-cyan-500/30 rounded-lg px-4 py-2">
-        <p className="text-xs text-cyan-400 font-mono">
+        <p className="text-xs text-cyan-400 font-sans">
           CLICK + DRAG TO INTERACT
         </p>
       </div>

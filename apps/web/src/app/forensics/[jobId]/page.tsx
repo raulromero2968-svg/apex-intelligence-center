@@ -222,7 +222,7 @@ export default function ForensicReportPage() {
         {/* Reasoning Trace */}
         <div className="p-4 bg-black/40 border border-cyan-500/20 rounded-lg">
           <div className="text-sm font-semibold text-white mb-4">Reasoning Trace</div>
-          <div className="p-4 bg-black/60 rounded-md overflow-x-auto font-mono text-xs">
+          <div className="p-4 bg-black/60 rounded-md overflow-x-auto font-sans text-xs">
             <JsonTreeView data={result.reasoningTrace} />
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function ForensicReportPage() {
         {result.metadata && Object.keys(result.metadata).length > 0 && (
           <div className="p-4 bg-black/40 border border-cyan-500/20 rounded-lg">
             <div className="text-sm font-semibold text-white mb-4">Metadata</div>
-            <div className="p-4 bg-black/60 rounded-md overflow-x-auto font-mono text-xs">
+            <div className="p-4 bg-black/60 rounded-md overflow-x-auto font-sans text-xs">
               <JsonTreeView data={result.metadata} />
             </div>
           </div>

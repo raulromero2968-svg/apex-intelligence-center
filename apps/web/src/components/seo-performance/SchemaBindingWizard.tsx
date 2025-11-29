@@ -303,7 +303,7 @@ export function SchemaBindingWizard({ onComplete, onCancel }: SchemaBindingWizar
                       <span className={error.severity === 'error' ? 'text-red-400' : 'text-yellow-400'}>
                         {error.severity === 'error' ? '🚫' : '⚠️'}
                       </span>
-                      <span className="font-mono text-sm">{error.property}</span>
+                      <span className="font-sans text-sm">{error.property}</span>
                     </div>
                     <div className="text-sm text-gray-400 mt-1">{error.message}</div>
                   </div>
