@@ -82,7 +82,7 @@ export const TopBanner = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link
             href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 font-mono text-[8px] md:text-sm whitespace-nowrap"
+            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 font-mono text-[10px] md:text-sm whitespace-nowrap"
           >
             [ ACCESS_TERMINAL ]
           </Link>
