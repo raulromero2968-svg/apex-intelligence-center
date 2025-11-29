@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Terminal, Sparkles } from "lucide-react";
+import { ArrowRight, Terminal, Sparkles, Shield } from "lucide-react";
+import { RiskClock } from "@/components/risk/RiskClock";
 import dynamic from 'next/dynamic';
 
 const Interactive3DWolf = dynamic(
@@ -214,6 +215,50 @@ export default function DashboardPage() {
           {/* Search Bar */}
           <section className="max-w-4xl mx-auto">
             <SearchBar onSearch={handleSearch} />
+          </section>
+
+          {/* Threat Assessment Section - Strand A: The Institute */}
+          <section className="relative z-10 px-6 md:px-12">
+            <div className="max-w-7xl mx-auto">
+              <ElectronicFolder
+                title="THREAT ASSESSMENT"
+                classification="STRAND_A // BULLETIN_PROTOCOL"
+              >
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Shield
+                      className="w-5 h-5"
+                      strokeWidth={2.5}
+                      stroke="#ef4444"
+                      style={{
+                        filter: 'drop-shadow(0 0 6px #ef4444) drop-shadow(0 0 12px #f97316)'
+                      }}
+                    />
+                    <p className="text-slate-400 font-sans text-sm">
+                      Civilizational Risk Metrics — Inspired by the <span className="text-amber-400">Bulletin of the Atomic Scientists</span>
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <RiskClock
+                      systemName="Rentism Trajectory"
+                      minutesToMidnight={2}
+                      description="IP consolidation accelerating. Market power concentration at critical levels."
+                    />
+                    <RiskClock
+                      systemName="TCG Market Manipulation"
+                      minutesToMidnight={4}
+                      description="Whale activity detected. Artificial scarcity protocols active in premium segments."
+                    />
+                    <RiskClock
+                      systemName="Platform Dependency"
+                      minutesToMidnight={6}
+                      description="Marketplace centralization increasing. Alternative liquidity routes narrowing."
+                    />
+                  </div>
+                </div>
+              </ElectronicFolder>
+            </div>
           </section>
 
           {/* Latest Intelligence Section with Electronic Folder */}
