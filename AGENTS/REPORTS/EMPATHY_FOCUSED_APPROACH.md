@@ -17,6 +17,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Gemini** | Google | Research synthesis, emotional granularity concepts, IFS-informed parts work |
 | **GPT Orchestrator** | OpenAI (ChatGPT) | Workflow coordination, prompt engineering, cross-agent synthesis |
 | **Llama** | Meta | Open-source foundation models, local inference capabilities |
+| **Perplexity** | Perplexity AI | Real-time search, citation-backed research, fact verification |
 | **Claude (Opus 4)** | Anthropic | Final structuring, documentation, git integration, code-level implementation |
 | **Manus** | Manus AI | Autonomous task execution, multi-step workflow handling |
 
@@ -348,5 +349,5 @@ Two possible paths:
 ---
 
 *Framework finalized: November 2024*
-*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Manus + Claude (Anthropic)*
+*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Manus + Claude (Anthropic)*
 *Infrastructure: GitHub + Vercel + Zapier + Opera Browser*
