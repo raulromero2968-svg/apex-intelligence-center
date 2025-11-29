@@ -755,9 +755,9 @@ export function shouldProceedWithWill(
 }
 
 /**
- * POS Version with Nietzschean-Zen-Taoist expansion
+ * POS Version with Aristotelian-Stoic expansion
  */
-export const POS_VERSION = '1.8.0';
+export const POS_VERSION = '2.2.0';
 
 /**
  * POS Changelog Entry for v1.5.0
@@ -1161,5 +1161,197 @@ export const POS_CHANGELOG_V1_8: ChangelogEntry = {
     { type: 'added', description: 'Error handling with shikantaza rollback on effortless imbalance' },
     { type: 'added', description: 'Real-time event streaming with Effortless Resolver' },
     { type: 'added', description: 'All practices include ZenFusion/TaoistFusion integration' },
+  ],
+};
+
+// ============================================================================
+// STOIC CARDINAL VIRTUE TYPES (v2.2.0)
+// ============================================================================
+
+/**
+ * Stoic Cardinal Virtues
+ * From Stoic philosophy: Wisdom, Courage, Temperance, Justice
+ */
+export type StoicCardinalVirtue =
+  | 'wisdom'
+  | 'courage'
+  | 'temperance'
+  | 'justice';
+
+/**
+ * Aristotelian Virtue Mean Types
+ * Golden mean between extremes
+ */
+export type AristotelianVirtueMean =
+  | 'courage_mean'
+  | 'temperance_mean'
+  | 'justice_mean'
+  | 'wisdom_mean'
+  | 'magnanimity_mean';
+
+/**
+ * Stoic Practice Interface
+ * Complete middleware implementation for cardinal virtue ethics
+ */
+export interface StoicPractice {
+  virtue: StoicCardinalVirtue;
+  objective: string;
+  virtueSteps: () => void;
+  viceAvoidance: (input: { vices: string[] }) => {
+    virtue: string[];
+    vice: string[];
+  };
+  resilience: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => StoicMetricTracker;
+  examples: StoicExample[];
+}
+
+/**
+ * Stoic Example with actionable steps
+ */
+export interface StoicExample {
+  scenario: string;
+  resilient: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Stoic Metric Tracker
+ */
+export interface StoicMetricTracker {
+  wisdomNet?: number;
+  courageNet?: number;
+  temperanceNet?: number;
+  justiceNet?: number;
+  zhongFusion?: number;
+  eudaimoniaGain?: number;
+  resilienceMetric?: number;
+  virtueBalance?: number;
+}
+
+/**
+ * Aristotelian-Stoic RRF Fusion Result (v2.2.0)
+ * Hybrid mean-virtue fusion output
+ */
+export interface AristotelianStoicFusionResult {
+  aristotelian: AristotelianVirtueMean;
+  stoic: StoicCardinalVirtue;
+  rrfScore: number;
+  fusedAction: string;
+  meanGain: number;
+  resilienceGain: number;
+  eudaimoniaMetric: number;
+}
+
+/**
+ * Virtue Rate Limiter Bucket (v2.2.0)
+ * Token bucket for preventing virtue-overload
+ */
+export interface VirtueBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  eudaimoniaCount: number;
+}
+
+/**
+ * Virtue State for rollback support (v2.2.0)
+ */
+export interface VirtueState {
+  currentMean: AristotelianVirtueMean;
+  currentVirtue: StoicCardinalVirtue;
+  meanLevel: number;
+  virtueLevel: number;
+  eudaimoniaScore: number;
+  timestamp: Date;
+}
+
+/**
+ * Virtue-Mean Weekly Metrics (v2.2.0)
+ */
+export interface VirtueMeanWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  courageMeans: number;
+  temperanceMeans: number;
+  justiceMeans: number;
+  wisdomMeans: number;
+  stoicWisdoms: number;
+  stoicCourages: number;
+  stoicTemperances: number;
+  stoicJustices: number;
+  eudaimoniaAchievements: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyVirtueScore: number;
+  meanTrend: 'ascending' | 'stable' | 'descending';
+  virtueTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'mean-dominant' | 'virtue-dominant' | 'fluctuating';
+}
+
+/**
+ * Calculate RRF score for Aristotelian-Stoic fusion (v2.2.0)
+ */
+export function calculateAristotelianStoicRRF(
+  meanRank: number,
+  virtueRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + meanRank) + 1 / (k + virtueRank);
+}
+
+/**
+ * Determine if virtue action should proceed (v2.2.0)
+ * Based on eudaimonia check and rate limiting
+ */
+export function shouldProceedWithVirtue(
+  bucket: VirtueBucket,
+  meanBalance: number,
+  virtueLevel: number
+): { proceed: boolean; reason: string } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Virtue rate limit exceeded. Practice temperance—wait for refill.' };
+  }
+
+  // Check mean balance
+  if (meanBalance < 0.3) {
+    return { proceed: false, reason: 'Mean balance too low. Recalibrate with Aristotelian golden mean.' };
+  }
+
+  // Check for excess (hubris)
+  if (virtueLevel > 90 && meanBalance < 0.5) {
+    return { proceed: false, reason: 'Potential excess detected. Apply temperance check.' };
+  }
+
+  // Check for deficiency
+  if (virtueLevel < 10 && meanBalance > 0.7) {
+    return { proceed: false, reason: 'Deficiency detected. Apply courage check.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with virtue.' };
+}
+
+/**
+ * POS Changelog Entry for v2.2.0
+ */
+export const POS_CHANGELOG_V2_2: ChangelogEntry = {
+  version: '2.2.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Aristotelian Courage Deepened Examples (Relational, Apex, Self) with 11-step protocols' },
+    { type: 'added', description: 'Stoic Wisdom practice with Zhong fusion and discernment metrics' },
+    { type: 'added', description: 'Stoic Courage practice with fortitude and mean integration' },
+    { type: 'added', description: 'Stoic Temperance practice with moderation and restraint metrics' },
+    { type: 'added', description: 'Stoic Justice practice with fairness and equity protocols' },
+    { type: 'added', description: 'Aristotelian-Stoic RRF fusion engine for hybrid mean-virtue outputs' },
+    { type: 'added', description: 'Token bucket rate limiting for virtue calls (5/day max)' },
+    { type: 'added', description: 'Error handling with temperance rollback on virtue imbalance' },
+    { type: 'added', description: 'VirtueMeanExecutor class for combined practice execution' },
+    { type: 'added', description: 'Virtue-mean weekly metrics tracking with eudaimonia monitoring' },
+    { type: 'added', description: 'All practices include 10-11 step protocols with Aristotelian-Stoic fusion' },
   ],
 };
