@@ -110,6 +110,7 @@ function mapEntityType(type: string): PowerEntityType {
     CONCEPT: 'CONCEPT',
     EVENT: 'EVENT',
     LOCATION: 'LOCATION',
+    SOLUTION: 'SOLUTION', // The Luminous Injection - maps hope and resistance
   };
   return mapping[type.toUpperCase()] || 'PERSON';
 }
@@ -213,8 +214,19 @@ async function seedTruthTier(): Promise<void> {
     const rawEntities = parseCSV<RawEntity>(join(seedDir, 'entities.csv'));
     const rawRelationships = parseCSV<RawRelationship>(join(seedDir, 'relationships.csv'));
 
-    console.log(`  - Loaded ${rawEntities.length} entities`);
-    console.log(`  - Loaded ${rawRelationships.length} relationships`);
+    // Load Solution data (The Luminous Injection)
+    const rawSolutionEntities = parseCSV<RawEntity>(join(seedDir, 'entities_solutions.csv'));
+    const rawSolutionRelationships = parseCSV<RawRelationship>(join(seedDir, 'relationships_solutions.csv'));
+
+    // Merge: Solutions complete the map
+    const allEntities = [...rawEntities, ...rawSolutionEntities];
+    const allRelationships = [...rawRelationships, ...rawSolutionRelationships];
+
+    console.log(`  - Loaded ${rawEntities.length} base entities`);
+    console.log(`  - Loaded ${rawSolutionEntities.length} solution entities (Luminous Injection)`);
+    console.log(`  - Loaded ${rawRelationships.length} base relationships`);
+    console.log(`  - Loaded ${rawSolutionRelationships.length} solution relationships`);
+    console.log(`  - TOTAL: ${allEntities.length} entities, ${allRelationships.length} relationships`);
     console.log('');
 
     // Map CSV IDs to database UUIDs
@@ -222,7 +234,7 @@ async function seedTruthTier(): Promise<void> {
 
     // Insert entities
     console.log('Inserting entities...');
-    for (const raw of rawEntities) {
+    for (const raw of allEntities) {
       const entity: NewPowerEntity = {
         name: raw.name,
         type: mapEntityType(raw.type),
@@ -245,7 +257,7 @@ async function seedTruthTier(): Promise<void> {
 
     // Insert relationships
     console.log('Inserting relationships...');
-    for (const raw of rawRelationships) {
+    for (const raw of allRelationships) {
       const sourceUuid = idMap.get(raw.source_id);
       const targetUuid = idMap.get(raw.target_id);
 
@@ -272,8 +284,8 @@ async function seedTruthTier(): Promise<void> {
         .values(relationship)
         .returning({ id: powerRelationships.id });
 
-      const sourceName = rawEntities.find((e) => e.id === raw.source_id)?.name || raw.source_id;
-      const targetName = rawEntities.find((e) => e.id === raw.target_id)?.name || raw.target_id;
+      const sourceName = allEntities.find((e) => e.id === raw.source_id)?.name || raw.source_id;
+      const targetName = allEntities.find((e) => e.id === raw.target_id)?.name || raw.target_id;
       console.log(`  ${sourceName} --[${raw.relationship_type}]--> ${targetName}`);
     }
 

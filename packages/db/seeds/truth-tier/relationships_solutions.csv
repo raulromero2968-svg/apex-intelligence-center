@@ -1,0 +1,7 @@
+source_id,target_id,relationship_type,domain,evidence_tier,start_date,end_date,description,significance,evidence_link
+12,14,EMPLOYMENT,EDUCATION,CONFIRMED,2020-01-01,,"Operates Catch-Up Clubs in DRC mining communities.",critical,"Save the Children Annual Report 2023"
+14,17,IDEOLOGICAL,FAMILY,CONFIRMED,2020-01-01,,"Directly removes children from Cobalt mining supply chain.",critical,"Apex Intelligence Research / Save the Children"
+13,15,OWNERSHIP,BUSINESS,CONFIRMED,2020-08-01,,"Implements safety standards at artisanal mine sites.",high,"Fair Cobalt Alliance Impact Report"
+17,2,FINANCIAL,BUSINESS,ALLEGED,1998-01-01,,"The material basis for the wealth of the Tech Elite (Epstein Network connections).",high,"Apex Intelligence Supply Chain Analysis"
+16,17,LEGAL,GOVERNMENT,CONFIRMED,2010-01-01,,"Provides chain-of-custody tracking for minerals.",high,"Pact / ITSCI Official Records"
+18,1,IDEOLOGICAL,EDUCATION,CONFIRMED,2016-01-01,,"Theoretical basis for the 'Rentism' analysis used by Apex.",medium,"'Four Futures' (Verso Books 2016)"

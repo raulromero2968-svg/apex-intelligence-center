@@ -11,7 +11,7 @@
  * @version 1.0.0
  */
 
-import { pgTable, text, uuid, jsonb, timestamp, index, pgEnum, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, uuid, jsonb, timestamp, index, pgEnum, customType, boolean } from 'drizzle-orm/pg-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // =============================================================================
@@ -64,6 +64,7 @@ export const entityTypeEnum = pgEnum('power_entity_type', [
   'CONCEPT',      // Ideas, movements, ideologies (e.g., "Rentism", "Effective Altruism")
   'EVENT',        // Specific incidents, meetings, transactions
   'LOCATION',     // Physical places of power (e.g., "Little St. James", "Davos")
+  'SOLUTION',     // The Luminous Injection - verified interventions, programs, and resistance
 ]);
 
 /**
@@ -121,6 +122,10 @@ export const powerEntities = pgTable(
     // Evidence and verification
     evidenceTier: evidenceTierEnum('evidence_tier').default('DOCUMENTED'),
     scandalNotes: text('scandal_notes'), // What they are implicated in
+
+    // Shadow flag: If true, this entity is known to exist but identity is hidden
+    // (e.g., "Unnamed Co-Conspirator 1", "Offshore Shell Company A")
+    isObfuscated: boolean('is_obfuscated').default(false),
 
     // Domain classification (can operate across multiple)
     primaryDomain: domainTypeEnum('primary_domain'),
@@ -297,6 +302,6 @@ export type NewPowerClaim = InferInsertModel<typeof powerClaims>;
 
 // Enum type exports for external use
 export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS';
-export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION';
+export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION' | 'SOLUTION';
 export type EvidenceTier = 'CONFIRMED' | 'DOCUMENTED' | 'ALLEGED' | 'SPECULATIVE';
 export type PowerRelationshipType = 'FINANCIAL' | 'EMPLOYMENT' | 'OWNERSHIP' | 'POLITICAL' | 'LEGAL' | 'SOCIAL' | 'FAMILIAL' | 'IDEOLOGICAL';
