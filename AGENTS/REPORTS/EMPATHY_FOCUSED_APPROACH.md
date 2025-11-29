@@ -16,6 +16,7 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Grok** | xAI | Initial psychological framing, pattern recognition, direct communication style |
 | **Gemini** | Google | Research synthesis, emotional granularity concepts, IFS-informed parts work |
 | **GPT Orchestrator** | OpenAI (ChatGPT) | Workflow coordination, prompt engineering, cross-agent synthesis |
+| **Llama** | Meta | Open-source foundation models, local inference capabilities |
 | **Claude (Opus 4)** | Anthropic | Final structuring, documentation, git integration, code-level implementation |
 | **Manus** | Manus AI | Autonomous task execution, multi-step workflow handling |
 
@@ -294,17 +295,18 @@ Two possible paths:
 │              (Vision, Context, Final Decisions)                 │
 └─────────────────────────────────────────────────────────────────┘
                               │
-         ┌────────────────────┼────────────────────┐
-         ▼                    ▼                    ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│      GROK       │  │     GEMINI      │  │  GPT ORCHESTR.  │
-│     (xAI)       │  │    (Google)     │  │    (OpenAI)     │
-│                 │  │                 │  │                 │
-│ Pattern recog.  │  │ Research/IFS    │  │ Coordination    │
-│ Direct style    │  │ Granularity     │  │ Synthesis       │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
-         │                    │                    │
-         └────────────────────┼────────────────────┘
+    ┌──────────────┬──────────────┬──────────────┬──────────────┐
+    ▼              ▼              ▼              ▼              ▼
+┌────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐
+│  GROK  │  │   GEMINI   │  │    GPT     │  │   LLAMA    │
+│ (xAI)  │  │  (Google)  │  │ ORCHESTR.  │  │   (Meta)   │
+│        │  │            │  │  (OpenAI)  │  │            │
+│Pattern │  │Research    │  │Coordination│  │Open-source │
+│Direct  │  │IFS/EQ      │  │Synthesis   │  │Foundation  │
+└────────┘  └────────────┘  └────────────┘  └────────────┘
+    │              │              │              │
+    └──────────────┴──────────────┴──────────────┘
+                              │
                               ▼
                     ┌─────────────────┐
                     │     MANUS       │
@@ -346,5 +348,5 @@ Two possible paths:
 ---
 
 *Framework finalized: November 2024*
-*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Manus + Claude (Anthropic)*
+*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Manus + Claude (Anthropic)*
 *Infrastructure: GitHub + Vercel + Zapier + Opera Browser*
