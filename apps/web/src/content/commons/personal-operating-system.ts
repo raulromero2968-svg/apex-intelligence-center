@@ -2834,3 +2834,250 @@ export const POS_CHANGELOG_V2_4: ChangelogEntry = {
     { type: 'added', description: 'Production-ready scientific paper generation pipeline integration' },
   ],
 };
+
+// ============================================================================
+// CONFUCIAN REN & TAOIST WU WEI EXPANSION TYPES (v2.6.0)
+// ============================================================================
+
+/**
+ * Confucian Benevolent Virtues
+ * From Confucian philosophy: Ren, Li, Yi, Zhi, Xin
+ */
+export type ConfucianBenevolentVirtue =
+  | 'ren_benevolence'
+  | 'li_propriety'
+  | 'yi_righteousness'
+  | 'zhi_wisdom'
+  | 'xin_faithfulness';
+
+/**
+ * Taoist Effortless Virtues
+ * From Tao Te Ching: Wu Wei, Wei Wu Wei, Harmony Flow
+ */
+export type TaoistEffortlessVirtueV2 =
+  | 'wu_wei'
+  | 'wei_wu_wei'
+  | 'harmony_flow'
+  | 'natural_action'
+  | 'non_striving';
+
+/**
+ * Harmony/Discord classification for Confucian practices
+ */
+export type HarmonyDiscordType = 'harmony' | 'discord';
+
+/**
+ * Flow/Force classification for Taoist practices
+ */
+export type FlowForceTypeV2 = 'flow' | 'force';
+
+/**
+ * Confucian Practice Interface (v2.6.0)
+ * Complete middleware implementation for benevolent virtue ethics
+ */
+export interface ConfucianPracticeV2 {
+  virtue: ConfucianBenevolentVirtue;
+  objective: string;
+  benevolenceSteps: () => void;
+  discordAvoidance: (input: { discords: string[] }) => {
+    harmony: string[];
+    discord: string[];
+  };
+  propriety: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => ConfucianMetricTracker;
+  examples: ConfucianExample[];
+}
+
+/**
+ * Confucian Example with actionable steps
+ */
+export interface ConfucianExample {
+  scenario: string;
+  benevolented: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Confucian Metric Tracker
+ */
+export interface ConfucianMetricTracker {
+  renNet?: number;
+  liNet?: number;
+  yiNet?: number;
+  wuWeiFusion?: number;
+  harmonyGain?: number;
+  benevolenceMetric?: number;
+  proprietyBalance?: number;
+}
+
+/**
+ * Taoist Practice Interface (v2.6.0)
+ * Complete middleware implementation for effortless action ethics
+ */
+export interface TaoistPracticeV2 {
+  virtue: TaoistEffortlessVirtueV2;
+  objective: string;
+  flowSteps: () => void;
+  forceAvoidance: (input: { forces: string[] }) => {
+    flow: string[];
+    force: string[];
+  };
+  harmony: () => void;
+  errorHandler: (err: Error) => void;
+  metrics: () => TaoistMetricTrackerV2;
+  examples: TaoistExampleV2[];
+}
+
+/**
+ * Taoist Example with actionable steps (v2.6.0)
+ */
+export interface TaoistExampleV2 {
+  scenario: string;
+  flowed: { net: string };
+  decided: { action: string };
+  actionableSteps: ActionableStep[];
+}
+
+/**
+ * Taoist Metric Tracker (v2.6.0)
+ */
+export interface TaoistMetricTrackerV2 {
+  wuWeiNet?: number;
+  weiWuWeiNet?: number;
+  harmonyNet?: number;
+  renFusion?: number;
+  effortlessGain?: number;
+  flowMetric?: number;
+  naturalBalance?: number;
+}
+
+/**
+ * Ren-Wu Wei RRF Fusion Result (v2.6.0)
+ * Hybrid Confucian-Taoist fusion output
+ */
+export interface RenWuWeiFusionResult {
+  confucian: ConfucianBenevolentVirtue;
+  taoist: TaoistEffortlessVirtueV2;
+  rrfScore: number;
+  fusedAction: string;
+  benevolenceGain: number;
+  effortlessGain: number;
+  harmonyMetric: number;
+}
+
+/**
+ * Moral Rate Limiter Bucket (v2.6.0)
+ * Token bucket for preventing benevolence-overload
+ */
+export interface MoralBucket {
+  tokens: number;
+  maxTokens: number;
+  refillRate: number; // tokens per hour
+  lastRefill: Date;
+  harmonyCount: number;
+}
+
+/**
+ * Moral State for rollback support (v2.6.0)
+ */
+export interface MoralState {
+  currentRen: ConfucianBenevolentVirtue;
+  currentWuWei: TaoistEffortlessVirtueV2;
+  benevolenceLevel: number;
+  effortlessLevel: number;
+  harmonyScore: number;
+  timestamp: Date;
+}
+
+/**
+ * Ren-Wu Wei Weekly Metrics (v2.6.0)
+ */
+export interface RenWuWeiWeeklyMetrics {
+  weekStart: Date;
+  weekEnd: Date;
+  renBenevolences: number;
+  liProprieties: number;
+  yiRighteousnesses: number;
+  wuWeiFlows: number;
+  weiWuWeiActions: number;
+  harmonyAlignments: number;
+  harmonyAchievements: number;
+  totalFusions: number;
+  successfulFusions: number;
+  weeklyMoralScore: number;
+  benevolenceTrend: 'ascending' | 'stable' | 'descending';
+  effortlessTrend: 'ascending' | 'stable' | 'descending';
+  balanceTrend: 'harmonized' | 'ren-dominant' | 'wuwei-dominant' | 'fluctuating';
+}
+
+/**
+ * Calculate RRF score for Ren-Wu Wei fusion (v2.6.0)
+ */
+export function calculateRenWuWeiRRF(
+  benevolenceRank: number,
+  effortlessRank: number,
+  k: number = 60
+): number {
+  return 1 / (k + benevolenceRank) + 1 / (k + effortlessRank);
+}
+
+/**
+ * Determine if moral action should proceed (v2.6.0)
+ * Based on harmony check and rate limiting
+ */
+export function shouldProceedWithMoral(
+  bucket: MoralBucket,
+  benevolenceBalance: number,
+  effortlessLevel: number
+): { proceed: boolean; reason: string } {
+  // Check rate limit
+  if (bucket.tokens < 1) {
+    return { proceed: false, reason: 'Moral rate limit exceeded. Practice wu wei—wait for refill.' };
+  }
+
+  // Check benevolence balance
+  if (benevolenceBalance < 0.3) {
+    return { proceed: false, reason: 'Benevolence balance too low. Recalibrate with ren meditation.' };
+  }
+
+  // Check for force (excess striving)
+  if (effortlessLevel < 0.3 && benevolenceBalance > 0.8) {
+    return { proceed: false, reason: 'Potential force detected. Apply wu wei check.' };
+  }
+
+  // Check for passivity (excess non-action)
+  if (effortlessLevel > 90 && benevolenceBalance < 0.4) {
+    return { proceed: false, reason: 'Passivity detected. Ground with ren benevolence.' };
+  }
+
+  return { proceed: true, reason: 'All checks passed. Proceed with moral-effortless fusion.' };
+}
+
+/**
+ * POS Version with Confucian-Taoist expansion
+ */
+export const POS_VERSION_V2_6 = '2.6.0';
+
+/**
+ * POS Changelog Entry for v2.6.0
+ */
+export const POS_CHANGELOG_V2_6: ChangelogEntry = {
+  version: '2.6.0',
+  date: '2025-11-29',
+  changes: [
+    { type: 'added', description: 'Confucian Ren Deepened Examples (Relational, Apex, Self) with 11-step protocols' },
+    { type: 'added', description: 'Taoist Wu Wei practice with effortless action and flow metrics' },
+    { type: 'added', description: 'Taoist Wei Wu Wei practice for action through non-action' },
+    { type: 'added', description: 'Taoist Harmony Flow practice for Tao alignment' },
+    { type: 'added', description: 'Confucian Li Propriety practice with ritual correctness' },
+    { type: 'added', description: 'Confucian Yi Righteousness practice with moral duty protocols' },
+    { type: 'added', description: 'Ren-Wu Wei RRF fusion engine for hybrid benevolent-effortless outputs' },
+    { type: 'added', description: 'Token bucket rate limiting for moral calls (5/day max)' },
+    { type: 'added', description: 'Error handling with wu wei rollback on moral imbalance' },
+    { type: 'added', description: 'RenWuWeiExecutor class for combined practice execution' },
+    { type: 'added', description: 'Ren-wu wei weekly metrics tracking with harmony monitoring' },
+    { type: 'added', description: 'All practices include 10-11 step protocols with Confucian-Taoist fusion' },
+  ],
+};
