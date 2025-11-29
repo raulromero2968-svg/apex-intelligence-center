@@ -96,9 +96,17 @@ export default function HomePage() {
           SECTION 1: THE NEXUS HERO - System Status Interface
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
-        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-20 md:pt-24">
+        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-8 md:pt-16">
+          {/* Status Badge */}
+          <div className="mb-8 md:mb-10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs md:text-sm font-sans backdrop-blur-sm">
+              <Activity className="w-3 h-3 md:w-4 md:h-4" />
+              Intelligence Hub
+            </span>
+          </div>
+
           {/* Sleek Neon Line Separator with Diamond */}
-          <div className="w-full max-w-md mx-auto mb-10 md:mb-12 mt-4 md:mt-8">
+          <div className="w-full max-w-md mx-auto mb-8 md:mb-10">
             <div className="relative h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent">
               {/* Animated glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent blur-sm animate-pulse" />
@@ -110,17 +118,17 @@ export default function HomePage() {
           </div>
 
           {/* Main Title - Command Center Typography */}
-          <h1 className="flex flex-col items-center text-center gap-3 md:gap-4 w-full px-4 mx-auto mb-6 md:mb-8">
-            <span className="font-sans text-[6.5vw] sm:text-[5.5vw] md:text-[3.5rem] lg:text-[3.8rem] tracking-tight font-black text-holographic dark:text-holographic light:text-altaria-gradient leading-tight">
+          <h1 className="flex flex-col items-center text-center gap-2 md:gap-3 w-full px-4 mx-auto mb-6 md:mb-8">
+            <span className="font-sans text-[8vw] sm:text-[6vw] md:text-[3.5rem] lg:text-[3.8rem] tracking-tight font-black text-holographic dark:text-holographic light:text-altaria-gradient leading-tight">
               INTRANATIONAL INTEL
             </span>
-            <span className="font-sans text-[3.8vw] sm:text-[3.2vw] md:text-[1.5rem] lg:text-[1.6rem] tracking-[0.3em] text-holographic dark:text-holographic light:text-altaria-gradient">
+            <span className="font-sans text-[4.5vw] sm:text-[3.5vw] md:text-[1.5rem] lg:text-[1.6rem] tracking-[0.3em] text-holographic dark:text-holographic light:text-altaria-gradient">
               & AI RESEARCH CENTER
             </span>
           </h1>
 
           {/* Mission Statement - The Hybrid Identity */}
-          <p className="w-full max-w-2xl mx-auto text-base md:text-lg text-slate-400 leading-relaxed mb-10 md:mb-12 font-sans px-4">
+          <p className="w-full max-w-2xl mx-auto text-sm md:text-lg text-slate-400 leading-relaxed mb-8 md:mb-10 font-sans px-4">
             The intersection of{' '}
             <span className="text-cyan-400 font-bold">Simulation Markets</span>,{' '}
             <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
@@ -133,16 +141,16 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 bg-black/60 backdrop-blur-md rounded-lg">
               <Link
                 href="/intel"
-                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
+                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-6 py-2.5 md:px-10 md:py-4 text-xs md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
               >
-                <Database className="w-4 h-4 md:w-5 md:h-5" />
+                <Database className="w-3 h-3 md:w-5 md:h-5" />
                 ACCESS MARKET TERMINAL
               </Link>
               <Link
                 href="/lab"
-                className="btn-tactical inline-flex items-center justify-center gap-2 md:gap-3 px-8 py-3.5 md:px-10 md:py-4 text-sm md:text-base font-sans"
+                className="btn-tactical inline-flex items-center justify-center gap-2 px-6 py-2.5 md:px-10 md:py-4 text-xs md:text-base font-sans"
               >
-                <Microscope className="w-4 h-4 md:w-5 md:h-5" />
+                <Microscope className="w-3 h-3 md:w-5 md:h-5" />
                 ENTER THE LAB
               </Link>
             </div>
