@@ -74,10 +74,10 @@ export const TopBanner = () => {
         </nav>
 
         {/* Right: Access Terminal Button + Mobile Menu Toggle */}
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <Link
             href="/dashboard"
-            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 font-mono text-[10px] md:text-sm"
+            className="btn-tactical inline-flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 md:py-2 font-mono text-xs md:text-sm whitespace-nowrap"
           >
             <span className="hidden sm:inline">[ ACCESS_TERMINAL ]</span>
             <span className="sm:hidden">[ TERM ]</span>
