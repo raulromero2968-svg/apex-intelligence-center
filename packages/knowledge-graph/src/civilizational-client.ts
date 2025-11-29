@@ -17,10 +17,17 @@ import neo4j, { Driver, Session } from 'neo4j-driver';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
- * The Seven Mountains of Societal Influence
+ * The Eight Mountains of Societal Influence
+ *
+ * Originally "Seven Mountains" - extended to include SPACE based on
+ * archaeological analysis of 2016-2017 research (Space Law, UNOOSA, LSE Politics of Outer Space).
+ *
+ * The same actors manipulating TCG markets and AI narratives (Thiel, Musk, Bezos)
+ * are the ones privatizing space. It is the final "Enclave" - the ultimate Rentism.
+ *
  * Framework for categorizing domains of power
  */
-export const SEVEN_MOUNTAINS = {
+export const EIGHT_MOUNTAINS = {
   GOVERNMENT: 'government',
   MEDIA: 'media',
   BUSINESS: 'business',
@@ -28,9 +35,15 @@ export const SEVEN_MOUNTAINS = {
   RELIGION: 'religion',
   FAMILY: 'family',
   ARTS: 'arts',
+  SPACE: 'space', // The Frontier: SpaceX, Blue Origin, orbital assets, extraterrestrial resources
 } as const;
 
-export type SevenMountain = (typeof SEVEN_MOUNTAINS)[keyof typeof SEVEN_MOUNTAINS];
+/** @deprecated Use EIGHT_MOUNTAINS instead */
+export const SEVEN_MOUNTAINS = EIGHT_MOUNTAINS;
+
+export type EightMountain = (typeof EIGHT_MOUNTAINS)[keyof typeof EIGHT_MOUNTAINS];
+/** @deprecated Use EightMountain instead */
+export type SevenMountain = EightMountain;
 
 /**
  * Entity types in the power network
@@ -323,7 +336,7 @@ export class CivilizationalClient {
   async seedDomains(): Promise<void> {
     const domains: Omit<DomainNode, 'id' | 'createdAt' | 'updatedAt'>[] = [
       {
-        name: SEVEN_MOUNTAINS.GOVERNMENT,
+        name: EIGHT_MOUNTAINS.GOVERNMENT,
         displayName: 'Government & Military',
         description:
           'Legislative, executive, judicial branches; military; intelligence agencies; regulatory bodies',
@@ -341,7 +354,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.MEDIA,
+        name: EIGHT_MOUNTAINS.MEDIA,
         displayName: 'Media & Entertainment',
         description:
           'News media, social media platforms, entertainment industry, publishing, advertising',
@@ -360,7 +373,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.BUSINESS,
+        name: EIGHT_MOUNTAINS.BUSINESS,
         displayName: 'Business & Finance',
         description:
           'Corporations, banks, investment firms, private equity, venture capital, trade associations',
@@ -376,7 +389,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.EDUCATION,
+        name: EIGHT_MOUNTAINS.EDUCATION,
         displayName: 'Education & Academia',
         description:
           'Universities, research institutions, think tanks, public schools, professional training',
@@ -393,7 +406,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.RELIGION,
+        name: EIGHT_MOUNTAINS.RELIGION,
         displayName: 'Religion & Philosophy',
         description:
           'Religious institutions, spiritual movements, ethical frameworks, moral authority',
@@ -408,7 +421,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.FAMILY,
+        name: EIGHT_MOUNTAINS.FAMILY,
         displayName: 'Family & Community',
         description: 'Family structures, community organizations, social services, local governance',
         keyInstitutions: ['Local governments', 'Community organizations', 'Social services'],
@@ -417,7 +430,7 @@ export class CivilizationalClient {
         confidence: 1.0,
       },
       {
-        name: SEVEN_MOUNTAINS.ARTS,
+        name: EIGHT_MOUNTAINS.ARTS,
         displayName: 'Arts & Culture',
         description: 'Visual arts, music, literature, cultural institutions, sports, fashion',
         keyInstitutions: [
@@ -427,6 +440,25 @@ export class CivilizationalClient {
           'Fashion houses',
         ],
         influenceMetrics: { gdpPercentage: 4.3 },
+        sourceUrls: [],
+        confidence: 1.0,
+      },
+      {
+        name: EIGHT_MOUNTAINS.SPACE,
+        displayName: 'Space & The Frontier',
+        description:
+          'Space industry, orbital assets, satellite networks, extraterrestrial resources, launch providers. The ultimate "Enclave" - where Rentism meets Exterminism.',
+        keyInstitutions: [
+          'SpaceX',
+          'Blue Origin',
+          'NASA',
+          'Starlink',
+          'Planet Labs',
+          'Rocket Lab',
+          'United Launch Alliance',
+          'ESA',
+        ],
+        influenceMetrics: { gdpPercentage: 0.5 }, // Growing rapidly
         sourceUrls: [],
         confidence: 1.0,
       },
