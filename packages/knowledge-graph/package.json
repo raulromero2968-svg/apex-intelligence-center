@@ -1,7 +1,7 @@
 {
   "name": "@apex/knowledge-graph",
-  "version": "1.0.0",
-  "description": "Unified knowledge graph for Apex Intelligence Center (Neo4j + PostgreSQL)",
+  "version": "1.1.0",
+  "description": "Unified knowledge graph for Apex Intelligence Center - TCG markets + Civilizational Analytics",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "neo4j:init": "tsx scripts/init-neo4j.ts",
     "neo4j:seed": "tsx scripts/seed-data.ts",
+    "neo4j:seed:civilizational": "tsx scripts/seed-civilizational.ts",
     "neo4j:query": "tsx scripts/query-examples.ts"
   },
   "dependencies": {
