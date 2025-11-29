@@ -1,8 +1,44 @@
 # Empathy-Focused Approach: Multi-Agent Psychological Framework
 
-> **Source**: Multi-agent collaboration (Grok, Gemini, GPT Orchestrator)
 > **Branch**: `claude/empathy-focused-approach-01GNuuMLSd9efXJ7yaaqtvUT`
-> **Finalized by**: Claude (Opus 4)
+> **Date**: November 2024
+
+---
+
+## Multi-Agent Collaboration Credits
+
+This framework was developed through a collaborative multi-agent workflow, with each AI and platform contributing unique capabilities:
+
+### AI Agents
+
+| Agent | Provider | Role |
+|-------|----------|------|
+| **Grok** | xAI | Initial psychological framing, pattern recognition, direct communication style |
+| **Gemini** | Google | Research synthesis, emotional granularity concepts, IFS-informed parts work |
+| **GPT Orchestrator** | OpenAI (ChatGPT) | Workflow coordination, prompt engineering, cross-agent synthesis |
+| **Claude (Opus 4)** | Anthropic | Final structuring, documentation, git integration, code-level implementation |
+| **Manus** | Manus AI | Autonomous task execution, multi-step workflow handling |
+
+### Infrastructure & Platforms
+
+| Platform | Role |
+|----------|------|
+| **GitHub** | Version control, branch management, PR workflows, repository hosting |
+| **Vercel** | Deployment infrastructure, preview environments, production hosting |
+| **Zapier** | Automation glue, cross-platform triggers, workflow orchestration |
+| **Opera Browser** | Multi-agent interface, session management, AI sidebar integration |
+
+### Claude's Specific Role (Anthropic)
+
+Claude (via Claude Code CLI) handled the "nuts and bolts" engineering layer:
+
+- **Git Operations**: Branch creation, staging, commits, push to remote
+- **File System**: Creating and editing markdown documents in the repo structure
+- **Integration**: Placing the framework in `AGENTS/REPORTS/` to match existing patterns
+- **Documentation**: Structuring raw multi-agent output into navigable, versioned docs
+- **Quality Pass**: Ensuring markdown formatting, section organization, and actionable structure
+
+This represents a new paradigm: **AI agents collaborating across providers**, with humans orchestrating the high-level vision and each agent contributing its strengths.
 
 ---
 
@@ -250,4 +286,65 @@ Two possible paths:
 
 ---
 
+## Appendix: The Multi-Agent Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     HUMAN ORCHESTRATOR                          │
+│              (Vision, Context, Final Decisions)                 │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+         ┌────────────────────┼────────────────────┐
+         ▼                    ▼                    ▼
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│      GROK       │  │     GEMINI      │  │  GPT ORCHESTR.  │
+│     (xAI)       │  │    (Google)     │  │    (OpenAI)     │
+│                 │  │                 │  │                 │
+│ Pattern recog.  │  │ Research/IFS    │  │ Coordination    │
+│ Direct style    │  │ Granularity     │  │ Synthesis       │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+         │                    │                    │
+         └────────────────────┼────────────────────┘
+                              ▼
+                    ┌─────────────────┐
+                    │     MANUS       │
+                    │   (Manus AI)    │
+                    │                 │
+                    │ Task execution  │
+                    │ Multi-step ops  │
+                    └─────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    CLAUDE (Anthropic)                           │
+│                      Claude Code CLI                            │
+│                                                                 │
+│  • Git: branch, commit, push                                    │
+│  • File ops: create, edit, structure                            │
+│  • Integration: match repo patterns                             │
+│  • Quality: formatting, organization                            │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+         ┌────────────────────┼────────────────────┐
+         ▼                    ▼                    ▼
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│     GITHUB      │  │     VERCEL      │  │     ZAPIER      │
+│                 │  │                 │  │                 │
+│ Version control │  │ Deployment      │  │ Automation      │
+│ PRs, branches   │  │ Hosting         │  │ Triggers        │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │  OPERA BROWSER  │
+                    │                 │
+                    │ Multi-agent UI  │
+                    │ Session mgmt    │
+                    └─────────────────┘
+```
+
+---
+
 *Framework finalized: November 2024*
+*Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Manus + Claude (Anthropic)*
+*Infrastructure: GitHub + Vercel + Zapier + Opera Browser*
