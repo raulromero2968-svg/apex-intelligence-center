@@ -42,8 +42,13 @@ const vector768 = customType<{ data: number[]; driverData: string }>({
 // =============================================================================
 
 /**
- * The Seven Mountains of Influence (Dominionism Framework)
- * These represent the key domains through which cultural power is exercised.
+ * The Eight Mountains of Influence (Extended Dominionism Framework)
+ *
+ * Originally "Seven Mountains" - extended to include SPACE/FRONTIER based on
+ * archaeological analysis of 2016-2017 research (Space Law, UNOOSA, LSE Politics of Outer Space).
+ *
+ * The same actors manipulating TCG markets and AI narratives (Thiel, Musk, Bezos)
+ * are the ones privatizing space. It is the final "Enclave" - the ultimate Rentism.
  */
 export const domainTypeEnum = pgEnum('power_domain_type', [
   'RELIGION',     // Churches, spiritual movements, theological influence
@@ -53,6 +58,7 @@ export const domainTypeEnum = pgEnum('power_domain_type', [
   'MEDIA',        // News outlets, social platforms, propaganda networks
   'ARTS',         // Entertainment, culture production, narrative control
   'BUSINESS',     // Corporations, finance, technology infrastructure
+  'SPACE',        // The Frontier: Satellites, orbital slots, off-world resources, launch monopolies
 ]);
 
 /**
@@ -123,9 +129,10 @@ export const powerEntities = pgTable(
     evidenceTier: evidenceTierEnum('evidence_tier').default('DOCUMENTED'),
     scandalNotes: text('scandal_notes'), // What they are implicated in
 
-    // Shadow flag: If true, this entity is known to exist but identity is hidden
-    // (e.g., "Unnamed Co-Conspirator 1", "Offshore Shell Company A")
-    isObfuscated: boolean('is_obfuscated').default(false),
+    // Ghost Protocol: Obfuscated entities
+    // If TRUE, this node represents a hidden actor (e.g., "Unnamed Co-Conspirator")
+    // Protected by legal instruments like NPAs, sealed indictments, or redacted documents
+    isObfuscated: boolean('is_obfuscated').default(false).notNull(),
 
     // Domain classification (can operate across multiple)
     primaryDomain: domainTypeEnum('primary_domain'),
@@ -139,6 +146,12 @@ export const powerEntities = pgTable(
     // Semantic search embedding
     embedding: vector768('embedding'),
 
+    // Ghost Protocol - Obfuscation Layer
+    // When true, the entity's real identity is protected/anonymized in public views
+    // Used for whistleblowers, vulnerable sources, or sensitive investigations
+    obfuscatedName: text('obfuscated_name'), // Display name when obfuscated (e.g., "Source Alpha")
+    obfuscationReason: text('obfuscation_reason'), // Why this entity is a Ghost Node
+
     // Metadata
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -149,6 +162,7 @@ export const powerEntities = pgTable(
     typeIdx: index('power_entities_type_idx').on(table.type),
     domainIdx: index('power_entities_domain_idx').on(table.primaryDomain),
     evidenceIdx: index('power_entities_evidence_idx').on(table.evidenceTier),
+    ghostIdx: index('power_entities_ghost_idx').on(table.isObfuscated),
   })
 );
 
@@ -300,8 +314,8 @@ export type NewPowerNetworkSnapshot = InferInsertModel<typeof powerNetworkSnapsh
 export type PowerClaim = InferSelectModel<typeof powerClaims>;
 export type NewPowerClaim = InferInsertModel<typeof powerClaims>;
 
-// Enum type exports for external use
-export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS';
+// Enum type exports for external use (includes both SPACE and SOLUTION)
+export type PowerDomainType = 'RELIGION' | 'FAMILY' | 'EDUCATION' | 'GOVERNMENT' | 'MEDIA' | 'ARTS' | 'BUSINESS' | 'SPACE';
 export type PowerEntityType = 'PERSON' | 'ORGANIZATION' | 'CONCEPT' | 'EVENT' | 'LOCATION' | 'SOLUTION';
 export type EvidenceTier = 'CONFIRMED' | 'DOCUMENTED' | 'ALLEGED' | 'SPECULATIVE';
 export type PowerRelationshipType = 'FINANCIAL' | 'EMPLOYMENT' | 'OWNERSHIP' | 'POLITICAL' | 'LEGAL' | 'SOCIAL' | 'FAMILIAL' | 'IDEOLOGICAL';

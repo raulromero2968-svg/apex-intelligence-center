@@ -42,6 +42,7 @@ interface RawEntity {
   summary: string;
   scandal_notes: string;
   source_urls: string;
+  is_obfuscated?: string; // Ghost Protocol flag (optional in CSVs)
 }
 
 interface RawRelationship {
@@ -124,6 +125,7 @@ function mapDomainType(domain: string): PowerDomainType {
     MEDIA: 'MEDIA',
     ARTS: 'ARTS',
     BUSINESS: 'BUSINESS',
+    SPACE: 'SPACE', // The Frontier
   };
   return mapping[domain.toUpperCase()] || 'BUSINESS';
 }
@@ -235,6 +237,9 @@ async function seedTruthTier(): Promise<void> {
     // Insert entities
     console.log('Inserting entities...');
     for (const raw of allEntities) {
+      // Parse is_obfuscated flag (Ghost Protocol)
+      const isObfuscated = raw.is_obfuscated?.toLowerCase() === 'true';
+
       const entity: NewPowerEntity = {
         name: raw.name,
         type: mapEntityType(raw.type),
@@ -243,6 +248,7 @@ async function seedTruthTier(): Promise<void> {
         summary: raw.summary,
         scandalNotes: raw.scandal_notes,
         sourceUrls: parseSourceUrls(raw.source_urls),
+        isObfuscated, // Ghost Protocol: hidden actors
       };
 
       const [inserted] = await db
@@ -251,7 +257,8 @@ async function seedTruthTier(): Promise<void> {
         .returning({ id: powerEntities.id });
 
       idMap.set(raw.id, inserted.id);
-      console.log(`  [${raw.id}] ${raw.name} -> ${inserted.id}`);
+      const ghostIndicator = isObfuscated ? ' [GHOST]' : '';
+      console.log(`  [${raw.id}] ${raw.name}${ghostIndicator} -> ${inserted.id}`);
     }
     console.log('');
 
