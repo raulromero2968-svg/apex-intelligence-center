@@ -36,6 +36,10 @@ This framework was developed through a collaborative multi-agent workflow, with 
 | **Notion** | Knowledge base, documentation hub, project management, AI Q&A |
 | **X (Twitter)** | Real-time research, trend analysis, community insights |
 | **YouTube** | Media research (Lightcone, Diary of a CEO, Greg Isenberg) |
+| **The Atlantic** | Long-form journalism, cultural analysis, investigative research |
+| **Jacobin** | Political economy, labor perspectives, structural critique |
+| **Vox** | Explainer journalism, policy deep-dives, accessible synthesis |
+| **The Guardian** | Global news, investigative journalism, opinion diversity |
 | **Opera Browser** | Multi-agent interface, session management, AI sidebar integration |
 
 ### Claude's Specific Role (Anthropic)
@@ -359,3 +363,4 @@ Two possible paths:
 *Framework finalized: November 2024*
 *Multi-agent collaboration: Grok (xAI) + Gemini (Google) + GPT Orchestrator (OpenAI) + Llama (Meta) + Perplexity + Claude (Anthropic) + Cursor + GitHub Copilot + Manus + AntiGravity*
 *Infrastructure: GitHub + VS Code + Windows PowerShell + Vercel + Zapier + Notion + X + YouTube + Opera Browser*
+*Research sources: The Atlantic + Jacobin + Vox + The Guardian*
