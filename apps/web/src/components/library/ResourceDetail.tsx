@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/trpc/react';
 import {
-  ThumbsUp,
-  ThumbsDown,
   Download,
   Eye,
   Clock,
@@ -24,6 +22,7 @@ import {
   ExternalLink,
   Award,
 } from 'lucide-react';
+import { VoteButton } from './VoteButton';
 
 interface ResourceDetailProps {
   resourceId: string;
@@ -49,7 +48,6 @@ export function ResourceDetail({ resourceId }: ResourceDetailProps) {
   const { data: userVote } = api.apexCommons.getUserVote.useQuery({ resourceId });
   const trackView = api.apexCommons.trackView.useMutation();
   const trackDownload = api.apexCommons.trackDownload.useMutation();
-  const vote = api.apexCommons.voteResource.useMutation();
 
   // Track view on mount
   useEffect(() => {
@@ -62,14 +60,6 @@ export function ResourceDetail({ resourceId }: ResourceDetailProps) {
       setHasTrackedView(true);
     }
   }, [resource, hasTrackedView, resourceId, trackView]);
-
-  const handleVote = async (voteType: 'up' | 'down') => {
-    try {
-      await vote.mutateAsync({ resourceId, voteType });
-    } catch (error) {
-      console.error('Vote failed:', error);
-    }
-  };
 
   const handleDownload = async (file: { url: string; name: string }) => {
     try {
@@ -269,36 +259,22 @@ export function ResourceDetail({ resourceId }: ResourceDetailProps) {
 
         {/* Right Column - Sidebar */}
         <div className="space-y-6">
-          {/* Actions */}
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-cyan-500/30">
-            {/* Voting */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <button
-                onClick={() => handleVote('up')}
-                className={`flex flex-col items-center gap-1 p-3 rounded-lg transition-colors ${
-                  userVote === 'up'
-                    ? 'bg-green-500/30 text-green-400'
-                    : 'bg-slate-800/50 text-slate-400 hover:bg-green-500/20 hover:text-green-400'
-                }`}
-              >
-                <ThumbsUp className="w-6 h-6" />
-                <span className="text-lg font-bold">{resource.upvotes}</span>
-              </button>
-              <button
-                onClick={() => handleVote('down')}
-                className={`flex flex-col items-center gap-1 p-3 rounded-lg transition-colors ${
-                  userVote === 'down'
-                    ? 'bg-red-500/30 text-red-400'
-                    : 'bg-slate-800/50 text-slate-400 hover:bg-red-500/20 hover:text-red-400'
-                }`}
-              >
-                <ThumbsDown className="w-6 h-6" />
-                <span className="text-lg font-bold">{resource.downvotes}</span>
-              </button>
+          {/* Community Rating - Optimistic Vote Component */}
+          <div className="rounded-xl border border-cyan-500/30 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-6 text-center">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              Community Rating
+            </h3>
+            <div className="flex justify-center mb-6">
+              <VoteButton
+                resourceId={resourceId}
+                initialUpvotes={resource.upvotes}
+                initialDownvotes={resource.downvotes}
+                initialUserVote={userVote ?? undefined}
+              />
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 text-slate-400 mb-1">
                   <Download className="w-4 h-4" />
@@ -314,23 +290,23 @@ export function ResourceDetail({ resourceId }: ResourceDetailProps) {
                 <p className="text-xs text-slate-500">Views</p>
               </div>
             </div>
+          </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <button
-                onClick={handleShare}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-colors"
-              >
-                <Share2 className="w-4 h-4" />
-                Share Resource
-              </button>
-              <button
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-              >
-                <Flag className="w-4 h-4" />
-                Report Issue
-              </button>
-            </div>
+          {/* Action Buttons */}
+          <div className="p-6 rounded-xl bg-slate-900/50 border border-cyan-500/30 space-y-3">
+            <button
+              onClick={handleShare}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Resource
+            </button>
+            <button
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <Flag className="w-4 h-4" />
+              Report Issue
+            </button>
           </div>
 
           {/* Contributor */}
