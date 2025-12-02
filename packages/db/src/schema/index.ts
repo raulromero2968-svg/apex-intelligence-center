@@ -82,6 +82,38 @@ export {
   type PowerRelationshipType,
 } from './powerNetwork';
 
+// Market Movers (High Velocity Price Data)
+export { marketMovers, type MarketMover, type NewMarketMover } from './marketMovers';
+
+// Insight Engine (AI-Powered Market Intelligence)
+export {
+  // Tables
+  marketReports,
+  sentimentSnapshots,
+  // Enums
+  reportTypeEnum,
+  sentimentLabelEnum,
+  tcgGameEnum,
+  // Relations
+  marketReportsRelations,
+  sentimentSnapshotsRelations,
+  // Constants & Helpers
+  SENTIMENT_THRESHOLDS,
+  REPORT_TTL_HOURS,
+  getSentimentLabel,
+  // Types
+  type MarketReport,
+  type NewMarketReport,
+  type SentimentSnapshot,
+  type NewSentimentSnapshot,
+  type MarketReportCitation,
+  type MarketReportAIMetadata,
+  type SentimentFactor,
+  type ReportType,
+  type SentimentLabel,
+  type TcgGame,
+} from './insights';
+
 // Apex Commons Resource Library
 export {
   // Tables
