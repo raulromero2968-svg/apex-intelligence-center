@@ -1,7 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { ThumbsUp, ThumbsDown, Download, Eye, Clock, BookOpen, Video, FileText, Presentation, FileQuestion } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Download, Eye, Clock, BookOpen, Video, FileText, Presentation, FileQuestion, Award } from 'lucide-react';
+
+// Contributor level configuration
+const CONTRIBUTOR_LEVELS = {
+  platinum: {
+    color: 'bg-purple-400',
+    glow: 'shadow-purple-400/50',
+    label: 'Platinum',
+    textColor: 'text-purple-400',
+  },
+  gold: {
+    color: 'bg-yellow-400',
+    glow: 'shadow-yellow-400/50',
+    label: 'Gold',
+    textColor: 'text-yellow-400',
+  },
+  silver: {
+    color: 'bg-slate-300',
+    glow: 'shadow-slate-300/50',
+    label: 'Silver',
+    textColor: 'text-slate-300',
+  },
+  bronze: {
+    color: 'bg-amber-600',
+    glow: 'shadow-amber-600/50',
+    label: 'Bronze',
+    textColor: 'text-amber-600',
+  },
+} as const;
+
+type ContributorLevel = keyof typeof CONTRIBUTOR_LEVELS;
 
 interface ResourceCardProps {
   resource: {
@@ -21,6 +51,13 @@ interface ResourceCardProps {
     estimatedDuration?: number | null;
     difficulty?: string | null;
     publishedAt?: Date | null;
+    // Optional contributor info (when available from API)
+    contributor?: {
+      id?: string;
+      name?: string;
+      level?: ContributorLevel;
+      isVerifiedTeacher?: boolean;
+    } | null;
   };
 }
 
@@ -135,6 +172,24 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               <span className="px-2 py-0.5 text-xs text-slate-500">
                 +{resource.tags.length - 3} more
               </span>
+            )}
+          </div>
+        )}
+
+        {/* Contributor Info (when available) */}
+        {resource.contributor && (
+          <div className="flex items-center gap-2 mb-3 text-xs text-slate-500">
+            {resource.contributor.level && (
+              <div
+                className={`h-2 w-2 rounded-full ${CONTRIBUTOR_LEVELS[resource.contributor.level].color} shadow-sm ${CONTRIBUTOR_LEVELS[resource.contributor.level].glow}`}
+                title={`${CONTRIBUTOR_LEVELS[resource.contributor.level].label} Contributor`}
+              />
+            )}
+            <span className={resource.contributor.level ? CONTRIBUTOR_LEVELS[resource.contributor.level].textColor : ''}>
+              {resource.contributor.name || 'Anonymous'}
+            </span>
+            {resource.contributor.isVerifiedTeacher && (
+              <Award className="w-3 h-3 text-cyan-400" title="Verified Teacher" />
             )}
           </div>
         )}

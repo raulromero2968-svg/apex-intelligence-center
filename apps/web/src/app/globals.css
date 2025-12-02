@@ -1821,3 +1821,26 @@ html.light canvas {
 a, button, input, textarea, select, [role="button"], [onclick] {
   cursor: none !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SKELETON SHIMMER - Loading state animation for skeleton cards
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none;
+  }
+}
