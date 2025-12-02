@@ -9,6 +9,7 @@ import { arbitrageRouter } from './routers/arbitrage';
 import { convergenceRouter } from './routers/convergence';
 import { vaultRouter } from './routers/vault';
 import { projectORouter } from './routers/projectO';
+import { commonsRouter } from './routers/commons';
 
 export const appRouter = router({
   varc: varcRouter,
@@ -21,6 +22,7 @@ export const appRouter = router({
   convergence: convergenceRouter,
   vault: vaultRouter,
   projectO: projectORouter,
+  commons: commonsRouter,
 });
 
 export type AppRouter = typeof appRouter;

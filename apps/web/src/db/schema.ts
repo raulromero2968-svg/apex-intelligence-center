@@ -837,3 +837,365 @@ export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferIns
  * }
  */
 
+// ============================================================================
+// APEX COMMONS - Educational Resource Library Tables
+// ============================================================================
+
+/**
+ * Commons User Profiles - Extended user data for Apex Commons
+ * Links to existing users table with Commons-specific fields
+ */
+export const commonsProfiles = pgTable('commons_profiles', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }).unique(),
+  role: text('role').notNull().default('user'), // 'user' | 'teacher' | 'moderator' | 'admin'
+  bio: text('bio'),
+  subjects: jsonb('subjects').$type<string[]>().default([]), // ['math', 'science', etc.]
+  gradeLevel: text('grade_level'), // 'elementary' | 'middle' | 'high' | 'college' | 'professional'
+  reputationCredits: integer('reputation_credits').notNull().default(0),
+  contributorLevel: text('contributor_level').notNull().default('bronze'), // 'bronze' | 'silver' | 'gold' | 'platinum'
+  resourcesSubmitted: integer('resources_submitted').notNull().default(0),
+  resourcesApproved: integer('resources_approved').notNull().default(0),
+  totalViews: integer('total_views').notNull().default(0),
+  totalDownloads: integer('total_downloads').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('idx_commons_profiles_user').on(table.userId),
+  roleIdx: index('idx_commons_profiles_role').on(table.role),
+  rcIdx: index('idx_commons_profiles_rc').on(table.reputationCredits),
+}));
+
+/**
+ * Commons Resources - Educational content submissions
+ */
+export const commonsResources = pgTable('commons_resources', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  contributorId: text('contributor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  category: text('category').notNull(), // 'lessonPlan' | 'worksheet' | 'assessment' | 'activity' | 'other'
+  subject: text('subject').notNull(), // 'math' | 'science' | 'english' | 'history' | 'art' | 'pe' | 'other'
+  gradeLevel: text('grade_level').notNull(), // 'elementary' | 'middle' | 'high' | 'college' | 'professional'
+  resourceType: text('resource_type').notNull(), // 'document' | 'presentation' | 'video' | 'interactive' | 'other'
+  files: jsonb('files').$type<{ name: string; url: string; type: string; size: number }[]>().notNull().default([]),
+  thumbnailUrl: text('thumbnail_url'),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  standards: jsonb('standards').$type<string[]>().default([]), // Education standards (Common Core, etc.)
+  duration: integer('duration'), // Estimated time in minutes
+  status: text('status').notNull().default('pending'), // 'pending' | 'approved' | 'rejected' | 'archived'
+  qualityScore: real('quality_score').default(0),
+  viewCount: integer('view_count').notNull().default(0),
+  downloadCount: integer('download_count').notNull().default(0),
+  upvotes: integer('upvotes').notNull().default(0),
+  downvotes: integer('downvotes').notNull().default(0),
+  reviewedBy: text('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+  reviewNotes: text('review_notes'),
+  reviewedAt: timestamp('reviewed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  contributorIdx: index('idx_commons_resources_contributor').on(table.contributorId),
+  statusIdx: index('idx_commons_resources_status').on(table.status),
+  subjectIdx: index('idx_commons_resources_subject').on(table.subject),
+  gradeLevelIdx: index('idx_commons_resources_grade').on(table.gradeLevel),
+  categoryIdx: index('idx_commons_resources_category').on(table.category),
+  qualityIdx: index('idx_commons_resources_quality').on(table.qualityScore),
+  createdAtIdx: index('idx_commons_resources_created').on(table.createdAt),
+}));
+
+/**
+ * Resource Votes - User votes on resources
+ */
+export const commonsResourceVotes = pgTable('commons_resource_votes', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  resourceId: uuid('resource_id').notNull().references(() => commonsResources.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  value: integer('value').notNull(), // +1 or -1
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  resourceIdx: index('idx_commons_votes_resource').on(table.resourceId),
+  userIdx: index('idx_commons_votes_user').on(table.userId),
+  uniqueVote: uniqueIndex('idx_commons_votes_unique').on(table.resourceId, table.userId),
+}));
+
+/**
+ * Commons Collections - User-curated sets of resources
+ */
+export const commonsCollections = pgTable('commons_collections', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  ownerId: text('owner_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  visibility: text('visibility').notNull().default('private'), // 'public' | 'private' | 'unlisted'
+  tags: jsonb('tags').$type<string[]>().default([]),
+  resourceCount: integer('resource_count').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  ownerIdx: index('idx_commons_collections_owner').on(table.ownerId),
+  visibilityIdx: index('idx_commons_collections_visibility').on(table.visibility),
+}));
+
+/**
+ * Collection Resources - Many-to-many junction table
+ */
+export const commonsCollectionResources = pgTable('commons_collection_resources', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  collectionId: uuid('collection_id').notNull().references(() => commonsCollections.id, { onDelete: 'cascade' }),
+  resourceId: uuid('resource_id').notNull().references(() => commonsResources.id, { onDelete: 'cascade' }),
+  orderIndex: integer('order_index').notNull().default(0),
+  addedAt: timestamp('added_at').defaultNow().notNull(),
+}, (table) => ({
+  collectionIdx: index('idx_commons_coll_res_collection').on(table.collectionId),
+  resourceIdx: index('idx_commons_coll_res_resource').on(table.resourceId),
+  uniqueEntry: uniqueIndex('idx_commons_coll_res_unique').on(table.collectionId, table.resourceId),
+}));
+
+/**
+ * Governance Proposals - Community governance proposals
+ */
+export const commonsProposals = pgTable('commons_proposals', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  summary: text('summary').notNull(),
+  body: text('body').notNull(),
+  category: text('category').notNull(), // 'policy' | 'feature' | 'content' | 'moderation' | 'other'
+  status: text('status').notNull().default('draft'), // 'draft' | 'active' | 'accepted' | 'rejected' | 'withdrawn'
+  minRcToCreate: integer('min_rc_to_create').notNull().default(500),
+  snapshotRc: integer('snapshot_rc').notNull(), // Author's RC when created
+  tags: jsonb('tags').$type<string[]>().default([]),
+  votesFor: integer('votes_for').notNull().default(0),
+  votesAgainst: integer('votes_against').notNull().default(0),
+  votesAbstain: integer('votes_abstain').notNull().default(0),
+  totalRcWeight: integer('total_rc_weight').notNull().default(0),
+  activatedAt: timestamp('activated_at'),
+  closedAt: timestamp('closed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  authorIdx: index('idx_commons_proposals_author').on(table.authorId),
+  statusIdx: index('idx_commons_proposals_status').on(table.status),
+  createdAtIdx: index('idx_commons_proposals_created').on(table.createdAt),
+}));
+
+/**
+ * Proposal Votes - RC-weighted voting on proposals
+ */
+export const commonsProposalVotes = pgTable('commons_proposal_votes', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  proposalId: uuid('proposal_id').notNull().references(() => commonsProposals.id, { onDelete: 'cascade' }),
+  voterId: text('voter_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  choice: text('choice').notNull(), // 'for' | 'against' | 'abstain'
+  weightRc: integer('weight_rc').notNull(), // RC weight at vote time
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  proposalIdx: index('idx_commons_prop_votes_proposal').on(table.proposalId),
+  voterIdx: index('idx_commons_prop_votes_voter').on(table.voterId),
+  uniqueVote: uniqueIndex('idx_commons_prop_votes_unique').on(table.proposalId, table.voterId),
+}));
+
+/**
+ * RC Transactions - Ledger of Reputation Credits events
+ */
+export const commonsRcTransactions = pgTable('commons_rc_transactions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  amount: integer('amount').notNull(), // Positive or negative
+  reason: text('reason').notNull(), // 'resource_approved' | 'resource_upvoted' | 'proposal_created' | etc.
+  meta: jsonb('meta').$type<Record<string, any>>().default({}), // Context-specific data
+  resourceId: uuid('resource_id').references(() => commonsResources.id, { onDelete: 'set null' }),
+  proposalId: uuid('proposal_id').references(() => commonsProposals.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_commons_rc_tx_user').on(table.userId),
+  reasonIdx: index('idx_commons_rc_tx_reason').on(table.reason),
+  createdAtIdx: index('idx_commons_rc_tx_created').on(table.createdAt),
+}));
+
+/**
+ * Moderation Flags - Content flagging for review
+ */
+export const commonsModerationFlags = pgTable('commons_moderation_flags', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  resourceId: uuid('resource_id').notNull().references(() => commonsResources.id, { onDelete: 'cascade' }),
+  reporterId: text('reporter_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  reason: text('reason').notNull(), // 'inappropriate' | 'copyright' | 'low_quality' | 'spam' | 'other'
+  details: text('details'),
+  status: text('status').notNull().default('open'), // 'open' | 'under_review' | 'resolved' | 'dismissed'
+  resolvedBy: text('resolved_by').references(() => users.id, { onDelete: 'set null' }),
+  resolution: text('resolution'), // 'removed' | 'edited' | 'no_action' | etc.
+  resolvedAt: timestamp('resolved_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  resourceIdx: index('idx_commons_flags_resource').on(table.resourceId),
+  reporterIdx: index('idx_commons_flags_reporter').on(table.reporterId),
+  statusIdx: index('idx_commons_flags_status').on(table.status),
+}));
+
+/**
+ * Resource Comments - Comments on resources
+ */
+export const commonsComments = pgTable('commons_comments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  resourceId: uuid('resource_id').notNull().references(() => commonsResources.id, { onDelete: 'cascade' }),
+  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  parentId: uuid('parent_id'), // For threaded comments
+  content: text('content').notNull(),
+  isEdited: boolean('is_edited').notNull().default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  resourceIdx: index('idx_commons_comments_resource').on(table.resourceId),
+  authorIdx: index('idx_commons_comments_author').on(table.authorId),
+  parentIdx: index('idx_commons_comments_parent').on(table.parentId),
+}));
+
+// ============================================================================
+// APEX COMMONS - Relations
+// ============================================================================
+
+export const commonsProfilesRelations = relations(commonsProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [commonsProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const commonsResourcesRelations = relations(commonsResources, ({ one, many }) => ({
+  contributor: one(users, {
+    fields: [commonsResources.contributorId],
+    references: [users.id],
+  }),
+  reviewer: one(users, {
+    fields: [commonsResources.reviewedBy],
+    references: [users.id],
+  }),
+  votes: many(commonsResourceVotes),
+  comments: many(commonsComments),
+  flags: many(commonsModerationFlags),
+  collectionItems: many(commonsCollectionResources),
+}));
+
+export const commonsResourceVotesRelations = relations(commonsResourceVotes, ({ one }) => ({
+  resource: one(commonsResources, {
+    fields: [commonsResourceVotes.resourceId],
+    references: [commonsResources.id],
+  }),
+  user: one(users, {
+    fields: [commonsResourceVotes.userId],
+    references: [users.id],
+  }),
+}));
+
+export const commonsCollectionsRelations = relations(commonsCollections, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [commonsCollections.ownerId],
+    references: [users.id],
+  }),
+  items: many(commonsCollectionResources),
+}));
+
+export const commonsCollectionResourcesRelations = relations(commonsCollectionResources, ({ one }) => ({
+  collection: one(commonsCollections, {
+    fields: [commonsCollectionResources.collectionId],
+    references: [commonsCollections.id],
+  }),
+  resource: one(commonsResources, {
+    fields: [commonsCollectionResources.resourceId],
+    references: [commonsResources.id],
+  }),
+}));
+
+export const commonsProposalsRelations = relations(commonsProposals, ({ one, many }) => ({
+  author: one(users, {
+    fields: [commonsProposals.authorId],
+    references: [users.id],
+  }),
+  votes: many(commonsProposalVotes),
+}));
+
+export const commonsProposalVotesRelations = relations(commonsProposalVotes, ({ one }) => ({
+  proposal: one(commonsProposals, {
+    fields: [commonsProposalVotes.proposalId],
+    references: [commonsProposals.id],
+  }),
+  voter: one(users, {
+    fields: [commonsProposalVotes.voterId],
+    references: [users.id],
+  }),
+}));
+
+export const commonsRcTransactionsRelations = relations(commonsRcTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [commonsRcTransactions.userId],
+    references: [users.id],
+  }),
+  resource: one(commonsResources, {
+    fields: [commonsRcTransactions.resourceId],
+    references: [commonsResources.id],
+  }),
+  proposal: one(commonsProposals, {
+    fields: [commonsRcTransactions.proposalId],
+    references: [commonsProposals.id],
+  }),
+}));
+
+export const commonsModerationFlagsRelations = relations(commonsModerationFlags, ({ one }) => ({
+  resource: one(commonsResources, {
+    fields: [commonsModerationFlags.resourceId],
+    references: [commonsResources.id],
+  }),
+  reporter: one(users, {
+    fields: [commonsModerationFlags.reporterId],
+    references: [users.id],
+  }),
+  resolver: one(users, {
+    fields: [commonsModerationFlags.resolvedBy],
+    references: [users.id],
+  }),
+}));
+
+export const commonsCommentsRelations = relations(commonsComments, ({ one }) => ({
+  resource: one(commonsResources, {
+    fields: [commonsComments.resourceId],
+    references: [commonsResources.id],
+  }),
+  author: one(users, {
+    fields: [commonsComments.authorId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
+// APEX COMMONS - Type exports
+// ============================================================================
+
+export type CommonsProfile = typeof commonsProfiles.$inferSelect;
+export type NewCommonsProfile = typeof commonsProfiles.$inferInsert;
+export type CommonsResource = typeof commonsResources.$inferSelect;
+export type NewCommonsResource = typeof commonsResources.$inferInsert;
+export type CommonsResourceVote = typeof commonsResourceVotes.$inferSelect;
+export type NewCommonsResourceVote = typeof commonsResourceVotes.$inferInsert;
+export type CommonsCollection = typeof commonsCollections.$inferSelect;
+export type NewCommonsCollection = typeof commonsCollections.$inferInsert;
+export type CommonsCollectionResource = typeof commonsCollectionResources.$inferSelect;
+export type NewCommonsCollectionResource = typeof commonsCollectionResources.$inferInsert;
+export type CommonsProposal = typeof commonsProposals.$inferSelect;
+export type NewCommonsProposal = typeof commonsProposals.$inferInsert;
+export type CommonsProposalVote = typeof commonsProposalVotes.$inferSelect;
+export type NewCommonsProposalVote = typeof commonsProposalVotes.$inferInsert;
+export type CommonsRcTransaction = typeof commonsRcTransactions.$inferSelect;
+export type NewCommonsRcTransaction = typeof commonsRcTransactions.$inferInsert;
+export type CommonsModerationFlag = typeof commonsModerationFlags.$inferSelect;
+export type NewCommonsModerationFlag = typeof commonsModerationFlags.$inferInsert;
+export type CommonsComment = typeof commonsComments.$inferSelect;
+export type NewCommonsComment = typeof commonsComments.$inferInsert;
+
+// Commons role type for RBAC
+export type CommonsRole = 'user' | 'teacher' | 'moderator' | 'admin';
+export type ContributorLevel = 'bronze' | 'silver' | 'gold' | 'platinum';
+export type ResourceStatus = 'pending' | 'approved' | 'rejected' | 'archived';
+export type ProposalStatus = 'draft' | 'active' | 'accepted' | 'rejected' | 'withdrawn';
+
