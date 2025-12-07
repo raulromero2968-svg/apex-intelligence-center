@@ -1,20 +1,23 @@
 /**
  * @apex/ui - Apex Design System
  *
- * A React component library implementing the "Institutional Futurism" aesthetic
- * with the "Aerospace Dark Mode" design language for the Human-in-the-Loop interface.
- *
+ * A React component library implementing the "Aerospace Dark" aesthetic.
  * Built with Atomic Design principles for scalable, consistent interfaces.
  *
  * Architecture:
- * - base/     Design tokens (colors, typography, spacing, shadows)
- * - tokens/   Extended semantic tokens (Aerospace Dark Mode, rarity, RC)
- * - atoms/    Primitives (Button, Input, Badge)
- * - molecules/ Composite (UserCard, IntelPreview)
+ * - base/      Design tokens (colors, typography, spacing, shadows)
+ * - tokens/    Extended semantic tokens (Aerospace Dark Mode, rarity, RC)
+ * - atoms/     Primitives (Button, Badge, Skeleton)
+ * - molecules/ Composite (IntelCard)
  * - organisms/ Complex (MarketChart, DataGrid)
- * - lib/      Utilities (cn, formatters)
+ * - lib/       Utilities (cn, formatters)
  *
- * @packageDocumentation
+ * Design Philosophy:
+ * - "Institutional Futurism" meets "Aerospace Dark"
+ * - Human-in-the-Loop: AI as substrate, human curation as signal
+ * - Buttons are triggers for value creation
+ * - Cards are containers of wealth
+ * - Every interaction should feel like a cockpit command
  */
 
 // =============================================================================
@@ -85,14 +88,18 @@ export function getRarityColor(
   return colors[rarity] || colors.common;
 }
 
-// =============================================================================
-// ATOMIC COMPONENTS (uncomment as components are created)
-// =============================================================================
-// export * from "./atoms";
-// export * from "./molecules";
+// ═══════════════════════════════════════════════════════════════════
+// ATOMIC COMPONENTS
+// ═══════════════════════════════════════════════════════════════════
+
+// Atoms - The smallest building blocks
+export * from "./atoms";
+
+// Molecules - Composite patterns
+export * from "./molecules";
+
+// Organisms (uncomment as components are created)
 // export * from "./organisms";
 
-// =============================================================================
-// VERSION
-// =============================================================================
-export const version = "0.1.0";
+// Version
+export const version = "0.2.0";
