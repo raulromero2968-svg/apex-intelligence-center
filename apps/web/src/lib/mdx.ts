@@ -3,6 +3,10 @@ import path from 'path';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
+
+// ============================================================================
+// Core MDX Components
+// ============================================================================
 import AreaChartViz from '@/components/mdx/AreaChartViz';
 import BarChartViz from '@/components/mdx/BarChartViz';
 import HeroImage from '@/components/mdx/HeroImage';
@@ -17,6 +21,55 @@ import InfoBox from '@/components/mdx/InfoBox';
 import ImageWithCaption from '@/components/mdx/ImageWithCaption';
 import ShareButtons from '@/components/mdx/ShareButtons';
 import DiscoverMore from '@/components/mdx/DiscoverMore';
+
+// ============================================================================
+// Smart Components (Perplexity-Style Live Content)
+// ============================================================================
+import CardTicker from '@/components/mdx/CardTicker';
+import CardHover from '@/components/mdx/CardHover';
+import { ProTip, Insight, Warning, BullishSignal, BearishSignal, ProInsight } from '@/components/mdx/ProTip';
+import { AuthGate, SignUpGate, ProGate, PremiumGate } from '@/components/mdx/AuthGate';
+import { Citation, Source, CitationList, Ref } from '@/components/mdx/Citation';
+
+// ============================================================================
+// Component Registry (All MDX components in one place)
+// ============================================================================
+const mdxComponents = {
+  // Core visualization components
+  AreaChartViz,
+  BarChartViz,
+  HeroImage,
+  AskFollowUp,
+  InteractiveLineChart,
+  ScatterPlot,
+  PublishedTime,
+  SourceBadge,
+  SourceCards,
+  TableOfContents,
+  InfoBox,
+  ImageWithCaption,
+  ShareButtons,
+  DiscoverMore,
+  // Smart Components (Live Content)
+  CardTicker,
+  CardHover,
+  ProTip,
+  Insight,
+  Warning,
+  BullishSignal,
+  BearishSignal,
+  ProInsight,
+  // Conversion-driving components
+  AuthGate,
+  SignUpGate,
+  ProGate,
+  PremiumGate,
+  // Citation system (Perplexity-style)
+  Citation,
+  Source,
+  CitationList,
+  Ref,
+};
 
 function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
   return typeof error === 'object' && error !== null && 'code' in error;
@@ -123,22 +176,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 
       const { content: mdxContent } = await compileMDX<ArticleFrontmatter>({
         source: rawContent,
-        components: {
-          AreaChartViz,
-          BarChartViz,
-          HeroImage,
-          AskFollowUp,
-          InteractiveLineChart,
-          ScatterPlot,
-          PublishedTime,
-          SourceBadge,
-          SourceCards,
-          TableOfContents,
-          InfoBox,
-          ImageWithCaption,
-          ShareButtons,
-          DiscoverMore,
-        },
+        components: mdxComponents,
         options: {
           parseFrontmatter: false, // We already parsed with gray-matter
           scope: {
@@ -276,22 +314,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const { data: frontmatter, content } = matter(source);
     const { content: mdxContent } = await compileMDX<BlogPostFrontmatter>({
       source: content,
-      components: {
-        AreaChartViz,
-        BarChartViz,
-        HeroImage,
-        AskFollowUp,
-        InteractiveLineChart,
-        ScatterPlot,
-        PublishedTime,
-        SourceBadge,
-        SourceCards,
-        TableOfContents,
-        InfoBox,
-        ImageWithCaption,
-        ShareButtons,
-        DiscoverMore,
-      },
+      components: mdxComponents,
       options: {
         parseFrontmatter: false,
         scope: {
@@ -410,22 +433,7 @@ export async function getCommonsBySlug(slug: string): Promise<CommonsPost | null
 
     const { content: mdxContent } = await compileMDX<CommonsPostFrontmatter>({
       source: rawContent,
-      components: {
-        AreaChartViz,
-        BarChartViz,
-        HeroImage,
-        AskFollowUp,
-        InteractiveLineChart,
-        ScatterPlot,
-        PublishedTime,
-        SourceBadge,
-        SourceCards,
-        TableOfContents,
-        InfoBox,
-        ImageWithCaption,
-        ShareButtons,
-        DiscoverMore,
-      },
+      components: mdxComponents,
       options: {
         parseFrontmatter: false,
         scope: {

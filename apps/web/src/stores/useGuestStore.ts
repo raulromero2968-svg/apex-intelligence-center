@@ -1,28 +1,34 @@
 'use client';
 
 /**
- * Guest Store Bridge for apps/web
+ * Guest Wallet Store
  *
- * This provides a type-safe interface to the guest store
- * without requiring complex cross-monorepo type dependencies.
+ * Zustand store for managing guest (unauthenticated) user card collections.
+ * Implements the "Endowment Effect" UX pattern by allowing users to build
+ * a portfolio before signing up.
  *
- * The actual store persists to localStorage under 'apex-guest-wallet'
+ * Key Features:
+ * - Persists to localStorage via Zustand persist middleware
+ * - Hydration-safe for Next.js SSR (prevents hydration mismatch errors)
+ * - Automatic totalValue calculation on card add/remove
+ * - Extended methods for price updates and bulk operations
  */
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { useState, useEffect } from 'react';
 
 // ============================================================================
-// TYPES (Self-contained for apps/web consumption)
+// Types
 // ============================================================================
+
+export type CardCondition = 'mint' | 'near-mint' | 'excellent' | 'good' | 'light-play' | 'played' | 'poor' | 'NM' | 'LP' | 'MP' | 'HP';
 
 export interface GuestCardItem {
   id: string;
   tcgPlayerId: string;
   cardName: string;
   set: string;
-  condition: string;
+  condition: CardCondition | string;
   quantity: number;
   currentPrice: number;
   purchasePrice?: number;
@@ -30,9 +36,13 @@ export interface GuestCardItem {
   addedAt: number;
 }
 
+// Alias for backward compatibility
+export type CardItem = GuestCardItem;
+
 interface GuestStoreState {
   cards: GuestCardItem[];
   totalValue: number;
+  hasHydrated: boolean;
   version: number;
 }
 
@@ -44,30 +54,53 @@ interface GuestStoreActions {
   bulkUpdatePrices: (priceMap: Record<string, number>) => void;
   clearStore: () => void;
   hasCards: () => boolean;
+  setHasHydrated: (state: boolean) => void;
 }
 
 type GuestStore = GuestStoreState & GuestStoreActions;
 
 // ============================================================================
-// STORE IMPLEMENTATION
+// Constants
 // ============================================================================
 
 const STORAGE_KEY = 'apex-guest-wallet';
 const STORE_VERSION = 1;
 
-function generateGuestId(): string {
-  return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-}
-
-function calculateTotalValue(cards: GuestCardItem[]): number {
-  return cards.reduce((total, card) => total + card.currentPrice * card.quantity, 0);
-}
+// ============================================================================
+// Initial State
+// ============================================================================
 
 const initialState: GuestStoreState = {
   cards: [],
   totalValue: 0,
+  hasHydrated: false,
   version: STORE_VERSION,
 };
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+/**
+ * Calculate total value from cards array
+ */
+function calculateTotalValue(cards: GuestCardItem[]): number {
+  return cards.reduce((sum, card) => sum + card.currentPrice * card.quantity, 0);
+}
+
+/**
+ * Generate a UUID for card identification
+ */
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return `guest_${crypto.randomUUID()}`;
+  }
+  return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+}
+
+// ============================================================================
+// Store
+// ============================================================================
 
 export const useGuestStore = create<GuestStore>()(
   persist(
@@ -77,88 +110,98 @@ export const useGuestStore = create<GuestStore>()(
       addCard: (cardData) => {
         const newCard: GuestCardItem = {
           ...cardData,
-          id: generateGuestId(),
+          id: generateId(),
           addedAt: Date.now(),
         };
 
         set((state) => {
+          // Check for existing card with same tcgPlayerId and condition
           const existingIndex = state.cards.findIndex(
             (c) => c.tcgPlayerId === cardData.tcgPlayerId && c.condition === cardData.condition
           );
 
-          let newCards: GuestCardItem[];
+          let updatedCards: GuestCardItem[];
 
           if (existingIndex >= 0) {
-            newCards = [...state.cards];
-            newCards[existingIndex] = {
-              ...newCards[existingIndex],
-              quantity: newCards[existingIndex].quantity + cardData.quantity,
+            // Update existing card quantity
+            updatedCards = [...state.cards];
+            updatedCards[existingIndex] = {
+              ...updatedCards[existingIndex],
+              quantity: updatedCards[existingIndex].quantity + cardData.quantity,
               currentPrice: cardData.currentPrice,
             };
           } else {
-            newCards = [...state.cards, newCard];
+            // Add new card
+            updatedCards = [...state.cards, newCard];
           }
 
           return {
-            cards: newCards,
-            totalValue: calculateTotalValue(newCards),
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
           };
         });
       },
 
       updateCard: (id, updates) => {
         set((state) => {
-          const newCards = state.cards.map((card) =>
+          const updatedCards = state.cards.map((card) =>
             card.id === id ? { ...card, ...updates } : card
           );
           return {
-            cards: newCards,
-            totalValue: calculateTotalValue(newCards),
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
           };
         });
       },
 
       removeCard: (id) => {
         set((state) => {
-          const newCards = state.cards.filter((card) => card.id !== id);
+          const updatedCards = state.cards.filter((card) => card.id !== id);
           return {
-            cards: newCards,
-            totalValue: calculateTotalValue(newCards),
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
           };
         });
       },
 
       updateCardPrice: (tcgPlayerId, newPrice) => {
         set((state) => {
-          const newCards = state.cards.map((card) =>
+          const updatedCards = state.cards.map((card) =>
             card.tcgPlayerId === tcgPlayerId ? { ...card, currentPrice: newPrice } : card
           );
           return {
-            cards: newCards,
-            totalValue: calculateTotalValue(newCards),
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
           };
         });
       },
 
       bulkUpdatePrices: (priceMap) => {
         set((state) => {
-          const newCards = state.cards.map((card) => {
+          const updatedCards = state.cards.map((card) => {
             const newPrice = priceMap[card.tcgPlayerId];
             return newPrice !== undefined ? { ...card, currentPrice: newPrice } : card;
           });
           return {
-            cards: newCards,
-            totalValue: calculateTotalValue(newCards),
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
           };
         });
       },
 
       clearStore: () => {
-        set(initialState);
+        set({
+          cards: [],
+          totalValue: 0,
+        });
       },
 
       hasCards: () => {
         return get().cards.length > 0;
+      },
+
+      setHasHydrated: (state) => {
+        set({ hasHydrated: state });
       },
     }),
     {
@@ -170,32 +213,69 @@ export const useGuestStore = create<GuestStore>()(
         totalValue: state.totalValue,
         version: state.version,
       }),
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (error) {
+            console.error('Error rehydrating guest store:', error);
+          }
+          if (state) {
+            state.setHasHydrated(true);
+          }
+        };
+      },
     }
   )
 );
 
+// ============================================================================
+// Hydration-Safe Hooks
+// ============================================================================
+
 /**
- * SSR-safe hook that prevents hydration mismatches
+ * Hook that returns guest store state only after hydration is complete.
+ * Returns object with isHydrated flag for SSR-safe rendering.
  */
 export function useGuestStoreHydrated() {
   const store = useGuestStore();
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   return {
     ...store,
-    isHydrated,
-    cards: isHydrated ? store.cards : [],
-    totalValue: isHydrated ? store.totalValue : 0,
+    isHydrated: store.hasHydrated,
+    cards: store.hasHydrated ? store.cards : [],
+    totalValue: store.hasHydrated ? store.totalValue : 0,
   };
 }
 
 /**
- * Selector hooks for optimized re-renders
+ * Hook to check if the store has been hydrated.
  */
-export const useGuestCards = () => useGuestStore((state) => state.cards);
-export const useGuestTotalValue = () => useGuestStore((state) => state.totalValue);
-export const useGuestCardCount = () => useGuestStore((state) => state.cards.length);
+export function useGuestStoreHasHydrated(): boolean {
+  return useGuestStore((state) => state.hasHydrated);
+}
+
+/**
+ * Selector for cards array
+ */
+export function useGuestCards(): GuestCardItem[] {
+  const hasHydrated = useGuestStore((state) => state.hasHydrated);
+  const cards = useGuestStore((state) => state.cards);
+  return hasHydrated ? cards : [];
+}
+
+/**
+ * Selector for card count - useful for nav badges
+ */
+export function useGuestCardCount(): number {
+  const hasHydrated = useGuestStore((state) => state.hasHydrated);
+  const cardCount = useGuestStore((state) => state.cards.length);
+  return hasHydrated ? cardCount : 0;
+}
+
+/**
+ * Selector for total portfolio value
+ */
+export function useGuestTotalValue(): number {
+  const hasHydrated = useGuestStore((state) => state.hasHydrated);
+  const totalValue = useGuestStore((state) => state.totalValue);
+  return hasHydrated ? totalValue : 0;
+}
