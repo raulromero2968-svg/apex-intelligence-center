@@ -1,43 +1,38 @@
 # Disaster Recovery Playbook
 
-**Document Version:** 1.0
+**Document Version:** 1.1 (Expanded)
 **Last Updated:** December 2025
 **Classification:** Internal - Security Team
-**Reference:** Security Audit Report Section 4
+**Author:** Grok, Backend Architect
+**Target Audience:** Apex Intelligence Development Team
+**References:** AWS DR Best Practices, Chaos Monkey Guides, knowledge-04-devops-vercel-advanced.md, knowledge-09-database-architecture.md, Apex Antifragility Framework, Ethical Safeguards Framework
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [Executive Summary](#executive-summary)
 2. [Recovery Objectives](#recovery-objectives)
-3. [Failure Mode Analysis](#failure-mode-analysis)
-4. [Runbooks](#runbooks)
-5. [Communication Protocol](#communication-protocol)
-6. [Business Continuity](#business-continuity)
-7. [Chaos Engineering](#chaos-engineering)
-8. [Post-Incident Review](#post-incident-review)
+3. [Key Contacts](#key-contacts)
+4. [Failure Mode Analysis](#failure-mode-analysis)
+5. [Detailed Runbooks](#detailed-runbooks)
+   - [Database Failure Recovery](#runbook-1-database-failure-recovery)
+   - [API Server Recovery](#runbook-2-api-server-recovery)
+   - [AI Provider Failover](#runbook-3-ai-provider-failover)
+   - [Payment Processor Termination](#runbook-4-payment-processor-termination)
+   - [Security Incident Response](#runbook-5-security-incident-response)
+   - [Founder Incapacitation](#runbook-6-founder-incapacitation)
+6. [Communication Protocol](#communication-protocol)
+7. [Business Continuity](#business-continuity)
+8. [Chaos Engineering](#chaos-engineering)
+9. [Post-Incident Review](#post-incident-review)
+10. [Appendix](#appendix)
 
 ---
 
-## Overview
+## Executive Summary
 
-This playbook provides step-by-step procedures for recovering from various failure scenarios in the Apex Intelligence platform. All team members with on-call responsibilities must be familiar with these procedures.
+This expanded playbook provides detailed, step-by-step runbooks for key failure modes, building on the initial version. Each runbook includes prerequisites, steps, verification, and rollback procedures for <1-hour RTO (Recovery Time Objective). Integration with tools like SigNoz for detection and Ansible for automation. Trade-offs analyzed with ✅ GOOD / ❌ BAD patterns. Testing: Conduct chaos engineering quarterly in staging.
 
-### Key Contacts
-
-| Role | Primary | Backup |
-|------|---------|--------|
-| Incident Commander | [TBD] | [TBD] |
-| Backend Lead | [TBD] | [TBD] |
-| Database Admin | [TBD] | [TBD] |
-| Security Lead | [TBD] | [TBD] |
-
-### Tools & Access Required
-
-- Database admin credentials (stored in password manager)
-- Cloud provider console access (Hetzner/OVH)
-- Monitoring dashboards (SigNoz/Sentry)
-- Communication channels (Slack/Discord)
-- VPN access for production systems
+**Expanded Scope:** Added runbooks for AI provider outage, payment termination, and founder incapacitation, with code snippets for automation.
 
 ---
 
@@ -58,7 +53,42 @@ This playbook provides step-by-step procedures for recovering from various failu
 
 ---
 
+## Key Contacts
+
+| Role | Primary | Backup |
+|------|---------|--------|
+| Incident Commander | [TBD] | [TBD] |
+| Backend Lead | [TBD] | [TBD] |
+| Database Admin | [TBD] | [TBD] |
+| Security Lead | [TBD] | [TBD] |
+
+### Tools & Access Required
+
+- Database admin credentials (stored in password manager)
+- Cloud provider console access (Hetzner/OVH)
+- Monitoring dashboards (SigNoz/Sentry)
+- Communication channels (Slack/Discord)
+- VPN access for production systems
+
+---
+
 ## Failure Mode Analysis
+
+### Impact Summary
+
+| Failure Mode | Severity | Impact | Detection Time |
+|--------------|----------|--------|----------------|
+| Database Down | P0 | Complete service outage | < 1 min |
+| API Crash | P1 | Service degradation | < 1 min |
+| AI Provider Outage | P2 | Transformation failures | < 2 min |
+| Payment Terminated | P0 | Revenue halt | < 5 min |
+| Founder Unavailable | Strategic | Decision paralysis | 7 days |
+| Security Breach | P0 | Data exposure risk | Variable |
+
+### Trade-off Analysis
+
+✅ **GOOD**: Proactive chaos tests build resilience.
+❌ **BAD**: Over-testing in prod risks real outages; limit to staging.
 
 ### 1. Database Failure
 
@@ -67,7 +97,9 @@ This playbook provides step-by-step procedures for recovering from various failu
 **Detection:**
 - PostgreSQL connection errors in logs
 - Health check failures
-- Sentry alerts for database timeouts
+- SigNoz alerts for database timeouts
+- Query failure rate >5%
+- Replication lag >1min
 
 **Root Causes:**
 - Hardware failure
@@ -81,7 +113,8 @@ This playbook provides step-by-step procedures for recovering from various failu
 **Severity:** P1 - High
 **Impact:** Service degradation or partial outage
 **Detection:**
-- 5xx error rate spike
+- 5xx error rate spike (>500 errors)
+- CPU utilization >90%
 - PM2/container restart notifications
 - Health endpoint failures
 
@@ -94,20 +127,35 @@ This playbook provides step-by-step procedures for recovering from various failu
 ### 3. AI/LLM Provider Outage
 
 **Severity:** P2 - Medium
-**Impact:** AI features unavailable
+**Impact:** AI features unavailable, transformation failures
 **Detection:**
 - API timeout errors to OpenAI/Anthropic
+- >10% transformation failure rate
 - Increased latency in Intel features
 - Error rate spike in AI endpoints
+
+**Root Causes:**
+- Provider service outage
+- API quota exhaustion
+- Network connectivity issues
+- Rate limiting
 
 ### 4. Payment Provider (Stripe) Issues
 
 **Severity:** P0 - Critical
-**Impact:** Unable to process payments
+**Impact:** Unable to process payments, revenue halt
 **Detection:**
 - Stripe webhook failures
+- >50% transaction failures
 - Payment API errors
 - User subscription issues
+- Email notification from provider
+
+**Root Causes:**
+- Provider outage
+- Account termination
+- Compliance issues
+- Integration failures
 
 ### 5. Authentication System Failure
 
@@ -118,19 +166,27 @@ This playbook provides step-by-step procedures for recovering from various failu
 - Session validation errors
 - Redis connection issues
 
-### 6. Security Breach Detected
+**Root Causes:**
+- Session store failure
+- JWT signing issues
+- OAuth provider outage
 
-**Severity:** P0 - Emergency
-**Impact:** Data exposure risk
+### 6. Founder Incapacitation
+
+**Severity:** Strategic
+**Impact:** Decision paralysis, operational uncertainty
 **Detection:**
-- Anomalous access patterns
-- Failed authentication spikes
-- Unusual data access patterns
-- External reports
+- No check-in for 7 days (automated email)
+- Dead man's switch activation
+
+**Root Causes:**
+- Health emergency
+- Communication blackout
+- Force majeure
 
 ---
 
-## Runbooks
+## Detailed Runbooks
 
 ### Runbook 1: Database Failure Recovery
 
@@ -138,13 +194,18 @@ This playbook provides step-by-step procedures for recovering from various failu
 INCIDENT: Database Unreachable
 SEVERITY: P0
 ESTIMATED RECOVERY: 15-30 minutes
+PREREQUISITES: Multi-region replicas, PITR backups, SigNoz alerts
+ON-CALL: DBA or founder
 ```
 
-#### Step 1: Assess the Situation (2 min)
+#### Step 1: Detection & Assessment (2 min)
 
 ```bash
 # Check database connectivity
 psql $DATABASE_URL -c "SELECT 1;"
+
+# Check if in recovery mode
+psql $DATABASE_URL -c "SELECT pg_is_in_recovery();"
 
 # Check replica status (if applicable)
 psql $DATABASE_URL -c "SELECT * FROM pg_stat_replication;"
@@ -156,15 +217,18 @@ df -h /var/lib/postgresql
 tail -100 /var/log/postgresql/postgresql-*.log
 ```
 
-#### Step 2: Attempt Quick Recovery (5 min)
+#### Step 2: Isolate & Quick Recovery (5 min)
 
 ```bash
-# Restart PostgreSQL service
+# If primary is down, fence via Patroni (if configured)
+patronictl failover --master <primary_name>
+
+# Or restart PostgreSQL service
 sudo systemctl restart postgresql
 
 # If using managed database, check provider status
-# Hetzner: https://status.hetzner.com/
 # Supabase: https://status.supabase.com/
+# Hetzner: https://status.hetzner.com/
 
 # Verify recovery
 psql $DATABASE_URL -c "SELECT NOW();"
@@ -179,8 +243,10 @@ psql $DATABASE_URL -c "SELECT NOW();"
 # On replica server:
 pg_ctl promote -D /var/lib/postgresql/data
 
-# Update application connection strings
-# Edit environment variables or secrets manager
+# Update DNS (Route53) to new primary
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z123456 \
+  --change-batch file://dns-update.json
 
 # Verify new primary
 psql $NEW_DATABASE_URL -c "SELECT pg_is_in_recovery();"
@@ -197,12 +263,21 @@ ls -la /backups/postgresql/
 pg_restore -d apex_production /backups/postgresql/latest.dump
 
 # Or point-in-time recovery
-pg_restore -d apex_production \
-  --target-time="2025-12-07 12:00:00" \
-  /backups/postgresql/base_backup/
+# Run scripts/recovery.ts for automated PITR
+npx ts-node scripts/recovery.ts --target-time="2025-12-07 12:00:00"
 ```
 
-#### Step 5: Verify Recovery
+#### Step 5: Notify & Document
+
+```bash
+# Email users if downtime >5min
+# Log to audit_logs for ethical transparency
+
+# Update status page
+echo "Database recovered at $(date)" >> /var/log/incident.log
+```
+
+#### Verification
 
 ```bash
 # Run integrity checks
@@ -212,9 +287,24 @@ psql $DATABASE_URL -c "SELECT MAX(created_at) FROM audit_logs;"
 # Verify critical tables
 psql $DATABASE_URL -c "\dt"
 
-# Check for data loss
-# Compare with last known good state
+# Monitor replication lag (should be <5s)
+psql $DATABASE_URL -c "SELECT NOW() - pg_last_xact_replay_timestamp();"
 ```
+
+#### Rollback
+
+If failover was a false positive:
+- Demote new primary
+- Restore original primary
+- Update DNS back
+
+#### Automation
+
+See `ansible/playbooks/db_failover.yml` for automated failover.
+
+**Trade-offs:**
+- ✅ GOOD: Automated failover minimizes human error
+- ❌ BAD: DNS propagation delay (5-10min); use connection pooling failover
 
 ---
 
@@ -224,9 +314,10 @@ psql $DATABASE_URL -c "\dt"
 INCIDENT: API Servers Unresponsive
 SEVERITY: P1
 ESTIMATED RECOVERY: 5-15 minutes
+PREREQUISITES: PM2 clustering, HAProxy load balancer, health checks
 ```
 
-#### Step 1: Check Status
+#### Step 1: Check Status (1 min)
 
 ```bash
 # Check PM2 process status
@@ -238,9 +329,23 @@ docker ps -a | grep apex
 # Check system resources
 htop
 free -m
+
+# Check health endpoint
+curl -v http://localhost:3000/api/health
 ```
 
-#### Step 2: Restart Application
+#### Step 2: Isolate Failed Node (2 min)
+
+```bash
+# Remove failed node from HAProxy
+echo "disable server backend/$(hostname)" | socat /var/run/haproxy.sock stdio
+
+# Or via HAProxy API
+curl -X POST http://admin:password@localhost:8404/pools/backend/servers/$(hostname)/state \
+  -d "state=disable"
+```
+
+#### Step 3: Restart Application (3 min)
 
 ```bash
 # Graceful restart with PM2
@@ -252,30 +357,62 @@ pm2 start ecosystem.config.js
 
 # With Docker
 docker-compose restart api
+
+# If restart fails, deploy new instance via GitHub Actions
+# Trigger workflow manually or via API
 ```
 
-#### Step 3: Scale if Needed
+#### Step 4: Scale if Needed
 
 ```bash
-# Add more instances
+# Add more instances if load-induced
 pm2 scale apex-api +2
 
 # Or with Docker Compose
 docker-compose up -d --scale api=3
+
+# Kubernetes (Phase 3)
+kubectl scale deployment apex-api --replicas=5
 ```
 
-#### Step 4: Verify Recovery
+#### Step 5: Re-enable & Notify
+
+```bash
+# Wait for health
+until curl -f http://localhost:3000/api/health; do sleep 5; done
+
+# Re-add to load balancer
+echo "enable server backend/$(hostname)" | socat /var/run/haproxy.sock stdio
+
+# Slack alert to team; user message if outage >1min
+```
+
+#### Verification
 
 ```bash
 # Health check
 curl -v https://api.apex-intelligence.io/health
 
+# Check response latency (should be <200ms)
+curl -w "%{time_total}\n" -o /dev/null https://api.apex-intelligence.io/api/health
+
 # Check logs for errors
 pm2 logs apex-api --lines 50
 
-# Monitor error rate
-# Check Sentry dashboard
+# Monitor error rate in Sentry dashboard
 ```
+
+#### Rollback
+
+Re-add node to balancer if removed incorrectly.
+
+#### Automation
+
+See `scripts/api_restart.sh` for quick restart.
+
+**Trade-offs:**
+- ✅ GOOD: Zero-downtime with load balancer
+- ❌ BAD: Cold starts slow (10s); pre-warm instances
 
 ---
 
@@ -284,10 +421,11 @@ pm2 logs apex-api --lines 50
 ```
 INCIDENT: Primary AI Provider (OpenAI) Down
 SEVERITY: P2
-ESTIMATED RECOVERY: 2-5 minutes
+ESTIMATED RECOVERY: <1 minute (automated), 2-5 minutes (manual)
+PREREQUISITES: Multi-LLM abstraction configured
 ```
 
-#### Step 1: Confirm Outage
+#### Step 1: Confirm Outage (30 sec)
 
 ```bash
 # Test OpenAI API
@@ -296,35 +434,195 @@ curl -H "Authorization: Bearer $OPENAI_API_KEY" \
 
 # Check OpenAI status
 # https://status.openai.com/
+
+# Check transformation failure rate in SigNoz
+# Alert threshold: >10% failures
 ```
 
-#### Step 2: Switch to Fallback Provider
+#### Step 2: Switch to Fallback Provider (1 min)
 
 ```typescript
-// In lib/ai/provider.ts
-// Failover is automatic if configured
-
+// Automatic failover should trigger via lib/ai/monitor.ts
 // Manual override via environment:
+
 export PREFERRED_AI_PROVIDER=anthropic
 export OPENAI_ENABLED=false
 
-// Restart API to pick up changes
+// Or update config dynamically (no restart needed)
+// POST /api/admin/config
+// { "primaryLLM": "anthropic" }
+```
+
+```bash
+# Restart API to pick up env changes (if not using dynamic config)
 pm2 restart apex-api
 ```
 
-#### Step 3: Monitor Fallback Performance
+#### Step 3: Fallback to Local (if all cloud fail)
 
 ```bash
-# Check latency
+# Route to local Llama server
+export PRIMARY_LLM=local
+export LOCAL_LLM_URL=http://localhost:11434
+
+# Verify Ollama is running
+curl http://localhost:11434/api/tags
+```
+
+#### Step 4: User Impact Mitigation
+
+```bash
+# Queue requests for processing
+# Notify users: "Delayed due to AI maintenance"
+
+# Update status page
+curl -X POST https://status.apex-intelligence.io/api/incidents \
+  -d '{"status": "degraded", "message": "AI features experiencing delays"}'
+```
+
+#### Step 5: Monitor & Restore
+
+```bash
+# Monitor fallback performance
 curl -w "%{time_total}\n" -o /dev/null \
   https://api.apex-intelligence.io/api/intel/analyze
 
-# Monitor error rates in dashboard
+# Check cost/quality metrics
+# Monitor provider status; switch back when healthy
 ```
+
+#### Verification
+
+```bash
+# Test transformation
+curl -X POST https://api.apex-intelligence.io/api/intel/transform \
+  -H "Content-Type: application/json" \
+  -d '{"text": "test", "style": "brief"}'
+
+# Verify response quality
+# Check error rates in monitoring
+```
+
+#### Rollback
+
+```bash
+# Revert to primary provider
+export PREFERRED_AI_PROVIDER=openai
+export OPENAI_ENABLED=true
+pm2 restart apex-api
+```
+
+#### Automation
+
+See `lib/ai/monitor.ts` for automated failover.
+
+**Trade-offs:**
+- ✅ GOOD: Maintains service continuity
+- ❌ BAD: Quality drop on local models; alert users
 
 ---
 
-### Runbook 4: Security Incident Response
+### Runbook 4: Payment Processor Termination
+
+```
+INCIDENT: Stripe Account Terminated/Major Outage
+SEVERITY: P0
+ESTIMATED RECOVERY: 30 minutes - 1 hour
+PREREQUISITES: Multi-processor wrapper configured
+```
+
+#### Step 1: Detection & Assessment (5 min)
+
+```bash
+# Check for termination email from Stripe
+# OR check transaction failure rate >50%
+
+# Verify Stripe status
+# https://status.stripe.com/
+
+# Test Stripe API
+curl https://api.stripe.com/v1/balance \
+  -u "$STRIPE_SECRET_KEY:"
+```
+
+#### Step 2: Switch to Backup Processor (10 min)
+
+```bash
+# Update payment configuration
+export PRIMARY_PAYMENT_PROCESSOR=paypal
+export STRIPE_ENABLED=false
+
+# Update application config
+# POST /api/admin/config
+# { "paymentProcessor": "paypal" }
+
+# Restart API
+pm2 restart apex-api
+```
+
+#### Step 3: Handle Pending Transactions
+
+```bash
+# Export pending transactions
+psql $DATABASE_URL -c "
+  SELECT * FROM transactions
+  WHERE status = 'pending' AND processor = 'stripe'
+  ORDER BY created_at DESC;
+" > pending_transactions.csv
+
+# Refund failed transactions via API
+# Run refund script
+npx ts-node scripts/refund-failed.ts
+```
+
+#### Step 4: User Communication
+
+```bash
+# Email users to update payment methods
+# Template: "We've updated our payment system..."
+
+# Enable crypto fallback if configured
+export CRYPTO_PAYMENTS_ENABLED=true
+
+# Post transparency report (ethical requirement)
+# Update status page
+```
+
+#### Step 5: Subscription Migration
+
+```bash
+# Export active subscriptions
+psql $DATABASE_URL -c "
+  SELECT user_id, plan_id, expires_at FROM subscriptions
+  WHERE status = 'active';
+" > active_subscriptions.csv
+
+# Create subscriptions in new processor
+# (Manual process or via migration script)
+```
+
+#### Verification
+
+```bash
+# Test subscription creation in new processor
+curl -X POST https://api.apex-intelligence.io/api/subscriptions/test \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# Verify webhook configuration
+# Check new processor dashboard
+```
+
+#### Rollback
+
+Re-enable Stripe if termination was in error.
+
+**Trade-offs:**
+- ✅ GOOD: Revenue continuity maintained
+- ❌ BAD: User friction on payment method updates
+
+---
+
+### Runbook 5: Security Incident Response
 
 ```
 INCIDENT: Potential Security Breach
@@ -410,6 +708,80 @@ git push origin hotfix/security-patch
 
 ---
 
+### Runbook 6: Founder Incapacitation
+
+```
+INCIDENT: Founder Unavailable for Extended Period
+SEVERITY: Strategic
+ESTIMATED RECOVERY: N/A (transition process)
+PREREQUISITES: Dead man's switch configured, trustees with keys
+```
+
+#### Step 1: Detection (Automated)
+
+```
+Trigger: No check-in for 7 days
+Action: Automated email sent to trustees
+System: Dead man's switch from Ethical Safeguards Framework
+```
+
+#### Step 2: Activate Dead Man's Switch
+
+```bash
+# Trustees access vault (1Password shared)
+# Verify identity via pre-arranged verification
+
+# Access critical credentials:
+# - Cloud provider access
+# - Database credentials
+# - DNS management
+# - Payment processor admin
+```
+
+#### Step 3: Transfer Control
+
+```bash
+# Update DNS registrar access
+# Transfer domain ownership if needed
+
+# Update cloud provider account
+# Add trustees as administrators
+
+# Notify service providers
+# Legal documentation ready
+```
+
+#### Step 4: Operations Continue
+
+```
+Phase 3+: DAO votes on interim leader
+Community notification via official channels
+Weekly transparency updates
+```
+
+#### Step 5: Graceful Transition
+
+- Follow succession plan document
+- Maintain service continuity
+- Preserve user data and access
+
+#### Verification
+
+Trustees test access quarterly:
+- Login to password manager
+- Access cloud console (read-only test)
+- Verify DNS management access
+
+#### Rollback
+
+N/A - irreversible scenario
+
+**Trade-offs:**
+- ✅ GOOD: Ensures business continuity
+- ❌ BAD: Trust in trustees required; elect via RC vote
+
+---
+
 ## Communication Protocol
 
 ### Severity Levels & Response
@@ -441,14 +813,6 @@ Template for status updates:
 
 ## Business Continuity
 
-### Founder Unavailability Plan
-
-If the primary founder/operator is unavailable:
-
-1. **Immediate (0-24h):** Trustees gain read-only access to critical systems
-2. **Short-term (24-72h):** Trustees can authorize operational decisions
-3. **Long-term (72h+):** DAO governance activates per constitution
-
 ### Financial Contingency
 
 If funds are critically low:
@@ -457,6 +821,15 @@ If funds are critically low:
 2. Notify users of service changes
 3. Maintain core authentication and data access
 4. Activate community support fund if available
+
+### Service Degradation Levels
+
+| Level | Services Active | Services Paused |
+|-------|-----------------|-----------------|
+| Full | All | None |
+| Degraded | Core API, Auth | AI, Analytics |
+| Minimal | Auth, Data Export | All others |
+| Emergency | Data Export only | All |
 
 ---
 
@@ -490,10 +863,19 @@ Run these tests in staging to verify recovery procedures:
 
 | Test | Frequency | Last Run | Next Scheduled |
 |------|-----------|----------|----------------|
-| DB Failover | Quarterly | [TBD] | [TBD] |
+| DB Failover | Quarterly | [TBD] | Q1 2026 |
 | API Kill | Monthly | [TBD] | [TBD] |
-| Dependency | Quarterly | [TBD] | [TBD] |
+| Dependency | Quarterly | [TBD] | Q1 2026 |
 | Network | Bi-annually | [TBD] | [TBD] |
+
+### Chaos Test Checklist
+
+Before running chaos tests:
+- [ ] Notify team 24h in advance
+- [ ] Verify staging environment mirrors production
+- [ ] Have rollback procedures ready
+- [ ] Monitor dashboards during test
+- [ ] Document results
 
 ---
 
@@ -559,6 +941,8 @@ STRIPE_SECRET_KEY=sk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 ENCRYPTION_MASTER_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
+PREFERRED_AI_PROVIDER=openai
+PRIMARY_PAYMENT_PROCESSOR=stripe
 ```
 
 ### B. Backup Locations
@@ -578,3 +962,37 @@ SUPABASE_SERVICE_ROLE_KEY=...
 - Anthropic: https://status.anthropic.com/
 - Vercel: https://www.vercel-status.com/
 - Hetzner: https://status.hetzner.com/
+
+### D. Automation Scripts
+
+| Script | Location | Purpose |
+|--------|----------|---------|
+| Database Failover | `ansible/playbooks/db_failover.yml` | Automated DB failover |
+| API Restart | `scripts/api_restart.sh` | Quick API recovery |
+| AI Monitor | `lib/ai/monitor.ts` | AI provider failover |
+| Compliance Audit | `scripts/compliance_audit.ts` | GDPR/CCPA checks |
+
+### E. Recovery Time Estimates
+
+| Scenario | Minimum | Typical | Maximum |
+|----------|---------|---------|---------|
+| DB restart | 2 min | 5 min | 15 min |
+| DB failover | 5 min | 15 min | 30 min |
+| DB restore | 15 min | 30 min | 60 min |
+| API restart | 1 min | 3 min | 10 min |
+| AI failover | <1 min | 1 min | 5 min |
+| Payment switch | 10 min | 30 min | 60 min |
+
+---
+
+## Next Steps
+
+- [ ] Test runbooks in staging (Q1 2026)
+- [ ] Complete key contacts table
+- [ ] Schedule first chaos engineering session
+- [ ] Review automation scripts
+- [ ] Train team on procedures
+
+---
+
+*This playbook should be reviewed and updated quarterly or after any significant incident.*
