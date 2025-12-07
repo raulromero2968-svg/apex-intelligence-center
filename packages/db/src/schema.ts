@@ -189,6 +189,122 @@ export const paperGenerationJobs = pgTable('paper_generation_jobs', {
 }));
 
 // =============================================================================
+// SECURITY & AUTHENTICATION TABLES
+// =============================================================================
+// Enhanced security infrastructure implementing knowledge-05-security-oauth2-jwt
+
+/**
+ * User credentials for password-based authentication
+ * Stores password hashes and MFA configuration
+ */
+export const userCredentials = pgTable('user_credentials', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull().unique(),
+  passwordHash: text('password_hash'), // bcrypt hash
+  mfaEnabled: boolean('mfa_enabled').default(false).notNull(),
+  mfaType: text('mfa_type'), // 'totp' | 'sms' | 'email'
+  mfaSecret: text('mfa_secret'), // Encrypted TOTP secret
+  phone: text('phone'), // For SMS MFA
+  phoneVerified: boolean('phone_verified').default(false),
+  lastPasswordChange: timestamp('last_password_change'),
+  failedAttempts: integer('failed_attempts').default(0).notNull(),
+  lockedUntil: timestamp('locked_until'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('user_credentials_user_idx').on(table.userId),
+}));
+
+/**
+ * User sessions for device tracking and revocation
+ * Complements Redis session cache with persistent storage
+ */
+export const userSessions = pgTable('user_sessions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  sessionId: text('session_id').notNull().unique(),
+  deviceId: text('device_id').notNull(),
+  deviceInfo: jsonb('device_info').notNull(), // Browser, OS, device type
+  ipAddress: text('ip_address').notNull(),
+  userAgent: text('user_agent'),
+  mfaVerified: boolean('mfa_verified').default(false).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  lastActive: timestamp('last_active').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  revokedAt: timestamp('revoked_at'),
+  revokedReason: text('revoked_reason'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('user_sessions_user_idx').on(table.userId),
+  sessionIdIdx: index('user_sessions_session_idx').on(table.sessionId),
+  deviceIdIdx: index('user_sessions_device_idx').on(table.deviceId),
+  activeIdx: index('user_sessions_active_idx').on(table.userId, table.isActive),
+}));
+
+/**
+ * Federated identity links for OIDC/SSO
+ * Enables cross-instance authentication and RC portability
+ */
+export const federatedIdentities = pgTable('federated_identities', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  provider: text('provider').notNull(), // OIDC issuer URL
+  subject: text('subject').notNull(), // Provider's user ID (sub claim)
+  email: text('email'),
+  displayName: text('display_name'),
+  avatarUrl: text('avatar_url'),
+  accessToken: text('access_token'), // Encrypted
+  refreshToken: text('refresh_token'), // Encrypted
+  tokenExpiresAt: timestamp('token_expires_at'),
+  rcBalance: integer('rc_balance').default(0), // Synced RC from federation
+  metadata: jsonb('metadata').default({}), // Additional claims
+  lastSync: timestamp('last_sync').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('federated_identities_user_idx').on(table.userId),
+  providerSubjectIdx: index('federated_identities_provider_subject_idx').on(table.provider, table.subject),
+}));
+
+/**
+ * MFA backup codes for account recovery
+ */
+export const mfaBackupCodes = pgTable('mfa_backup_codes', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  codeHash: text('code_hash').notNull(), // SHA-256 hash of code
+  usedAt: timestamp('used_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('mfa_backup_codes_user_idx').on(table.userId),
+  unusedIdx: index('mfa_backup_codes_unused_idx').on(table.userId, table.usedAt),
+}));
+
+/**
+ * Security audit logs for compliance and forensics
+ */
+export const securityAuditLogs = pgTable('security_audit_logs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id),
+  sessionId: text('session_id'),
+  action: text('action').notNull(), // login, logout, mfa_enabled, password_changed, etc.
+  resource: text('resource'), // The resource being accessed
+  resourceId: text('resource_id'),
+  riskLevel: text('risk_level'), // low, medium, high, critical
+  success: boolean('success').notNull(),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  geoLocation: jsonb('geo_location'), // { country, city, region }
+  details: jsonb('details').default({}), // Additional context
+  occurredAt: timestamp('occurred_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('security_audit_user_idx').on(table.userId),
+  actionIdx: index('security_audit_action_idx').on(table.action),
+  occurredAtIdx: index('security_audit_occurred_idx').on(table.occurredAt.desc()),
+  riskLevelIdx: index('security_audit_risk_idx').on(table.riskLevel),
+}));
+
+// =============================================================================
 // EMERGENCY STUBS - Build Compatibility Layer
 // =============================================================================
 // These stub exports satisfy the TypeScript compiler for features under development.
