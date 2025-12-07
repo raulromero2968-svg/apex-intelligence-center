@@ -20,9 +20,6 @@ import { Pool } from 'pg';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 
-// FIX: Force dynamic rendering to skip build-time DB connection
-export const dynamic = 'force-dynamic';
-
 // =============================================================================
 // CONSTANTS
 // =============================================================================
