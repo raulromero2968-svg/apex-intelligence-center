@@ -14,6 +14,9 @@
  * @module api/buy/report
  */
 
+// Force dynamic rendering - prevents database connection during static build
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 // Auth removed - public API
 import { Pool } from 'pg';

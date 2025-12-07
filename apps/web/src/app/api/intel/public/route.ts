@@ -1,3 +1,6 @@
+// Force dynamic rendering - prevents static generation during build
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 // Auth removed - public API
 
