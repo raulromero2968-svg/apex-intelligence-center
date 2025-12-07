@@ -143,4 +143,41 @@ export type {
   AuditSeverity,
 } from './schema/index';
 
+// Re-export Intel Reports tables, enums, and types
+export {
+  intelReports,
+  intelReportPurchases,
+  reportCards,
+  intelReportLikes,
+  reportTierEnum,
+  reportCategoryEnum,
+  reportStatusEnum,
+  postingDestinationEnum,
+  intelReportsRelations,
+  intelReportPurchasesRelations,
+  reportCardsRelations,
+  intelReportLikesRelations,
+  EMBEDDING_DIMENSIONS,
+  DEFAULT_EMBEDDING_MODEL,
+  VECTOR_SIMILARITY_THRESHOLD,
+  RRF_K,
+  SEARCH_LIMITS,
+} from './schema/index';
+
+// Re-export Intel Reports types
+export type {
+  IntelReport,
+  NewIntelReport,
+  IntelReportPurchase,
+  NewIntelReportPurchase,
+  ReportCard,
+  NewReportCard,
+  IntelReportLike,
+  NewIntelReportLike,
+  ReportTier,
+  ReportCategory,
+  ReportStatus,
+  PostingDestination,
+} from './schema/index';
+
 
