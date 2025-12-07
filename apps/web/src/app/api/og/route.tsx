@@ -4,6 +4,8 @@ import { getArticleBySlug } from '@/lib/mdx';
 
 // Required because we use fs/promises for MDX → cannot run in Edge runtime
 export const runtime = 'nodejs';
+// FIX: Force dynamic rendering to skip build-time file system access
+export const dynamic = 'force-dynamic';
 // Allow ISR caching for OG images - revalidate every hour
 // This improves performance while keeping images fresh
 export const revalidate = 3600;
