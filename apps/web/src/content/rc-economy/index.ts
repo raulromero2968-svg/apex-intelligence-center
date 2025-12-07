@@ -591,7 +591,7 @@ function getContributorLevel(rcBalance: number): ContributorLevel {
 
 export const rcEconomySpec = {
   version: "1.0",
-  lastUpdated: "2024-12-07",
+  lastUpdated: "2025-12-07",
   principles: rcPrinciples,
   earnEvents: rcEarnEvents,
   useCases: rcUseCases,
