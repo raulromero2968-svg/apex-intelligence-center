@@ -9,7 +9,4 @@
  * - They cannot be broken down any further without losing functionality
  */
 
-// Components will be exported here as they are created
-// Example: export { Button } from "./Button";
-// Example: export { Input } from "./Input";
-// Example: export { Badge } from "./Badge";
+export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from "./Button";

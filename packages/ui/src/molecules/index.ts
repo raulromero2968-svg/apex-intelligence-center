@@ -9,7 +9,10 @@
  * - They serve a specific, reusable function in the interface
  */
 
-// Components will be exported here as they are created
-// Example: export { UserCard } from "./UserCard";
-// Example: export { IntelPreview } from "./IntelPreview";
-// Example: export { SearchBar } from "./SearchBar";
+export {
+  IntelCard,
+  type IntelCardProps,
+  type IntelSource,
+  type IntelSentiment,
+  type IntelCategory,
+} from "./IntelCard";
