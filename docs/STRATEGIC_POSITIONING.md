@@ -103,22 +103,36 @@ To make Apex feel **essential** (not entertainment), every touchpoint must answe
 - IPFS provenance for data integrity
 - Full export APIs for user data portability
 
-### 3.3 Moat Pillar 3: Human Curation Graph
+### 3.3 Moat Pillar 3: Human Curation & Reputation Graph
 
 **What it is:**
 - Not just content storage - stores **who trusted what, when, and in what context**
 - Accumulates a **curation graph**: who upvotes whom, topic expertise, cross-domain pattern recognition
+- The "who trusts whom, on what, over time" graph that becomes irreplaceable
 
 **Why it's defensible:**
 - Graph + intel corpus = unique dataset for recommendations, search, and future AI models
 - Network effects compound over time
 - Historical context is irreplaceable
+- Enables "Apex-native ranking and AI models trained on real human judgment"
 
 **Data Assets:**
 - Trust relationships between users
 - Topic expertise signals
 - Cross-domain pattern recognition
 - Temporal provenance (what was believed when)
+- Which intel helped whom (outcome tracking)
+- Where human judgment proved right before the crowd
+
+**Long-Term Strategic Value:**
+> "Our long-term moat is the **curation & reputation graph**: who upvoted what, which intel helped whom, and where human judgment proved right before the crowd."
+
+This graph enables:
+1. **Superior recommendations:** Personalized intel discovery based on trust relationships
+2. **Credibility signals:** "This analyst was right about X before it was consensus"
+3. **Training data:** Future AI models that incorporate real human judgment
+4. **Governance:** Weighted voting based on demonstrated expertise
+5. **Portability:** Exportable reputation that follows users beyond Apex
 
 ### 3.4 Moat Pillar 4: Governance & Ethics
 
