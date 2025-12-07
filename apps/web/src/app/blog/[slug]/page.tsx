@@ -7,6 +7,7 @@ import { getArticleBySlug, getAllBlogPostSlugs } from '@/lib/mdx';
 import { BookOpen, Clock, Calendar, User, ArrowLeft, ExternalLink } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { DigitalScroll } from '@/components/ui/DigitalScroll';
+import TableOfContents from '@/components/mdx/TableOfContents';
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -192,10 +193,13 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
           </section>
         )}
 
-        {/* Article Content */}
-        <section className="max-w-4xl mx-auto">
-          <ElectronicFolder 
-            title="ARTICLE CONTENT" 
+        {/* Article Content with Table of Contents */}
+        <section className="max-w-4xl mx-auto relative">
+          {/* Sticky Table of Contents - XL screens only */}
+          <TableOfContents />
+
+          <ElectronicFolder
+            title="ARTICLE CONTENT"
             classification="PUBLIC ACCESS // INTELLIGENCE_REPORT"
           >
             <DigitalScroll height="auto">
@@ -208,7 +212,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                   </div>
                 </div>
               }>
-                <div className="prose prose-invert max-w-none prose-headings:text-cyan-400 prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-cyan-300 prose-code:bg-slate-800 prose-code:px-2 prose-code:py-1 prose-code:rounded">
+                <div className="prose prose-invert max-w-none prose-headings:text-cyan-400 prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-cyan-300 prose-code:bg-slate-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-headings:scroll-mt-24">
                   {article.content}
                 </div>
               </Suspense>
