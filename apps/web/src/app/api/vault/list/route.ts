@@ -5,6 +5,9 @@ import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import matter from 'gray-matter';
 
+// FIX: Force dynamic rendering to skip build-time auth/entitlement checks
+export const dynamic = 'force-dynamic';
+
 const VAULT_CONTENT_DIR = join(process.cwd(), 'apps/web/content/vault');
 
 interface VaultReport {

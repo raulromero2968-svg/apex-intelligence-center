@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 // Auth removed - public API
 
+// FIX: Force dynamic rendering to skip build-time evaluation
+export const dynamic = 'force-dynamic';
+
 /**
  * Public Intel Reports API Route
  *
