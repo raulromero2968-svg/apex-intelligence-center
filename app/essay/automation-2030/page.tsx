@@ -55,6 +55,40 @@ export default function AutomationEssayPage() {
           </div>
         </header>
 
+        {/* TL;DR */}
+        <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-cyan-900/50 rounded-xl p-6 mb-12">
+          <h2 className="text-lg font-bold text-cyan-400 mb-4 font-orbitron flex items-center gap-2">
+            <Zap size={18} />
+            TL;DR
+          </h2>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3">
+              <ArrowRight className="text-cyan-400 mt-1 flex-shrink-0" size={16} />
+              <span className="text-gray-300">
+                AI is on track to automate a huge chunk of knowledge-work tasks by 2030—some estimates put <strong className="text-white">30–40% of jobs or work hours</strong> in highly automatable categories.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <ArrowRight className="text-cyan-400 mt-1 flex-shrink-0" size={16} />
+              <span className="text-gray-300">
+                The real risk isn't "no jobs"—it's <strong className="text-white">rapid erosion of how we earn money today</strong>.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <ArrowRight className="text-cyan-400 mt-1 flex-shrink-0" size={16} />
+              <span className="text-gray-300">
+                What survives are <strong className="text-white">assets, reputation graphs, and communities</strong>—not hourly labor.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <ArrowRight className="text-cyan-400 mt-1 flex-shrink-0" size={16} />
+              <span className="text-gray-300">
+                You should start turning your past work and daily curation into reusable intelligence assets <strong className="text-white">now</strong>—Apex is one way to do that.
+              </span>
+            </li>
+          </ul>
+        </div>
+
         {/* INTRO */}
         <div className="mb-12">
           <p className="text-lg text-gray-300 mb-6 leading-relaxed">
@@ -135,11 +169,27 @@ export default function AutomationEssayPage() {
             </li>
           </ul>
 
-          <div className="bg-gradient-to-br from-red-950/30 to-orange-950/30 border border-red-900/50 rounded-xl p-6">
+          <div className="bg-gradient-to-br from-red-950/30 to-orange-950/30 border border-red-900/50 rounded-xl p-6 mb-6">
             <p className="text-white font-medium">
               The danger isn't that humans become useless.<br />
               The danger is that our current <strong className="text-cyan-400">economic plumbing</strong> is not built for this speed of change.
             </p>
+          </div>
+
+          {/* Data Citation Box */}
+          <div className="bg-gray-900/30 border border-gray-700 rounded-lg p-4 text-sm">
+            <p className="text-gray-400 mb-2 font-mono text-xs">SOURCES & CONTEXT</p>
+            <ul className="space-y-2 text-gray-400">
+              <li>
+                • Recent analyses suggest <span className="text-white">up to 30% of hours worked</span> today could be automated by 2030, forcing about <span className="text-white">14% of the global workforce</span> to change occupations. — <span className="text-cyan-400/80">TIAA Institute, 2025</span>
+              </li>
+              <li>
+                • Some estimates put <span className="text-white">40% of US jobs</span> in highly automatable categories by 2030. — <span className="text-cyan-400/80">McKinsey Global Institute, 2025</span>
+              </li>
+              <li>
+                • The same reports stress that <span className="text-white">skills and human judgment stay central</span>—work just gets restructured, not eliminated. — <span className="text-cyan-400/80">McKinsey & Company</span>
+              </li>
+            </ul>
           </div>
         </section>
 
@@ -734,16 +784,79 @@ export default function AutomationEssayPage() {
           </div>
         </section>
 
+        {/* SECTION 10 - ACTION CHECKLIST */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-white font-orbitron mb-6 flex items-center gap-3">
+            <span className="text-cyan-400 font-mono text-lg">10</span>
+            Your Starter Checklist
+          </h2>
+
+          <p className="text-gray-300 mb-8">
+            You don't need to do everything at once. But if you do nothing, you're betting your future on institutions that are already behind. Here's a simple starting point:
+          </p>
+
+          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8 mb-8">
+            <ul className="space-y-4">
+              <li className="flex items-start gap-4">
+                <div className="w-6 h-6 border-2 border-cyan-500/50 rounded flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-white font-medium">Pick 10 pieces of past work or threads you're proud of</p>
+                  <p className="text-sm text-gray-400">Client deliverables, X threads, Slack explanations, Notion docs—anything where you showed judgment.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-4">
+                <div className="w-6 h-6 border-2 border-cyan-500/50 rounded flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-white font-medium">Write 3 potential "intel products" those could become</p>
+                  <p className="text-sm text-gray-400">A playbook? A checklist? A benchmark report? A tactical guide?</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-4">
+                <div className="w-6 h-6 border-2 border-cyan-500/50 rounded flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-white font-medium">Choose a home for those assets</p>
+                  <p className="text-sm text-gray-400">Apex, your own site, Gumroad, Substack—somewhere you own the relationship.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-4">
+                <div className="w-6 h-6 border-2 border-cyan-500/50 rounded flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-white font-medium">Transform and publish at least one asset</p>
+                  <p className="text-sm text-gray-400">Done is better than perfect. Get something out there and iterate.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-gradient-to-br from-cyan-950/30 to-purple-950/30 border border-cyan-900/50 rounded-xl p-6">
+            <p className="text-white font-medium mb-4">
+              If you want a place built specifically for this—turning your history and curation into sellable intel backed by cash and reputation:
+            </p>
+            <p className="text-gray-300">
+              <span className="text-cyan-400">Join the Apex early access list.</span> You'll be among the first to build assets on a platform designed for the post-AI economy.
+            </p>
+          </div>
+        </section>
+
         {/* CTA */}
         <div className="mt-16 text-center">
-          <Link
-            href="/landing"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold rounded-lg transition-all duration-300 shadow-lg shadow-cyan-500/25"
-          >
-            Explore Apex Intelligence
-            <ArrowRight size={20} />
-          </Link>
-          <p className="text-gray-500 text-sm mt-4 font-mono">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <Link
+              href="/subscribe"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold rounded-lg transition-all duration-300 shadow-lg shadow-cyan-500/25"
+            >
+              Get Early Access to Apex
+              <ArrowRight size={20} />
+            </Link>
+            <Link
+              href="/landing"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900/50 hover:bg-gray-800/50 border border-gray-700 text-white font-medium rounded-lg transition-all duration-300"
+            >
+              <FileText size={20} />
+              Explore How It Works
+            </Link>
+          </div>
+          <p className="text-gray-500 text-sm font-mono">
             BUILD YOUR POST-AI INCOME NOW
           </p>
         </div>

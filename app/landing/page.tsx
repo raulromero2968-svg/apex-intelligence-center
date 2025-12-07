@@ -77,7 +77,12 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+          {/* Simple "Grandma Test" One-Liner */}
+          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-6 leading-relaxed border-l-4 border-cyan-500 pl-4 text-left">
+            <strong>In plain English:</strong> Apex is where knowledge workers turn their past work and daily scrolling into assets they can sell—in cash and reputation—before AI eats their jobs.
+          </p>
+
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
             Turn your expertise and scrolling into tradable intelligence assets on a hybrid{' '}
             <span className="text-green-400 font-medium">USD</span> +{' '}
             <span className="text-purple-400 font-medium">Reputation Credits</span> economy designed for AI-displaced knowledge workers.
@@ -101,6 +106,54 @@ export default function LandingPage() {
             <Shield size={14} className="inline mr-2" />
             No crypto. No speculation. You own your work.
           </p>
+        </div>
+      </section>
+
+      {/* VISUAL TRANSFORMATION MODEL */}
+      <section className="py-8 px-4 bg-gradient-to-b from-transparent to-gray-900/30">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+            {/* Step 1 */}
+            <div className="flex items-center gap-3 bg-gray-900/50 border border-gray-800 rounded-xl px-6 py-4">
+              <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                <FileText className="text-cyan-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">Your Work</p>
+                <p className="text-gray-500 text-xs">Past projects, threads, notes</p>
+              </div>
+            </div>
+
+            <ArrowRight className="text-gray-600 hidden md:block" size={24} />
+            <ChevronDown className="text-gray-600 md:hidden" size={24} />
+
+            {/* Step 2 */}
+            <div className="flex items-center gap-3 bg-gray-900/50 border border-purple-900/50 rounded-xl px-6 py-4">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <Zap className="text-purple-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">Intel Assets</p>
+                <p className="text-gray-500 text-xs">Playbooks, reports, guides</p>
+              </div>
+            </div>
+
+            <ArrowRight className="text-gray-600 hidden md:block" size={24} />
+            <ChevronDown className="text-gray-600 md:hidden" size={24} />
+
+            {/* Step 3 */}
+            <div className="flex items-center gap-3 bg-gradient-to-r from-green-950/50 to-purple-950/50 border border-green-900/50 rounded-xl px-6 py-4">
+              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <TrendingUp className="text-green-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">
+                  <span className="text-green-400">USD</span> + <span className="text-purple-400">RC</span>
+                </p>
+                <p className="text-gray-500 text-xs">Cash + reputation</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -134,9 +187,19 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <p className="text-lg text-gray-300 text-center max-w-3xl mx-auto mb-12">
+          <p className="text-lg text-gray-300 text-center max-w-3xl mx-auto mb-8">
             AI is getting good enough to do most tasks inside most jobs. Rates are dropping, leads are slowing, and platforms are quietly replacing human work with a prompt.
           </p>
+
+          {/* Upskilling Distinction */}
+          <div className="bg-gray-900/30 border border-gray-700 rounded-xl p-6 max-w-3xl mx-auto mb-12">
+            <p className="text-gray-400 text-sm mb-3">
+              <strong className="text-white">Most AI platforms</strong> teach you how to use AI to keep your job.
+            </p>
+            <p className="text-cyan-400 font-medium">
+              <strong>Apex</strong> focuses on turning your judgment into assets and reputation that outlive any job.
+            </p>
+          </div>
 
           <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-8 mb-12">
             <p className="text-white font-medium text-lg mb-6 text-center">Apex exists so you can:</p>
@@ -466,10 +529,76 @@ export default function LandingPage() {
             </div>
           </div>
 
+          {/* CONCRETE RC EXAMPLE */}
+          <div className="mt-12 bg-gradient-to-r from-gray-900/80 to-gray-800/50 border border-gray-700 rounded-xl p-6">
+            <p className="text-gray-400 text-xs font-mono mb-3">EXAMPLE SCENARIO</p>
+            <div className="flex flex-col md:flex-row items-start gap-6">
+              <div className="flex-shrink-0">
+                <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-full flex items-center justify-center border border-gray-700">
+                  <Users className="text-cyan-400" size={24} />
+                </div>
+              </div>
+              <div>
+                <p className="text-white font-medium mb-3">
+                  <span className="text-cyan-400">Jane</span> publishes 3 intel cards about GTM strategies for AI tools.
+                </p>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-gray-900/50 rounded-lg p-3">
+                    <p className="text-2xl font-bold text-green-400">$420</p>
+                    <p className="text-xs text-gray-500">from intel sales</p>
+                  </div>
+                  <div className="bg-gray-900/50 rounded-lg p-3">
+                    <p className="text-2xl font-bold text-purple-400">130 RC</p>
+                    <p className="text-xs text-gray-500">from upvotes & Commons</p>
+                  </div>
+                </div>
+                <p className="text-gray-400 text-sm">
+                  She uses her RC to <span className="text-white">boost visibility</span> on a new report,
+                  <span className="text-white"> vote on platform features</span>, and unlock <span className="text-white">premium analytics</span>.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <p className="text-center text-gray-500 text-sm mt-8 font-mono">
             <Shield size={14} className="inline mr-2" />
             RC is designed to measure contribution, not fuel speculation.
           </p>
+        </div>
+      </section>
+
+      {/* TRUST SIGNALS / RISK REDUCERS */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900/20 border-y border-gray-800">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <DollarSign className="text-green-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-medium text-sm mb-1">No Crypto Required</p>
+                <p className="text-gray-500 text-xs">RC cannot be bought, sold, or traded on exchanges. It's reputation, not speculation.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Lock className="text-cyan-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-medium text-sm mb-1">Your Data, Your Export</p>
+                <p className="text-gray-500 text-xs">Export your intel and data at any time. We're building for portability, not lock-in.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Users className="text-purple-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white font-medium text-sm mb-1">Human-Centered Safeguards</p>
+                <p className="text-gray-500 text-xs">Transparent algorithms, open governance, and enforceable community rights.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -654,25 +783,49 @@ export default function LandingPage() {
             </span>
           </h2>
 
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12">
             If you think for a living, Apex is where you turn that thinking into assets that survive the next decade.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <Link
-              href="/subscribe"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold rounded-lg transition-all duration-300 shadow-lg shadow-cyan-500/25 text-lg"
-            >
-              Request Early Access
-              <ArrowRight size={20} />
-            </Link>
-            <Link
-              href="/essay/automation-2030"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900/50 hover:bg-gray-800/50 border border-gray-700 text-white font-medium rounded-lg transition-all duration-300"
-            >
-              <FileText size={20} />
-              Read the AI Disruption Essay
-            </Link>
+          {/* DUAL PATHS */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
+            {/* Path 1: Quick Start */}
+            <div className="bg-gradient-to-br from-cyan-950/30 to-blue-950/30 border border-cyan-900/50 rounded-xl p-6 text-left">
+              <div className="flex items-center gap-2 mb-4">
+                <Play className="text-cyan-400" size={20} />
+                <p className="text-cyan-400 font-mono text-sm">PATH 1</p>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3 font-orbitron">I just want to try it</h3>
+              <p className="text-gray-400 text-sm mb-6">
+                Create your first intel card in 5 minutes. Connect your work and see what Apex can do.
+              </p>
+              <Link
+                href="/subscribe"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-black font-bold rounded-lg transition-all duration-300 text-sm w-full justify-center"
+              >
+                Get Early Access
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            {/* Path 2: Deep Dive */}
+            <div className="bg-gradient-to-br from-purple-950/30 to-pink-950/30 border border-purple-900/50 rounded-xl p-6 text-left">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="text-purple-400" size={20} />
+                <p className="text-purple-400 font-mono text-sm">PATH 2</p>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3 font-orbitron">I want to understand</h3>
+              <p className="text-gray-400 text-sm mb-6">
+                Read the manifesto. Understand the macro thesis and why this matters for your career.
+              </p>
+              <Link
+                href="/essay/automation-2030"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900/50 hover:bg-gray-800/50 border border-gray-700 text-white font-medium rounded-lg transition-all duration-300 text-sm w-full justify-center"
+              >
+                <FileText size={16} />
+                Read the AI Disruption Essay
+              </Link>
+            </div>
           </div>
         </div>
       </section>
