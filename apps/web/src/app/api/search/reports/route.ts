@@ -12,6 +12,9 @@
  * @module api/search/reports
  */
 
+// Force dynamic rendering - prevents database connection during static build
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { z } from 'zod';

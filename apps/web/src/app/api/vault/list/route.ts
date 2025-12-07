@@ -1,3 +1,6 @@
+// Force dynamic rendering - auth/headers require runtime evaluation
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { userHasVaultAccess } from '@/server/services/entitlements';

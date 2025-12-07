@@ -12,6 +12,9 @@
  * @module api/intel
  */
 
+// Force dynamic rendering - prevents database connection during static build
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 // Auth removed - public API for now
 import { Pool } from 'pg';
