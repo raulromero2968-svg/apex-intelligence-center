@@ -70,3 +70,57 @@ export {
   type KnowledgeQuery,
   type PromptTemplate,
 } from './domain-pack';
+
+// Antifragile Database Architecture
+export {
+  // Replication Monitoring
+  isInRecovery,
+  getReplicationLagBytes,
+  getReplicationLagSeconds,
+  getReplicaStatuses,
+  checkDatabaseHealth,
+  REPLICATION_LAG_THRESHOLDS,
+  // Backup & Recovery
+  getCurrentWalPosition,
+  getDatabaseSize,
+  estimateBackupTime,
+  getLastCheckpoint,
+  // Migration Path
+  detectMigrationPhase,
+  checkYugabyteCompatibility,
+  // Audit Logging
+  logAdminAction,
+  // Connection Pool
+  getConnectionPoolStats,
+  // Types
+  type ReplicationStatus,
+  type DatabaseHealth,
+  type BackupInfo,
+  type RecoveryPoint,
+  type MigrationPhase,
+  type MigrationStatus,
+} from './antifragile';
+
+// Backup & Recovery
+export {
+  // Operations
+  triggerBackup,
+  initiateRecovery,
+  listBackups,
+  getLatestBackup,
+  verifyBackups,
+  getWalArchiveStatus,
+  getNextBackupTime,
+  // Config
+  DEFAULT_PGBACKREST_CONFIG,
+  DEFAULT_BACKUP_SCHEDULE,
+  // Types
+  type PgBackRestConfig,
+  type BackupType,
+  type BackupResult,
+  type RecoveryOptions,
+  type RecoveryResult,
+  type BackupInfo as PgBackupInfo,
+  type WalArchiveStatus,
+  type BackupSchedule,
+} from './backup-recovery';
