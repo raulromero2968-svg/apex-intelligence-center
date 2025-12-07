@@ -1,0 +1,150 @@
+# Database Failover Playbook
+# Automates PostgreSQL failover to replica on primary failure
+# Reference: docs/security/DISASTER_RECOVERY_PLAYBOOK.md
+
+---
+- name: Database Failover
+  hosts: db_replicas
+  become: true
+  vars:
+    db_data_dir: /var/lib/postgresql/data
+    dns_zone: apex-intelligence.io
+    dns_record: db.apex-intelligence.io
+    health_check_retries: 5
+    health_check_delay: 10
+
+  tasks:
+    - name: Check primary status
+      command: psql -h {{ primary_host }} -U {{ db_user }} -c "SELECT pg_is_in_recovery();"
+      register: primary_status
+      ignore_errors: true
+      environment:
+        PGPASSWORD: "{{ db_password }}"
+
+    - name: Primary is down - proceeding with failover
+      debug:
+        msg: "Primary database is unreachable, initiating failover"
+      when: primary_status.failed or primary_status.rc != 0
+
+    - name: Check if this replica is in recovery mode
+      command: psql -c "SELECT pg_is_in_recovery();"
+      register: replica_status
+      become_user: postgres
+      when: primary_status.failed or primary_status.rc != 0
+
+    - name: Promote replica to primary
+      command: pg_ctl promote -D {{ db_data_dir }}
+      become_user: postgres
+      when:
+        - primary_status.failed or primary_status.rc != 0
+        - replica_status.stdout is search('t')
+      register: promote_result
+
+    - name: Wait for promotion to complete
+      pause:
+        seconds: 5
+      when: promote_result.changed
+
+    - name: Verify new primary is not in recovery
+      command: psql -c "SELECT pg_is_in_recovery();"
+      register: verify_status
+      become_user: postgres
+      until: verify_status.stdout is search('f')
+      retries: "{{ health_check_retries }}"
+      delay: "{{ health_check_delay }}"
+      when: promote_result.changed
+
+    - name: Update DNS to point to new primary
+      aws_route53:
+        zone: "{{ dns_zone }}"
+        record: "{{ dns_record }}"
+        type: A
+        value: "{{ ansible_default_ipv4.address }}"
+        state: present
+        overwrite: true
+      delegate_to: localhost
+      when: promote_result.changed
+
+    - name: Verify database connectivity
+      command: psql -c "SELECT 1;"
+      register: health_check
+      become_user: postgres
+      retries: "{{ health_check_retries }}"
+      delay: "{{ health_check_delay }}"
+      until: health_check.rc == 0
+
+    - name: Run integrity check
+      command: psql -c "SELECT COUNT(*) FROM users;"
+      register: integrity_check
+      become_user: postgres
+      ignore_errors: true
+
+    - name: Log failover event
+      lineinfile:
+        path: /var/log/db_failover.log
+        line: "{{ ansible_date_time.iso8601 }} - Failover completed. New primary: {{ inventory_hostname }}"
+        create: true
+
+    - name: Send notification
+      mail:
+        host: localhost
+        to: "{{ alert_email }}"
+        subject: "[ALERT] Database Failover Completed"
+        body: |
+          Database failover has been completed.
+
+          New Primary: {{ inventory_hostname }}
+          Time: {{ ansible_date_time.iso8601 }}
+          Integrity Check: {{ integrity_check.stdout | default('N/A') }}
+
+          Please verify the failover and update any necessary configurations.
+      delegate_to: localhost
+      when: promote_result.changed
+      ignore_errors: true
+
+  handlers:
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql
+        state: restarted
+
+---
+# Recovery playbook - run after primary is fixed
+- name: Database Recovery (Rejoin Former Primary as Replica)
+  hosts: db_former_primary
+  become: true
+  vars:
+    db_data_dir: /var/lib/postgresql/data
+    new_primary_host: "{{ hostvars['new_primary']['ansible_host'] }}"
+
+  tasks:
+    - name: Stop PostgreSQL on former primary
+      service:
+        name: postgresql
+        state: stopped
+
+    - name: Remove old data directory
+      file:
+        path: "{{ db_data_dir }}"
+        state: absent
+      when: confirm_data_removal | default(false)
+
+    - name: Initialize as standby
+      command: >
+        pg_basebackup -h {{ new_primary_host }} -U replication
+        -D {{ db_data_dir }} -P -R
+      become_user: postgres
+      when: confirm_data_removal | default(false)
+
+    - name: Start PostgreSQL as replica
+      service:
+        name: postgresql
+        state: started
+
+    - name: Verify replica is in recovery mode
+      command: psql -c "SELECT pg_is_in_recovery();"
+      register: recovery_check
+      become_user: postgres
+      until: recovery_check.stdout is search('t')
+      retries: 5
+      delay: 10
