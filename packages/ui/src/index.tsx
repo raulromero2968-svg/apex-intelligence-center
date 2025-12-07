@@ -98,8 +98,11 @@ export * from "./atoms";
 // Molecules - Composite patterns
 export * from "./molecules";
 
-// Organisms (uncomment as components are created)
-// export * from "./organisms";
+// Organisms - Complex sections
+export * from "./organisms";
+
+// Hooks - State management and animation coordination
+export * from "./hooks";
 
 // Version
-export const version = "0.2.0";
+export const version = "0.3.0";

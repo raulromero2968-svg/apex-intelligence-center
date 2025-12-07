@@ -1,8 +1,8 @@
 {
   "name": "@apex/ui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Apex Design System - Institutional Futurism UI components with Aerospace Dark aesthetics",
+  "description": "Apex Design System - Institutional Futurism UI components with Aerospace Dark aesthetics and Gamification System",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
   "sideEffects": false,
@@ -16,10 +16,16 @@
     "tailwind-merge": "^2.5.2"
   },
   "peerDependencies": {
+    "framer-motion": "^11.0.0",
     "lucide-react": "^0.400.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "framer-motion": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^19.2.5",
@@ -40,6 +46,14 @@
     "./molecules": {
       "types": "./src/molecules/index.ts",
       "default": "./src/molecules/index.ts"
+    },
+    "./organisms": {
+      "types": "./src/organisms/index.ts",
+      "default": "./src/organisms/index.ts"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.ts",
+      "default": "./src/hooks/index.ts"
     },
     "./tailwind.config": {
       "types": "./tailwind.config.ts",
