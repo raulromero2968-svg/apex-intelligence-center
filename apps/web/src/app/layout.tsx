@@ -24,6 +24,8 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 import { Footer } from '@/components/footer/Footer';
 
+import { AppShell } from '@/components/layout/app-shell';
+
 import GuidedTour from '@/components/GuidedTour';
 
 import HelpFAB from '@/components/HelpFAB';
@@ -325,11 +327,13 @@ export default function RootLayout({
 
         <div className="flex-1 flex flex-col">
 
-          {/* Main Content */}
+          {/* Main Content - Wrapped in AppShell for mobile nav */}
 
           <main className="relative z-10 flex-1 pt-24" id="main">
 
-            {children}
+            <AppShell>
+              {children}
+            </AppShell>
 
           </main>
 
