@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { ArrowUpRight, ArrowDownRight, MoreHorizontal, Filter, AlertTriangle, TrendingUp, Layers, Shield, FileText, Download, Share2, Check, Copy } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, MoreHorizontal, Filter, AlertTriangle, TrendingUp, Layers, Shield, FileText, Download, Share2, Check, Copy, Trash2 } from 'lucide-react';
 import { exportToCSV, generateShareLink } from '@/lib/portfolio-utils';
+import { useAuth } from '@/lib/auth/context';
+import { useGuestStoreHydrated } from '@/stores/useGuestStore';
+import { GuestPortfolioBanner } from './GuestPortfolioBanner';
+import type { GuestCardItem } from '@/types/guest-portfolio';
 
 const portfolioData = [
   { date: 'Mon', value: 12500 },
@@ -54,12 +58,75 @@ const intelMatches = [
   { article: 'Grading ROI Analysis', matches: 2, impact: 'low', url: '/intel/grading-roi-analysis' },
 ];
 
+/**
+ * Map condition display for guest cards
+ */
+function formatCondition(condition: GuestCardItem['condition']): string {
+  const conditionMap: Record<string, string> = {
+    'mint': 'Mint',
+    'near-mint': 'NM',
+    'excellent': 'EX',
+    'good': 'Good',
+    'light-play': 'LP',
+    'played': 'Played',
+    'poor': 'Poor',
+  };
+  return conditionMap[condition] || condition;
+}
+
 export const PortfolioDashboard = () => {
   const [shareLink, setShareLink] = useState<string>('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  const totalValue = 31530;
+  // Auth and guest store state
+  const { user, loading: authLoading } = useAuth();
+  const guestStore = useGuestStoreHydrated();
+
+  // Determine if we're showing guest data
+  const isGuest = !user && !authLoading;
+  const hasGuestData = guestStore.isHydrated && guestStore.cards.length > 0;
+
+  // Compute values based on auth state
+  const totalValue = isGuest && hasGuestData
+    ? guestStore.totalValue
+    : 31530; // Demo value for authenticated users
+
+  // Convert guest cards to display format
+  const displayAssets = useMemo(() => {
+    if (isGuest && hasGuestData) {
+      return guestStore.cards.map((card) => ({
+        name: card.cardName,
+        set: card.set,
+        grade: formatCondition(card.condition),
+        price: card.currentPrice * card.quantity,
+        change: 0, // Guest cards don't have historical data
+        risk: 'medium' as const,
+        game: 'TCG',
+        id: card.id,
+        quantity: card.quantity,
+      }));
+    }
+    return assets;
+  }, [isGuest, hasGuestData, guestStore.cards]);
+
+  // Generate chart data from guest cards or use demo data
+  const chartData = useMemo(() => {
+    if (isGuest && hasGuestData) {
+      // For guests, show a simple growth line to their current value
+      const currentValue = guestStore.totalValue;
+      return [
+        { date: 'Start', value: 0 },
+        { date: 'Now', value: currentValue },
+      ];
+    }
+    return portfolioData;
+  }, [isGuest, hasGuestData, guestStore.totalValue]);
+
+  // Handle removing a guest card
+  const handleRemoveGuestCard = (cardId: string) => {
+    guestStore.removeCard(cardId);
+  };
 
   const handleExportCSV = () => {
     exportToCSV(assets, totalValue);
@@ -80,6 +147,11 @@ export const PortfolioDashboard = () => {
 
   return (
     <div className="space-y-6">
+
+      {/* Guest Portfolio Banner - Endowment Effect CTA */}
+      {isGuest && hasGuestData && (
+        <GuestPortfolioBanner className="mb-2" />
+      )}
 
       {/* Quick Actions Bar */}
       <div className="flex justify-between items-center p-4 bg-slate-900/30 border border-slate-800 rounded-xl">
@@ -106,23 +178,52 @@ export const PortfolioDashboard = () => {
       {/* Top Level Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="md:col-span-2 p-6 bg-slate-900/50 border border-slate-800 rounded-xl backdrop-blur-md">
-          <div className="text-slate-400 text-sm mb-1">Total Portfolio Value</div>
+          <div className="text-slate-400 text-sm mb-1">
+            {isGuest && hasGuestData ? 'Potential Portfolio Value' : 'Total Portfolio Value'}
+          </div>
           <div className="flex items-end gap-3">
-            <span className="text-4xl font-bold text-white">$31,530.00</span>
-            <span className="text-green-400 flex items-center mb-1.5 text-sm font-medium">
-              <ArrowUpRight className="w-4 h-4" /> +4.2% (24h)
+            <span className="text-4xl font-bold text-white">
+              ${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
+            {!isGuest && (
+              <span className="text-green-400 flex items-center mb-1.5 text-sm font-medium">
+                <ArrowUpRight className="w-4 h-4" /> +4.2% (24h)
+              </span>
+            )}
+            {isGuest && hasGuestData && (
+              <span className="text-cyan-400 flex items-center mb-1.5 text-xs font-medium">
+                Live market prices
+              </span>
+            )}
           </div>
         </div>
         <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-xl">
           <div className="text-slate-400 text-sm mb-1">Total Items</div>
-          <div className="text-2xl font-bold text-white">142</div>
-          <div className="text-xs text-slate-500 mt-2">12 Graded / 130 Raw</div>
+          <div className="text-2xl font-bold text-white">
+            {isGuest && hasGuestData
+              ? guestStore.cards.reduce((sum, card) => sum + card.quantity, 0)
+              : 142}
+          </div>
+          <div className="text-xs text-slate-500 mt-2">
+            {isGuest && hasGuestData
+              ? `${guestStore.cards.length} unique card${guestStore.cards.length !== 1 ? 's' : ''}`
+              : '12 Graded / 130 Raw'}
+          </div>
         </div>
         <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-xl">
-          <div className="text-slate-400 text-sm mb-1">Top Performer</div>
-          <div className="text-xl font-bold text-cyan-400 truncate">Charizard Base</div>
-          <div className="text-xs text-green-400 mt-2">+12.5%</div>
+          <div className="text-slate-400 text-sm mb-1">
+            {isGuest && hasGuestData ? 'Highest Value' : 'Top Performer'}
+          </div>
+          <div className="text-xl font-bold text-cyan-400 truncate">
+            {isGuest && hasGuestData && displayAssets.length > 0
+              ? displayAssets.reduce((prev, curr) => prev.price > curr.price ? prev : curr).name
+              : 'Charizard Base'}
+          </div>
+          <div className="text-xs text-green-400 mt-2">
+            {isGuest && hasGuestData && displayAssets.length > 0
+              ? `$${displayAssets.reduce((prev, curr) => prev.price > curr.price ? prev : curr).price.toLocaleString()}`
+              : '+12.5%'}
+          </div>
         </div>
       </div>
 
@@ -204,7 +305,7 @@ export const PortfolioDashboard = () => {
         </div>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={portfolioData}>
+            <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.2}/>
@@ -227,49 +328,76 @@ export const PortfolioDashboard = () => {
       {/* Asset Table */}
       <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
         <div className="p-4 border-b border-slate-800 flex justify-between items-center">
-          <h3 className="font-bold text-white">Holdings</h3>
+          <h3 className="font-bold text-white">
+            {isGuest && hasGuestData ? 'Your Cards' : 'Holdings'}
+          </h3>
           <button className="flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors">
             <Filter className="w-3 h-3" /> Filter
           </button>
         </div>
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-950/50 text-slate-400">
-            <tr>
-              <th className="p-4 font-medium">Asset</th>
-              <th className="p-4 font-medium">Set</th>
-              <th className="p-4 font-medium">Grade</th>
-              <th className="p-4 font-medium text-right">Price</th>
-              <th className="p-4 font-medium text-right">24h</th>
-              <th className="p-4 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-800">
-            {assets.map((asset, i) => (
-              <tr key={i} className="hover:bg-slate-800/30 transition-colors group">
-                <td className="p-4 font-medium text-white">{asset.name}</td>
-                <td className="p-4 text-slate-400">{asset.set}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-0.5 rounded text-xs font-mono border ${
-                    asset.grade.includes('10') ? 'bg-yellow-950/30 text-yellow-500 border-yellow-900/50' :
-                    asset.grade === 'Raw' ? 'bg-slate-800 text-slate-400 border-slate-700' :
-                    'bg-slate-800 text-slate-300 border-slate-700'
-                  }`}>
-                    {asset.grade}
-                  </span>
-                </td>
-                <td className="p-4 text-right text-slate-200 font-mono">${asset.price.toLocaleString()}</td>
-                <td className={`p-4 text-right font-mono ${asset.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {asset.change > 0 ? '+' : ''}{asset.change}%
-                </td>
-                <td className="p-4 text-right">
-                  <button className="p-1 hover:bg-slate-700 rounded text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                </td>
+        {displayAssets.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-slate-400">No cards in your portfolio yet.</p>
+            <p className="text-sm text-slate-500 mt-2">Start by searching for cards to add.</p>
+          </div>
+        ) : (
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-950/50 text-slate-400">
+              <tr>
+                <th className="p-4 font-medium">Asset</th>
+                <th className="p-4 font-medium">Set</th>
+                <th className="p-4 font-medium">{isGuest ? 'Condition' : 'Grade'}</th>
+                {isGuest && hasGuestData && <th className="p-4 font-medium text-center">Qty</th>}
+                <th className="p-4 font-medium text-right">Value</th>
+                {!isGuest && <th className="p-4 font-medium text-right">24h</th>}
+                <th className="p-4 font-medium"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
+              {displayAssets.map((asset, i) => (
+                <tr key={'id' in asset ? asset.id : i} className="hover:bg-slate-800/30 transition-colors group">
+                  <td className="p-4 font-medium text-white">{asset.name}</td>
+                  <td className="p-4 text-slate-400">{asset.set}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-0.5 rounded text-xs font-mono border ${
+                      asset.grade.includes('10') ? 'bg-yellow-950/30 text-yellow-500 border-yellow-900/50' :
+                      asset.grade === 'Raw' || asset.grade === 'NM' ? 'bg-slate-800 text-slate-400 border-slate-700' :
+                      'bg-slate-800 text-slate-300 border-slate-700'
+                    }`}>
+                      {asset.grade}
+                    </span>
+                  </td>
+                  {isGuest && hasGuestData && (
+                    <td className="p-4 text-center text-slate-300 font-mono">
+                      {'quantity' in asset ? asset.quantity : 1}
+                    </td>
+                  )}
+                  <td className="p-4 text-right text-slate-200 font-mono">${asset.price.toLocaleString()}</td>
+                  {!isGuest && (
+                    <td className={`p-4 text-right font-mono ${asset.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {asset.change > 0 ? '+' : ''}{asset.change}%
+                    </td>
+                  )}
+                  <td className="p-4 text-right">
+                    {isGuest && 'id' in asset ? (
+                      <button
+                        onClick={() => handleRemoveGuestCard(asset.id)}
+                        className="p-1 hover:bg-red-900/30 rounded text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                        title="Remove card"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button className="p-1 hover:bg-slate-700 rounded text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Intel Integration + Diversification */}

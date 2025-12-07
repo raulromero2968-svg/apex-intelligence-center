@@ -120,7 +120,8 @@
     "stripe": "^14.0.0",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
