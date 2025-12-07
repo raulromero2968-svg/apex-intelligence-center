@@ -116,6 +116,40 @@ const config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        // ═══════════════════════════════════════════════════════════════
+        // GAMIFICATION ANIMATIONS - "Ledger Update" aesthetic
+        // ═══════════════════════════════════════════════════════════════
+        // RC float-up animation (for delta indicators)
+        rcFloat: {
+          "0%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          "100%": { opacity: "0", transform: "translateY(-24px) scale(1.2)" },
+        },
+        // Digit flip animation (odometer effect)
+        "digit-flip": {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "50%": { transform: "translateY(10%)", opacity: "1" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        // Fade in from bottom
+        fadeIn: {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // Slide in from bottom (for toasts)
+        slideInUp: {
+          from: { opacity: "0", transform: "translateY(20px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // Pulse glow for notifications
+        pulseGlow: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(0, 240, 255, 0.4)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(0, 240, 255, 0)" },
+        },
+        // Scale pulse for icons
+        scalePulse: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.1)" },
+        },
       },
 
       animation: {
@@ -125,6 +159,13 @@ const config = {
         glow: "glow-pulse 2s ease-in-out infinite",
         "fade-in": "fade-in 0.3s ease-out",
         shimmer: "shimmer 2s linear infinite",
+        // Gamification animations
+        "rc-float": "rcFloat 800ms ease-out forwards",
+        "digit-flip": "digit-flip 150ms ease-out",
+        "fade-in-up": "fadeIn 300ms ease-out",
+        "slide-in-up": "slideInUp 300ms ease-out",
+        "pulse-glow": "pulseGlow 2s ease-in-out infinite",
+        "scale-pulse": "scalePulse 2s ease-in-out infinite",
       },
 
       boxShadow: {
