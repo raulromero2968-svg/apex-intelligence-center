@@ -204,6 +204,44 @@ export {
   type AuditSeverity,
 } from './auditLogs';
 
+// Intel Reports - User-Generated Market Intelligence with RAG Search
+export {
+  // Tables
+  intelReports,
+  intelReportPurchases,
+  reportCards,
+  intelReportLikes,
+  // Enums
+  reportTierEnum,
+  reportCategoryEnum,
+  reportStatusEnum,
+  postingDestinationEnum,
+  // Relations
+  intelReportsRelations,
+  intelReportPurchasesRelations,
+  reportCardsRelations,
+  intelReportLikesRelations,
+  // Constants
+  EMBEDDING_DIMENSIONS,
+  DEFAULT_EMBEDDING_MODEL,
+  VECTOR_SIMILARITY_THRESHOLD,
+  RRF_K,
+  SEARCH_LIMITS,
+  // Types
+  type IntelReport,
+  type NewIntelReport,
+  type IntelReportPurchase,
+  type NewIntelReportPurchase,
+  type ReportCard,
+  type NewReportCard,
+  type IntelReportLike,
+  type NewIntelReportLike,
+  type ReportTier,
+  type ReportCategory,
+  type ReportStatus,
+  type PostingDestination,
+} from './intelReports';
+
 // Security & Compliance (Security Audit Implementation)
 export {
   // Tables
