@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseClient } from '@/lib/supabase/client';
+// Auth removed - public API
 import { Pool } from 'pg';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
@@ -47,22 +47,8 @@ export async function POST(request: NextRequest) {
   const client = await pool.connect();
 
   try {
-    const supabase = createSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const buyerId = user.id;
+    // Auth removed - TODO: Add proper authentication
+    const buyerId = 'anonymous';
 
     // Parse and validate request body
     const body = await request.json();
@@ -328,20 +314,8 @@ export async function GET(request: NextRequest) {
   const client = await pool.connect();
 
   try {
-    const supabase = createSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Auth removed - TODO: Add proper authentication
+    const user = { id: 'anonymous' };
 
     const reportId = request.nextUrl.searchParams.get('reportId');
 

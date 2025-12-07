@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseClient } from '@/lib/supabase/client';
+// Auth removed - public API
 
 /**
  * Public Intel Reports API Route
@@ -106,8 +106,6 @@ function transformReport(row: Record<string, unknown>, purchasedIds: string[] = 
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
-
     // Parse query parameters
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -118,102 +116,27 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'newest';
     const offset = (page - 1) * limit;
 
-    // Check if user is authenticated (optional)
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // Auth removed - returning mock data for now
+    const isAuthenticated = false;
+    const isPremiumUser = false;
+    const purchasedIds: string[] = [];
 
-    const isAuthenticated = !!user;
-    let isPremiumUser = false;
-    let purchasedIds: string[] = [];
-
-    // Check premium status if authenticated
-    if (user) {
-      // In production, check user's subscription tier
-      // For now, we'll use a mock check
-      isPremiumUser = false; // Would check subscription table
-
-      // Get purchased report IDs
-      const { data: purchases } = await supabase
-        .from('intel_report_purchases')
-        .select('report_id')
-        .eq('buyer_id', user.id);
-
-      purchasedIds = (purchases || []).map((p: { report_id: string }) => p.report_id);
-    }
-
-    // Build query for public reports
-    let query = supabase
-      .from('intel_reports')
-      .select('*', { count: 'exact' })
-      .eq('status', 'published');
-
-    // Filter by source
-    if (source === 'commons') {
-      query = query.contains('posted_to', ['commons']);
-    } else if (source === 'rc_market') {
-      query = query.contains('posted_to', ['rc_market']);
-      query = query.gt('price', 0);
-    }
-
-    // Apply report type filter
-    if (reportType && reportType !== 'all') {
-      query = query.eq('report_type', reportType);
-    }
-
-    // Apply search
-    if (search) {
-      query = query.or(
-        `title.ilike.%${search}%,content.ilike.%${search}%,summary.ilike.%${search}%`
-      );
-    }
-
-    // Apply sorting
-    switch (sortBy) {
-      case 'newest':
-        query = query.order('created_at', { ascending: false });
-        break;
-      case 'oldest':
-        query = query.order('created_at', { ascending: true });
-        break;
-      case 'price_low':
-        query = query.order('price', { ascending: true });
-        break;
-      case 'price_high':
-        query = query.order('price', { ascending: false });
-        break;
-      case 'quality':
-        query = query.order('quality_score', { ascending: false, nullsFirst: false });
-        break;
-      case 'popular':
-        query = query.order('views', { ascending: false });
-        break;
-      default:
-        query = query.order('created_at', { ascending: false });
-    }
-
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1);
-
-    const { data, error, count } = await query;
-
-    if (error) {
-      throw error;
-    }
-
-    const totalPages = Math.ceil((count || 0) / limit);
+    // Return mock data (database integration TODO)
+    const mockReports =
+      source === 'rc_market' ? getMockRCMarketReports() : getMockCommonsReports();
 
     return NextResponse.json({
       success: true,
-      data: (data || []).map((row) => transformReport(row, purchasedIds)),
+      data: mockReports.map((row) => transformReport(row, purchasedIds)),
       pagination: {
         page,
-        limit,
-        total: count || 0,
-        totalPages,
+        limit: 20,
+        total: mockReports.length,
+        totalPages: 1,
       },
       isAuthenticated,
       isPremiumUser,
+      mock: true,
     });
   } catch (error) {
     console.error('Public Intel GET error:', error);
