@@ -173,6 +173,7 @@ export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   name: text('name'),
+  image: text('image'), // User avatar/profile image URL
   parentId: text('parent_id'), // For family hierarchies; optional reference to parent user
   stripeCustomerId: text('stripe_customer_id'),
   subscriptionTier: text('subscription_tier', {
