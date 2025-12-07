@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Guest Wallet Store
  *
@@ -9,6 +11,7 @@
  * - Persists to localStorage via Zustand persist middleware
  * - Hydration-safe for Next.js SSR (prevents hydration mismatch errors)
  * - Automatic totalValue calculation on card add/remove
+ * - Extended methods for price updates and bulk operations
  */
 
 import { create } from 'zustand';
@@ -18,45 +21,60 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 // Types
 // ============================================================================
 
-export type CardCondition = 'NM' | 'LP' | 'MP' | 'HP';
+export type CardCondition = 'mint' | 'near-mint' | 'excellent' | 'good' | 'light-play' | 'played' | 'poor' | 'NM' | 'LP' | 'MP' | 'HP';
 
-export interface CardItem {
+export interface GuestCardItem {
   id: string;
   tcgPlayerId: string;
-  name: string;
+  cardName: string;
   set: string;
-  condition: CardCondition;
-  price: number;
-  imageUrl: string;
-  timestamp: number;
+  condition: CardCondition | string;
+  quantity: number;
+  currentPrice: number;
+  purchasePrice?: number;
+  imageUrl?: string;
+  addedAt: number;
 }
 
-interface GuestState {
-  cards: CardItem[];
+// Alias for backward compatibility
+export type CardItem = GuestCardItem;
+
+interface GuestStoreState {
+  cards: GuestCardItem[];
   totalValue: number;
   hasHydrated: boolean;
+  version: number;
 }
 
-interface GuestActions {
-  addCard: (
-    card: Omit<CardItem, 'id' | 'timestamp' | 'price'>,
-    currentPrice: number
-  ) => void;
+interface GuestStoreActions {
+  addCard: (card: Omit<GuestCardItem, 'id' | 'addedAt'>) => void;
+  updateCard: (id: string, updates: Partial<Omit<GuestCardItem, 'id' | 'addedAt'>>) => void;
   removeCard: (id: string) => void;
+  updateCardPrice: (tcgPlayerId: string, newPrice: number) => void;
+  bulkUpdatePrices: (priceMap: Record<string, number>) => void;
   clearStore: () => void;
+  hasCards: () => boolean;
   setHasHydrated: (state: boolean) => void;
 }
 
-type GuestStore = GuestState & GuestActions;
+type GuestStore = GuestStoreState & GuestStoreActions;
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+const STORAGE_KEY = 'apex-guest-wallet';
+const STORE_VERSION = 1;
 
 // ============================================================================
 // Initial State
 // ============================================================================
 
-const initialState: GuestState = {
+const initialState: GuestStoreState = {
   cards: [],
   totalValue: 0,
   hasHydrated: false,
+  version: STORE_VERSION,
 };
 
 // ============================================================================
@@ -66,20 +84,18 @@ const initialState: GuestState = {
 /**
  * Calculate total value from cards array
  */
-function calculateTotalValue(cards: CardItem[]): number {
-  return cards.reduce((sum, card) => sum + card.price, 0);
+function calculateTotalValue(cards: GuestCardItem[]): number {
+  return cards.reduce((sum, card) => sum + card.currentPrice * card.quantity, 0);
 }
 
 /**
  * Generate a UUID for card identification
- * Falls back to a timestamp-based ID if crypto.randomUUID is unavailable
  */
 function generateId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
+    return `guest_${crypto.randomUUID()}`;
   }
-  // Fallback for environments without crypto.randomUUID
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 // ============================================================================
@@ -88,19 +104,49 @@ function generateId(): string {
 
 export const useGuestStore = create<GuestStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
 
-      addCard: (cardData, currentPrice) => {
-        const newCard: CardItem = {
+      addCard: (cardData) => {
+        const newCard: GuestCardItem = {
           ...cardData,
           id: generateId(),
-          price: currentPrice,
-          timestamp: Date.now(),
+          addedAt: Date.now(),
         };
 
         set((state) => {
-          const updatedCards = [...state.cards, newCard];
+          // Check for existing card with same tcgPlayerId and condition
+          const existingIndex = state.cards.findIndex(
+            (c) => c.tcgPlayerId === cardData.tcgPlayerId && c.condition === cardData.condition
+          );
+
+          let updatedCards: GuestCardItem[];
+
+          if (existingIndex >= 0) {
+            // Update existing card quantity
+            updatedCards = [...state.cards];
+            updatedCards[existingIndex] = {
+              ...updatedCards[existingIndex],
+              quantity: updatedCards[existingIndex].quantity + cardData.quantity,
+              currentPrice: cardData.currentPrice,
+            };
+          } else {
+            // Add new card
+            updatedCards = [...state.cards, newCard];
+          }
+
+          return {
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
+          };
+        });
+      },
+
+      updateCard: (id, updates) => {
+        set((state) => {
+          const updatedCards = state.cards.map((card) =>
+            card.id === id ? { ...card, ...updates } : card
+          );
           return {
             cards: updatedCards,
             totalValue: calculateTotalValue(updatedCards),
@@ -118,6 +164,31 @@ export const useGuestStore = create<GuestStore>()(
         });
       },
 
+      updateCardPrice: (tcgPlayerId, newPrice) => {
+        set((state) => {
+          const updatedCards = state.cards.map((card) =>
+            card.tcgPlayerId === tcgPlayerId ? { ...card, currentPrice: newPrice } : card
+          );
+          return {
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
+          };
+        });
+      },
+
+      bulkUpdatePrices: (priceMap) => {
+        set((state) => {
+          const updatedCards = state.cards.map((card) => {
+            const newPrice = priceMap[card.tcgPlayerId];
+            return newPrice !== undefined ? { ...card, currentPrice: newPrice } : card;
+          });
+          return {
+            cards: updatedCards,
+            totalValue: calculateTotalValue(updatedCards),
+          };
+        });
+      },
+
       clearStore: () => {
         set({
           cards: [],
@@ -125,24 +196,28 @@ export const useGuestStore = create<GuestStore>()(
         });
       },
 
+      hasCards: () => {
+        return get().cards.length > 0;
+      },
+
       setHasHydrated: (state) => {
         set({ hasHydrated: state });
       },
     }),
     {
-      name: 'apex-guest-wallet',
+      name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      // Only persist cards - totalValue is derived, hasHydrated is runtime-only
+      version: STORE_VERSION,
       partialize: (state) => ({
         cards: state.cards,
         totalValue: state.totalValue,
+        version: state.version,
       }),
       onRehydrateStorage: () => {
         return (state, error) => {
           if (error) {
             console.error('Error rehydrating guest store:', error);
           }
-          // Mark hydration as complete
           if (state) {
             state.setHasHydrated(true);
           }
@@ -153,44 +228,38 @@ export const useGuestStore = create<GuestStore>()(
 );
 
 // ============================================================================
-// Hydration-Safe Hook
+// Hydration-Safe Hooks
 // ============================================================================
 
 /**
  * Hook that returns guest store state only after hydration is complete.
- * Use this in UI components to prevent hydration mismatch errors.
- *
- * @returns The guest store state, or null if not yet hydrated
- *
- * @example
- * ```tsx
- * function GuestWallet() {
- *   const guestState = useGuestStoreHydrated();
- *
- *   if (!guestState) {
- *     return <LoadingSkeleton />;
- *   }
- *
- *   return <CardList cards={guestState.cards} />;
- * }
- * ```
+ * Returns object with isHydrated flag for SSR-safe rendering.
  */
-export function useGuestStoreHydrated(): (GuestState & GuestActions) | null {
+export function useGuestStoreHydrated() {
   const store = useGuestStore();
 
-  if (!store.hasHydrated) {
-    return null;
-  }
-
-  return store;
+  return {
+    ...store,
+    isHydrated: store.hasHydrated,
+    cards: store.hasHydrated ? store.cards : [],
+    totalValue: store.hasHydrated ? store.totalValue : 0,
+  };
 }
 
 /**
  * Hook to check if the store has been hydrated.
- * Useful for conditional rendering without accessing full store state.
  */
 export function useGuestStoreHasHydrated(): boolean {
   return useGuestStore((state) => state.hasHydrated);
+}
+
+/**
+ * Selector for cards array
+ */
+export function useGuestCards(): GuestCardItem[] {
+  const hasHydrated = useGuestStore((state) => state.hasHydrated);
+  const cards = useGuestStore((state) => state.cards);
+  return hasHydrated ? cards : [];
 }
 
 /**
@@ -199,13 +268,7 @@ export function useGuestStoreHasHydrated(): boolean {
 export function useGuestCardCount(): number {
   const hasHydrated = useGuestStore((state) => state.hasHydrated);
   const cardCount = useGuestStore((state) => state.cards.length);
-
-  // Return 0 during SSR/before hydration to prevent mismatch
-  if (!hasHydrated) {
-    return 0;
-  }
-
-  return cardCount;
+  return hasHydrated ? cardCount : 0;
 }
 
 /**
@@ -214,11 +277,5 @@ export function useGuestCardCount(): number {
 export function useGuestTotalValue(): number {
   const hasHydrated = useGuestStore((state) => state.hasHydrated);
   const totalValue = useGuestStore((state) => state.totalValue);
-
-  // Return 0 during SSR/before hydration to prevent mismatch
-  if (!hasHydrated) {
-    return 0;
-  }
-
-  return totalValue;
+  return hasHydrated ? totalValue : 0;
 }
