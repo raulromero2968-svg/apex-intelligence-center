@@ -204,6 +204,26 @@ export {
   type AuditSeverity,
 } from './auditLogs';
 
+// X-Intel Reports (Intelligence Capture System)
+export {
+  // Tables
+  intelReports,
+  intelReportPurchases,
+  // Enums
+  intelReportStatusEnum,
+  intelReportTypeEnum,
+  // Relations
+  intelReportsRelations,
+  intelReportPurchasesRelations,
+  // Types
+  type IntelReport,
+  type NewIntelReport,
+  type IntelReportPurchase,
+  type NewIntelReportPurchase,
+  type IntelReportStatus,
+  type IntelReportType,
+} from './intelReports';
+
 // Security & Compliance (Security Audit Implementation)
 export {
   // Tables

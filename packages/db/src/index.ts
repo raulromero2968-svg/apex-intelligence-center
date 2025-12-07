@@ -125,4 +125,22 @@ export {
   CONTRIBUTOR_LEVEL_THRESHOLDS,
 } from './schema/index';
 
+// Re-export X-Intel Reports tables, enums, and types
+export {
+  intelReports,
+  intelReportPurchases,
+  intelReportStatusEnum,
+  intelReportTypeEnum,
+} from './schema/index';
+
+// Re-export X-Intel Reports types
+export type {
+  IntelReport,
+  NewIntelReport,
+  IntelReportPurchase,
+  NewIntelReportPurchase,
+  IntelReportStatus,
+  IntelReportType,
+} from './schema/index';
+
 
