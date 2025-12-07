@@ -597,7 +597,7 @@ import {
   type AuditActionType,
   type AuditSeverity,
   type NewAuditLog,
-} from '@apex/db/schema/auditLogs';
+} from '@apex/db';
 
 /**
  * Log an admin action to the audit trail

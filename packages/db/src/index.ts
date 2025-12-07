@@ -125,4 +125,22 @@ export {
   CONTRIBUTOR_LEVEL_THRESHOLDS,
 } from './schema/index';
 
+// Re-export Audit Logs tables, enums, and constants
+export {
+  auditLogs,
+  auditActionTypeEnum,
+  auditSeverityEnum,
+  auditLogsRelations,
+  MULTISIG_REQUIRED_ACTIONS,
+  MULTISIG_THRESHOLDS,
+} from './schema/index';
+
+// Re-export Audit Log types
+export type {
+  AuditLog,
+  NewAuditLog,
+  AuditActionType,
+  AuditSeverity,
+} from './schema/index';
+
 
