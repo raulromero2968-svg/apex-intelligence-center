@@ -1,0 +1,167 @@
+{/* Introduction.mdx */}
+
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# Apex Intelligence Design System
+
+**"Aerospace Dark Mode"** — The interface for economic survival.
+
+---
+
+## Design Philosophy
+
+This design system implements the **"Human-in-the-Loop"** aesthetic, where:
+
+- **AI-generated content** appears as infrastructure (muted, background)
+- **Human curation** appears as signal (high-contrast, foreground)
+- The user is the **protagonist**; AI is the reliable substrate
+
+### Visual References
+
+- SpaceX Mission Control
+- Bloomberg Terminal
+- F1 Racing HUD
+
+**NOT**: Cyberpunk 2077, arcade gaming, neon overload.
+
+---
+
+## Color System
+
+### Aerospace Blacks (Backgrounds)
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `aerospace-void` | `#000000` | Modal overlays |
+| `aerospace-deep` | `#030508` | Page background |
+| `aerospace-space` | `#060A10` | Card backgrounds |
+| `aerospace-carbon` | `#0A0F16` | Elevated surfaces |
+| `aerospace-graphite` | `#0F151D` | Tertiary backgrounds |
+
+### Signal Colors (Text Hierarchy)
+
+| Token | Usage |
+|-------|-------|
+| `signal-human` | Human-curated content (`#FFFFFF`) |
+| `signal-ai` | AI-generated content (`#94a3b8`) |
+| `signal-ai-subtle` | AI metadata (`#64748b`) |
+
+### Accent Colors
+
+| Token | Usage |
+|-------|-------|
+| `cyan-400` | Primary interactive elements |
+| `cyan-high` | HUD accents, intense highlights |
+| `purple-high` | Premium/rare indicators |
+
+### Data Visualization
+
+| Token | Usage |
+|-------|-------|
+| `positive` | Positive change (`+5.23%`) |
+| `negative` | Negative change (`-3.12%`) |
+
+---
+
+## Typography
+
+### Font Families
+
+- **Sans**: System font stack (SF Pro, Segoe UI, etc.)
+- **Mono**: JetBrains Mono (data, numbers, code)
+
+### Usage Guidelines
+
+- Headings: `font-sans`, `font-semibold`
+- Body: `font-sans`, `font-normal`
+- Data: `font-mono`, `font-semibold`
+- AI-generated text: `text-signal-ai`, `italic` (optional)
+
+---
+
+## Animation Principles
+
+### Speed Constraints
+
+All interactive animations must be **≤300ms**. Speed is survival.
+
+| Animation | Duration | Use Case |
+|-----------|----------|----------|
+| `fade-in` | 150ms | Simple reveals |
+| `fade-in-up` | 200ms | Entry animations |
+| `scale-in` | 200ms | Modals, popovers |
+| `slide-in-right` | 200ms | Panels, drawers |
+
+### Ambient Animations
+
+Ambient effects may exceed 300ms but should be subtle:
+
+| Animation | Duration | Use Case |
+|-----------|----------|----------|
+| `breathing` | 4s | Border glows |
+| `tilt` | 10s | Subtle card movement |
+| `scan` | 2s | Loading states |
+
+---
+
+## Component Patterns
+
+### Intensity Variants
+
+Many components support intensity levels:
+
+- **Low**: Subtle, for secondary information
+- **Medium**: Default, balanced emphasis
+- **High**: Maximum attention, use sparingly
+
+### Progressive Disclosure
+
+Mobile views use progressive disclosure:
+
+1. Default: "Executive Summary" cards
+2. Tap: Expand to "Deep Dive" modal
+3. Never remove data; layer it
+
+---
+
+## Accessibility
+
+### Focus States
+
+All interactive elements must have visible focus indicators:
+
+```css
+focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-aerospace-deep
+```
+
+### Reduced Motion
+
+Respect `prefers-reduced-motion`:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+## Getting Started
+
+Browse the component library using the sidebar. Each component includes:
+
+- **Docs**: Usage guidelines and API reference
+- **Canvas**: Interactive playground
+- **Stories**: Example implementations
+
+---
+
+<div style={{ textAlign: 'center', marginTop: '3rem', color: '#64748b' }}>
+  <p>Built by the Apex Intelligence Team</p>
+  <p style={{ fontSize: '0.875rem' }}>"Curation > Generation"</p>
+</div>
