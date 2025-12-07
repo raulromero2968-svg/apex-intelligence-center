@@ -1,80 +1,63 @@
 /**
- * @apex/ui - Shared UI Component Library
+ * @apex/ui - Apex Design System
  *
- * This package contains the design system tokens, primitives, and
- * shared components for the Apex Intelligence platform.
+ * A React component library implementing the "Institutional Futurism" aesthetic
+ * with the "Aerospace Dark Mode" design language for the Human-in-the-Loop interface.
+ *
+ * Built with Atomic Design principles for scalable, consistent interfaces.
+ *
+ * Architecture:
+ * - base/     Design tokens (colors, typography, spacing, shadows)
+ * - tokens/   Extended semantic tokens (Aerospace Dark Mode, rarity, RC)
+ * - atoms/    Primitives (Button, Input, Badge)
+ * - molecules/ Composite (UserCard, IntelPreview)
+ * - organisms/ Complex (MarketChart, DataGrid)
+ * - lib/      Utilities (cn, formatters)
  *
  * @packageDocumentation
  */
 
 // =============================================================================
-// VERSION
+// DESIGN TOKENS - Base Layer (Institutional Futurism)
 // =============================================================================
-export const version = '0.1.0';
+export * from "./base";
 
 // =============================================================================
-// DESIGN TOKENS
+// DESIGN TOKENS - Extended Layer (Aerospace Dark Mode)
+// Human-in-the-Loop semantic tokens for AI vs Human content distinction
 // =============================================================================
-
 export {
   tokens,
   primitives,
   semantic,
-  typography,
-  spacing,
+  typography as aerospaceTypography,
+  spacing as aerospaceSpacing,
   animation,
-  shadows,
-  breakpoints,
-  zIndex,
-  components,
+  shadows as aerospaceShadows,
+  breakpoints as aerospaceBreakpoints,
+  zIndex as aerospaceZIndex,
+  components as componentTokens,
 } from './tokens/design-tokens';
 
 export type {
   Tokens,
   Primitives,
   Semantic,
-  Typography,
-  Spacing,
+  Typography as AerospaceTypography,
+  Spacing as AerospaceSpacing,
   Animation,
-  Shadows,
-  Breakpoints,
-  ZIndex,
-  Components,
+  Shadows as AerospaceShadows,
+  Breakpoints as AerospaceBreakpoints,
+  ZIndex as AerospaceZIndex,
+  Components as ComponentTokens,
 } from './tokens/design-tokens';
 
 // =============================================================================
-// UTILITY FUNCTIONS
+// UTILITIES
 // =============================================================================
+export * from "./lib";
 
-/**
- * Formats a number as currency (USD)
- */
-export function formatCurrency(value: number, decimals = 2): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
-}
-
-/**
- * Formats a number as percentage with sign
- */
-export function formatPercent(value: number): string {
-  const sign = value >= 0 ? '+' : '';
-  return `${sign}${value.toFixed(2)}%`;
-}
-
-/**
- * Formats a large number in compact notation
- */
-export function formatCompact(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  }).format(value);
-}
+// Additional semantic utilities for the design system
 
 /**
  * Returns the appropriate text color class for positive/negative values
@@ -103,15 +86,13 @@ export function getRarityColor(
 }
 
 // =============================================================================
-// COMPONENT EXPORTS
+// ATOMIC COMPONENTS (uncomment as components are created)
 // =============================================================================
+// export * from "./atoms";
+// export * from "./molecules";
+// export * from "./organisms";
 
-// Note: Components are currently in apps/web/src/components/ui
-// As the design system matures, shared components will be migrated here.
-// For now, import directly from the web app's components.
-
-// Future exports will include:
-// export { HoloCard } from './components/HoloCard';
-// export { Button } from './components/Button';
-// export { Input } from './components/Input';
-// etc.
+// =============================================================================
+// VERSION
+// =============================================================================
+export const version = "0.1.0";

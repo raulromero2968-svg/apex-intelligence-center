@@ -184,3 +184,22 @@ export {
   type FlagStatus,
   type RcReasonCode,
 } from './apexCommons';
+
+// Antifragile Architecture: Audit Logs for Ethical Transparency
+export {
+  // Tables
+  auditLogs,
+  // Enums
+  auditActionTypeEnum,
+  auditSeverityEnum,
+  // Relations
+  auditLogsRelations,
+  // Constants
+  MULTISIG_REQUIRED_ACTIONS,
+  MULTISIG_THRESHOLDS,
+  // Types
+  type AuditLog,
+  type NewAuditLog,
+  type AuditActionType,
+  type AuditSeverity,
+} from './auditLogs';

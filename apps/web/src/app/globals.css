@@ -1,110 +1,78 @@
 @import "tailwindcss";
 
+/**
+ * Apex Design System - "Aerospace Dark" Theme
+ *
+ * Philosophy: Institutional Futurism
+ * - Deep, matte backgrounds minimize cognitive load
+ * - Data (accents/text) pops against the void
+ * - Sharp corners feel technical and precise (trading terminal aesthetic)
+ * - Reduced radius avoids "bubbly" SaaS look
+ * - Flat interface handles high information density
+ */
+
 @layer base {
   :root {
-    /* Light mode colors - lighter backgrounds */
-    --ink-light: #e8f0f7;
-    --navy-light: #d4e4f7;
-    --deep-navy-light: #c0d9f0;
-    --darker-navy-light: #b0cfe8;
-    
-    /* Dark mode colors - darker navy */
-    --ink: #010205;
-    --navy: #06101f;
-    --deep-navy: #030810;
-    --darker-navy: #010205;
-    
-    --cyan: #00d9ff;
-    --purple: #9333ea;
-    --apex-cyan: #00FFFF;
-    --apex-purple: #8A2BE2;
+    /* === The Void (Backgrounds) ===
+       Avoiding pure #000000 to prevent OLED smearing and eye strain */
+    --background: 222 47% 6%; /* #0B0E14 - Deep Space */
+    --foreground: 210 40% 98%; /* #F8FAFC - Slate 50 */
+
+    /* === Surfaces === */
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%; /* #0F172A - Slate 900 */
+    --popover-foreground: 210 40% 98%;
+
+    /* === The Signal (Accents) ===
+       Electric Cyan used sparingly for primary actions and active states */
+    --primary: 184 100% 50%; /* #00F0FF - Apex Cyan */
+    --primary-foreground: 222 47% 11%; /* Dark text on Cyan */
+
+    /* === Surfaces & Muted === */
+    --secondary: 217.2 32.6% 17.5%; /* #1E293B - Slate 800 */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%; /* #94A3B8 - Slate 400 */
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    /* === Semantic (Instrumentation, not candy) === */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* === Borders & Focus === */
+    --border: 217.2 32.6% 17.5%; /* Subtle borders */
+    --input: 217.2 32.6% 17.5%;
+    --ring: 184 100% 50%; /* Cyan focus rings */
+
+    /* === Geometry ===
+       Sharp, precise corners (Aerospace feel) - avoiding bubbly SaaS look */
+    --radius: 0.25rem;
+
+    /* === Chart Colors (Instrumentation palette) === */
+    --chart-1: 184 100% 50%; /* Cyan */
+    --chart-2: 270 100% 50%; /* Purple */
+    --chart-3: 145 100% 38%; /* Green */
+    --chart-4: 38 100% 56%; /* Amber */
+    --chart-5: 4 100% 61%; /* Red */
   }
 
-  /* Dark mode background (default) */
+  /* === Base Body Styles === */
   body {
-    background: radial-gradient(ellipse at top, #06101f 0%, #030810 50%, #010205 100%);
-    color: white;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     min-height: 100vh;
     overflow-x: hidden;
-    position: relative;
-  }
-  
-  /* Light mode background */
-  body.light {
-    background: radial-gradient(ellipse at top, #d4e4f7 0%, #c0d9f0 50%, #b0cfe8 100%);
-    color: #0a1628;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Purple/Pink neon starfield effect for dark mode only */
-  body:not(.light)::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    background-image: 
-      radial-gradient(2px 2px at 20% 30%, rgba(147, 51, 234, 0.6), transparent),
-      radial-gradient(2px 2px at 60% 70%, rgba(236, 72, 153, 0.5), transparent),
-      radial-gradient(1px 1px at 50% 50%, rgba(168, 85, 247, 0.4), transparent),
-      radial-gradient(1px 1px at 80% 10%, rgba(219, 39, 119, 0.5), transparent),
-      radial-gradient(2px 2px at 90% 60%, rgba(147, 51, 234, 0.4), transparent),
-      radial-gradient(1px 1px at 33% 80%, rgba(236, 72, 153, 0.6), transparent),
-      radial-gradient(1px 1px at 15% 90%, rgba(168, 85, 247, 0.5), transparent);
-    background-size: 200% 200%;
-    animation: starfield-float 20s ease-in-out infinite;
-  }
-
-  /* Light mode starfield - subtle blue tones */
-  body.light::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    background-image: 
-      radial-gradient(2px 2px at 20% 30%, rgba(59, 130, 246, 0.3), transparent),
-      radial-gradient(2px 2px at 60% 70%, rgba(96, 165, 250, 0.25), transparent),
-      radial-gradient(1px 1px at 50% 50%, rgba(147, 197, 253, 0.2), transparent),
-      radial-gradient(1px 1px at 80% 10%, rgba(59, 130, 246, 0.25), transparent),
-      radial-gradient(2px 2px at 90% 60%, rgba(96, 165, 250, 0.2), transparent),
-      radial-gradient(1px 1px at 33% 80%, rgba(147, 197, 253, 0.3), transparent),
-      radial-gradient(1px 1px at 15% 90%, rgba(59, 130, 246, 0.25), transparent);
-    background-size: 200% 200%;
-    animation: starfield-float 20s ease-in-out infinite;
-  }
-
-  @keyframes starfield-float {
-    0%, 100% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-  }
-
-  /* Prevent mid-word breaking globally */
-  * {
-    overflow-wrap: break-word;
-    word-break: normal;
-  }
-
-  /* Extra protection for headings - no hyphenation */
-  h1, h2, h3, h4, h5, h6 {
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -ms-hyphens: none;
-  }
-
-  p {
-    word-break: keep-all;
-    overflow-wrap: break-word;
-  }
-
-  /* Smooth scrolling */
+  /* === Smooth scrolling === */
   html {
     scroll-behavior: smooth;
   }
@@ -115,1709 +83,492 @@
     }
   }
 
-  /* Cyan CTA Button Utility */
-  .btn-cyan {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    font-weight: 700;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: #22d3ee;
-    color: #000;
-    transition: transform 150ms ease-out, box-shadow 150ms ease-out, background-color 150ms ease-out;
+  /* === Typography Safety === */
+  * {
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
-  .btn-cyan:hover {
-    background: #06b6d4;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 24px rgba(34, 211, 238, 0.35);
+  h1, h2, h3, h4, h5, h6 {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+    letter-spacing: -0.025em;
   }
 
-  .btn-cyan:active {
-    transform: scale(0.98);
+  p {
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
-  .btn-cyan:focus-visible {
-    outline: 3px solid #22d3ee;
+  /* === Focus States (Accessibility) === */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .btn-cyan {
-      transition-duration: 0.01ms;
-    }
-  }
-
-  /* Titan Typography - Prismatic Hollow Text with Gradient Stroke */
-  .font-titan {
-    /* Hollow transparent letters with gradient stroke */
-    -webkit-text-stroke: 1.5px transparent;
-    background: linear-gradient(to right, #ffffff 20%, #22d3ee 50%, #a855f7 80%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    /* Holographic glow effect */
-    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5)) drop-shadow(0 0 16px rgba(168, 85, 247, 0.3));
-    /* Prevent word breaking */
-    white-space: nowrap;
-    /* Fix for potential double-rendering in some browsers */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    /* Font Settings */
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    position: relative;
-    z-index: 10;
-  }
-
-  /* Titan Unified - Animated Prismatic Rainbow/White/Iridescent */
-  .font-titan-unified {
-    /* 1. Stroke: Pure White */
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-
-    /* 2. Fill: "High Key" Gradient (No dark colors) */
-    /* Sequence: White -> Cyan -> White -> Magenta -> White */
-    background: linear-gradient(
-      90deg,
-      #ffffff 0%,
-      #cffafe 25%, /* Pale Cyan */
-      #ffffff 50%,
-      #e9d5ff 75%, /* Pale Purple */
-      #ffffff 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    /* 3. Glow: Use white/cyan glow, NO shadow */
-    color: transparent;
-    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6));
-
-    /* 4. Animation: Fast shimmer */
-    animation: text-shimmer 3s linear infinite;
-
-    /* 5. Layout Safety - Prevent mid-word breaks */
-    overflow-wrap: normal;
-    word-break: keep-all;
-    white-space: normal;
-    display: inline-block;
-    padding-bottom: 0.1em;
-    line-height: 1.1;
-
-    /* 6. Font Settings */
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  @keyframes text-shimmer {
-    to { background-position: 200% center; }
-  }
-
-  @keyframes prismatic-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* Titan Unified Purple Variant - Animated Prismatic */
-  .font-titan-unified-purple {
-    /* 1. Stroke: Pure White */
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-
-    /* 2. Fill: High-Key Purple Gradient (No dark colors) */
-    background: linear-gradient(
-      90deg,
-      #ffffff 0%,
-      #e9d5ff 25%, /* Pale Purple */
-      #ffffff 50%,
-      #cffafe 75%, /* Pale Cyan */
-      #ffffff 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    /* 3. Glow: Use white/purple glow, NO shadow */
-    color: transparent;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
-
-    /* 4. Animation: Fast shimmer */
-    animation: text-shimmer 3s linear infinite;
-
-    /* 5. Layout Safety - Prevent mid-word breaks */
-    overflow-wrap: normal;
-    word-break: keep-all;
-    white-space: normal;
-    display: inline-block;
-    padding-bottom: 0.1em;
-    line-height: 1.1;
-
-    /* 6. Font Settings */
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Ethereal Scroll Transition - Lightsaber Effect */
-  .ethereal-scroll {
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
-    box-shadow: 0 -30px 80px -10px rgba(6, 182, 212, 0.15);
-  }
-
-  /* Holographic Background Effect (PS5-inspired) */
-  .holo {
-    background: radial-gradient(120% 120% at 0% 0%, var(--apex-cyan) 10%, transparent 40%),
-      radial-gradient(120% 120% at 100% 0%, var(--apex-purple) 12%, transparent 40%);
-    filter: saturate(1.1);
-  }
-
-  /* Holographic Glow Effect for Interactive Elements */
-  .holo-glow {
-    box-shadow: 0 0 40px rgba(0, 255, 255, 0.18), 0 0 48px rgba(138, 43, 226, 0.18);
-    transition: box-shadow 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  .holo-glow:hover {
-    box-shadow: 0 0 40px rgba(0, 255, 255, 0.35), 0 0 48px rgba(138, 43, 226, 0.35);
-  }
-
-  /* Disable glow on mobile for performance */
-  @media (max-width: 640px) {
-    .holo-glow {
-      box-shadow: none;
-    }
-
-    .holo-glow:hover {
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-    }
-  }
-
-  /* Motion reduction */
-  @media (prefers-reduced-motion: reduce) {
-    .holo-glow {
-      transition: none;
-    }
-  }
-
-  /* Scrollbar styling for horizontal carousels */
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* Sentinel UI Custom Scrollbar - Thin cyan variant */
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #06b6d4, #0891b2);
-    border-radius: 3px;
-    border: 1px solid rgba(15, 23, 42, 0.5);
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #22d3ee, #06b6d4);
-  }
-
-  /* Firefox scrollbar */
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: #06b6d4 rgba(15, 23, 42, 0.5);
-  }
-
-  /* Purple variant scrollbar */
-  .scrollbar-thin-purple::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin-purple::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin-purple::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #a855f7, #9333ea);
-    border-radius: 3px;
-    border: 1px solid rgba(15, 23, 42, 0.5);
-  }
-
-  .scrollbar-thin-purple::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #c084fc, #a855f7);
-  }
-
-  .scrollbar-thin-purple {
-    scrollbar-width: thin;
-    scrollbar-color: #a855f7 rgba(15, 23, 42, 0.5);
-  }
-
-  /* Hollow Text - See-through typography with cyberpunk glow */
-  .hollow-text {
-    font-size: 4rem;
-    font-weight: bold;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     SENTINEL UI KIT - Custom Scrollbar Styles (DigitalScroll)
-     High-contrast cyberpunk scrollbars for terminal-style containers
-     ═══════════════════════════════════════════════════════════════════ */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(2, 6, 23, 0.8);
-    border-radius: 3px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(6, 182, 212, 0.6) 0%, rgba(34, 211, 238, 0.8) 50%, rgba(6, 182, 212, 0.6) 100%);
-    border-radius: 3px;
-    border: 1px solid rgba(6, 182, 212, 0.3);
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(34, 211, 238, 0.8) 0%, rgba(6, 255, 240, 1) 50%, rgba(34, 211, 238, 0.8) 100%);
-    box-shadow: 0 0 8px rgba(6, 255, 240, 0.5);
-  }
-
-  /* Firefox scrollbar support */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(34, 211, 238, 0.6) rgba(2, 6, 23, 0.8);
+  /* === Selection === */
+  ::selection {
+    background: rgba(0, 240, 255, 0.3);
+    color: hsl(var(--foreground));
   }
 }
 
-/* Titan Aesthetic: Global cursor hidden for immersive experience.
-   NOTE: This is an intentional design choice and may impact accessibility.
-   If a custom cursor component is disabled or removed, consider:
-   - Removing this rule entirely, or
-   - Scoping to homepage only via body.home-page selector */
-* {
-  cursor: none !important;
+/* ═══════════════════════════════════════════════════════════════════
+   APEX BUTTON SYSTEM
+   Clean, professional buttons with subtle glow on primary actions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn-apex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius);
+  padding: 0.625rem 1.25rem;
+  transition: all 150ms ease-out;
 }
 
-/* Cursor remains hidden on interactive elements for consistency */
-input,
-textarea,
-button,
-a {
-  cursor: none !important;
+/* Primary - Electric Cyan with glow */
+.btn-apex-primary {
+  background: #00F0FF;
+  color: #000000;
+  border: 1px solid #00F0FF;
 }
 
-/* Titan Typography - Gradient Stroke Variant (Optional) */
-.font-titan-gradient {
-  background: linear-gradient(to bottom, #ffffff 40%, #22d3ee 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-stroke: 1px transparent; /* Hide standard stroke */
-  filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.4));
-  font-weight: 900;
+.btn-apex-primary:hover {
+  background: #33F3FF;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 40px rgba(0, 240, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-apex-primary:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.btn-apex-primary:focus-visible {
+  outline: 2px solid #00F0FF;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.2);
+}
+
+/* Secondary - Subtle surface */
+.btn-apex-secondary {
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.btn-apex-secondary:hover {
+  background: hsl(217.2 32.6% 22%);
+  border-color: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* Ghost - Minimal footprint */
+.btn-apex-ghost {
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  border: 1px solid transparent;
+}
+
+.btn-apex-ghost:hover {
+  background: hsl(var(--secondary) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+/* Destructive - Alert action */
+.btn-apex-destructive {
+  background: #FF453A;
+  color: #FFFFFF;
+  border: 1px solid #FF453A;
+}
+
+.btn-apex-destructive:hover {
+  background: #FF6961;
+  box-shadow: 0 0 20px rgba(255, 69, 58, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-apex,
+  .btn-apex-primary,
+  .btn-apex-secondary,
+  .btn-apex-ghost,
+  .btn-apex-destructive {
+    transition: none;
+    transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   APEX CARD SYSTEM
+   Flat cards with subtle borders (no drop shadows)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.card-apex {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.card-apex-elevated {
+  background: hsl(222 47% 8%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.card-apex-interactive {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color 150ms ease-out, background 150ms ease-out;
+  cursor: pointer;
+}
+
+.card-apex-interactive:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  background: hsl(222 47% 8%);
+}
+
+.card-apex-interactive:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DATA DISPLAY (Monospace for perfect alignment)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.data-value {
+  font-family: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
 
-/* Titan Typography Purple Variant (Tuned: Sharp stroke, subtle glow) */
-.font-titan-purple {
-  -webkit-text-stroke: 1.5px #a855f7;
-  color: transparent;
-  text-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
-  font-weight: 800;
-  letter-spacing: 0.05em;
+.data-positive {
+  color: #00C050;
 }
 
-/* Prismatic White - Interweaved with Cyan/Purple neon accents */
-.text-prismatic {
-  color: white;
-  text-shadow:
-    0 0 2px rgba(255, 255, 255, 0.8),
-    0 0 10px rgba(34, 211, 238, 0.5),
-    0 0 20px rgba(168, 85, 247, 0.3);
-  font-weight: inherit;
-  letter-spacing: inherit;
+.data-negative {
+  color: #FF453A;
 }
 
-/* Digital Scroll Wrapper */
-.digital-scroll {
-  border-left: 1px solid rgba(34, 211, 238, 0.3);
-  border-right: 1px solid rgba(34, 211, 238, 0.3);
-  background: rgba(2, 6, 23, 0.5);
-  backdrop-filter: blur(8px);
+.data-neutral {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Live data indicator */
+.data-live {
   position: relative;
 }
 
-.digital-scroll::before,
-.digital-scroll::after {
-  content: '';
+.data-live::before {
+  content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
-}
-
-.digital-scroll::before {
-  top: 0;
-}
-
-.digital-scroll::after {
-  bottom: 0;
-}
-
-/* Cyber Street Scanline Animation */
-@keyframes cyber-street-pass {
-  0% {
-    left: -100%;
-  }
-
-  20% {
-    left: 200%;
-  }
-
-  100% {
-    left: 200%;
-  }
-}
-
-.cyber-street {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-
-.cyber-street::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.4), transparent);
-  animation: cyber-street-pass 3s infinite;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cyber-street::after {
-    animation: none;
-  }
-}
-
-/* Cyber Stream Container - Moving sheen behind text (container-level) */
-.cyber-stream {
-  position: relative;
-  overflow: hidden;
-}
-
-.cyber-stream::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(34, 211, 238, 0.15) 25%,
-    rgba(168, 85, 247, 0.15) 50%,
-    rgba(34, 211, 238, 0.15) 75%,
-    transparent 100%
-  );
-  animation: cyber-stream-sweep 4s ease-in-out infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-
-@keyframes cyber-stream-sweep {
-  0% {
-    left: -100%;
-  }
-  50% {
-    left: 150%;
-  }
-  100% {
-    left: 150%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cyber-stream::before {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-/* Cyber Stream Effect - Subtle stream without rectangle overlay */
-.cyber-text {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-
-.cyber-text::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(to bottom, transparent 0%, rgba(34, 211, 238, 0.05) 1px, transparent 2px);
-  animation: stream-scan 2s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-  /* Subtle lines only, no rectangle */
-  opacity: 0.3;
-  /* Reduced for minimalism */
-}
-
-@keyframes stream-scan {
-  0% {
-    transform: translateY(-50%);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
-}
-
-/* Accessibility fallback - disable animation and visual effect for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .cyber-text::before {
-    animation: none;
-    background: none;
-  }
-}
-
-/* Tactical Button - Military/Industrial Aesthetic */
-.btn-tactical {
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  border: 1px solid rgba(34, 211, 238, 0.5);
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.75rem 1.5rem;
-  color: white;
-  font-weight: 600;
-  transition: all 200ms ease-out;
-}
-
-.btn-tactical:hover {
-  border-color: rgba(34, 211, 238, 0.8);
-  background: rgba(34, 211, 238, 0.15);
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1);
-}
-
-.btn-tactical:active {
-  transform: scale(0.98);
-}
-
-.btn-tactical.btn-tactical-primary {
-  background: rgba(34, 211, 238, 0.9);
-  color: black;
-  border-color: rgba(34, 211, 238, 1);
-}
-
-.btn-tactical.btn-tactical-primary:hover {
-  background: rgba(34, 211, 238, 1);
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2);
-}
-
-/* Cyber Folder Container */
-.cyber-folder {
-  position: relative;
-  border: 1px solid rgba(34, 211, 238, 0.3);
-  background: rgba(2, 6, 23, 0.6);
-  backdrop-filter: blur(8px);
-}
-
-.cyber-folder::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 20px;
-  width: 120px;
-  height: 24px;
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-  border: 1px solid rgba(34, 211, 238, 0.3);
-  border-bottom: none;
-  clip-path: polygon(0 100%, 10px 0, calc(100% - 10px) 0, 100% 100%);
-}
-
-.cyber-folder::after {
-  content: 'CLASSIFIED';
-  position: absolute;
-  top: -18px;
-  left: 32px;
-  font-size: 10px;
-  font-family: monospace;
-  color: rgba(34, 211, 238, 0.7);
-  letter-spacing: 0.15em;
-}
-
-/* Prismatic Gradient Animation - Dynamic iridescence for headers */
-@keyframes gradient-x {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient-x {
-  background-size: 200% 100%;
-  animation: gradient-x 15s ease infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-gradient-x {
-    animation: none;
-    background-position: 50% 50%;
-  }
-}
-
-/* Prismatic Header - Hollow see-through with gradient stroke */
-.header-prismatic {
-  color: transparent;
-  -webkit-text-stroke: 2px transparent;
-  background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: gradient-x 15s ease infinite;
-  filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 40px rgba(168, 85, 247, 0.3));
-}
-
-.header-prismatic-purple {
-  color: transparent;
-  -webkit-text-stroke: 2px transparent;
-  background: linear-gradient(90deg, #a855f7, #22d3ee, #a855f7);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: gradient-x 15s ease infinite;
-  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 40px rgba(34, 211, 238, 0.3));
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-  .header-prismatic,
-  .header-prismatic-purple {
-    animation: none;
-  }
-}
-
-/* Hollow Text with White Stroke - See-through letter effect */
-.text-hollow-white {
-  color: transparent;
-  -webkit-text-stroke: 2px white;
-}
-
-/* Fallback for browsers without -webkit-text-stroke support */
-@supports not (-webkit-text-stroke: 1px black) {
-
-  .header-prismatic,
-  .header-prismatic-purple {
-    -webkit-text-fill-color: currentColor;
-    text-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(168, 85, 247, 0.4);
-  }
-
-  /* Fallback for hollow text - show solid white with glow */
-  .text-hollow-white {
-    color: white;
-    -webkit-text-stroke: 0;
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(168, 85, 247, 0.5);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   CYAN SCAN LINE - Scans the page on initial load
-   Hardware-accelerated via transform for smooth 60fps rendering
-   ═══════════════════════════════════════════════════════════════════ */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.3) 20%, #22d3ee 50%, rgba(34, 211, 238, 0.3) 80%, transparent 100%);
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
-  animation: scan-line-sweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0;
-}
-
-@keyframes scan-line-sweep {
-  0% {
-    transform: translateY(-100%);
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(calc(100vh + 100%));
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   ELECTRONIC SCROLL WRAPPING - Vertical scan lines for cyber effect
-   Creates a "digital curtain" wrapping effect behind content
-   ═══════════════════════════════════════════════════════════════════ */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(to bottom,
-      transparent 0px,
-      transparent 48px,
-      rgba(34, 211, 238, 0.03) 48px,
-      rgba(34, 211, 238, 0.03) 50px);
-  animation: electronic-scroll 20s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.6;
-}
-
-@keyframes electronic-scroll {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 0 50px;
-  }
-}
-
-/* Disable scan animations for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-
-  body::before,
-  body::after {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   TYPEWRITER EFFECT UTILITIES
-   CSS classes for typewriter animation support
-   ═══════════════════════════════════════════════════════════════════ */
-.typewriter {
-  overflow: hidden;
-  white-space: nowrap;
-  display: inline-block;
-}
-
-.typewriter-cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  background-color: #22d3ee;
-  margin-left: 2px;
-  animation: cursor-blink 0.8s steps(2) infinite;
-  vertical-align: middle;
-}
-
-@keyframes cursor-blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   ELECTRONIC WRAP - Animated cyan border lines for glassmorphic cards
-   Creates sci-fi "confidential folder" wrap effect
-   ═══════════════════════════════════════════════════════════════════ */
-.electronic-wrap {
-  background:
-    linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-x top,
-    linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-x bottom,
-    linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-y left,
-    linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px) repeat-y right;
-  background-size: 20px 1px, 20px 1px, 1px 20px, 1px 20px;
-  opacity: 0.3;
-  animation: wrap-animate 5s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes wrap-animate {
-  0% {
-    background-position: 0 0, 0 100%, 0 0, 100% 0;
-  }
-
-  100% {
-    background-position: 20px 0, -20px 100%, 0 20px, 100% -20px;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   SECTION SCAN LINE - Horizontal scan for section entry
-   Hardware-accelerated via transform for smooth 60fps
-   ═══════════════════════════════════════════════════════════════════ */
-.animate-scan-line {
-  animation: section-scan-sweep 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes section-scan-sweep {
-  0% {
-    transform: scaleX(0);
-    transform-origin: left;
-    opacity: 1;
-  }
-
-  50% {
-    transform: scaleX(1);
-    transform-origin: left;
-    opacity: 1;
-  }
-
-  51% {
-    transform-origin: right;
-  }
-
-  100% {
-    transform: scaleX(0);
-    transform-origin: right;
-    opacity: 0;
-  }
-}
-
-/* Disable electronic-wrap and section scan for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-
-  .electronic-wrap,
-  .animate-scan-line {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-/* Light mode overrides */
-html.light {
-  --background: 240 10% 95%;
-  --foreground: 222.2 84% 4.9%;
-}
-
-html.light body {
-  background: linear-gradient(135deg, #e8f4f8 0%, #d4e4ec 50%, #e0e8f0 100%);
-  color: #1e293b;
-}
-
-html.light .bg-black\/90 {
-  background: rgba(255, 255, 255, 0.9) !important;
-}
-
-html.light .text-white {
-  color: #1e293b !important;
-}
-
-html.light .border-cyan-500\/20 {
-  border-color: rgba(0, 200, 255, 0.3) !important;
-}
-
-/* Adjust background animations for light mode */
-/* Adjust background animations for light mode */
-html.light canvas {
-  opacity: 0.3 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   CUSTOM CURSOR - Simple Ring with Glow
-   ═══════════════════════════════════════════════════════════════════ */
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 24px;
-  height: 24px;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-}
-
-.custom-cursor-dot {
-  width: 100%;
-  height: 100%;
-  border: 2px solid #22d3ee;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.4);
-  animation: cursor-pulse 2s infinite;
-}
-
-@keyframes cursor-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(0.85);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   SHOOTING STAR ANIMATION
-   ═══════════════════════════════════════════════════════════════════ */
-.shooting-star {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
-  animation: animate-shooting-star 3s linear infinite;
-  opacity: 0;
-}
-
-.shooting-star::before {
-  content: '';
-  position: absolute;
+  left: -12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 300px;
-  height: 1px;
-  background: linear-gradient(90deg, #fff, transparent);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00F0FF;
+  animation: pulse-live 2s ease-in-out infinite;
 }
 
-@keyframes animate-shooting-star {
-  0% {
-    transform: rotate(315deg) translateX(0);
-    opacity: 1;
-  }
-
-  70% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: rotate(315deg) translateX(-1000px);
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   HOLOGRAPHIC SHEEN - Text-Only Scanline Effect
-   Uses background-clip: text to restrict sheen to text letterforms only
-   ═══════════════════════════════════════════════════════════════════ */
-.text-sheen {
-  position: relative;
-  /* Sheen gradient that flows across the text */
-  background: linear-gradient(to right, #22d3ee, #ffffff, #22d3ee);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: sheen-flow 3s linear infinite;
-}
-
-/* Purple variant of text sheen */
-.text-sheen-purple {
-  position: relative;
-  background: linear-gradient(to right, #a855f7, #ffffff, #a855f7);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: sheen-flow 3s linear infinite;
-}
-
-@keyframes sheen-flow {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .text-sheen,
-  .text-sheen-purple {
-    animation: none;
-    background-position: 50% 50%;
-  }
-}
- 
- /* Text Sheen Overlay - Works WITH existing gradient text styles */
-/* Uses pseudo-element with mix-blend-mode to add sheen without conflicting backgrounds */
-.text-sheen-overlay {
-  position: relative;
-  display: inline-block;
-  isolation: isolate;
-}
-
-.text-sheen-overlay::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
-  );
-  transform: skewX(-25deg);
-  animation: sheen-pass-overlay 3s infinite;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-
-@keyframes sheen-pass-overlay {
-  0% {
-    left: -100%;
-  }
-  20% {
-    left: 200%;
-  }
-  100% {
-    left: 200%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .text-sheen-overlay::after {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   HUD CONTAINER - Tactical/Military UI
-   ═══════════════════════════════════════════════════════════════════ */
-.hud-container {
-    position: relative;
-    padding: 2rem;
-    background: rgba(2, 6, 23, 0.6);
-    backdrop-filter: blur(8px);
-}
-
-.hud-label {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 10px;
-    font-family: monospace;
-    color: rgba(34, 211, 238, 0.7);
-    letter-spacing: 0.15em;
-    background: rgba(2, 6, 23, 0.9);
-    padding: 2px 12px;
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    border-radius: 2px;
-}
-
-/* HUD Corner Brackets */
-.hud-corner {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-color: rgba(34, 211, 238, 0.6);
-    pointer-events: none;
-}
-
-.hud-corner-tl {
-    top: 0;
-    left: 0;
-    border-top: 2px solid;
-    border-left: 2px solid;
-}
-
-.hud-corner-tr {
-    top: 0;
-    right: 0;
-    border-top: 2px solid;
-    border-right: 2px solid;
-}
-
-.hud-corner-bl {
-    bottom: 0;
-    left: 0;
-    border-bottom: 2px solid;
-    border-left: 2px solid;
-}
-
-.hud-corner-br {
-    bottom: 0;
-    right: 0;
-    border-bottom: 2px solid;
-    border-right: 2px solid;
-}
-
-/* HUD Corner Accent Dots */
-.hud-corner::after {
-    content: '';
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #22d3ee;
-    border-radius: 50%;
-    box-shadow: 0 0 6px #22d3ee;
-}
-
-.hud-corner-tl::after {
-    top: -2px;
-    left: -2px;
-}
-
-.hud-corner-tr::after {
-    top: -2px;
-    right: -2px;
-}
-
-.hud-corner-bl::after {
-    bottom: -2px;
-    left: -2px;
-}
-
-.hud-corner-br::after {
-    bottom: -2px;
-    right: -2px;
-}
-
-  /* Holographic Title with White Border and Scanning Slash */
-  .text-holographic {
-    position: relative;
-    display: inline-block;
-    
-    /* White border/stroke */
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
-    
-    /* Prismatic gradient fill */
-    background: linear-gradient(
-      90deg,
-      #ffffff 0%,
-      #00ffff 20%,
-      #ffffff 40%,
-      #ff00ff 60%,
-      #00ffff 80%,
-      #ffffff 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    
-    /* Holographic glow */
-    filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.6)) 
-            drop-shadow(0 0 24px rgba(255, 0, 255, 0.4));
-    
-    /* Shimmer animation */
-    animation: holographic-shimmer 4s linear infinite;
-    
-    /* Font settings */
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Scanning slash effect overlay */
-  .text-holographic::before {
-    content: '';
-    position: absolute;
-    top: -10%;
-    left: -100%;
-    width: 50%;
-    height: 120%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0, 255, 255, 0.3) 45%,
-      rgba(255, 255, 255, 0.8) 50%,
-      rgba(255, 0, 255, 0.3) 55%,
-      transparent 100%
-    );
-    transform: skewX(-20deg);
-    animation: holographic-scan 3s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes holographic-shimmer {
-    to { 
-      background-position: 200% center; 
-    }
-  }
-
-  @keyframes holographic-scan {
-    0% {
-      left: -100%;
-    }
-    50% {
-      left: 150%;
-    }
-    100% {
-      left: 150%;
-    }
-  }
-
-  /* Mobile optimization: disable scanning slash on mobile */
-  @media (max-width: 768px) {
-    .text-holographic::before {
-      display: none; /* Remove scanning slash on mobile for performance */
-    }
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .text-holographic {
-      animation: none;
-    }
-    .text-holographic::before {
-      animation: none;
-      display: none;
-    }
-  }
-
-  /* Ethereal Scroll Reveal Animations - Holo Dock Effect */
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-    filter: blur(8px);
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .scroll-reveal-active {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-
-  /* Holo dock glow effect on reveal */
-  .scroll-reveal-active {
-    animation: holo-dock-glow 1.5s ease-out;
-  }
-
-  @keyframes holo-dock-glow {
-    0% {
-      box-shadow: 0 0 0 rgba(0, 255, 255, 0);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4), 0 0 80px rgba(168, 85, 247, 0.2);
-    }
-    100% {
-      box-shadow: 0 0 0 rgba(0, 255, 255, 0);
-    }
-  }
-
-  /* Stagger delay for multiple sections */
-  .scroll-reveal:nth-child(1) {
-    transition-delay: 0ms;
-  }
-
-  .scroll-reveal:nth-child(2) {
-    transition-delay: 100ms;
-  }
-
-  .scroll-reveal:nth-child(3) {
-    transition-delay: 200ms;
-  }
-
-  .scroll-reveal:nth-child(4) {
-    transition-delay: 300ms;
-  }
-
-  .scroll-reveal:nth-child(5) {
-    transition-delay: 400ms;
-  }
-
-  /* Mobile optimization: simpler animations */
-  @media (max-width: 768px) {
-    .scroll-reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      filter: none; /* Remove blur on mobile */
-      transition: all 0.4s ease-out; /* Faster, simpler transition */
-    }
-    .scroll-reveal-active {
-      opacity: 1;
-      transform: translateY(0);
-      animation: none; /* Remove glow animation on mobile */
-    }
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .scroll-reveal {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      transition: none;
-    }
-    .scroll-reveal-active {
-      animation: none;
-    }
-  }
-
-  /* Electronic Pulse Effect for Badges and Icons */
-  @keyframes electronic-pulse {
-    0%, 100% {
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.3), 0 0 10px rgba(0, 255, 255, 0.2);
-      border-color: rgba(0, 255, 255, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 25px rgba(0, 255, 255, 0.4), 0 0 35px rgba(168, 85, 247, 0.3);
-      border-color: rgba(0, 255, 255, 0.8);
-    }
-  }
-
-  @keyframes icon-pulse {
-    0%, 100% {
-      transform: scale(1);
-      filter: drop-shadow(0 0 2px rgba(0, 255, 255, 0.4));
-    }
-    50% {
-      transform: scale(1.05);
-      filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 12px rgba(168, 85, 247, 0.4));
-    }
-  }
-
-  /* Apply to badges */
-  .badge-pulse {
-    animation: electronic-pulse 3s ease-in-out infinite;
-  }
-
-  /* Apply to icons */
-  .icon-pulse {
-    animation: icon-pulse 2s ease-in-out infinite;
-  }
-
-  /* Stagger animations for multiple badges/icons */
-  .badge-pulse:nth-child(1), .icon-pulse:nth-child(1) {
-    animation-delay: 0s;
-  }
-
-  .badge-pulse:nth-child(2), .icon-pulse:nth-child(2) {
-    animation-delay: 0.3s;
-  }
-
-  .badge-pulse:nth-child(3), .icon-pulse:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-
-  .badge-pulse:nth-child(4), .icon-pulse:nth-child(4) {
-    animation-delay: 0.9s;
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .badge-pulse, .icon-pulse {
-      animation: none;
-    }
-  }
-
-  /* Darker Navy Theme with Bright Purple Neon */
-  :root {
-    --bg-primary: #0a0e1a;
-    --bg-secondary: #0f1729;
-    --bg-tertiary: #141b2e;
-    --accent-cyan: #00ffff;
-    --accent-purple: #c084fc;
-    --accent-magenta: #e879f9;
-    --text-primary: #e2e8f0;
-    --text-secondary: #94a3b8;
-    --border-color: rgba(0, 255, 255, 0.2);
-  }
-
-  /* Update body background for darker theme */
-  body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-  }
-
-  /* Light theme overrides - Altaria-inspired pastel dream */
-  [data-theme="light"] {
-    --bg-primary: #e8f0f8;
-    --bg-secondary: #d4e4ec;
-    --bg-tertiary: #c8dce8;
-    --accent-cyan: #67c3f3;
-    --accent-purple: #b794f6;
-    --accent-magenta: #f5a9d0;
-    --accent-pink: #ffc9e5;
-    --accent-gold: #ffd966;
-    --accent-sky: #9ed9f7;
-    --text-primary: #4a4a6a;
-    --text-secondary: #7b7b9e;
-    --border-color: rgba(103, 195, 243, 0.3);
-    --cloud-white: #ffffff;
-    --cloud-blue: #d4ebf7;
-    --cloud-pink: #f7d4eb;
-  }
-
-  /* Altaria-inspired purple gradient text (like the card title font) */
-  .text-altaria-gradient {
-    background: linear-gradient(180deg, 
-      #e8d4ff 0%,
-      #b794f6 25%,
-      #9370db 50%,
-      #7b68ee 75%,
-      #6a5acd 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 
-      -2px -2px 0 #fff,
-      2px -2px 0 #fff,
-      -2px 2px 0 #fff,
-      2px 2px 0 #fff,
-      0 0 20px rgba(183, 148, 246, 0.5),
-      0 0 30px rgba(183, 148, 246, 0.3);
-    font-weight: 900;
-    letter-spacing: 0.05em;
-  }
-
-  /* Alternative: Simpler version with just outline */
-  .text-altaria-simple {
-    color: #b794f6;
-    text-shadow: 
-      -1.5px -1.5px 0 #fff,
-      1.5px -1.5px 0 #fff,
-      -1.5px 1.5px 0 #fff,
-      1.5px 1.5px 0 #fff,
-      0 0 15px rgba(183, 148, 246, 0.6);
-    font-weight: 800;
-  }
-
-  /* Update holographic text to use Altaria colors in light mode */
-  [data-theme="light"] .text-holographic {
-    background: linear-gradient(
-      90deg,
-      #67c3f3 0%,
-      #b794f6 25%,
-      #f5a9d0 50%,
-      #ffd966 75%,
-      #67c3f3 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: holographic-shimmer 4s linear infinite;
-    text-shadow: 
-      -2px -2px 0 #fff,
-      2px -2px 0 #fff,
-      -2px 2px 0 #fff,
-      2px 2px 0 #fff;
-  }
-
-  /* Holo Card Stacking Effect - Cards stack in front of each other like a holo deck */
-  @keyframes card-stack-in {
-    from {
-      transform: translateY(20px) translateZ(-50px) rotateX(5deg);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0) translateZ(0) rotateX(0deg);
-      opacity: 1;
-    }
-  }
-
-  .holo-card-stack {
-    perspective: 1000px;
-    transform-style: preserve-3d;
-  }
-
-  .holo-card {
-    transform-style: preserve-3d;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: card-stack-in 0.6s ease-out forwards;
-  }
-
-  .holo-card:hover {
-    transform: translateY(-8px) translateZ(20px) scale(1.02);
-    z-index: 10;
-  }
-
-  /* Stagger the cards */
-  .holo-card:nth-child(1) {
-    animation-delay: 0s;
-    z-index: 3;
-  }
-
-  .holo-card:nth-child(2) {
-    animation-delay: 0.1s;
-    z-index: 2;
-  }
-
-  .holo-card:nth-child(3) {
-    animation-delay: 0.2s;
-    z-index: 1;
-  }
-
-  /* Add depth shadow for stacking effect */
-  .holo-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: inherit;
-    z-index: -1;
-  }
-
-  .holo-card:hover::before {
-    opacity: 1;
-  }
-
-  /* Holographic shimmer overlay */
-  .holo-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      45deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 70%
-    );
-    background-size: 200% 200%;
-    animation: holo-shimmer 3s ease-in-out infinite;
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  @keyframes holo-shimmer {
-    0%, 100% {
-      background-position: 0% 0%;
-      opacity: 0;
-    }
-    50% {
-      background-position: 100% 100%;
-      opacity: 0.3;
-    }
-  }
-
-  /* Prismatic Border Animation for HoloCardContainer */
-  @keyframes prismatic-border {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  /* Mobile optimization: reduce animations on mobile devices */
-  @media (max-width: 768px) {
-    .animate-\[prismatic-border_3s_linear_infinite\] {
-      animation: none;
-      background: linear-gradient(to right, #06b6d4, #a855f7);
-    }
-  }
-
-  /* Respect reduced motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    .animate-\[prismatic-border_3s_linear_infinite\] {
-      animation: none;
-    }
-  }
-
-/* Essay Content Spacing - Force proper spacing between paragraphs */
-.essay-content p {
-  margin-bottom: 2.5rem !important;
-  margin-top: 0 !important;
-  line-height: 2 !important;
-  display: block !important;
-  text-indent: 0 !important;
-}
-
-.essay-content p + p {
-  margin-top: 2.5rem !important;
-}
-
-/* Ensure paragraphs in prose containers have proper spacing */
-.essay-content.prose p,
-.essay-content .prose p {
-  margin-bottom: 2.5rem !important;
-  line-height: 2 !important;
-}
-
-/* First paragraph styling - drop cap effect for literary feel */
-.essay-content > p:first-of-type::first-letter {
-  font-size: 3.5rem;
-  font-weight: 700;
-  float: left;
-  line-height: 1;
-  margin-right: 0.5rem;
-  margin-top: 0.1rem;
-  color: #06b6d4;
-  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-}
-
-.essay-content h2 {
-  margin-top: 4rem !important;
-  margin-bottom: 2rem !important;
-  clear: both;
-}
-
-.essay-content h3 {
-  margin-top: 3rem !important;
-  margin-bottom: 1.5rem !important;
-  clear: both;
-}
-
-/* Blockquote enhanced styling */
-.essay-content blockquote {
-  margin-top: 2rem !important;
-  margin-bottom: 2rem !important;
-  border-left: 4px solid rgba(168, 85, 247, 0.5) !important;
-  padding-left: 1.5rem !important;
-  font-style: italic !important;
-  color: #c4b5fd !important;
-  background: rgba(168, 85, 247, 0.1) !important;
-  padding: 1rem 1.5rem !important;
-  border-radius: 0 0.5rem 0.5rem 0 !important;
-}
-
-/* Emphasis styling for essay italic text */
-.essay-content em {
-  color: #e2e8f0;
-  font-style: italic;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   GLASS ORB / HELP FAB ANIMATIONS
-   Slow spinning prismatic effect for the AI assistance orb
-   ═══════════════════════════════════════════════════════════════════ */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
-}
-
-@keyframes prismatic-pulse {
+@keyframes pulse-live {
   0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4);
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.05);
+    opacity: 0.6;
+    box-shadow: 0 0 0 4px rgba(0, 240, 255, 0);
   }
 }
 
-.animate-prismatic-pulse {
-  animation: prismatic-pulse 3s ease-in-out infinite;
+/* ═══════════════════════════════════════════════════════════════════
+   SCROLLBAR STYLING (Aerospace theme)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
-/* Glass orb shimmer effect */
-@keyframes orb-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.glass-orb-shimmer {
+.scrollbar-aerospace::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-aerospace::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+  border-radius: 4px;
+}
+
+.scrollbar-aerospace::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+  border: 2px solid hsl(var(--background));
+}
+
+.scrollbar-aerospace::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Firefox */
+.scrollbar-aerospace {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(217.2 32.6% 17.5%) hsl(222 47% 6%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BADGE SYSTEM (Instrumentation style)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.badge-apex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.625rem;
+  border-radius: calc(var(--radius) - 2px);
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+.badge-apex-default {
+  background: hsl(var(--secondary));
+  color: hsl(var(--muted-foreground));
+}
+
+.badge-apex-primary {
+  background: rgba(0, 240, 255, 0.1);
+  color: #00F0FF;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.badge-apex-success {
+  background: rgba(0, 192, 80, 0.1);
+  color: #00C050;
+  border: 1px solid rgba(0, 192, 80, 0.2);
+}
+
+.badge-apex-warning {
+  background: rgba(255, 176, 32, 0.1);
+  color: #FFB020;
+  border: 1px solid rgba(255, 176, 32, 0.2);
+}
+
+.badge-apex-error {
+  background: rgba(255, 69, 58, 0.1);
+  color: #FF453A;
+  border: 1px solid rgba(255, 69, 58, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   INPUT SYSTEM
+   ═══════════════════════════════════════════════════════════════════ */
+
+.input-apex {
+  width: 100%;
+  height: 44px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  color: hsl(var(--foreground));
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.input-apex::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.input-apex:hover {
+  border-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.input-apex:focus {
+  outline: none;
+  border-color: #00F0FF;
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+}
+
+.input-apex:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE SYSTEM (Data Grid aesthetic)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.table-apex {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table-apex th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.3);
+}
+
+.table-apex td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+.table-apex tr:hover td {
+  background: hsl(var(--secondary) / 0.3);
+}
+
+/* Numeric cells - right aligned, monospace */
+.table-apex td.numeric {
+  text-align: right;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOADING STATES
+   ═══════════════════════════════════════════════════════════════════ */
+
+.skeleton-apex {
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 100%
+    hsl(var(--secondary)) 0%,
+    hsl(var(--secondary) / 0.5) 50%,
+    hsl(var(--secondary)) 100%
   );
   background-size: 200% 100%;
-  animation: orb-shimmer 3s ease-in-out infinite;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
 }
 
-/* Prismatic Border Rotation Animation */
-@keyframes border-rotate {
+@keyframes shimmer {
   0% {
-    background: linear-gradient(0deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
-  }
-  25% {
-    background: linear-gradient(90deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
-  }
-  50% {
-    background: linear-gradient(180deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
-  }
-  75% {
-    background: linear-gradient(270deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+    background-position: 200% 0;
   }
   100% {
-    background: linear-gradient(360deg, #06b6d4, #a855f7, #ec4899, #06b6d4);
+    background-position: -200% 0;
   }
-}
-
-.animate-border-rotate {
-  animation: border-rotate 3s linear infinite;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HIDE DEFAULT CURSOR - Force hide system cursor globally
+   DIVIDER / SEPARATOR
    ═══════════════════════════════════════════════════════════════════ */
-* {
-  cursor: none !important;
+
+.divider-apex {
+  width: 100%;
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 1.5rem 0;
 }
 
-/* Allow pointer events on interactive elements but still hide cursor */
-a, button, input, textarea, select, [role="button"], [onclick] {
-  cursor: none !important;
+.divider-apex-vertical {
+  width: 1px;
+  height: 100%;
+  background: hsl(var(--border));
+  margin: 0 1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tooltip-apex {
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 280px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEGACY SUPPORT (Gradual migration from old styles)
+   These will be deprecated as components are updated
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Cyan CTA - maps to new btn-apex-primary */
+.btn-cyan {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  padding: 0.625rem 1.25rem;
+  background: #00F0FF;
+  color: #000;
+  transition: all 150ms ease-out;
+}
+
+.btn-cyan:hover {
+  background: #33F3FF;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.btn-cyan:focus-visible {
+  outline: 2px solid #00F0FF;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar legacy support */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(217.2 32.6% 17.5%) hsl(222 47% 6%);
 }

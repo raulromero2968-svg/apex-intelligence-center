@@ -803,6 +803,552 @@ export type NewManipulationAlert = typeof manipulationAlerts.$inferInsert;
 export type VideoGenerationRequest = typeof videoGenerationRequests.$inferSelect;
 export type NewVideoGenerationRequest = typeof videoGenerationRequests.$inferInsert;
 
+// ============================================================================
+// ECONOMIC INFRASTRUCTURE: OMNIS, INTELLIGENCE, RC ECONOMY
+// ============================================================================
+
+/**
+ * Omnis Sources - Connected data sources for intelligence extraction
+ *
+ * Users connect their accounts (Upwork, Twitter, Notion, etc.) and Omnis
+ * extracts structured intelligence primitives from their past work.
+ */
+export const omnisSources = pgTable('omnis_sources', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  sourceType: text('source_type').notNull(), // 'upwork' | 'twitter' | 'notion' | 'github' | 'upload'
+  displayName: text('display_name').notNull(),
+  credentials: text('credentials'), // Encrypted OAuth tokens or API keys
+  lastSyncAt: timestamp('last_sync_at'),
+  itemCount: integer('item_count').default(0),
+  status: text('status').notNull().default('active'), // 'active' | 'error' | 'disconnected'
+  errorMessage: text('error_message'),
+  metadata: jsonb('metadata').$type<Record<string, any>>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_omnis_sources_user').on(table.userId),
+  typeIdx: index('idx_omnis_sources_type').on(table.sourceType),
+  statusIdx: index('idx_omnis_sources_status').on(table.status),
+}));
+
+/**
+ * Omnis Primitives - Extracted intelligence primitives awaiting user approval
+ *
+ * AI processes connected sources and generates structured intel primitives.
+ * Users review, refine, and approve these before they become Intel Cards.
+ */
+export const omnisPrimitives = pgTable('omnis_primitives', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  sourceId: text('source_id').notNull().references(() => omnisSources.id, { onDelete: 'cascade' }),
+  sourceItemId: text('source_item_id'), // Original ID in the source system
+  sourceUrl: text('source_url'), // Link to original content
+  title: text('title').notNull(),
+  summary: text('summary').notNull(),
+  fullContent: text('full_content').notNull(),
+  keyInsights: jsonb('key_insights').$type<string[]>(),
+  topics: jsonb('topics').$type<string[]>(),
+  entities: jsonb('entities').$type<Array<{ name: string; type: string; }>>(),
+  expertiseLevel: text('expertise_level').default('intermediate'), // 'beginner' | 'intermediate' | 'expert'
+  confidenceScore: real('confidence_score'), // AI confidence in extraction quality
+  suggestedPrice: real('suggested_price'), // AI-suggested price based on similar content
+  status: text('status').notNull().default('draft'), // 'draft' | 'approved' | 'rejected' | 'published'
+  intelCardId: text('intel_card_id'), // Reference to created Intel Card (after approval)
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_omnis_primitives_user').on(table.userId),
+  sourceIdx: index('idx_omnis_primitives_source').on(table.sourceId),
+  statusIdx: index('idx_omnis_primitives_status').on(table.status),
+}));
+
+/**
+ * Intel Cards - Marketplace intelligence assets
+ *
+ * The core marketplace entity. Users create, price, and sell intel cards.
+ * Buyers purchase with USD, creators earn USD + RC.
+ */
+export const intelCards = pgTable('intel_cards', {
+  id: text('id').primaryKey(),
+  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  subtitle: text('subtitle'),
+  summary: text('summary').notNull(), // Public preview (shown to non-buyers)
+  fullContent: text('full_content').notNull(), // Paid content (hidden until purchase)
+  attachments: jsonb('attachments').$type<Array<{ name: string; url: string; type: string; size: number; }>>(),
+  category: text('category').notNull(), // 'report' | 'analysis' | 'framework' | 'tutorial' | 'template'
+  topics: jsonb('topics').$type<string[]>(),
+  expertiseLevel: text('expertise_level').notNull().default('intermediate'),
+  priceUsd: real('price_usd').notNull(),
+  views: integer('views').default(0),
+  purchases: integer('purchases').default(0),
+  revenue: real('revenue').default(0), // Total USD revenue
+  upvotes: integer('upvotes').default(0),
+  downvotes: integer('downvotes').default(0),
+  averageRating: real('average_rating'),
+  rcEarned: integer('rc_earned').default(0), // Total RC earned from this card
+  status: text('status').notNull().default('draft'), // 'draft' | 'published' | 'archived'
+  visibility: text('visibility').notNull().default('public'), // 'public' | 'unlisted' | 'private'
+  sourceId: text('source_id'), // Reference to Omnis primitive (if created from Omnis)
+  publishedAt: timestamp('published_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  authorIdx: index('idx_intel_cards_author').on(table.authorId),
+  statusIdx: index('idx_intel_cards_status').on(table.status),
+  categoryIdx: index('idx_intel_cards_category').on(table.category),
+  priceIdx: index('idx_intel_cards_price').on(table.priceUsd),
+  publishedIdx: index('idx_intel_cards_published').on(table.publishedAt),
+}));
+
+/**
+ * Intel Purchases - Marketplace transactions
+ *
+ * Records each purchase with full financial breakdown.
+ * Triggers RC rewards for creators.
+ */
+export const intelPurchases = pgTable('intel_purchases', {
+  id: text('id').primaryKey(),
+  buyerId: text('buyer_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => intelCards.id, { onDelete: 'cascade' }),
+  amountUsd: real('amount_usd').notNull(),
+  creatorShareUsd: real('creator_share_usd').notNull(), // 85% to creator
+  platformShareUsd: real('platform_share_usd').notNull(), // 15% to platform
+  stripePaymentId: text('stripe_payment_id'),
+  stripeTransferId: text('stripe_transfer_id'), // Creator payout transfer
+  status: text('status').notNull().default('completed'), // 'pending' | 'completed' | 'refunded'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  buyerIdx: index('idx_intel_purchases_buyer').on(table.buyerId),
+  cardIdx: index('idx_intel_purchases_card').on(table.cardId),
+  createdIdx: index('idx_intel_purchases_created').on(table.createdAt),
+}));
+
+/**
+ * Intel Votes - Upvotes/downvotes on intel cards
+ *
+ * Community quality signals that affect visibility and creator RC.
+ */
+export const intelVotes = pgTable('intel_votes', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => intelCards.id, { onDelete: 'cascade' }),
+  value: integer('value').notNull(), // +1 or -1
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  uniqueVote: uniqueIndex('idx_intel_votes_unique').on(table.userId, table.cardId),
+  cardIdx: index('idx_intel_votes_card').on(table.cardId),
+}));
+
+/**
+ * Intel Ratings - Detailed ratings from buyers
+ *
+ * Only purchasers can rate, ensuring authentic feedback.
+ */
+export const intelRatings = pgTable('intel_ratings', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => intelCards.id, { onDelete: 'cascade' }),
+  purchaseId: text('purchase_id').notNull().references(() => intelPurchases.id, { onDelete: 'cascade' }),
+  rating: integer('rating').notNull(), // 1-5 stars
+  review: text('review'),
+  helpful: integer('helpful').default(0), // How many found this review helpful
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  uniqueRating: uniqueIndex('idx_intel_ratings_unique').on(table.userId, table.cardId),
+  cardIdx: index('idx_intel_ratings_card').on(table.cardId),
+}));
+
+/**
+ * RC Transactions - Immutable ledger of all Reputation Credit movements
+ *
+ * Every RC earn or spend is recorded here for full transparency.
+ * This is the source of truth for user RC balances.
+ */
+export const rcTransactions = pgTable('rc_transactions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  amount: integer('amount').notNull(), // Positive for earn, negative for spend
+  reason: text('reason').notNull(), // Enum-like string
+  sourceProduct: text('source_product').notNull(), // 'omnis' | 'intelligence' | 'commons' | 'governance' | 'system'
+  referenceType: text('reference_type'), // 'intel_card' | 'proposal' | 'vote' | etc.
+  referenceId: text('reference_id'), // ID of the related entity
+  metadata: jsonb('metadata').$type<Record<string, any>>(),
+  balanceAfter: integer('balance_after').notNull(), // Snapshot of balance after this transaction
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index('idx_rc_transactions_user').on(table.userId),
+  reasonIdx: index('idx_rc_transactions_reason').on(table.reason),
+  productIdx: index('idx_rc_transactions_product').on(table.sourceProduct),
+  createdIdx: index('idx_rc_transactions_created').on(table.createdAt),
+}));
+
+/**
+ * RC Reasons - Valid reasons for RC transactions
+ *
+ * Documented for reference:
+ * - 'omnis_connect_first': +50 RC - Connecting first source
+ * - 'omnis_batch_process': +25 RC - Processing 10+ items
+ * - 'intel_first_publish': +100 RC - Publishing first intel card
+ * - 'intel_purchased': +10 RC - Someone purchased your intel
+ * - 'intel_upvoted': +5 RC - Per 10 net upvotes
+ * - 'intel_5star_rating': +15 RC - Receiving 5-star rating
+ * - 'commons_publish': +25 RC - Publishing to Commons
+ * - 'commons_upvoted': +3 RC - Per 10 net upvotes on Commons
+ * - 'commons_downloaded': +1 RC - Per 100 downloads
+ * - 'governance_vote': +5 RC - Voting on a proposal
+ * - 'governance_proposal_passed': +25 RC - Voted with majority on passed proposal
+ * - 'manual_adjustment': Admin adjustment
+ */
+
+/**
+ * User RC Profile - Extended user data for the hybrid economy
+ *
+ * Extends the base users table with RC-specific fields.
+ */
+export const userRcProfiles = pgTable('user_rc_profiles', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  rcBalance: integer('rc_balance').notNull().default(0),
+  rcLifetime: integer('rc_lifetime').notNull().default(0), // Total earned (never decreases)
+  contributorLevel: text('contributor_level').notNull().default('newcomer'), // 'newcomer' | 'creator' | 'curator' | 'moderator' | 'governor'
+  role: text('role').notNull().default('user'), // 'user' | 'teacher' | 'moderator' | 'admin'
+  bio: text('bio'),
+  subjects: jsonb('subjects').$type<string[]>(),
+  expertiseAreas: jsonb('expertise_areas').$type<string[]>(),
+  socialLinks: jsonb('social_links').$type<Record<string, string>>(),
+  usdEarningsLifetime: real('usd_earnings_lifetime').default(0),
+  usdEarningsMonth: real('usd_earnings_month').default(0),
+  intelCardsPublished: integer('intel_cards_published').default(0),
+  intelCardsSold: integer('intel_cards_sold').default(0),
+  totalViews: integer('total_views').default(0),
+  totalPurchases: integer('total_purchases').default(0),
+  averageRating: real('average_rating'),
+  lastActiveAt: timestamp('last_active_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  rcBalanceIdx: index('idx_user_rc_balance').on(table.rcBalance),
+  levelIdx: index('idx_user_rc_level').on(table.contributorLevel),
+  roleIdx: index('idx_user_rc_role').on(table.role),
+}));
+
+/**
+ * Governance Proposals - Community governance proposals
+ *
+ * Users with sufficient RC can create proposals for platform changes.
+ * RC-weighted voting determines outcomes.
+ */
+export const governanceProposals = pgTable('governance_proposals', {
+  id: text('id').primaryKey(),
+  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  summary: text('summary').notNull(),
+  body: text('body').notNull(),
+  category: text('category').notNull(), // 'feature' | 'policy' | 'economics' | 'protocol'
+  status: text('status').notNull().default('draft'), // 'draft' | 'active' | 'passed' | 'rejected' | 'withdrawn'
+  minRcToVote: integer('min_rc_to_vote').default(100),
+  minRcToCreate: integer('min_rc_to_create').default(500),
+  authorRcSnapshot: integer('author_rc_snapshot').notNull(), // Author's RC when proposal created
+  votingStartsAt: timestamp('voting_starts_at'),
+  votingEndsAt: timestamp('voting_ends_at'),
+  quorumRc: integer('quorum_rc').notNull(), // Minimum RC required for valid vote
+  forRc: integer('for_rc').default(0), // Total RC voted FOR
+  againstRc: integer('against_rc').default(0), // Total RC voted AGAINST
+  abstainRc: integer('abstain_rc').default(0), // Total RC voted ABSTAIN
+  voteCount: integer('vote_count').default(0),
+  passedAt: timestamp('passed_at'),
+  implementedAt: timestamp('implemented_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  authorIdx: index('idx_governance_proposals_author').on(table.authorId),
+  statusIdx: index('idx_governance_proposals_status').on(table.status),
+  categoryIdx: index('idx_governance_proposals_category').on(table.category),
+  votingIdx: index('idx_governance_proposals_voting').on(table.votingStartsAt, table.votingEndsAt),
+}));
+
+/**
+ * Governance Votes - Individual votes on proposals
+ *
+ * RC-weighted voting. Vote weight = user's RC balance at vote time.
+ */
+export const governanceVotes = pgTable('governance_votes', {
+  id: text('id').primaryKey(),
+  proposalId: text('proposal_id').notNull().references(() => governanceProposals.id, { onDelete: 'cascade' }),
+  voterId: text('voter_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  choice: text('choice').notNull(), // 'for' | 'against' | 'abstain'
+  weightRc: integer('weight_rc').notNull(), // Voter's RC at time of vote
+  reason: text('reason'), // Optional explanation
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  uniqueVote: uniqueIndex('idx_governance_votes_unique').on(table.proposalId, table.voterId),
+  proposalIdx: index('idx_governance_votes_proposal').on(table.proposalId),
+  voterIdx: index('idx_governance_votes_voter').on(table.voterId),
+}));
+
+/**
+ * Intel Bundles - Grouped intel cards sold together at a discount
+ */
+export const intelBundles = pgTable('intel_bundles', {
+  id: text('id').primaryKey(),
+  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  priceUsd: real('price_usd').notNull(),
+  originalPriceUsd: real('original_price_usd').notNull(), // Sum of individual card prices
+  discountPercent: real('discount_percent').notNull(),
+  status: text('status').notNull().default('active'), // 'active' | 'archived'
+  purchases: integer('purchases').default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  authorIdx: index('idx_intel_bundles_author').on(table.authorId),
+  statusIdx: index('idx_intel_bundles_status').on(table.status),
+}));
+
+/**
+ * Intel Bundle Items - Junction table for bundle contents
+ */
+export const intelBundleItems = pgTable('intel_bundle_items', {
+  id: text('id').primaryKey(),
+  bundleId: text('bundle_id').notNull().references(() => intelBundles.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => intelCards.id, { onDelete: 'cascade' }),
+  orderIndex: integer('order_index').default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  bundleIdx: index('idx_intel_bundle_items_bundle').on(table.bundleId),
+  uniqueItem: uniqueIndex('idx_intel_bundle_items_unique').on(table.bundleId, table.cardId),
+}));
+
+/**
+ * User Libraries - Purchased intel cards saved to user's library
+ */
+export const userLibraries = pgTable('user_libraries', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => intelCards.id, { onDelete: 'cascade' }),
+  purchaseId: text('purchase_id').references(() => intelPurchases.id, { onDelete: 'set null' }),
+  notes: text('notes'), // User's private notes
+  isFavorite: boolean('is_favorite').default(false),
+  lastAccessedAt: timestamp('last_accessed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  uniqueEntry: uniqueIndex('idx_user_libraries_unique').on(table.userId, table.cardId),
+  userIdx: index('idx_user_libraries_user').on(table.userId),
+  favoriteIdx: index('idx_user_libraries_favorite').on(table.isFavorite),
+}));
+
+// ============================================================================
+// ECONOMIC INFRASTRUCTURE RELATIONS
+// ============================================================================
+
+/**
+ * Omnis Sources relations
+ */
+export const omnisSourcesRelations = relations(omnisSources, ({ one, many }) => ({
+  user: one(users, {
+    fields: [omnisSources.userId],
+    references: [users.id],
+  }),
+  primitives: many(omnisPrimitives),
+}));
+
+/**
+ * Omnis Primitives relations
+ */
+export const omnisPrimitivesRelations = relations(omnisPrimitives, ({ one }) => ({
+  user: one(users, {
+    fields: [omnisPrimitives.userId],
+    references: [users.id],
+  }),
+  source: one(omnisSources, {
+    fields: [omnisPrimitives.sourceId],
+    references: [omnisSources.id],
+  }),
+}));
+
+/**
+ * Intel Cards relations
+ */
+export const intelCardsRelations = relations(intelCards, ({ one, many }) => ({
+  author: one(users, {
+    fields: [intelCards.authorId],
+    references: [users.id],
+  }),
+  purchases: many(intelPurchases),
+  votes: many(intelVotes),
+  ratings: many(intelRatings),
+  bundleItems: many(intelBundleItems),
+}));
+
+/**
+ * Intel Purchases relations
+ */
+export const intelPurchasesRelations = relations(intelPurchases, ({ one }) => ({
+  buyer: one(users, {
+    fields: [intelPurchases.buyerId],
+    references: [users.id],
+  }),
+  card: one(intelCards, {
+    fields: [intelPurchases.cardId],
+    references: [intelCards.id],
+  }),
+}));
+
+/**
+ * Intel Votes relations
+ */
+export const intelVotesRelations = relations(intelVotes, ({ one }) => ({
+  user: one(users, {
+    fields: [intelVotes.userId],
+    references: [users.id],
+  }),
+  card: one(intelCards, {
+    fields: [intelVotes.cardId],
+    references: [intelCards.id],
+  }),
+}));
+
+/**
+ * Intel Ratings relations
+ */
+export const intelRatingsRelations = relations(intelRatings, ({ one }) => ({
+  user: one(users, {
+    fields: [intelRatings.userId],
+    references: [users.id],
+  }),
+  card: one(intelCards, {
+    fields: [intelRatings.cardId],
+    references: [intelCards.id],
+  }),
+  purchase: one(intelPurchases, {
+    fields: [intelRatings.purchaseId],
+    references: [intelPurchases.id],
+  }),
+}));
+
+/**
+ * RC Transactions relations
+ */
+export const rcTransactionsRelations = relations(rcTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [rcTransactions.userId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * User RC Profiles relations
+ */
+export const userRcProfilesRelations = relations(userRcProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [userRcProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * Governance Proposals relations
+ */
+export const governanceProposalsRelations = relations(governanceProposals, ({ one, many }) => ({
+  author: one(users, {
+    fields: [governanceProposals.authorId],
+    references: [users.id],
+  }),
+  votes: many(governanceVotes),
+}));
+
+/**
+ * Governance Votes relations
+ */
+export const governanceVotesRelations = relations(governanceVotes, ({ one }) => ({
+  proposal: one(governanceProposals, {
+    fields: [governanceVotes.proposalId],
+    references: [governanceProposals.id],
+  }),
+  voter: one(users, {
+    fields: [governanceVotes.voterId],
+    references: [users.id],
+  }),
+}));
+
+/**
+ * Intel Bundles relations
+ */
+export const intelBundlesRelations = relations(intelBundles, ({ one, many }) => ({
+  author: one(users, {
+    fields: [intelBundles.authorId],
+    references: [users.id],
+  }),
+  items: many(intelBundleItems),
+}));
+
+/**
+ * Intel Bundle Items relations
+ */
+export const intelBundleItemsRelations = relations(intelBundleItems, ({ one }) => ({
+  bundle: one(intelBundles, {
+    fields: [intelBundleItems.bundleId],
+    references: [intelBundles.id],
+  }),
+  card: one(intelCards, {
+    fields: [intelBundleItems.cardId],
+    references: [intelCards.id],
+  }),
+}));
+
+/**
+ * User Libraries relations
+ */
+export const userLibrariesRelations = relations(userLibraries, ({ one }) => ({
+  user: one(users, {
+    fields: [userLibraries.userId],
+    references: [users.id],
+  }),
+  card: one(intelCards, {
+    fields: [userLibraries.cardId],
+    references: [intelCards.id],
+  }),
+  purchase: one(intelPurchases, {
+    fields: [userLibraries.purchaseId],
+    references: [intelPurchases.id],
+  }),
+}));
+
+// ============================================================================
+// ECONOMIC INFRASTRUCTURE TYPE EXPORTS
+// ============================================================================
+
+export type OmnisSource = typeof omnisSources.$inferSelect;
+export type NewOmnisSource = typeof omnisSources.$inferInsert;
+export type OmnisPrimitive = typeof omnisPrimitives.$inferSelect;
+export type NewOmnisPrimitive = typeof omnisPrimitives.$inferInsert;
+export type IntelCard = typeof intelCards.$inferSelect;
+export type NewIntelCard = typeof intelCards.$inferInsert;
+export type IntelPurchase = typeof intelPurchases.$inferSelect;
+export type NewIntelPurchase = typeof intelPurchases.$inferInsert;
+export type IntelVote = typeof intelVotes.$inferSelect;
+export type NewIntelVote = typeof intelVotes.$inferInsert;
+export type IntelRating = typeof intelRatings.$inferSelect;
+export type NewIntelRating = typeof intelRatings.$inferInsert;
+export type RcTransaction = typeof rcTransactions.$inferSelect;
+export type NewRcTransaction = typeof rcTransactions.$inferInsert;
+export type UserRcProfile = typeof userRcProfiles.$inferSelect;
+export type NewUserRcProfile = typeof userRcProfiles.$inferInsert;
+export type GovernanceProposal = typeof governanceProposals.$inferSelect;
+export type NewGovernanceProposal = typeof governanceProposals.$inferInsert;
+export type GovernanceVote = typeof governanceVotes.$inferSelect;
+export type NewGovernanceVote = typeof governanceVotes.$inferInsert;
+export type IntelBundle = typeof intelBundles.$inferSelect;
+export type NewIntelBundle = typeof intelBundles.$inferInsert;
+export type IntelBundleItem = typeof intelBundleItems.$inferSelect;
+export type NewIntelBundleItem = typeof intelBundleItems.$inferInsert;
+export type UserLibrary = typeof userLibraries.$inferSelect;
+export type NewUserLibrary = typeof userLibraries.$inferInsert;
+
 /**
  * Metadata structure examples by source_type:
  *
