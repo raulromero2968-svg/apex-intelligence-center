@@ -480,6 +480,8 @@ export const cardsRelations = relations(cards, ({ many }) => ({
   watchlistItems: many(watchlistItems),
   arbitrageOpportunities: many(arbitrageOpportunities),
   makerVotes: many(makerVotes),
+  listings: many(cardListings),
+  transactions: many(cardTransactions),
 }));
 
 /**
@@ -1383,4 +1385,157 @@ export type NewUserLibrary = typeof userLibraries.$inferInsert;
  *   unique_id: "tcgplayer_article_12345"
  * }
  */
+
+// ============================================================================
+// TCG CARD MARKETPLACE
+// ============================================================================
+
+/**
+ * Card Listings - Marketplace listings for TCG cards
+ *
+ * Users can list cards for sale with RC or USD pricing.
+ * Supports hybrid payment model (RC for low-fee internal, USD via Stripe).
+ */
+export const cardListings = pgTable('card_listings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  sellerId: text('seller_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title'), // Optional custom title
+  description: text('description'),
+  priceRc: integer('price_rc'), // Price in Reputation Credits
+  priceUsd: real('price_usd'), // Price in USD
+  quantity: integer('quantity').notNull().default(1),
+  grade: text('grade'), // "PSA 10", "BGS 9.5", etc.
+  gradingCompany: text('grading_company'), // "PSA" | "BGS" | "CGC" | "SGC"
+  certNumber: text('cert_number'), // Grading cert for verification
+  condition: text('condition').default('near_mint'), // raw card condition
+  imageUrls: jsonb('image_urls').$type<string[]>().default([]),
+  status: text('status').notNull().default('active'), // 'active' | 'sold' | 'expired' | 'cancelled'
+  viewCount: integer('view_count').default(0).notNull(),
+  expiresAt: timestamp('expires_at'),
+  soldAt: timestamp('sold_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  cardIdx: index('idx_card_listings_card').on(table.cardId),
+  sellerIdx: index('idx_card_listings_seller').on(table.sellerId),
+  statusIdx: index('idx_card_listings_status').on(table.status),
+  priceRcIdx: index('idx_card_listings_price_rc').on(table.priceRc),
+  priceUsdIdx: index('idx_card_listings_price_usd').on(table.priceUsd),
+  createdIdx: index('idx_card_listings_created').on(table.createdAt),
+}));
+
+/**
+ * Card Transactions - Purchase history for marketplace
+ *
+ * Records all card purchases with payment details.
+ * Supports RC and USD payment types.
+ */
+export const cardTransactions = pgTable('card_transactions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  listingId: uuid('listing_id').notNull().references(() => cardListings.id, { onDelete: 'cascade' }),
+  buyerId: text('buyer_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  sellerId: text('seller_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull().references(() => cards.id, { onDelete: 'cascade' }),
+  paymentType: text('payment_type').notNull(), // 'rc' | 'usd'
+  amount: real('amount').notNull(), // RC amount or USD cents
+  platformFee: real('platform_fee').default(0), // Platform cut
+  sellerPayout: real('seller_payout').notNull(), // Amount after fees
+  stripePaymentId: text('stripe_payment_id'), // For USD transactions
+  stripeTransferId: text('stripe_transfer_id'), // Seller payout transfer
+  rcTransactionId: text('rc_transaction_id'), // For RC transactions
+  status: text('status').notNull().default('completed'), // 'pending' | 'completed' | 'refunded' | 'disputed'
+  shippingAddress: jsonb('shipping_address').$type<{
+    name: string;
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  }>(),
+  trackingNumber: text('tracking_number'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  listingIdx: index('idx_card_transactions_listing').on(table.listingId),
+  buyerIdx: index('idx_card_transactions_buyer').on(table.buyerId),
+  sellerIdx: index('idx_card_transactions_seller').on(table.sellerId),
+  cardIdx: index('idx_card_transactions_card').on(table.cardId),
+  statusIdx: index('idx_card_transactions_status').on(table.status),
+  createdIdx: index('idx_card_transactions_created').on(table.createdAt),
+}));
+
+/**
+ * Card Listing Watchlist - Users watching listings for price drops
+ */
+export const cardListingWatchers = pgTable('card_listing_watchers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  listingId: uuid('listing_id').notNull().references(() => cardListings.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  notifyOnPriceDrop: boolean('notify_on_price_drop').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  listingIdx: index('idx_card_listing_watchers_listing').on(table.listingId),
+  userIdx: index('idx_card_listing_watchers_user').on(table.userId),
+  uniqueWatch: uniqueIndex('idx_card_listing_watchers_unique').on(table.listingId, table.userId),
+}));
+
+// ============================================================================
+// TCG MARKETPLACE RELATIONS
+// ============================================================================
+
+export const cardListingsRelations = relations(cardListings, ({ one, many }) => ({
+  card: one(cards, {
+    fields: [cardListings.cardId],
+    references: [cards.id],
+  }),
+  seller: one(users, {
+    fields: [cardListings.sellerId],
+    references: [users.id],
+  }),
+  transactions: many(cardTransactions),
+  watchers: many(cardListingWatchers),
+}));
+
+export const cardTransactionsRelations = relations(cardTransactions, ({ one }) => ({
+  listing: one(cardListings, {
+    fields: [cardTransactions.listingId],
+    references: [cardListings.id],
+  }),
+  buyer: one(users, {
+    fields: [cardTransactions.buyerId],
+    references: [users.id],
+  }),
+  seller: one(users, {
+    fields: [cardTransactions.sellerId],
+    references: [users.id],
+  }),
+  card: one(cards, {
+    fields: [cardTransactions.cardId],
+    references: [cards.id],
+  }),
+}));
+
+export const cardListingWatchersRelations = relations(cardListingWatchers, ({ one }) => ({
+  listing: one(cardListings, {
+    fields: [cardListingWatchers.listingId],
+    references: [cardListings.id],
+  }),
+  user: one(users, {
+    fields: [cardListingWatchers.userId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
+// TCG MARKETPLACE TYPE EXPORTS
+// ============================================================================
+
+export type CardListing = typeof cardListings.$inferSelect;
+export type NewCardListing = typeof cardListings.$inferInsert;
+export type CardTransaction = typeof cardTransactions.$inferSelect;
+export type NewCardTransaction = typeof cardTransactions.$inferInsert;
+export type CardListingWatcher = typeof cardListingWatchers.$inferSelect;
+export type NewCardListingWatcher = typeof cardListingWatchers.$inferInsert;
 
