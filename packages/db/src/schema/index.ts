@@ -316,3 +316,35 @@ export {
   type NewAnalyticsEvent,
   type AnalyticsEventType,
 } from './analyticsEvents';
+
+// Blog Posts - Topic Cluster SEO Architecture (Phase 3)
+export {
+  // Tables
+  blogClusters,
+  blogPosts,
+  blogCitations,
+  // Enums
+  blogPostTypeEnum,
+  blogPostStatusEnum,
+  citationSourceTypeEnum,
+  // Relations
+  blogClustersRelations,
+  blogPostsRelations,
+  blogCitationsRelations,
+  // Helper functions
+  calculateReadingTime,
+  getWordCount,
+  // Types
+  type BlogCluster,
+  type NewBlogCluster,
+  type BlogPost,
+  type NewBlogPost,
+  type BlogCitation,
+  type NewBlogCitation,
+  type BlogPostType,
+  type BlogPostStatus,
+  type CitationSourceType,
+  type BlogPostCitation,
+  type BlogPostAuthor,
+  type BlogPostSeoData,
+} from './blogPosts';
