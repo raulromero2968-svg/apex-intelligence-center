@@ -26,6 +26,12 @@ import {
   getCachedQueryEmbedding,
   cacheQueryEmbedding,
 } from '@/lib/cache/embedding-cache';
+import {
+  getSearchVariant,
+  trackSearch,
+  isUserInExperiment,
+  type SearchVariant,
+} from '@/lib/ab-testing/search-experiment';
 
 // =============================================================================
 // CONSTANTS
@@ -450,6 +456,121 @@ async function ragFusionSearch(
 }
 
 // =============================================================================
+// SIMPLE KEYWORD SEARCH (Variant A)
+// =============================================================================
+
+/**
+ * Simple keyword search using PostgreSQL full-text search
+ * Used as control group in A/B test
+ */
+async function simpleKeywordSearch(
+  client: ReturnType<Pool['connect']> extends Promise<infer T> ? T : never,
+  query: string,
+  filters: { market?: string; category?: string; game?: string; tier?: string },
+  limit: number
+): Promise<SearchResult[]> {
+  // Build WHERE clause
+  const conditions: string[] = ["status = 'published'"];
+  const filterParams: (string | number)[] = [query];
+  let paramIndex = 2;
+
+  if (filters.market) {
+    conditions.push(`(posted_to = $${paramIndex} OR posted_to = 'both')`);
+    filterParams.push(filters.market);
+    paramIndex++;
+  }
+  if (filters.category) {
+    conditions.push(`category = $${paramIndex}`);
+    filterParams.push(filters.category);
+    paramIndex++;
+  }
+  if (filters.game) {
+    conditions.push(`game = $${paramIndex}`);
+    filterParams.push(filters.game);
+    paramIndex++;
+  }
+  if (filters.tier) {
+    conditions.push(`tier = $${paramIndex}`);
+    filterParams.push(filters.tier);
+    paramIndex++;
+  }
+
+  const whereClause = conditions.join(' AND ');
+
+  // Simple keyword search with ts_rank
+  const result = await client.query(
+    `SELECT
+      id, user_id, title, slug, summary, category, tier, posted_to,
+      price, game, tags, view_count, like_count, quality_score, published_at,
+      ts_rank_cd(
+        to_tsvector('english', coalesce(title, '') || ' ' || coalesce(content, '')),
+        websearch_to_tsquery('english', $1)
+      ) AS score
+     FROM intel_reports
+     WHERE ${whereClause}
+       AND to_tsvector('english', coalesce(title, '') || ' ' || coalesce(content, ''))
+           @@ websearch_to_tsquery('english', $1)
+     ORDER BY score DESC, published_at DESC
+     LIMIT ${limit}`,
+    filterParams
+  );
+
+  return result.rows.map((row) => ({
+    id: row.id,
+    userId: row.user_id,
+    title: row.title,
+    slug: row.slug,
+    summary: row.summary,
+    category: row.category,
+    tier: row.tier,
+    postedTo: row.posted_to,
+    price: row.price,
+    game: row.game,
+    tags: row.tags || [],
+    viewCount: row.view_count,
+    likeCount: row.like_count,
+    qualityScore: parseFloat(row.quality_score || '0'),
+    publishedAt: row.published_at,
+    score: row.score,
+    searchType: 'keyword' as const,
+  }));
+}
+
+// =============================================================================
+// GET USER ID FROM REQUEST
+// =============================================================================
+
+/**
+ * Extract user ID from request for A/B assignment
+ * Falls back to IP-based anonymous ID if not authenticated
+ */
+function getUserIdFromRequest(request: NextRequest): string {
+  // Try to get from auth header
+  const authHeader = request.headers.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    // Decode JWT to get user ID (simplified - in production use proper JWT verification)
+    try {
+      const token = authHeader.slice(7);
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.sub) return payload.sub;
+    } catch {
+      // Fall through to anonymous ID
+    }
+  }
+
+  // Try to get from cookie
+  const userIdCookie = request.cookies.get('user_id');
+  if (userIdCookie?.value) return userIdCookie.value;
+
+  // Fall back to IP-based anonymous ID
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('x-real-ip') ||
+    'anonymous';
+
+  return `anon:${ip}`;
+}
+
+// =============================================================================
 // GET - SEARCH INTEL REPORTS
 // =============================================================================
 
@@ -462,8 +583,33 @@ export async function GET(request: NextRequest) {
     const params = searchSchema.parse(searchParams);
     const offset = (params.page - 1) * params.limit;
 
-    // Check cache first
-    const cacheKey = `search:reports:${params.query}:${params.market || 'all'}:${params.category || 'all'}:${params.game || 'all'}:${params.tier || 'all'}`;
+    // =========================================================================
+    // A/B TEST VARIANT ASSIGNMENT
+    // =========================================================================
+
+    const userId = getUserIdFromRequest(request);
+    let variant: SearchVariant = 'B'; // Default to RAG-Fusion
+    let inExperiment = false;
+
+    // Check if user is in experiment
+    if (isUserInExperiment(userId)) {
+      variant = getSearchVariant(userId);
+      inExperiment = true;
+
+      // Track search event for experiment
+      trackSearch(userId, variant).catch((err) =>
+        console.warn('A/B tracking failed:', err)
+      );
+    }
+
+    // Override variant if explicitly requested via query param (for testing)
+    const forceVariant = request.nextUrl.searchParams.get('variant');
+    if (forceVariant === 'A' || forceVariant === 'B') {
+      variant = forceVariant;
+    }
+
+    // Check cache first (include variant in cache key for A/B test)
+    const cacheKey = `search:reports:${variant}:${params.query}:${params.market || 'all'}:${params.category || 'all'}:${params.game || 'all'}:${params.tier || 'all'}`;
     const redis = await getRedis();
 
     if (redis) {
@@ -488,6 +634,12 @@ export async function GET(request: NextRequest) {
               rerankingApplied: cachedData.rerankingApplied,
               cached: true,
               latencyMs: Date.now() - startTime,
+              // A/B test metadata
+              experiment: {
+                variant,
+                variantName: variant === 'A' ? 'Simple Keyword' : 'RAG-Fusion',
+                inExperiment,
+              },
             },
           });
         }
@@ -496,43 +648,54 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Perform RAG-Fusion search with multi-query (embeddings are cached for cost savings)
-    const {
-      results: searchResults,
-      queryCount,
-      generationTimeMs,
-      embeddingsCached,
-      embeddingsGenerated,
-    } = await ragFusionSearch(
-      client,
-      params.query,
-      { market: params.market, category: params.category, game: params.game, tier: params.tier },
-      params.useMultiQuery
-    );
+    // =========================================================================
+    // EXECUTE SEARCH BASED ON A/B VARIANT
+    // =========================================================================
 
-    let finalResults: SearchResult[];
+    let searchResults: SearchResult[];
+    let queryCount = 1;
+    let generationTimeMs = 0;
     let rerankingApplied = false;
 
-    // Apply Cohere reranking if enabled
-    if (params.useReranking && searchResults.length > 0) {
-      const documentsForReranking = searchResults
-        .slice(0, RERANK_LIMIT)
-        .map((r) => ({ id: r.id, content: (r as any).content || r.summary || r.title }));
-
-      const rerankResults = await cohereRerank(params.query, documentsForReranking, RERANK_LIMIT);
-
-      if (rerankResults) {
-        rerankingApplied = true;
-        finalResults = rerankResults.map((rr) => ({
-          ...searchResults[rr.index],
-          score: rr.relevance_score,
-        }));
-      } else {
-        finalResults = searchResults;
-      }
+    if (variant === 'A') {
+      // Variant A: Simple keyword search (control)
+      searchResults = await simpleKeywordSearch(
+        client,
+        params.query,
+        { market: params.market, category: params.category, game: params.game, tier: params.tier },
+        INITIAL_RETRIEVE_LIMIT
+      );
     } else {
-      finalResults = searchResults;
+      // Variant B: RAG-Fusion search with multi-query (treatment)
+      const ragResults = await ragFusionSearch(
+        client,
+        params.query,
+        { market: params.market, category: params.category, game: params.game, tier: params.tier },
+        params.useMultiQuery
+      );
+      searchResults = ragResults.results;
+      queryCount = ragResults.queryCount;
+      generationTimeMs = ragResults.generationTimeMs;
+
+      // Apply Cohere reranking only for RAG-Fusion variant
+      if (params.useReranking && searchResults.length > 0) {
+        const documentsForReranking = searchResults
+          .slice(0, RERANK_LIMIT)
+          .map((r) => ({ id: r.id, content: (r as any).content || r.summary || r.title }));
+
+        const rerankResults = await cohereRerank(params.query, documentsForReranking, RERANK_LIMIT);
+
+        if (rerankResults) {
+          rerankingApplied = true;
+          searchResults = rerankResults.map((rr) => ({
+            ...searchResults[rr.index],
+            score: rr.relevance_score,
+          }));
+        }
+      }
     }
+
+    let finalResults: SearchResult[] = searchResults;
 
     // Strip content field for response
     const cleanResults = finalResults.map(({ content: _, ...rest }: any) => rest);
@@ -562,7 +725,7 @@ export async function GET(request: NextRequest) {
 
     Sentry.addBreadcrumb({
       category: 'search',
-      message: `RAG-Fusion search: "${params.query}"`,
+      message: `${variant === 'A' ? 'Simple' : 'RAG-Fusion'} search: "${params.query}"`,
       level: 'info',
       data: {
         resultsCount: paginatedResults.length,
@@ -570,8 +733,8 @@ export async function GET(request: NextRequest) {
         rerankingApplied,
         latencyMs,
         generationTimeMs,
-        embeddingsCached,
-        embeddingsGenerated,
+        variant,
+        inExperiment,
       },
     });
 
@@ -592,11 +755,11 @@ export async function GET(request: NextRequest) {
         rerankingApplied,
         cached: false,
         latencyMs,
-        // Embedding cache stats for cost/performance monitoring
-        embeddingCache: {
-          hits: embeddingsCached,
-          misses: embeddingsGenerated,
-          hitRate: queryCount > 0 ? embeddingsCached / queryCount : 0,
+        // A/B test metadata
+        experiment: {
+          variant,
+          variantName: variant === 'A' ? 'Simple Keyword' : 'RAG-Fusion',
+          inExperiment,
         },
       },
     });
