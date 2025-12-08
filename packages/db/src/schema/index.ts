@@ -348,3 +348,23 @@ export {
   type BlogPostAuthor,
   type BlogPostSeoData,
 } from './blogPosts';
+
+// Perplexity-Style Blog - Topic Clusters with Citation Sourcing (Alternative schema)
+export {
+  // Tables
+  clusters,
+  posts,
+  citations,
+  // Relations
+  clustersRelations,
+  postsRelations,
+  citationsRelations,
+  // Types
+  type Cluster,
+  type NewCluster,
+  type Post,
+  type NewPost,
+  type Citation,
+  type NewCitation,
+  type PostMetaSchema,
+} from './blog';
