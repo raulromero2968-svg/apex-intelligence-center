@@ -11,6 +11,13 @@ import { ShadowReflexTest } from '@/components/mdx/ShadowReflexTest';
 import GamingGlossary from '@/components/mdx/GamingGlossary';
 import RentismNetworkGraph from '@/components/mdx/RentismNetworkGraph';
 
+// Trust-First Components (Value Exchange, Not FOMO)
+import { LiveTicker, TrendBadge, PriceTicker } from '@/components/mdx/LiveTicker';
+import { ProContext, IntelligenceContext, ApexContext } from '@/components/mdx/ProContext';
+import { MethodologyBox, MethodologyNote, DataMethodology, PredictionMethodology } from '@/components/mdx/MethodologyBox';
+import { Citation, Source, CitationList, Ref } from '@/components/mdx/Citation';
+import { ProTip, Insight, Warning, BullishSignal, BearishSignal, ProInsight } from '@/components/mdx/ProTip';
+
 // Custom components for MDX content
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return getMDXComponents(components);
@@ -30,6 +37,31 @@ export function getMDXComponents(components: MDXComponents = {}): MDXComponents 
     DataCallout,
     VARCInsight,
     TerminalSection,
+    // Trust-First Components (Live Data)
+    LiveTicker,
+    TrendBadge,
+    PriceTicker,
+    // Trust-First Components (Content Gates)
+    ProContext,
+    IntelligenceContext,
+    ApexContext,
+    // Transparency Components
+    MethodologyBox,
+    MethodologyNote,
+    DataMethodology,
+    PredictionMethodology,
+    // Citation System (Perplexity-style)
+    Citation,
+    Source,
+    CitationList,
+    Ref,
+    // Advisory Components
+    ProTip,
+    Insight,
+    Warning,
+    BullishSignal,
+    BearishSignal,
+    ProInsight,
     // Override default HTML elements
     h1: ({ children }) => (
       <h1 className="text-4xl font-bold text-white mb-6 mt-8 first:mt-0">

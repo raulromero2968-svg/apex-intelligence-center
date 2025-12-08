@@ -58,6 +58,9 @@ const mockTickerData: Record<
   string,
   { price: number; change: number; trend: 'up' | 'down' | 'neutral'; sparkline: number[] }
 > = {
+  // ============================================================================
+  // Pokemon - Blue Chip WOTC Era
+  // ============================================================================
   'charizard-base-1st': {
     price: 42500,
     change: 12.4,
@@ -76,6 +79,135 @@ const mockTickerData: Record<
     trend: 'neutral',
     sparkline: [5200000, 5250000, 5240000, 5260000, 5270000, 5275000, 5275000],
   },
+  'blastoise-base-1st': {
+    price: 8200,
+    change: 5.8,
+    trend: 'up',
+    sparkline: [7500, 7600, 7800, 7900, 8000, 8100, 8200],
+  },
+  'venusaur-base-1st': {
+    price: 6800,
+    change: 3.2,
+    trend: 'up',
+    sparkline: [6400, 6500, 6550, 6600, 6700, 6750, 6800],
+  },
+  'lugia-neo-genesis-1st': {
+    price: 12500,
+    change: 8.7,
+    trend: 'up',
+    sparkline: [11000, 11200, 11500, 11800, 12000, 12300, 12500],
+  },
+
+  // ============================================================================
+  // Magic: The Gathering - Blue Chip
+  // ============================================================================
+  'lotus-alpha': {
+    price: 175000,
+    change: 4.2,
+    trend: 'up',
+    sparkline: [165000, 168000, 170000, 172000, 173000, 174000, 175000],
+  },
+  'mox-sapphire-alpha': {
+    price: 28000,
+    change: 2.1,
+    trend: 'up',
+    sparkline: [27000, 27200, 27400, 27600, 27800, 27900, 28000],
+  },
+  'ancestral-recall-alpha': {
+    price: 32000,
+    change: 1.8,
+    trend: 'up',
+    sparkline: [31000, 31200, 31400, 31600, 31800, 31900, 32000],
+  },
+  'time-walk-alpha': {
+    price: 35000,
+    change: 3.5,
+    trend: 'up',
+    sparkline: [33000, 33500, 34000, 34200, 34500, 34800, 35000],
+  },
+
+  // ============================================================================
+  // Emerging Markets - Lorcana
+  // ============================================================================
+  'elsa-spirit-queen-enchanted': {
+    price: 450,
+    change: 22.5,
+    trend: 'up',
+    sparkline: [320, 350, 380, 400, 420, 440, 450],
+  },
+  'mickey-mouse-brave-enchanted': {
+    price: 380,
+    change: 18.2,
+    trend: 'up',
+    sparkline: [280, 300, 320, 340, 360, 370, 380],
+  },
+
+  // ============================================================================
+  // Emerging Markets - One Piece
+  // ============================================================================
+  'shanks-sp-op01': {
+    price: 850,
+    change: 15.3,
+    trend: 'up',
+    sparkline: [680, 720, 750, 780, 810, 830, 850],
+  },
+  'luffy-alt-art-op01': {
+    price: 420,
+    change: 12.8,
+    trend: 'up',
+    sparkline: [340, 360, 380, 395, 405, 415, 420],
+  },
+  'nami-sp-op01': {
+    price: 280,
+    change: -5.2,
+    trend: 'down',
+    sparkline: [310, 305, 300, 295, 290, 285, 280],
+  },
+
+  // ============================================================================
+  // "Pro-Only" Undervalued Picks (For Gated Content)
+  // ============================================================================
+  'dark-charizard-1st': {
+    price: 1850,
+    change: 2.4,
+    trend: 'up',
+    sparkline: [1780, 1790, 1800, 1820, 1830, 1840, 1850],
+  },
+  'shining-tyranitar-neo': {
+    price: 2200,
+    change: 4.8,
+    trend: 'up',
+    sparkline: [2050, 2080, 2100, 2130, 2160, 2180, 2200],
+  },
+  'crystal-charizard-skyridge': {
+    price: 9500,
+    change: 6.2,
+    trend: 'up',
+    sparkline: [8700, 8900, 9000, 9200, 9300, 9400, 9500],
+  },
+
+  // ============================================================================
+  // Index Benchmarks (Fictional)
+  // ============================================================================
+  'apex-500-index': {
+    price: 10842,
+    change: 5.7,
+    trend: 'up',
+    sparkline: [10200, 10350, 10450, 10550, 10650, 10750, 10842],
+  },
+  'apex-vintage-index': {
+    price: 8920,
+    change: 7.2,
+    trend: 'up',
+    sparkline: [8200, 8350, 8500, 8600, 8750, 8850, 8920],
+  },
+  'apex-emerging-index': {
+    price: 3450,
+    change: 14.8,
+    trend: 'up',
+    sparkline: [2800, 2950, 3100, 3200, 3300, 3400, 3450],
+  },
+
   default: {
     price: 0,
     change: 0,
