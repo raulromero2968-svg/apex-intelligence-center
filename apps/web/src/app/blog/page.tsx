@@ -29,6 +29,13 @@ import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { DigitalScroll } from '@/components/ui/DigitalScroll';
 import { HoloCard } from '@/components/ui/HoloCard';
 
+// LLMO (Large Language Model Optimization)
+import {
+  generateBlogIndexSchemaGraph,
+  renderJsonLd,
+  defaultLLMOConfig,
+} from '@/lib/llmo';
+
 // =============================================================================
 // Metadata
 // =============================================================================
@@ -53,8 +60,34 @@ export default async function BlogPage() {
   // Check if we have any DB posts
   const hasDbPosts = clusters.length > 0 || standalonePosts.length > 0;
 
+  // Generate LLMO schema for the blog index
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
+  const llmoConfig = { ...defaultLLMOConfig, baseUrl };
+
+  // Collect all posts for schema generation
+  const allPosts = hasDbPosts
+    ? [
+        ...clusters.flatMap((c) => [c.pillarPost, ...c.posts].filter(Boolean) as BlogPostPreview[]),
+        ...standalonePosts,
+      ]
+    : mdxPosts.map((post) => ({
+        title: post.frontmatter.title,
+        slug: post.slug,
+        excerpt: post.frontmatter.description || null,
+        publishedAt: post.frontmatter.date ? new Date(post.frontmatter.date) : null,
+      }));
+
+  const schemaGraph = generateBlogIndexSchemaGraph(allPosts, llmoConfig);
+
   return (
-    <div className="relative min-h-screen pt-24">
+    <>
+      {/* JSON-LD Structured Data for LLMO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: renderJsonLd(schemaGraph) }}
+      />
+
+      <div className="relative min-h-screen pt-24">
       {/* Hero Section */}
       <section className="relative z-10 px-6 md:px-12 py-16">
         <div className="max-w-4xl mx-auto text-center">
@@ -148,7 +181,8 @@ export default async function BlogPage() {
           </HoloCard>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
 

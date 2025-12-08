@@ -37,8 +37,14 @@ import {
   getRelatedPostsInCluster,
   getPillarPostForCluster,
   getAllPostSlugs,
-  generateBlogPostJsonLd,
 } from '@/lib/api/blog';
+
+// LLMO (Large Language Model Optimization)
+import {
+  generateBlogPostSchemaGraph,
+  renderJsonLd,
+  defaultLLMOConfig,
+} from '@/lib/llmo';
 import { getArticleBySlug, getAllBlogPostSlugs } from '@/lib/mdx';
 
 // Components
@@ -271,8 +277,12 @@ async function DatabasePostView({
     ]);
   }
 
-  // Generate JSON-LD
-  const jsonLd = generateBlogPostJsonLd(post, baseUrl);
+  // Generate comprehensive JSON-LD schema graph for LLMO
+  const llmoConfig = {
+    ...defaultLLMOConfig,
+    baseUrl,
+  };
+  const schemaGraph = generateBlogPostSchemaGraph(post, llmoConfig);
 
   const publishDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', {
@@ -284,10 +294,10 @@ async function DatabasePostView({
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
+      {/* JSON-LD Structured Data for LLMO */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: renderJsonLd(schemaGraph) }}
       />
 
       <div className="relative min-h-screen pt-24 pb-20">
@@ -603,26 +613,56 @@ async function MdxPostView({
     year: 'numeric',
   });
 
-  // Generate basic JSON-LD
+  // Generate JSON-LD schema graph for LLMO
+  const llmoConfig = {
+    ...defaultLLMOConfig,
+    baseUrl,
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: frontmatter.title,
-    description: frontmatter.description || '',
-    author: {
-      '@type': 'Person',
-      name: frontmatter.author || 'Apex Intelligence Team',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Apex Intelligence',
-      logo: { '@type': 'ImageObject', url: `${baseUrl}/logo.png` },
-    },
-    datePublished: frontmatter.publishedAt || frontmatter.date,
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${baseUrl}/blog/${slug}` },
-    image: frontmatter.heroImage || `${baseUrl}/api/og?slug=${slug}`,
-    articleSection: frontmatter.category || 'Market Analysis',
-    keywords: (frontmatter.tags || []).join(', '),
+    '@graph': [
+      // Organization
+      {
+        '@type': 'Organization',
+        '@id': `${baseUrl}/#organization`,
+        name: llmoConfig.organizationName,
+        url: baseUrl,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${baseUrl}${llmoConfig.logoUrl}`,
+        },
+      },
+      // Breadcrumbs
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: `${baseUrl}/blog` },
+          { '@type': 'ListItem', position: 3, name: frontmatter.title, item: `${baseUrl}/blog/${slug}` },
+        ],
+      },
+      // Article
+      {
+        '@type': 'Article',
+        '@id': `${baseUrl}/blog/${slug}#article`,
+        headline: frontmatter.title,
+        description: frontmatter.description || '',
+        author: {
+          '@type': 'Person',
+          name: frontmatter.author || 'Apex Intelligence Team',
+        },
+        publisher: {
+          '@id': `${baseUrl}/#organization`,
+        },
+        datePublished: frontmatter.publishedAt || frontmatter.date,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': `${baseUrl}/blog/${slug}` },
+        image: frontmatter.heroImage || `${baseUrl}/api/og?slug=${slug}`,
+        articleSection: frontmatter.category || 'Market Analysis',
+        keywords: (frontmatter.tags || []).join(', '),
+        inLanguage: 'en-US',
+      },
+    ],
   };
 
   const allSources = (article.frontmatter as any).allSources || (article.frontmatter as any).sources || [];
