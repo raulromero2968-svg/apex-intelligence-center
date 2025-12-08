@@ -298,6 +298,15 @@ export function calculateReadTime(content: string): number {
 // Blog Post Functions (content/blog/)
 // ============================================================================
 
+export interface BlogPostSource {
+  id: string | number;
+  name: string;
+  url: string;
+  publisher?: string;
+  accessed?: string;
+  verified?: boolean;
+}
+
 export interface BlogPostFrontmatter {
   title: string;
   description: string;
@@ -305,12 +314,23 @@ export interface BlogPostFrontmatter {
   author: string;
   hero?: string;
   tags?: string[];
+  // Enhanced frontmatter for Trust-First Blog Engine
+  seoDescription?: string; // SEO-optimized description (overrides description for meta tags)
+  authorRole?: string; // Author role/title (e.g., "Senior Analyst")
+  authorAvatar?: string; // Author avatar URL
+  citationList?: BlogPostSource[]; // Sources for right sidebar
+  sources?: BlogPostSource[]; // Legacy alias for citationList
 }
 
 export interface BlogPost {
   slug: string;
   frontmatter: BlogPostFrontmatter;
   content: any;
+  readingTime?: {
+    text: string;
+    minutes: number;
+    words: number;
+  };
 }
 
 // Get all blog post slugs
@@ -332,9 +352,17 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const filePath = path.join(blogDirectory, `${slug}.mdx`);
     const source = await readFile(filePath, 'utf8');
 
-    const { data: frontmatter, content } = matter(source);
+    const { data: frontmatter, content: rawContent } = matter(source);
+
+    // Calculate reading time
+    const readingTimeData = {
+      text: `${calculateReadTime(rawContent)} min read`,
+      minutes: calculateReadTime(rawContent),
+      words: rawContent.trim().split(/\s+/).length,
+    };
+
     const { content: mdxContent } = await compileMDX<BlogPostFrontmatter>({
-      source: content,
+      source: rawContent,
       components: mdxComponents,
       options: {
         parseFrontmatter: false,
@@ -353,6 +381,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       slug,
       frontmatter: frontmatter as BlogPostFrontmatter,
       content: mdxContent,
+      readingTime: readingTimeData,
     };
   } catch (error) {
     console.error(`Error reading blog post ${slug}:`, error);
