@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getArticleBySlug, getAllBlogPostSlugs } from '@/lib/mdx';
+import { generateArticleSchema } from '@/lib/seo/json-ld';
 import { BookOpen, Clock, Calendar, User, ArrowLeft, ExternalLink, Database, CheckCircle } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { DigitalScroll } from '@/components/ui/DigitalScroll';
@@ -23,49 +24,8 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-// Generate JSON-LD structured data for LLM discovery (LLMO)
-function generateArticleJsonLd(article: any, slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article.frontmatter.title,
-    description: article.frontmatter.description || '',
-    author: {
-      '@type': 'Person',
-      name: article.frontmatter.author || 'Apex Intelligence Team',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Apex Intelligence',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${baseUrl}/logo.png`,
-      },
-    },
-    datePublished: article.frontmatter.publishedAt || article.frontmatter.date,
-    dateModified: article.frontmatter.publishedAt || article.frontmatter.date,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${baseUrl}/blog/${slug}`,
-    },
-    image: article.frontmatter.heroImage
-      ? `${baseUrl}${article.frontmatter.heroImage}`
-      : `${baseUrl}/api/og?slug=${slug}`,
-    articleSection: article.frontmatter.category || 'Market Analysis',
-    keywords: article.frontmatter.tags?.join(', ') || '',
-    wordCount: article.readingTime?.words || 0,
-    // Citation information for transparency
-    citation: article.frontmatter.allSources?.map((source: any) => ({
-      '@type': 'CreativeWork',
-      name: source.name,
-      url: source.url,
-      publisher: source.publisher,
-      dateAccessed: source.accessed,
-    })) || [],
-  };
-}
+// Note: JSON-LD schema generation moved to @/lib/seo/json-ld for reusability
+// Uses generateArticleSchema() for comprehensive Schema.org compliance
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: BlogPostPageProps) {
@@ -127,8 +87,9 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
     year: 'numeric',
   });
 
-  // Generate JSON-LD for LLMO
-  const jsonLd = generateArticleJsonLd(article, params.slug);
+  // Generate enhanced JSON-LD for LLMO (AI Discoverability)
+  // Uses comprehensive Schema.org NewsArticle/TechArticle with citations
+  const jsonLd = generateArticleSchema(article as any, params.slug);
 
   // Collect sources from frontmatter for sidebar
   const allSources = article.frontmatter.allSources || article.frontmatter.sources || [];
