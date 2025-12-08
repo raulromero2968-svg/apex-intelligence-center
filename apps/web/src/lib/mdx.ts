@@ -32,6 +32,13 @@ import { AuthGate, SignUpGate, ProGate, PremiumGate } from '@/components/mdx/Aut
 import { Citation, Source, CitationList, Ref } from '@/components/mdx/Citation';
 
 // ============================================================================
+// Trust-First Components (Value Exchange, Not FOMO)
+// ============================================================================
+import { ProContext, IntelligenceContext, ApexContext } from '@/components/mdx/ProContext';
+import { MethodologyBox, MethodologyNote, DataMethodology, PredictionMethodology } from '@/components/mdx/MethodologyBox';
+import { LiveTicker, TrendBadge, PriceTicker } from '@/components/mdx/LiveTicker';
+
+// ============================================================================
 // Component Registry (All MDX components in one place)
 // ============================================================================
 const mdxComponents = {
@@ -59,12 +66,26 @@ const mdxComponents = {
   BullishSignal,
   BearishSignal,
   ProInsight,
-  // Conversion-driving components
+  // Legacy conversion components (kept for backwards compatibility)
   AuthGate,
   SignUpGate,
   ProGate,
   PremiumGate,
-  // Citation system (Perplexity-style)
+  // Trust-First Components (Value Exchange, Not FOMO)
+  // These replace AuthGate for new content - professional threshold, not manipulation
+  ProContext,
+  IntelligenceContext,
+  ApexContext,
+  // Transparency Components
+  MethodologyBox,
+  MethodologyNote,
+  DataMethodology,
+  PredictionMethodology,
+  // Live Data Components (data, not opinion)
+  LiveTicker,
+  TrendBadge,
+  PriceTicker,
+  // Citation system (Perplexity-style, enhanced with tooltips)
   Citation,
   Source,
   CitationList,

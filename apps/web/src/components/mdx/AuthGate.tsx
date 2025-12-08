@@ -1,24 +1,40 @@
 /**
- * AuthGate Component
+ * AuthGate Component (Legacy - Backward Compatibility)
  *
- * Hides content from non-authenticated users - a direct conversion driver.
- * Creates "Fear Of Missing Out" (FOMO) that drives sign-ups.
+ * @deprecated For new content, use ProContext instead. This component uses
+ * FOMO-based messaging which conflicts with our Core Value of Transparency.
  *
- * Usage in MDX:
+ * IMPORTANT: New articles should use <ProContext /> from './ProContext.tsx'
+ * which frames premium content as a "professional threshold" (value exchange)
+ * rather than artificial scarcity (FOMO manipulation).
+ *
+ * This component is kept for backward compatibility with existing content.
+ *
+ * Migration Guide:
+ * - Replace <AuthGate> with <ProContext>
+ * - Replace <ProGate> with <IntelligenceContext>
+ * - Replace <PremiumGate> with <ApexContext>
+ *
+ * Old (FOMO-based):
  * ```mdx
- * Here's our analysis of the top 5 undervalued cards:
- *
- * 1. Card A - Visible to everyone
- * 2. Card B - Visible to everyone
- *
  * <AuthGate>
  *   3. **Hidden Gem C** - Only visible to logged-in users
- *   4. **Hidden Gem D** - Premium analysis
- *   5. **Hidden Gem E** - Exclusive pick
  * </AuthGate>
  * ```
  *
- * @see lib/mdx.ts for component registration
+ * New (Trust-First):
+ * ```mdx
+ * <ProContext
+ *   title="Advanced Card Analysis"
+ *   methodology="Uses ML model trained on 2.3M transactions"
+ *   dataSourceCount={23000}
+ * >
+ *   <DetailedAnalysis />
+ * </ProContext>
+ * ```
+ *
+ * @see ProContext for the trust-first replacement
+ * @see Core Values: Transparency
  */
 
 'use client';
