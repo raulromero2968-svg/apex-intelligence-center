@@ -1539,3 +1539,346 @@ export type NewCardTransaction = typeof cardTransactions.$inferInsert;
 export type CardListingWatcher = typeof cardListingWatchers.$inferSelect;
 export type NewCardListingWatcher = typeof cardListingWatchers.$inferInsert;
 
+// ============================================================================
+// PERPLEXITY-STYLE BLOG SYSTEM
+// ============================================================================
+
+/**
+ * Blog Posts - Dynamic AI-generated content with Perplexity-style citations
+ *
+ * This table stores dynamically generated blog posts separate from static MDX.
+ * Supports AI-generated content with inline citations, topic clustering for SEO,
+ * and engagement tracking for analytics.
+ *
+ * Content types:
+ * - 'pillar': Long-form comprehensive guides (3000+ words)
+ * - 'cluster': Supporting articles linked to pillars (1000-2000 words)
+ * - 'insight': Quick market insights/news (500-1000 words)
+ * - 'analysis': Data-driven deep dives with charts
+ */
+export const blogPosts = pgTable('blog_posts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
+  subtitle: text('subtitle'),
+  excerpt: text('excerpt').notNull(), // SEO meta description / preview
+  content: text('content').notNull(), // Markdown with [cite:N] placeholders
+  contentHtml: text('content_html'), // Pre-rendered HTML for fast serving
+
+  // Content metadata
+  contentType: text('content_type', {
+    enum: ['pillar', 'cluster', 'insight', 'analysis']
+  }).notNull().default('cluster'),
+  wordCount: integer('word_count').notNull().default(0),
+  readingTimeMinutes: integer('reading_time_minutes').notNull().default(0),
+
+  // Author & generation metadata
+  authorId: text('author_id').references(() => users.id, { onDelete: 'set null' }),
+  authorName: text('author_name').notNull().default('Apex Intelligence'),
+  isAiGenerated: boolean('is_ai_generated').notNull().default(true),
+  generationModel: text('generation_model'), // 'claude-3-5-sonnet' | 'gemini-1.5-pro'
+  generationPrompt: text('generation_prompt'), // Original prompt for regeneration
+
+  // SEO & categorization
+  heroImage: text('hero_image'), // URL to hero/og image
+  tags: jsonb('tags').$type<string[]>().default([]),
+  category: text('category'), // Primary category
+  canonicalUrl: text('canonical_url'), // For syndicated content
+
+  // Topic clustering for SEO
+  pillarPostId: uuid('pillar_post_id').references((): any => blogPosts.id, { onDelete: 'set null' }),
+  topicClusterId: uuid('topic_cluster_id').references(() => blogTopicClusters.id, { onDelete: 'set null' }),
+
+  // Publishing state
+  status: text('status', {
+    enum: ['draft', 'review', 'scheduled', 'published', 'archived']
+  }).notNull().default('draft'),
+  accessLevel: text('access_level', {
+    enum: ['public', 'free_user', 'pro', 'enterprise']
+  }).notNull().default('public'),
+
+  // Scheduling
+  publishedAt: timestamp('published_at'),
+  scheduledFor: timestamp('scheduled_for'),
+
+  // Analytics (denormalized for fast queries)
+  viewCount: integer('view_count').notNull().default(0),
+  uniqueViewCount: integer('unique_view_count').notNull().default(0),
+  avgReadPercent: real('avg_read_percent').default(0), // 0-100
+  shareCount: integer('share_count').notNull().default(0),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  slugIdx: uniqueIndex('idx_blog_posts_slug').on(table.slug),
+  statusIdx: index('idx_blog_posts_status').on(table.status),
+  publishedIdx: index('idx_blog_posts_published').on(table.publishedAt),
+  categoryIdx: index('idx_blog_posts_category').on(table.category),
+  contentTypeIdx: index('idx_blog_posts_content_type').on(table.contentType),
+  pillarIdx: index('idx_blog_posts_pillar').on(table.pillarPostId),
+  topicClusterIdx: index('idx_blog_posts_topic_cluster').on(table.topicClusterId),
+  authorIdx: index('idx_blog_posts_author').on(table.authorId),
+  viewCountIdx: index('idx_blog_posts_views').on(table.viewCount),
+}));
+
+/**
+ * Blog Citations - Perplexity-style source tracking
+ *
+ * Each citation in a blog post is stored here with full provenance.
+ * Citations are referenced in content as [cite:N] where N is citationIndex.
+ * Supports confidence scoring and verification status.
+ */
+export const blogCitations = pgTable('blog_citations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  postId: uuid('post_id').notNull().references(() => blogPosts.id, { onDelete: 'cascade' }),
+
+  // Citation reference
+  citationIndex: integer('citation_index').notNull(), // [cite:1], [cite:2], etc.
+
+  // Source information
+  sourceUrl: text('source_url').notNull(),
+  sourceTitle: text('source_title').notNull(),
+  sourceAuthor: text('source_author'),
+  sourceDomain: text('source_domain').notNull(), // e.g., 'tcgplayer.com'
+  sourcePublishedAt: timestamp('source_published_at'),
+  sourceFetchedAt: timestamp('source_fetched_at').defaultNow().notNull(),
+
+  // Extracted content
+  excerptText: text('excerpt_text'), // Relevant quote from source
+  contextSummary: text('context_summary'), // AI-generated summary of relevance
+
+  // Quality metrics
+  confidence: real('confidence').notNull().default(0.8), // 0-1, AI confidence in citation
+  isVerified: boolean('is_verified').notNull().default(false), // Human verified
+  verifiedBy: text('verified_by').references(() => users.id, { onDelete: 'set null' }),
+  verifiedAt: timestamp('verified_at'),
+
+  // Link status
+  isActive: boolean('is_active').notNull().default(true), // Link not broken
+  lastCheckedAt: timestamp('last_checked_at'),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  postIdx: index('idx_blog_citations_post').on(table.postId),
+  uniqueCitation: uniqueIndex('idx_blog_citations_unique').on(table.postId, table.citationIndex),
+  domainIdx: index('idx_blog_citations_domain').on(table.sourceDomain),
+  activeIdx: index('idx_blog_citations_active').on(table.isActive),
+}));
+
+/**
+ * Blog Topic Clusters - SEO pillar/cluster organization
+ *
+ * Topic clusters group related content around a pillar page.
+ * This is essential for "LLMO" (Large Language Model Optimization)
+ * and establishes topical authority.
+ */
+export const blogTopicClusters = pgTable('blog_topic_clusters', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  // Cluster identity
+  name: text('name').notNull(), // e.g., "Pokemon Card Grading"
+  slug: text('slug').notNull().unique(), // e.g., "pokemon-grading"
+  description: text('description'),
+
+  // SEO metadata
+  targetKeyword: text('target_keyword').notNull(), // Primary SEO target
+  relatedKeywords: jsonb('related_keywords').$type<string[]>().default([]),
+  searchVolume: integer('search_volume'), // Monthly search volume estimate
+  competitionScore: real('competition_score'), // 0-1, keyword difficulty
+
+  // Cluster structure
+  pillarPostId: uuid('pillar_post_id').references(() => blogPosts.id, { onDelete: 'set null' }),
+  clusterPostCount: integer('cluster_post_count').notNull().default(0),
+
+  // Performance tracking
+  totalViews: integer('total_views').notNull().default(0),
+  avgPosition: real('avg_position'), // Average SERP position
+
+  // Status
+  status: text('status', {
+    enum: ['planning', 'building', 'active', 'mature', 'archived']
+  }).notNull().default('planning'),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  slugIdx: uniqueIndex('idx_blog_topic_clusters_slug').on(table.slug),
+  keywordIdx: index('idx_blog_topic_clusters_keyword').on(table.targetKeyword),
+  statusIdx: index('idx_blog_topic_clusters_status').on(table.status),
+  pillarIdx: index('idx_blog_topic_clusters_pillar').on(table.pillarPostId),
+}));
+
+/**
+ * Blog Engagements - Detailed user engagement tracking
+ *
+ * Tracks individual user interactions for analytics and personalization.
+ * Used to calculate popular posts, reading habits, and content recommendations.
+ */
+export const blogEngagements = pgTable('blog_engagements', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  postId: uuid('post_id').notNull().references(() => blogPosts.id, { onDelete: 'cascade' }),
+  userId: text('user_id').references(() => users.id, { onDelete: 'set null' }), // null = anonymous
+  sessionId: text('session_id'), // For anonymous tracking
+
+  // Engagement type
+  eventType: text('event_type', {
+    enum: ['view', 'scroll', 'read_complete', 'citation_click', 'share', 'bookmark', 'follow_up_ask']
+  }).notNull(),
+
+  // Event data
+  scrollDepth: real('scroll_depth'), // 0-100 for scroll events
+  readPercent: real('read_percent'), // 0-100 for read tracking
+  citationIndex: integer('citation_index'), // Which citation was clicked
+  shareChannel: text('share_channel'), // 'twitter', 'linkedin', etc.
+  followUpQuestion: text('follow_up_question'), // For ask events
+
+  // Context
+  referrer: text('referrer'),
+  userAgent: text('user_agent'),
+  deviceType: text('device_type'), // 'mobile', 'tablet', 'desktop'
+
+  // Time tracking
+  timeOnPage: integer('time_on_page'), // Seconds
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  postIdx: index('idx_blog_engagements_post').on(table.postId),
+  userIdx: index('idx_blog_engagements_user').on(table.userId),
+  eventTypeIdx: index('idx_blog_engagements_event').on(table.eventType),
+  createdIdx: index('idx_blog_engagements_created').on(table.createdAt),
+  sessionIdx: index('idx_blog_engagements_session').on(table.sessionId),
+}));
+
+/**
+ * Blog Follow-up Questions - Perplexity-style Q&A tracking
+ *
+ * Stores user follow-up questions and AI responses for each post.
+ * Enables the "Ask Follow-Up" feature with conversation history.
+ */
+export const blogFollowUps = pgTable('blog_follow_ups', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  postId: uuid('post_id').notNull().references(() => blogPosts.id, { onDelete: 'cascade' }),
+  userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
+  sessionId: text('session_id'),
+
+  // Q&A content
+  question: text('question').notNull(),
+  answer: text('answer').notNull(),
+  answerCitations: jsonb('answer_citations').$type<Array<{
+    url: string;
+    title: string;
+    excerpt: string;
+  }>>().default([]),
+
+  // Generation metadata
+  generationModel: text('generation_model'),
+  tokensUsed: integer('tokens_used'),
+  latencyMs: integer('latency_ms'),
+
+  // Quality
+  wasHelpful: boolean('was_helpful'), // User feedback
+  feedbackText: text('feedback_text'),
+
+  // Conversation threading
+  parentFollowUpId: uuid('parent_follow_up_id').references((): any => blogFollowUps.id, { onDelete: 'set null' }),
+  threadDepth: integer('thread_depth').notNull().default(0),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  postIdx: index('idx_blog_follow_ups_post').on(table.postId),
+  userIdx: index('idx_blog_follow_ups_user').on(table.userId),
+  parentIdx: index('idx_blog_follow_ups_parent').on(table.parentFollowUpId),
+  createdIdx: index('idx_blog_follow_ups_created').on(table.createdAt),
+}));
+
+// ============================================================================
+// BLOG SYSTEM RELATIONS
+// ============================================================================
+
+export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
+  author: one(users, {
+    fields: [blogPosts.authorId],
+    references: [users.id],
+  }),
+  pillarPost: one(blogPosts, {
+    fields: [blogPosts.pillarPostId],
+    references: [blogPosts.id],
+    relationName: 'pillarCluster',
+  }),
+  clusterPosts: many(blogPosts, {
+    relationName: 'pillarCluster',
+  }),
+  topicCluster: one(blogTopicClusters, {
+    fields: [blogPosts.topicClusterId],
+    references: [blogTopicClusters.id],
+  }),
+  citations: many(blogCitations),
+  engagements: many(blogEngagements),
+  followUps: many(blogFollowUps),
+}));
+
+export const blogCitationsRelations = relations(blogCitations, ({ one }) => ({
+  post: one(blogPosts, {
+    fields: [blogCitations.postId],
+    references: [blogPosts.id],
+  }),
+  verifier: one(users, {
+    fields: [blogCitations.verifiedBy],
+    references: [users.id],
+  }),
+}));
+
+export const blogTopicClustersRelations = relations(blogTopicClusters, ({ one, many }) => ({
+  pillarPost: one(blogPosts, {
+    fields: [blogTopicClusters.pillarPostId],
+    references: [blogPosts.id],
+  }),
+  posts: many(blogPosts),
+}));
+
+export const blogEngagementsRelations = relations(blogEngagements, ({ one }) => ({
+  post: one(blogPosts, {
+    fields: [blogEngagements.postId],
+    references: [blogPosts.id],
+  }),
+  user: one(users, {
+    fields: [blogEngagements.userId],
+    references: [users.id],
+  }),
+}));
+
+export const blogFollowUpsRelations = relations(blogFollowUps, ({ one, many }) => ({
+  post: one(blogPosts, {
+    fields: [blogFollowUps.postId],
+    references: [blogPosts.id],
+  }),
+  user: one(users, {
+    fields: [blogFollowUps.userId],
+    references: [users.id],
+  }),
+  parentFollowUp: one(blogFollowUps, {
+    fields: [blogFollowUps.parentFollowUpId],
+    references: [blogFollowUps.id],
+    relationName: 'followUpThread',
+  }),
+  childFollowUps: many(blogFollowUps, {
+    relationName: 'followUpThread',
+  }),
+}));
+
+// ============================================================================
+// BLOG SYSTEM TYPE EXPORTS
+// ============================================================================
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type NewBlogPost = typeof blogPosts.$inferInsert;
+export type BlogCitation = typeof blogCitations.$inferSelect;
+export type NewBlogCitation = typeof blogCitations.$inferInsert;
+export type BlogTopicCluster = typeof blogTopicClusters.$inferSelect;
+export type NewBlogTopicCluster = typeof blogTopicClusters.$inferInsert;
+export type BlogEngagement = typeof blogEngagements.$inferSelect;
+export type NewBlogEngagement = typeof blogEngagements.$inferInsert;
+export type BlogFollowUp = typeof blogFollowUps.$inferSelect;
+export type NewBlogFollowUp = typeof blogFollowUps.$inferInsert;
+
