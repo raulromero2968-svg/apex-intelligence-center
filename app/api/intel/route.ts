@@ -18,6 +18,8 @@ import { Pool } from 'pg';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { cacheReportEmbedding } from '@/lib/cache/embedding-cache';
+import { broadcastNewReport, broadcastToModeration } from '@/app/api/ws/route';
+import { reportEmitter, type ReportEvent } from '@/lib/events/report-emitter';
 
 // =============================================================================
 // VALIDATION SCHEMAS
@@ -260,6 +262,71 @@ export async function POST(request: NextRequest) {
          ON CONFLICT (report_id, card_id) DO NOTHING`,
         cardParams
       );
+    }
+
+    // =========================================================================
+    // BROADCAST NEW REPORT VIA WEBSOCKET AND SSE
+    // =========================================================================
+
+    // Only broadcast if report is published (not draft)
+    if (status === 'published') {
+      const reportBroadcast: ReportEvent = {
+        id: report.id,
+        userId: user.id,
+        title: validatedData.title,
+        slug: report.slug,
+        summary: summary,
+        category: validatedData.category,
+        tier: validatedData.tier,
+        postedTo: validatedData.postedTo,
+        game: validatedData.game,
+        tags: validatedData.tags,
+        publishedAt: report.published_at || new Date().toISOString(),
+      };
+
+      try {
+        // Broadcast via WebSocket to room subscribers
+        broadcastNewReport({
+          ...reportBroadcast,
+          authorId: user.id,
+        });
+
+        // Broadcast via SSE event emitter for backwards compatibility
+        reportEmitter.emitEvent('new_report', reportBroadcast);
+
+        Sentry.addBreadcrumb({
+          category: 'intel',
+          message: `Broadcasted new report ${report.id} to ${validatedData.postedTo}`,
+          level: 'info',
+        });
+      } catch (broadcastError) {
+        // Log but don't fail the request - broadcast is best-effort
+        console.warn('Failed to broadcast new report:', broadcastError);
+        Sentry.captureException(broadcastError, {
+          extra: { reportId: report.id, action: 'broadcast_new_report' },
+        });
+      }
+    }
+
+    // If report needs moderation (public posts), notify moderation queue
+    if (status === 'published' && validatedData.tier === 'free') {
+      try {
+        broadcastToModeration('new_report', {
+          id: report.id,
+          title: validatedData.title,
+          slug: report.slug,
+          summary: summary,
+          category: validatedData.category,
+          tier: validatedData.tier,
+          postedTo: validatedData.postedTo,
+          game: validatedData.game,
+          tags: validatedData.tags,
+          authorId: user.id,
+          publishedAt: report.published_at || new Date().toISOString(),
+        });
+      } catch (modError) {
+        console.warn('Failed to notify moderation queue:', modError);
+      }
     }
 
     return NextResponse.json(
