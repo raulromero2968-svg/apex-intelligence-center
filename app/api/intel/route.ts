@@ -17,6 +17,7 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { Pool } from 'pg';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
+import { cacheReportEmbedding } from '@/lib/cache/embedding-cache';
 
 // =============================================================================
 // VALIDATION SCHEMAS
@@ -219,10 +220,16 @@ export async function POST(request: NextRequest) {
         [`[${embedding.join(',')}]`, report.id]
       );
 
+      // Cache embedding in Redis for fast retrieval (1 day TTL)
+      // Non-blocking to not slow down the response
+      cacheReportEmbedding(report.id, embedding).catch((cacheError) => {
+        console.warn('Failed to cache embedding:', cacheError);
+      });
+
       // Track embedding generation in Sentry
       Sentry.addBreadcrumb({
         category: 'intel',
-        message: `Generated embedding for report ${report.id}`,
+        message: `Generated and cached embedding for report ${report.id}`,
         level: 'info',
       });
     } catch (embeddingError) {
