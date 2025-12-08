@@ -296,3 +296,23 @@ export {
   type SecurityEventSeverity,
   type EncryptionKeyType,
 } from './security';
+
+// Analytics Events - Transaction and Engagement Tracking (KB-07)
+export {
+  // Tables
+  analyticsEvents,
+  // Enums
+  analyticsEventTypeEnum,
+  // Relations
+  analyticsEventsRelations,
+  // Constants
+  ANALYTICS_RETENTION_DAYS,
+  ANONYMIZABLE_EVENTS,
+  REVENUE_EVENTS,
+  // Helper functions
+  createAnalyticsEvent,
+  // Types
+  type AnalyticsEvent,
+  type NewAnalyticsEvent,
+  type AnalyticsEventType,
+} from './analyticsEvents';

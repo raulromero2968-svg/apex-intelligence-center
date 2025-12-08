@@ -19,6 +19,7 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { Pool } from 'pg';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
+import { logAnalyticsEvent } from '@/lib/analytics/log-event';
 
 // =============================================================================
 // VALIDATION SCHEMA
@@ -269,6 +270,22 @@ export async function POST(request: NextRequest) {
 
       // Commit transaction
       await client.query('COMMIT');
+
+      // Log analytics event for conversion tracking (async, non-blocking)
+      logAnalyticsEvent('buy_report', {
+        userId: buyerId,
+        metadata: {
+          reportId,
+          price,
+          paymentType: 'rc',
+          sellerId: report.user_id,
+          reportTitle: report.title,
+          reportTier: report.tier,
+        },
+        priceAmount: price,
+      }).catch((analyticsError) => {
+        console.warn('Analytics logging failed:', analyticsError);
+      });
 
       // Track purchase in Sentry
       Sentry.addBreadcrumb({
