@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
           <div className="max-w-7xl mx-auto mb-8">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-sans text-sm"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-sans text-sm"
             >
               <ArrowLeft className="w-4 h-4" />
               BACK_TO_BLOG
@@ -122,12 +122,12 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
 
           {/* Terminal Header */}
           <section className="max-w-7xl mx-auto mb-12">
-            <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8">
+            <div className="border border-border bg-card/50 backdrop-blur-sm rounded-lg p-8">
             {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-sans mb-6">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
               {article.frontmatter.category || 'BLOG'} // MARKET_INTELLIGENCE
             </div>
@@ -138,27 +138,27 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
             </h1>
 
             {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 font-sans mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground font-sans mb-6">
               {article.frontmatter.author && (
                 <>
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-cyan-400" />
+                    <User className="w-4 h-4 text-primary" />
                     <span>{article.frontmatter.author}</span>
                   </div>
-                  <span className="text-slate-600">|</span>
+                  <span className="text-muted-foreground/40">|</span>
                 </>
               )}
 
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-cyan-400" />
+                <Calendar className="w-4 h-4 text-primary" />
                 <time dateTime={article.frontmatter.publishedAt || article.frontmatter.date}>{publishDate}</time>
               </div>
 
               {article.readingTime && (
                 <>
-                  <span className="text-slate-600">|</span>
+                  <span className="text-muted-foreground/40">|</span>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-cyan-400" />
+                    <Clock className="w-4 h-4 text-primary" />
                     <span>{article.readingTime.text}</span>
                   </div>
                 </>
@@ -166,9 +166,9 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
 
               {article.frontmatter.sourceCount && (
                 <>
-                  <span className="text-slate-600">|</span>
+                  <span className="text-muted-foreground/40">|</span>
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-cyan-400" />
+                    <BookOpen className="w-4 h-4 text-primary" />
                     <span>{article.frontmatter.sourceCount} sources</span>
                   </div>
                 </>
@@ -181,7 +181,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                 {article.frontmatter.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs uppercase tracking-wide text-cyan-300 font-sans"
+                    className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-wide text-primary font-sans"
                   >
                     {tag}
                   </span>
@@ -194,7 +194,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
         {/* Hero Image */}
         {article.frontmatter.heroImage && (
           <section className="max-w-4xl mx-auto mb-12">
-            <div className="relative w-full h-[400px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+            <div className="relative w-full h-[400px] rounded-xl overflow-hidden border-2 border-primary/30 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
               <Image
                 src={article.frontmatter.heroImage}
                 alt={article.frontmatter.title}
@@ -203,26 +203,26 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 1024px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+
               {/* Scanline effect */}
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400/50 shadow-[0_0_10px_cyan] animate-scan-line" />
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-primary/50 shadow-[0_0_10px_hsl(var(--primary))] animate-scan-line" />
             </div>
           </section>
         )}
 
-          {/* Article Content with Dual Sidebars */}
+          {/* Article Content with Dual Sidebars - Perplexity-style 12-column Grid */}
           <section className="max-w-7xl mx-auto relative">
-            <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_240px] gap-8">
-              {/* Left Sidebar: Table of Contents (Sticky) */}
-              <aside className="hidden xl:block">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+              {/* Left Sidebar: Table of Contents (Sticky) - 3 cols */}
+              <aside className="hidden lg:block lg:col-span-3 border-r border-border pr-6">
                 <div className="sticky top-28">
                   <TableOfContents />
                 </div>
               </aside>
 
-              {/* Main Content */}
-              <main>
+              {/* Main Content - 6 cols */}
+              <main className="lg:col-span-6 px-6">
                 <ElectronicFolder
                   title="ARTICLE CONTENT"
                   classification="PUBLIC ACCESS // INTELLIGENCE_REPORT"
@@ -237,7 +237,7 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                         </div>
                       </div>
                     }>
-                      <div className="prose prose-invert max-w-none prose-headings:text-cyan-400 prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-cyan-300 prose-code:bg-slate-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-headings:scroll-mt-24">
+                      <div className="prose prose-invert max-w-none prose-headings:text-primary prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-primary prose-code:bg-secondary prose-code:px-2 prose-code:py-1 prose-code:rounded prose-headings:scroll-mt-24">
                         {article.content}
                       </div>
                     </Suspense>
@@ -245,18 +245,18 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                 </ElectronicFolder>
               </main>
 
-              {/* Right Sidebar: Sources Cited (Sticky) */}
-              <aside className="hidden xl:block">
+              {/* Right Sidebar: Sources Cited (Sticky) - 3 cols */}
+              <aside className="hidden lg:block lg:col-span-3 border-l border-border pl-6">
                 <div className="sticky top-28">
                   {allSources.length > 0 && (
-                    <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
+                    <div className="border border-border bg-card/50 backdrop-blur-sm rounded-lg overflow-hidden">
                       {/* Header */}
-                      <div className="px-4 py-3 border-b border-cyan-500/30 bg-cyan-950/30 flex items-center gap-2">
-                        <BookOpen className="w-4 h-4 text-cyan-400" />
-                        <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-sans">
+                      <div className="px-4 py-3 border-b border-border bg-primary/10 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-primary" />
+                        <h4 className="text-xs font-bold text-primary uppercase tracking-wider font-sans">
                           Sources Cited
                         </h4>
-                        <span className="ml-auto text-xs text-slate-500">
+                        <span className="ml-auto text-xs text-muted-foreground">
                           {allSources.length}
                         </span>
                       </div>
@@ -269,29 +269,29 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                             href={source.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-start gap-2 p-2 rounded-lg hover:bg-cyan-500/10 transition-colors"
+                            className="group flex items-start gap-2 p-2 rounded-lg hover:bg-primary/10 transition-colors"
                           >
-                            <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold border border-cyan-500/40">
+                            <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/40">
                               {idx + 1}
                             </span>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-slate-300 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                              <p className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors line-clamp-2">
                                 {source.name}
                               </p>
                               {source.publisher && (
-                                <p className="text-[10px] text-slate-500 mt-0.5">
+                                <p className="text-[10px] text-muted-foreground/60 mt-0.5">
                                   {source.publisher}
                                 </p>
                               )}
                             </div>
-                            <ExternalLink className="w-3 h-3 text-slate-600 group-hover:text-cyan-400 flex-shrink-0 mt-0.5" />
+                            <ExternalLink className="w-3 h-3 text-muted-foreground/60 group-hover:text-primary flex-shrink-0 mt-0.5" />
                           </a>
                         ))}
                       </div>
 
                       {/* Transparency Note */}
-                      <div className="px-3 py-2 border-t border-slate-700/50 bg-slate-900/30">
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                      <div className="px-3 py-2 border-t border-border bg-background/30">
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                           <CheckCircle className="w-3 h-3 text-emerald-500" />
                           <span>All sources verified</span>
                         </div>
@@ -301,11 +301,11 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
 
                   {/* Data Methodology Badge */}
                   {article.frontmatter.sourceCount && (
-                    <div className="mt-4 p-3 border border-slate-700/50 bg-slate-900/30 rounded-lg">
-                      <div className="flex items-center gap-2 text-xs text-slate-400">
-                        <Database className="w-4 h-4 text-cyan-500" />
+                    <div className="mt-4 p-3 border border-border bg-card/30 rounded-lg">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Database className="w-4 h-4 text-primary" />
                         <span>
-                          <span className="text-cyan-400 font-semibold">{article.frontmatter.sourceCount}</span> data sources analyzed
+                          <span className="text-primary font-semibold">{article.frontmatter.sourceCount}</span> data sources analyzed
                         </span>
                       </div>
                     </div>
@@ -315,10 +315,10 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
             </div>
           </section>
 
-          {/* Sources Section (Mobile/Tablet) - Hidden on XL */}
+          {/* Sources Section (Mobile/Tablet) - Hidden on LG+ */}
           <Suspense fallback={null}>
             {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
-              <section className="max-w-7xl mx-auto mt-12 xl:hidden">
+              <section className="max-w-7xl mx-auto mt-12 lg:hidden">
                 <ElectronicFolder
                   title="KEY SOURCES"
                   classification="REFERENCES // CITATIONS"
@@ -330,10 +330,10 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                         href={source.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex gap-4 p-4 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 bg-slate-900/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-cyan-500/10"
+                        className="group flex gap-4 p-4 rounded-lg border border-border hover:border-primary/60 bg-card/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-primary/10"
                       >
                         {source.thumbnail && (
-                          <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden border border-cyan-500/20">
+                          <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden border border-primary/20">
                             <Image
                               src={source.thumbnail}
                               alt={source.name}
@@ -344,13 +344,13 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+                            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                               {source.name}
                             </h3>
-                            <ExternalLink className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                            <ExternalLink className="w-4 h-4 text-primary flex-shrink-0" />
                           </div>
                           {source.description && (
-                            <p className="text-sm text-slate-400 line-clamp-2 mt-1">
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                               {source.description}
                             </p>
                           )}
@@ -365,16 +365,16 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
 
           {/* Back to Blog CTA */}
           <section className="max-w-7xl mx-auto mt-12">
-            <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-4">
+            <div className="border border-border bg-card/50 backdrop-blur-sm rounded-lg p-8 text-center">
+              <h3 className="text-2xl font-bold text-foreground mb-4">
                 Read More Intelligence
               </h3>
-              <p className="text-slate-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Explore more market analysis and insights from the network.
               </p>
               <Link
                 href="/blog"
-                className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
+                className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
               >
                 [ VIEW_ALL_POSTS ]
               </Link>
