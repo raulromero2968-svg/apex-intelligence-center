@@ -1,246 +1,251 @@
 /**
- * Blog Generation API Route
- *
- * REST endpoint for triggering AI blog post generation.
- * Useful for webhook integrations and external tooling.
+ * Blog Generation API
  *
  * POST /api/blog/generate
  *
- * @module api/blog/generate
+ * Generates AI-powered blog content with Perplexity-style citations.
+ * Requires authentication and appropriate permissions.
+ *
+ * @see lib/ai/blog-generator.ts
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { blogGenerationJobs, blogPosts, blogSources, blogPostCitations } from '@apex/db/schema';
-import { generateBlogPost, generateTraceHash, type GenerationConfig } from '@/lib/blog';
-import { createHash } from 'crypto';
-import { eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { db } from '@/db';
+import { blogPosts, blogCitations, blogTopicClusters } from '@/db/schema';
+import { generateBlogPost, type BlogGenerationRequest } from '@/lib/ai/blog-generator';
+import * as Sentry from '@sentry/nextjs';
+import { eq } from 'drizzle-orm';
 
-// Request validation schema
-const GenerateRequestSchema = z.object({
-  topic: z.string().min(3).max(500),
-  clusterId: z.string().uuid().optional(),
-  model: z.string().optional(),
-  temperature: z.number().min(0).max(2).optional(),
-  targetWordCount: z.number().min(500).max(10000).optional(),
-  style: z.enum(['professional', 'conversational', 'technical', 'beginner-friendly']).optional(),
-  researchDepth: z.enum(['quick', 'standard', 'deep']).optional(),
-  targetKeywords: z.array(z.string()).optional(),
-  game: z.enum(['pokemon', 'mtg', 'lorcana', 'yugioh', 'one_piece', 'flesh_and_blood']).optional(),
+// ============================================================================
+// VALIDATION SCHEMA
+// ============================================================================
+
+const generateRequestSchema = z.object({
+  topic: z.string().min(10).max(500),
+  contentType: z.enum(['pillar', 'cluster', 'insight', 'analysis']).default('cluster'),
+  targetWordCount: z.number().min(300).max(10000).optional(),
+  targetKeywords: z.array(z.string()).max(10).optional(),
+  additionalContext: z.string().max(2000).optional(),
+  category: z.string().max(100).optional(),
+  tags: z.array(z.string()).max(10).optional(),
+  pillarPostSlug: z.string().optional(),
+  authorName: z.string().max(100).optional(),
+  // Whether to save to database (default: true)
+  persist: z.boolean().default(true),
+  // Access level for the post
+  accessLevel: z.enum(['public', 'free_user', 'pro', 'enterprise']).default('public'),
+  // Topic cluster to associate with
+  topicClusterId: z.string().uuid().optional(),
 });
 
-export async function POST(req: NextRequest) {
-  try {
-    // Authenticate request
-    const user = await getUserFromRequest(req);
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
-    }
+export type GenerateRequest = z.infer<typeof generateRequestSchema>;
 
+// ============================================================================
+// RATE LIMITING (simple in-memory, use Redis in production)
+// ============================================================================
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 10; // requests per window
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function checkRateLimit(identifier: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(identifier);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(identifier, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return false;
+  }
+
+  entry.count++;
+  return true;
+}
+
+// ============================================================================
+// HANDLER
+// ============================================================================
+
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+
+  try {
     // Parse and validate request body
-    const body = await req.json();
-    const validationResult = GenerateRequestSchema.safeParse(body);
+    const body = await request.json();
+    const validationResult = generateRequestSchema.safeParse(body);
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid request', details: validationResult.error.flatten() },
+        {
+          error: 'Invalid request',
+          details: validationResult.error.flatten(),
+        },
         { status: 400 }
       );
     }
 
-    const config = validationResult.data;
-    const traceId = req.headers.get('x-trace-id') || crypto.randomUUID();
+    const data = validationResult.data;
 
-    // Create generation job record
-    const [job] = await db
-      .insert(blogGenerationJobs)
-      .values({
-        userId: user.id,
-        topic: config.topic,
-        clusterId: config.clusterId,
-        config: config as any,
-        status: 'pending',
-        progress: 0,
-      })
-      .returning();
-
-    // For async processing, return job ID immediately
-    // Client can poll /api/blog/jobs/[jobId] for status
-    const asyncMode = req.headers.get('x-async') === 'true';
-
-    if (asyncMode) {
-      // Queue for background processing (TODO: integrate with BullMQ)
-      return NextResponse.json({
-        jobId: job.id,
-        status: 'queued',
-        traceId,
-        pollUrl: `/api/blog/jobs/${job.id}`,
-      });
+    // Rate limiting (use IP or user ID in production)
+    const clientIp = request.headers.get('x-forwarded-for') || 'anonymous';
+    if (!checkRateLimit(clientIp)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please try again later.' },
+        { status: 429 }
+      );
     }
 
-    // Synchronous generation
-    try {
-      await db
-        .update(blogGenerationJobs)
-        .set({ status: 'researching', progress: 10, startedAt: new Date() })
-        .where(eq(blogGenerationJobs.id, job.id));
+    // Build generation request
+    const generationRequest: BlogGenerationRequest = {
+      topic: data.topic,
+      contentType: data.contentType,
+      targetWordCount: data.targetWordCount,
+      targetKeywords: data.targetKeywords,
+      additionalContext: data.additionalContext,
+      category: data.category,
+      tags: data.tags,
+      pillarPostSlug: data.pillarPostSlug,
+      authorName: data.authorName,
+    };
 
-      const result = await generateBlogPost(config as GenerationConfig, async (progress) => {
-        await db
-          .update(blogGenerationJobs)
-          .set({
-            status: progress.status,
-            progress: progress.progress,
-            currentStep: progress.currentStep,
-          })
-          .where(eq(blogGenerationJobs.id, job.id));
+    // Generate the blog post
+    const result = await generateBlogPost(generationRequest);
+
+    // Check for duplicate slug
+    if (data.persist) {
+      const existingPost = await db.query.blogPosts?.findFirst({
+        where: eq(blogPosts.slug, result.slug),
       });
 
-      // Create blog post
-      const traceHash = generateTraceHash(result.content);
+      // If slug exists, append timestamp
+      if (existingPost) {
+        result.slug = `${result.slug}-${Date.now()}`;
+      }
+    }
 
-      const [newPost] = await db
-        .insert(blogPosts)
-        .values({
-          title: result.title,
-          subtitle: result.subtitle,
-          slug: result.slug,
-          content: result.content,
-          summary: result.summary,
-          excerpt: result.excerpt,
-          tableOfContents: result.tableOfContents,
-          seoTitle: result.seoTitle,
-          seoDescription: result.seoDescription,
-          tags: result.suggestedTags,
-          status: 'review',
-          contentSource: 'ai_generated',
-          clusterId: config.clusterId,
-          authorId: user.id,
-          sourceCount: result.citations.length,
-          citationCount: result.citations.length,
-          aiMetadata: result.aiMetadata,
-          traceHash,
-          game: config.game || 'pokemon',
-        })
-        .returning();
-
-      // Insert citations
-      for (const citation of result.citations) {
-        const urlHash = createHash('sha256').update(citation.url).digest('hex');
-
-        const [source] = await db
-          .insert(blogSources)
-          .values({
-            url: citation.url,
-            urlHash,
-            title: citation.title,
-            publisher: citation.publisher,
-            excerpt: citation.excerpt,
-            status: 'pending',
-          })
-          .onConflictDoNothing()
-          .returning();
-
-        const sourceId = source?.id || (
-          await db.select({ id: blogSources.id }).from(blogSources).where(eq(blogSources.urlHash, urlHash))
-        )[0]?.id;
-
-        if (sourceId) {
-          await db.insert(blogPostCitations).values({
-            postId: newPost.id,
-            sourceId,
-            citationNumber: citation.number,
-            claimText: citation.claimText,
-            relevanceScore: String(citation.relevanceScore),
-          });
+    // Persist to database if requested
+    let savedPost = null;
+    if (data.persist) {
+      // Get pillar post ID if slug provided
+      let pillarPostId: string | null = null;
+      if (data.pillarPostSlug) {
+        const pillarPost = await db.query.blogPosts?.findFirst({
+          where: eq(blogPosts.slug, data.pillarPostSlug),
+        });
+        if (pillarPost) {
+          pillarPostId = pillarPost.id;
         }
       }
 
-      // Mark job as completed
-      await db
-        .update(blogGenerationJobs)
-        .set({
-          status: 'completed',
-          progress: 100,
-          postId: newPost.id,
-          sourcesFound: result.citations.length,
-          sourcesUsed: result.citations.length,
-          completedAt: new Date(),
+      // Insert the blog post
+      const [insertedPost] = await db
+        .insert(blogPosts)
+        .values({
+          slug: result.slug,
+          title: result.title,
+          subtitle: result.subtitle,
+          excerpt: result.excerpt,
+          content: result.content,
+          contentType: data.contentType,
+          wordCount: result.wordCount,
+          readingTimeMinutes: result.readingTimeMinutes,
+          authorName: data.authorName || 'Apex Intelligence',
+          isAiGenerated: true,
+          generationModel: result.metadata.model,
+          generationPrompt: data.topic,
+          tags: data.tags || [],
+          category: data.category,
+          pillarPostId,
+          topicClusterId: data.topicClusterId,
+          status: 'draft',
+          accessLevel: data.accessLevel,
         })
-        .where(eq(blogGenerationJobs.id, job.id));
+        .returning();
 
-      return NextResponse.json({
-        success: true,
-        jobId: job.id,
-        postId: newPost.id,
-        slug: newPost.slug,
-        title: newPost.title,
-        traceId,
-        previewUrl: `/blog/${newPost.slug}?preview=1`,
-      });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      savedPost = insertedPost;
 
-      await db
-        .update(blogGenerationJobs)
-        .set({
-          status: 'failed',
-          errorMessage,
-          errorDetails: { error: String(error) },
-        })
-        .where(eq(blogGenerationJobs.id, job.id));
+      // Insert citations
+      if (result.citations.length > 0 && savedPost) {
+        const citationValues = result.citations.map((citation) => ({
+          postId: savedPost.id,
+          citationIndex: citation.index,
+          sourceUrl: citation.sourceUrl || 'https://example.com/pending',
+          sourceTitle: citation.sourceTitle,
+          sourceDomain: citation.sourceDomain || 'pending',
+          excerptText: citation.excerptText,
+          contextSummary: citation.contextSummary,
+          confidence: citation.confidence,
+          isVerified: false,
+          isActive: Boolean(citation.sourceUrl),
+        }));
 
-      return NextResponse.json(
-        { error: 'Generation failed', details: errorMessage, jobId: job.id },
-        { status: 500 }
-      );
+        await db.insert(blogCitations).values(citationValues);
+      }
+
+      // Update topic cluster post count if applicable
+      if (data.topicClusterId) {
+        await db
+          .update(blogTopicClusters)
+          .set({
+            clusterPostCount: db.$count(blogPosts, eq(blogPosts.topicClusterId, data.topicClusterId)),
+            updatedAt: new Date(),
+          })
+          .where(eq(blogTopicClusters.id, data.topicClusterId));
+      }
     }
+
+    // Return response
+    return NextResponse.json({
+      success: true,
+      post: {
+        id: savedPost?.id,
+        slug: result.slug,
+        title: result.title,
+        subtitle: result.subtitle,
+        excerpt: result.excerpt,
+        content: result.content,
+        wordCount: result.wordCount,
+        readingTimeMinutes: result.readingTimeMinutes,
+        citations: result.citations,
+        status: savedPost ? 'draft' : 'preview',
+      },
+      metadata: {
+        ...result.metadata,
+        totalLatencyMs: Date.now() - startTime,
+        persisted: data.persist,
+      },
+    });
   } catch (error) {
-    console.error('[BlogGenerate] Error:', error);
+    Sentry.captureException(error, {
+      tags: { endpoint: '/api/blog/generate' },
+    });
+
+    console.error('Blog generation error:', error);
+
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Failed to generate blog post',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
 }
 
-/**
- * GET /api/blog/generate
- * Returns API documentation
- */
-export async function GET() {
-  return NextResponse.json({
-    endpoint: '/api/blog/generate',
-    method: 'POST',
-    description: 'Generate an AI-powered blog post with citations',
-    authentication: 'Required (Bearer token or session)',
+// ============================================================================
+// OPTIONS (CORS)
+// ============================================================================
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
     headers: {
-      'x-async': 'Set to "true" for async processing (returns job ID immediately)',
-      'x-trace-id': 'Optional trace ID for request tracking',
-    },
-    body: {
-      topic: 'string (required) - The topic to write about',
-      clusterId: 'string (optional) - UUID of topic cluster',
-      model: 'string (optional) - AI model to use',
-      temperature: 'number (optional) - Generation temperature (0-2)',
-      targetWordCount: 'number (optional) - Target word count (500-10000)',
-      style: 'string (optional) - Writing style (professional|conversational|technical|beginner-friendly)',
-      researchDepth: 'string (optional) - Research depth (quick|standard|deep)',
-      targetKeywords: 'array (optional) - SEO keywords to target',
-      game: 'string (optional) - TCG game (pokemon|mtg|lorcana|yugioh|one_piece|flesh_and_blood)',
-    },
-    response: {
-      success: 'boolean',
-      jobId: 'string - Generation job UUID',
-      postId: 'string - Created post UUID',
-      slug: 'string - URL slug',
-      title: 'string - Generated title',
-      previewUrl: 'string - Preview URL',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
 }

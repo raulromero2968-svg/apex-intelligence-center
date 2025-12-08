@@ -13,52 +13,61 @@
 
 @layer base {
   :root {
-    /* === The Void (Backgrounds) ===
-       Avoiding pure #000000 to prevent OLED smearing and eye strain */
-    --background: 222 47% 6%; /* #0B0E14 - Deep Space */
-    --foreground: 210 40% 98%; /* #F8FAFC - Slate 50 */
+    /* ═══════════════════════════════════════════════════════════════
+       APEX DESIGN TOKENS - "Bloomberg Terminal x Perplexity" Aesthetic
 
-    /* === Surfaces === */
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
+       Color Philosophy:
+       - Zinc-based neutrals for a refined, professional appearance
+       - Electric Cyan accent for primary actions and brand identity
+       - High contrast text for optimal readability
+       ═══════════════════════════════════════════════════════════════ */
 
-    --popover: 222 47% 11%; /* #0F172A - Slate 900 */
-    --popover-foreground: 210 40% 98%;
+    /* === The Void (Backgrounds) - Zinc 950 base === */
+    --background: 240 10% 4%;        /* #09090b - Zinc 950 */
+    --foreground: 0 0% 98%;          /* #fafafa - Zinc 50 */
 
-    /* === The Signal (Accents) ===
-       Electric Cyan used sparingly for primary actions and active states */
-    --primary: 184 100% 50%; /* #00F0FF - Apex Cyan */
-    --primary-foreground: 222 47% 11%; /* Dark text on Cyan */
+    /* === Surfaces - Slightly elevated === */
+    --card: 240 6% 10%;              /* #18181b - Zinc 900 */
+    --card-foreground: 0 0% 98%;
 
-    /* === Surfaces & Muted === */
-    --secondary: 217.2 32.6% 17.5%; /* #1E293B - Slate 800 */
-    --secondary-foreground: 210 40% 98%;
+    --popover: 240 6% 10%;           /* #18181b - Zinc 900 */
+    --popover-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%; /* #94A3B8 - Slate 400 */
+    /* === The Signal (Accent) - Electric Blue === */
+    --primary: 188 94% 43%;          /* #06b6d4 - Cyan 500 (Apex Electric Blue) */
+    --primary-foreground: 240 10% 4%; /* Dark text on Cyan */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* === Muted Surfaces === */
+    --secondary: 240 4% 16%;         /* #27272a - Zinc 800 */
+    --secondary-foreground: 0 0% 98%;
 
-    /* === Semantic (Instrumentation, not candy) === */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 240 4% 16%;             /* #27272a - Zinc 800 */
+    --muted-foreground: 240 5% 65%;  /* #a1a1aa - Zinc 400 */
+
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+
+    /* === Semantic Colors === */
+    --destructive: 0 84% 60%;        /* Red for errors/danger */
+    --destructive-foreground: 0 0% 98%;
 
     /* === Borders & Focus === */
-    --border: 217.2 32.6% 17.5%; /* Subtle borders */
-    --input: 217.2 32.6% 17.5%;
-    --ring: 184 100% 50%; /* Cyan focus rings */
+    --border: 240 4% 16%;            /* #27272a - Zinc 800 */
+    --input: 240 4% 16%;
+    --ring: 188 94% 43%;             /* Cyan focus rings */
 
-    /* === Geometry ===
-       Sharp, precise corners (Aerospace feel) - avoiding bubbly SaaS look */
-    --radius: 0.25rem;
+    /* === Geometry - Sharp corners for terminal aesthetic === */
+    --radius: 0.375rem;
 
-    /* === Chart Colors (Instrumentation palette) === */
-    --chart-1: 184 100% 50%; /* Cyan */
-    --chart-2: 270 100% 50%; /* Purple */
-    --chart-3: 145 100% 38%; /* Green */
-    --chart-4: 38 100% 56%; /* Amber */
-    --chart-5: 4 100% 61%; /* Red */
+    /* === Chart Colors (Data Visualization) === */
+    --chart-1: 188 94% 43%;          /* Cyan */
+    --chart-2: 270 76% 58%;          /* Purple */
+    --chart-3: 142 71% 45%;          /* Green */
+    --chart-4: 38 92% 50%;           /* Amber */
+    --chart-5: 0 84% 60%;            /* Red */
+
+    /* === Inter Font Variable === */
+    --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   /* === Base Body Styles === */

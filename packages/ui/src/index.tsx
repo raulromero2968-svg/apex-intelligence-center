@@ -101,6 +101,9 @@ export * from "./molecules";
 // Organisms - Complex sections
 export * from "./organisms";
 
+// Blog Components - Perplexity-style UI elements
+export * from "./components/blog";
+
 // Hooks - State management and animation coordination
 export * from "./hooks";
 

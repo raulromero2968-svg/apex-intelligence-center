@@ -37,61 +37,59 @@ const config = {
         background: "hsl(var(--background))", // #0B0E14 (Deep Space)
         foreground: "hsl(var(--foreground))", // #F8FAFC (Slate 50)
 
-        // === Brand Identity (Apex Cyan) ===
+        // === Brand Identity (Apex Electric Blue) ===
         primary: {
-          DEFAULT: "#00F0FF", // Apex Cyan (Electric) - sparingly for primary actions
-          foreground: "#000000", // Black text on Cyan button
-          muted: "rgba(0, 240, 255, 0.1)", // For hover states/backgrounds
+          DEFAULT: "#06b6d4", // Cyan 500 - Apex Electric Blue
+          foreground: "#09090b", // Zinc 950 text on Cyan button
+          muted: "rgba(6, 182, 212, 0.1)", // For hover states/backgrounds
         },
         secondary: {
-          DEFAULT: "#1E293B", // Slate 800 (Surface)
-          foreground: "#F8FAFC",
+          DEFAULT: "#27272a", // Zinc 800 (Surface)
+          foreground: "#fafafa", // Zinc 50
         },
         destructive: {
-          DEFAULT: "#FF453A", // Apple Red (clear alert, desaturated)
-          foreground: "#FFFFFF",
+          DEFAULT: "#ef4444", // Red 500
+          foreground: "#fafafa",
         },
         muted: {
-          DEFAULT: "#1E293B",
-          foreground: "#94A3B8", // Slate 400 (Subtext)
+          DEFAULT: "#27272a", // Zinc 800
+          foreground: "#a1a1aa", // Zinc 400 (Muted text)
         },
         accent: {
-          DEFAULT: "#1E293B",
-          foreground: "#F8FAFC",
+          DEFAULT: "#27272a", // Zinc 800
+          foreground: "#fafafa",
         },
         popover: {
-          DEFAULT: "#0F172A", // Slate 900
-          foreground: "#F8FAFC",
+          DEFAULT: "#18181b", // Zinc 900
+          foreground: "#fafafa",
         },
         card: {
-          DEFAULT: "#0B0E14", // Matches background for flat look
-          border: "#1E293B", // Border creates the separation
-          foreground: "#F8FAFC",
+          DEFAULT: "#18181b", // Zinc 900 (elevated surface)
+          border: "#27272a", // Zinc 800
+          foreground: "#fafafa",
         },
 
         // === Data Visualization (Charts/Graphs) ===
-        // Desaturated to look like instrumentation
         chart: {
-          1: "#00F0FF", // Cyan (Primary)
-          2: "#7000FF", // Electric Purple (Secondary Brand)
-          3: "#00C050", // Success Green (Instrumentation)
-          4: "#FFB020", // Warning Amber (Instrumentation)
-          5: "#FF453A", // Error Red (Alert)
+          1: "#06b6d4", // Cyan 500 (Primary)
+          2: "#a855f7", // Purple 500
+          3: "#22c55e", // Green 500
+          4: "#f59e0b", // Amber 500
+          5: "#ef4444", // Red 500
         },
 
-        // === Deep Space Backgrounds (The Void / Aerospace) ===
-        // Avoiding pure #000000 to prevent OLED smearing and eye strain
+        // === Zinc Background Scale (Perplexity aesthetic) ===
         space: {
-          void: "#0B0E14",    // Primary background
-          deep: "#080A0F",    // Deeper sections
-          surface: "#0F1318", // Elevated surfaces
+          void: "#09090b",    // Zinc 950 - Primary background
+          deep: "#09090b",    // Zinc 950 - Deepest
+          surface: "#18181b", // Zinc 900 - Elevated surfaces
         },
         aerospace: {
-          void: "#000000",      // Modal overlays, true black
-          deep: "#030508",      // Page background
-          space: "#060A10",     // Card backgrounds
-          carbon: "#0A0F16",    // Elevated surfaces
-          graphite: "#0F151D",  // Tertiary backgrounds
+          void: "#000000",      // True black (modal overlays)
+          deep: "#09090b",      // Zinc 950
+          space: "#18181b",     // Zinc 900
+          carbon: "#27272a",    // Zinc 800
+          graphite: "#3f3f46",  // Zinc 700
         },
 
         // === Human-in-the-Loop Text Hierarchy ===
@@ -137,20 +135,20 @@ const config = {
         cyan: {
           400: "#22d3ee",
           500: "#06b6d4",
-          high: "#00F5FF", // HUD accent
+          high: "#06b6d4", // Primary accent (aligned with brand)
         },
         purple: {
           high: "#B026FF", // Premium/rare accent
         },
 
         // === Neon legacy (for existing components) ===
-        "neon-pink": "#FF006E",
-        "neon-cyan": "#00F5FF",
-        "neon-purple": "#B026FF",
-        "neon-blue": "#0066FF",
-        "cyber-dark": "#0A0E27",
-        "cyber-darker": "#050814",
-        "cyber-gray": "#1A1F3A",
+        "neon-pink": "#ec4899",   // Pink 500
+        "neon-cyan": "#06b6d4",   // Cyan 500 (brand aligned)
+        "neon-purple": "#a855f7", // Purple 500
+        "neon-blue": "#3b82f6",   // Blue 500
+        "cyber-dark": "#09090b",  // Zinc 950
+        "cyber-darker": "#09090b",// Zinc 950
+        "cyber-gray": "#27272a",  // Zinc 800
       },
 
       borderRadius: {

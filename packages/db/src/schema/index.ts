@@ -317,7 +317,27 @@ export {
   type AnalyticsEventType,
 } from './analyticsEvents';
 
-// Perplexity-Style Blog Engine (AI-Generated Content + SEO Clusters)
+// Perplexity-Style Blog - Topic Clusters with Citation Sourcing (Core)
+export {
+  // Tables
+  clusters,
+  posts,
+  citations,
+  // Relations
+  clustersRelations,
+  postsRelations,
+  citationsRelations,
+  // Types
+  type Cluster,
+  type NewCluster,
+  type Post,
+  type NewPost,
+  type Citation,
+  type NewCitation,
+  type PostMetaSchema,
+} from './blog';
+
+// Perplexity-Style Blog Engine (Extended - AI-Generated Content + SEO Clusters)
 export {
   // Tables
   topicClusters,
