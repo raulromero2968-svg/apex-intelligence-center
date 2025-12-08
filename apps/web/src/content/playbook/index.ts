@@ -842,3 +842,17 @@ export const aiDisruptionPlaybook = {
 };
 
 export default aiDisruptionPlaybook;
+
+// =============================================================================
+// ADDITIONAL EXPORTS (Designer-Ready Content)
+// =============================================================================
+
+// Structured outline with bullet points under every subsection
+export { structuredOutline, default as playbookOutlineDefault } from './outline';
+
+// Full Freelancer 90-day playbook section (PDF-ready)
+export {
+  freelancerPlaybook,
+  freelancerPlaybookMarkdown,
+  default as freelancerPlaybookDefault,
+} from './freelancer-playbook';
