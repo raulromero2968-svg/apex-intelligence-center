@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getArticleBySlug, getAllBlogPostSlugs } from '@/lib/mdx';
-import { BookOpen, Clock, Calendar, User, ArrowLeft, ExternalLink } from 'lucide-react';
+import { BookOpen, Clock, Calendar, User, ArrowLeft, ExternalLink, Database, CheckCircle } from 'lucide-react';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { DigitalScroll } from '@/components/ui/DigitalScroll';
 import TableOfContents from '@/components/mdx/TableOfContents';
@@ -21,6 +21,50 @@ export const revalidate = false; // On-demand via tags
 export async function generateStaticParams() {
   const slugs = await getAllBlogPostSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+// Generate JSON-LD structured data for LLM discovery (LLMO)
+function generateArticleJsonLd(article: any, slug: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://apexintelligence.io';
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.frontmatter.title,
+    description: article.frontmatter.description || '',
+    author: {
+      '@type': 'Person',
+      name: article.frontmatter.author || 'Apex Intelligence Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Apex Intelligence',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/logo.png`,
+      },
+    },
+    datePublished: article.frontmatter.publishedAt || article.frontmatter.date,
+    dateModified: article.frontmatter.publishedAt || article.frontmatter.date,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${baseUrl}/blog/${slug}`,
+    },
+    image: article.frontmatter.heroImage
+      ? `${baseUrl}${article.frontmatter.heroImage}`
+      : `${baseUrl}/api/og?slug=${slug}`,
+    articleSection: article.frontmatter.category || 'Market Analysis',
+    keywords: article.frontmatter.tags?.join(', ') || '',
+    wordCount: article.readingTime?.words || 0,
+    // Citation information for transparency
+    citation: article.frontmatter.allSources?.map((source: any) => ({
+      '@type': 'CreativeWork',
+      name: source.name,
+      url: source.url,
+      publisher: source.publisher,
+      dateAccessed: source.accessed,
+    })) || [],
+  };
 }
 
 // Generate metadata for SEO
@@ -83,28 +127,41 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
     year: 'numeric',
   });
 
-  return (
-    <div className="relative min-h-screen pt-24 pb-20">
-      {/* Background Effects */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent animate-scan-slow" />
-      </div>
+  // Generate JSON-LD for LLMO
+  const jsonLd = generateArticleJsonLd(article, params.slug);
 
-      <div className="container mx-auto px-4 md:px-12 relative z-10">
-        {/* Back Navigation */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-sans text-sm"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            BACK_TO_BLOG
-          </Link>
+  // Collect sources from frontmatter for sidebar
+  const allSources = article.frontmatter.allSources || article.frontmatter.sources || [];
+
+  return (
+    <>
+      {/* JSON-LD Structured Data for LLM/Search Discovery */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="relative min-h-screen pt-24 pb-20">
+        {/* Background Effects */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent animate-scan-slow" />
         </div>
 
-        {/* Terminal Header */}
-        <section className="max-w-4xl mx-auto mb-12">
-          <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8">
+        <div className="container mx-auto px-4 md:px-12 relative z-10">
+          {/* Back Navigation */}
+          <div className="max-w-7xl mx-auto mb-8">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-sans text-sm"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              BACK_TO_BLOG
+            </Link>
+          </div>
+
+          {/* Terminal Header */}
+          <section className="max-w-7xl mx-auto mb-12">
+            <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8">
             {/* Status Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-sm font-sans mb-6">
               <span className="relative flex h-2 w-2">
@@ -193,99 +250,177 @@ export default async function BlogPostPage({ params, searchParams }: BlogPostPag
           </section>
         )}
 
-        {/* Article Content with Table of Contents */}
-        <section className="max-w-4xl mx-auto relative">
-          {/* Sticky Table of Contents - XL screens only */}
-          <TableOfContents />
-
-          <ElectronicFolder
-            title="ARTICLE CONTENT"
-            classification="PUBLIC ACCESS // INTELLIGENCE_REPORT"
-          >
-            <DigitalScroll height="auto">
-              <Suspense fallback={
-                <div className="prose prose-invert max-w-none">
-                  <div className="animate-pulse space-y-4">
-                    <div className="h-4 bg-slate-800 rounded w-3/4"></div>
-                    <div className="h-4 bg-slate-800 rounded w-full"></div>
-                    <div className="h-4 bg-slate-800 rounded w-5/6"></div>
-                  </div>
+          {/* Article Content with Dual Sidebars */}
+          <section className="max-w-7xl mx-auto relative">
+            <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr_240px] gap-8">
+              {/* Left Sidebar: Table of Contents (Sticky) */}
+              <aside className="hidden xl:block">
+                <div className="sticky top-28">
+                  <TableOfContents />
                 </div>
-              }>
-                <div className="prose prose-invert max-w-none prose-headings:text-cyan-400 prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-cyan-300 prose-code:bg-slate-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-headings:scroll-mt-24">
-                  {article.content}
-                </div>
-              </Suspense>
-            </DigitalScroll>
-          </ElectronicFolder>
-        </section>
+              </aside>
 
-        {/* Sources Section */}
-        <Suspense fallback={null}>
-          {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
-            <section className="max-w-4xl mx-auto mt-12">
-              <ElectronicFolder 
-                title="KEY SOURCES" 
-                classification="REFERENCES // CITATIONS"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
-                  {article.frontmatter.sources.map((source: any, idx: number) => (
-                    <a
-                      key={idx}
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex gap-4 p-4 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 bg-slate-900/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-cyan-500/10"
-                    >
-                      {source.thumbnail && (
-                        <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden border border-cyan-500/20">
-                          <Image
-                            src={source.thumbnail}
-                            alt={source.name}
-                            fill
-                            className="object-cover"
-                          />
+              {/* Main Content */}
+              <main>
+                <ElectronicFolder
+                  title="ARTICLE CONTENT"
+                  classification="PUBLIC ACCESS // INTELLIGENCE_REPORT"
+                >
+                  <DigitalScroll height="auto">
+                    <Suspense fallback={
+                      <div className="prose prose-invert max-w-none">
+                        <div className="animate-pulse space-y-4">
+                          <div className="h-4 bg-slate-800 rounded w-3/4"></div>
+                          <div className="h-4 bg-slate-800 rounded w-full"></div>
+                          <div className="h-4 bg-slate-800 rounded w-5/6"></div>
                         </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
-                            {source.name}
-                          </h3>
-                          <ExternalLink className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                        </div>
-                        {source.description && (
-                          <p className="text-sm text-slate-400 line-clamp-2 mt-1">
-                            {source.description}
-                          </p>
-                        )}
                       </div>
-                    </a>
-                  ))}
-                </div>
-              </ElectronicFolder>
-            </section>
-          )}
-        </Suspense>
+                    }>
+                      <div className="prose prose-invert max-w-none prose-headings:text-cyan-400 prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300 prose-code:text-cyan-300 prose-code:bg-slate-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-headings:scroll-mt-24">
+                        {article.content}
+                      </div>
+                    </Suspense>
+                  </DigitalScroll>
+                </ElectronicFolder>
+              </main>
 
-        {/* Back to Blog CTA */}
-        <section className="max-w-4xl mx-auto mt-12">
-          <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8 text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Read More Intelligence
-            </h3>
-            <p className="text-slate-400 mb-6">
-              Explore more market analysis and insights from the network.
-            </p>
-            <Link
-              href="/blog"
-              className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
-            >
-              [ VIEW_ALL_POSTS ]
-            </Link>
-          </div>
-        </section>
+              {/* Right Sidebar: Sources Cited (Sticky) */}
+              <aside className="hidden xl:block">
+                <div className="sticky top-28">
+                  {allSources.length > 0 && (
+                    <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg overflow-hidden">
+                      {/* Header */}
+                      <div className="px-4 py-3 border-b border-cyan-500/30 bg-cyan-950/30 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-cyan-400" />
+                        <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider font-sans">
+                          Sources Cited
+                        </h4>
+                        <span className="ml-auto text-xs text-slate-500">
+                          {allSources.length}
+                        </span>
+                      </div>
+
+                      {/* Sources List */}
+                      <div className="p-3 space-y-2 max-h-[60vh] overflow-y-auto">
+                        {allSources.map((source: any, idx: number) => (
+                          <a
+                            key={idx}
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-start gap-2 p-2 rounded-lg hover:bg-cyan-500/10 transition-colors"
+                          >
+                            <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold border border-cyan-500/40">
+                              {idx + 1}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium text-slate-300 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                                {source.name}
+                              </p>
+                              {source.publisher && (
+                                <p className="text-[10px] text-slate-500 mt-0.5">
+                                  {source.publisher}
+                                </p>
+                              )}
+                            </div>
+                            <ExternalLink className="w-3 h-3 text-slate-600 group-hover:text-cyan-400 flex-shrink-0 mt-0.5" />
+                          </a>
+                        ))}
+                      </div>
+
+                      {/* Transparency Note */}
+                      <div className="px-3 py-2 border-t border-slate-700/50 bg-slate-900/30">
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                          <CheckCircle className="w-3 h-3 text-emerald-500" />
+                          <span>All sources verified</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Data Methodology Badge */}
+                  {article.frontmatter.sourceCount && (
+                    <div className="mt-4 p-3 border border-slate-700/50 bg-slate-900/30 rounded-lg">
+                      <div className="flex items-center gap-2 text-xs text-slate-400">
+                        <Database className="w-4 h-4 text-cyan-500" />
+                        <span>
+                          <span className="text-cyan-400 font-semibold">{article.frontmatter.sourceCount}</span> data sources analyzed
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          {/* Sources Section (Mobile/Tablet) - Hidden on XL */}
+          <Suspense fallback={null}>
+            {article.frontmatter.sources && article.frontmatter.sources.length > 0 && (
+              <section className="max-w-7xl mx-auto mt-12 xl:hidden">
+                <ElectronicFolder
+                  title="KEY SOURCES"
+                  classification="REFERENCES // CITATIONS"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
+                    {article.frontmatter.sources.map((source: any, idx: number) => (
+                      <a
+                        key={idx}
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex gap-4 p-4 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 bg-slate-900/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-cyan-500/10"
+                      >
+                        {source.thumbnail && (
+                          <div className="relative w-16 h-16 flex-shrink-0 rounded overflow-hidden border border-cyan-500/20">
+                            <Image
+                              src={source.thumbnail}
+                              alt={source.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+                              {source.name}
+                            </h3>
+                            <ExternalLink className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                          </div>
+                          {source.description && (
+                            <p className="text-sm text-slate-400 line-clamp-2 mt-1">
+                              {source.description}
+                            </p>
+                          )}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </ElectronicFolder>
+              </section>
+            )}
+          </Suspense>
+
+          {/* Back to Blog CTA */}
+          <section className="max-w-7xl mx-auto mt-12">
+            <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-8 text-center">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Read More Intelligence
+              </h3>
+              <p className="text-slate-400 mb-6">
+                Explore more market analysis and insights from the network.
+              </p>
+              <Link
+                href="/blog"
+                className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] font-sans"
+              >
+                [ VIEW_ALL_POSTS ]
+              </Link>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
