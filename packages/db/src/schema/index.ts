@@ -368,3 +368,43 @@ export {
   type NewCitation,
   type PostMetaSchema,
 } from './blog';
+
+// Perplexity-Style Blog Engine (Extended - AI-Generated Content + SEO Clusters)
+export {
+  // Tables
+  topicClusters,
+  blogPosts,
+  blogSources,
+  blogPostCitations,
+  blogGenerationJobs,
+  // Enums
+  blogPostStatusEnum,
+  contentSourceEnum,
+  clusterTypeEnum,
+  sourceStatusEnum,
+  // Relations
+  topicClustersRelations,
+  blogPostsRelations,
+  blogSourcesRelations,
+  blogPostCitationsRelations,
+  blogGenerationJobsRelations,
+  // Constants
+  DEFAULT_GENERATION_CONFIG,
+  SOURCE_RELIABILITY,
+  GENERATION_STEPS,
+  // Types
+  type TopicCluster,
+  type NewTopicCluster,
+  type BlogPost,
+  type NewBlogPost,
+  type BlogSource,
+  type NewBlogSource,
+  type BlogPostCitation,
+  type NewBlogPostCitation,
+  type BlogGenerationJob,
+  type NewBlogGenerationJob,
+  type BlogPostStatus,
+  type ContentSource,
+  type ClusterType,
+  type SourceStatus,
+} from './blogEngine';

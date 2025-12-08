@@ -22,12 +22,16 @@ import {
   ArrowRight,
   Crown,
   Layers,
+  Cpu,
 } from 'lucide-react';
 import { getPostsGroupedByCluster, type BlogPostPreview, type ClusterWithPosts } from '@/lib/api/blog';
 import { getAllBlogPosts } from '@/lib/mdx';
 import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
 import { DigitalScroll } from '@/components/ui/DigitalScroll';
 import { HoloCard } from '@/components/ui/HoloCard';
+import { db } from '@/lib/db';
+import { blogPosts } from '@apex/db/schema';
+import { eq, desc } from 'drizzle-orm';
 
 // LLMO (Large Language Model Optimization)
 import {
@@ -497,15 +501,23 @@ function MdxBlogCard({ post }: { post: Awaited<ReturnType<typeof getAllBlogPosts
       <div className="p-6 flex-1">
         {/* Header */}
         <div className="mb-4">
-          <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 mb-3 font-sans">
-            BLOG
+          <div className="flex items-center gap-2 mb-3">
+            <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-sans">
+              {post.source === 'database' ? 'INTEL' : 'BLOG'}
+            </div>
+            {post.isAiGenerated && (
+              <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30 font-sans">
+                <Cpu className="w-3 h-3" />
+                AI
+              </div>
+            )}
           </div>
           <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
-            {post.frontmatter.title}
+            {post.title}
           </h3>
-          {post.frontmatter.description && (
+          {post.description && (
             <p className="mt-2 text-sm text-slate-400 line-clamp-2">
-              {post.frontmatter.description}
+              {post.description}
             </p>
           )}
         </div>
@@ -516,21 +528,21 @@ function MdxBlogCard({ post }: { post: Awaited<ReturnType<typeof getAllBlogPosts
             <Calendar className="w-3 h-3" />
             <span>{publishDate}</span>
           </div>
-          {post.readingTime && (
+          {post.readTime && (
             <>
               <span>•</span>
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                <span>{post.readingTime.text}</span>
+                <span>{post.readTime} min read</span>
               </div>
             </>
           )}
         </div>
 
         {/* Tags */}
-        {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+        {post.tags && post.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {post.frontmatter.tags.slice(0, 3).map((tag: string) => (
+            {post.tags.slice(0, 3).map((tag: string) => (
               <span
                 key={tag}
                 className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2 py-1 text-xs text-cyan-300"
