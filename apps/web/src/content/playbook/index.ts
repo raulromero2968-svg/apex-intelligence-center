@@ -10,9 +10,314 @@
 export const playbookMeta = {
   title: "The AI Disruption Playbook",
   subtitle: "How Knowledge Workers Can Build Income That Survives 2030",
+  tagline: "A practical guide for freelancers, curators, analysts, and educators navigating the post-AI economy",
+  author: "Apex Intelligence",
   version: "1.0",
+  lastUpdated: "2025-12-07",
   estimatedPages: 28,
+  readingTime: "15 minutes",
   targetAudiences: ["Freelancer", "Curator", "Analyst", "Educator"] as const,
+};
+
+// =============================================================================
+// FRONT MATTER
+// =============================================================================
+
+export const frontMatter = {
+  title: "Front Matter",
+
+  tldr: {
+    title: "TL;DR – Key Ideas in 60 Seconds",
+    bullets: [
+      "By 2030, 30-40% of knowledge work tasks will be automated. Not jobs—tasks. Your income will erode piece by piece if you don't adapt.",
+      "The pattern is: Erosion → Compression → Collapse. Most people won't notice until it's too late.",
+      "Institutions (governments, corporations, universities) won't save you—they move on decade timelines while AI moves in months.",
+      "The value inversion: In a world of infinite AI-generated content, generation becomes cheap but curation, judgment, and trust become priceless.",
+      "The shift isn't employee → entrepreneur. It's time-seller → asset-owner.",
+      "You already have the raw material for assets and reputation—past projects, curated knowledge, solved problems. You just haven't packaged them.",
+      "RC (Reputation Credits) measures long-term contribution, not money. It unlocks roles, visibility, and governance power.",
+      "This playbook gives you a 90-day action plan tailored to your situation: Freelancer, Curator, Analyst, or Educator.",
+    ],
+  },
+};
+
+// =============================================================================
+// TABLE OF CONTENTS (Designer-Ready Structure)
+// =============================================================================
+
+export const tableOfContents = {
+  title: "Table of Contents",
+
+  sections: [
+    {
+      number: "Front Matter",
+      items: [
+        "Title Page",
+        "Subtitle & Tagline",
+        "Author / Apex Intelligence",
+        "Version & Date",
+        "One-page TL;DR (bullet summary of key ideas and actions)",
+      ],
+    },
+    {
+      number: 1,
+      title: "The Shift: What AI Is Doing to Work",
+      pages: "5-6",
+      subsections: [
+        {
+          number: "1.1",
+          title: "The Headline vs. the Reality",
+          description: "\"99% of jobs automated\" vs. what actually changes. Tasks vs. jobs vs. careers.",
+        },
+        {
+          number: "1.2",
+          title: "The Erosion → Compression → Collapse Pattern",
+          description: "Erosion: subtle income & opportunity decline. Compression: doing more for less. Collapse: the old way stops working.",
+        },
+        {
+          number: "1.3",
+          title: "Why Institutions Won't Save You",
+          description: "Governments: slow and reactive. Employers: optimize for cost and flexibility. Education: retraining for yesterday's jobs.",
+        },
+        {
+          number: "1.4",
+          title: "The Value Inversion",
+          description: "From generation to curation, judgment, and reputation. Why \"content\" becomes cheap but trust becomes priceless.",
+        },
+      ],
+    },
+    {
+      number: 2,
+      title: "New Game, New Rules",
+      pages: "5-6",
+      subsections: [
+        {
+          number: "2.1",
+          title: "Assets vs. Hours",
+          description: "Why \"selling time\" is so fragile in an AI-saturated world. Defining \"intelligence assets.\"",
+        },
+        {
+          number: "2.2",
+          title: "Reputation Graphs vs. Resumes",
+          description: "The limits of CVs and follower counts. What a reputation graph is and why it matters.",
+        },
+        {
+          number: "2.3",
+          title: "Communities as Economic Infrastructure",
+          description: "From platforms you rent to economies you help own. Why your next \"job security\" is a network, not a contract.",
+        },
+        {
+          number: "2.4",
+          title: "Principles for the Post-AI Worker",
+          description: "Own assets. Build reputation in public. Reduce single points of failure. Align with antifragile systems.",
+        },
+      ],
+    },
+    {
+      number: 3,
+      title: "Persona Playbooks (90-Day Plans)",
+      pages: "10-12",
+      subsections: [
+        {
+          number: "3.1",
+          title: "Freelancers – From Rate Pressure to Reusable Assets",
+          description: "How AI erosion shows up for freelancers. 90-day plan: inventory → productize → publish → iterate.",
+        },
+        {
+          number: "3.2",
+          title: "Curators – Turning Scrolling into a Portfolio",
+          description: "How AI floods your feeds with noise. 90-day plan: signature threads → themes → field guides → intel.",
+        },
+        {
+          number: "3.3",
+          title: "Analysts & Consultants – Stop Burying Your Best Work",
+          description: "How AI commoditizes basic analysis and slidework. 90-day plan: project inventory → frameworks → anonymized intel assets.",
+        },
+        {
+          number: "3.4",
+          title: "Educators – Serve the Commons Without Going Broke",
+          description: "How AI clones generic teaching content. 90-day plan: map assets → commons vs premium → publish both.",
+        },
+      ],
+      note: "Each persona section includes: \"What AI disruption feels like for you\", \"Risks if you do nothing\", \"90-day action plan\" (step-by-step).",
+    },
+    {
+      number: 4,
+      title: "Apex as an Execution Path",
+      pages: "4-6",
+      subsections: [
+        {
+          number: "4.1",
+          title: "Why We Built Apex",
+          description: "Short founder story. Apex as economic infrastructure, not a toy.",
+        },
+        {
+          number: "4.2",
+          title: "From History to Intel Assets",
+          description: "What counts as \"intelligence assets\". Examples: playbooks, briefings, curation packs, frameworks.",
+        },
+        {
+          number: "4.3",
+          title: "Hybrid Economy: USD + Reputation Credits (RC)",
+          description: "Why there are two currencies. How you earn money and how you earn reputation.",
+        },
+        {
+          number: "4.4",
+          title: "Example Journeys",
+          description: "Freelancer: Upwork → Omnis → Intelligence marketplace → Commons. Curator: X threads → Intel reports → Commons excerpts. Analyst/Educator variations.",
+        },
+        {
+          number: "4.5",
+          title: "Getting Started in 7 Days",
+          description: "Simple checklist: Pick 3–5 past works or threads, turn them into 1–2 intel concepts, join Apex and publish your first card.",
+        },
+      ],
+    },
+    {
+      number: "Back Matter",
+      items: [
+        "Resources & Further Reading",
+        "Links to Apex, community, and roadmap",
+        "Acknowledgements",
+      ],
+    },
+  ],
+};
+
+// =============================================================================
+// INTRODUCTION
+// =============================================================================
+
+export const introduction = {
+  title: "Introduction",
+  subtitle: "You Don't Have to Be a Futurist to See What's Coming",
+
+  opening: {
+    headline: "The Headlines Keep Coming",
+    content: `Every few weeks, a new headline makes the rounds:
+
+"AI will automate 30–40% of jobs by 2030."
+"99% of knowledge work tasks are at risk."
+"Most people are not prepared for what's coming."
+
+You click one, skim a paragraph, and close the tab.
+
+Not because you don't care—but because it's overwhelming. The predictions sound apocalyptic and abstract at the same time. It feels like reading about an incoming storm when the sky above you is still blue.`,
+  },
+
+  uncomfortableTruth: {
+    headline: "The Uncomfortable Truth",
+    content: `Here's the uncomfortable truth this playbook is built on:
+
+• You don't need to know the exact percentage of jobs that will be automated.
+• You don't need to get the exact year right.
+• You do need to understand the direction of travel and what it means for your income.
+
+This isn't a book about AI models or technical breakthroughs. It's about the economic plumbing of your life:
+
+• How you earn money
+• Who controls the levers
+• What happens if those levers change faster than the systems built on top of them`,
+  },
+
+  realRisk: {
+    headline: "The Real Risk Isn't \"No Jobs\" – It's the Speed of Change",
+    content: `When people throw around numbers like "99% of jobs will be automated," it's easy to picture a world where humans are simply… useless.
+
+That's not how this works.
+
+Realistically, what's happening is more subtle and more dangerous:
+
+• Most jobs are bundles of smaller tasks
+• Most tasks can be partially or fully automated faster than institutions can adapt
+• The structure of work changes faster than contracts, training, laws, and culture
+
+If you're a freelancer, consultant, analyst, educator, creator, or any other knowledge worker, you're already feeling this in small ways:
+
+• Clients asking for lower rates because "we're using AI now"
+• More pressure to do more work in less time
+• Slower promotions and fewer roles that look like the ones you trained for
+
+It doesn't show up as a single catastrophe. It shows up as erosion, then compression, then collapse of the old way of earning a living.
+
+This playbook is designed so you can see that process coming—and do something about it before it hits you full force.`,
+  },
+
+  institutions: {
+    headline: "Institutions Won't Move Fast Enough (and That's Not Conspiracy)",
+    content: `It's tempting to think:
+
+• "Governments will pass some law to fix this."
+• "My company will retrain me."
+• "Universities will create new programs in time."
+
+Some of that will happen. But institutions move on decade timelines, and AI is moving on year timelines.
+
+Governments answer to voters, donors, and lobbyists. Corporations answer to shareholders and quarterly earnings. Universities answer to accreditation bodies and budgets.
+
+None of these are optimized for:
+
+"Help this specific freelancer/analyst/teacher navigate a once-in-a-century shift in the structure of work, personally and concretely, in the next 2–5 years."
+
+That's on you.
+
+But "you're on your own" doesn't mean you have to face it alone. It means the initiative has to start with you, not with a program or policy.`,
+  },
+
+  goodNews: {
+    headline: "The Good News: You Already Have Raw Material",
+    content: `Here's the part most doomsday narratives miss:
+
+• AI is getting very good at generating content, code, and analysis
+• But it's still bad at owning context, consequences, and trust
+
+Every day, you:
+
+• Solve problems for clients or students
+• See patterns in your niche that others miss
+• Read, curate, and comment on floods of information
+• Answer the same questions again and again in slightly different ways
+
+Right now, most of that work evaporates into email threads, Slack messages, dead PDFs, and social feeds.
+
+The core argument of this playbook is simple:
+
+You already have the raw material for assets and reputation that could survive the AI wave. You just haven't turned them into something that can live and pay you in the next economy.`,
+  },
+
+  whatPlaybookDoes: {
+    headline: "What This Playbook Will Help You Do",
+    content: `This is not a generic "learn AI to save your job" guide.
+
+Instead, we're going to focus on three things you can control:
+
+1. Assets – Turning your past work and daily thinking into reusable intelligence products, not just one-off tasks
+
+2. Reputation – Building a verifiable track record of being useful that isn't tied to a single employer or platform
+
+3. Community – Plugging into an ecosystem that acts as economic infrastructure, not just a place to post content`,
+    walkthrough: [
+      "The macro shift (without drowning you in jargon)",
+      "The new rules of the game (assets, reputation graphs, communities)",
+      "Four 90-day playbooks tailored to: Freelancers, Curators, Analysts/Consultants, Educators",
+    ],
+    apexNote: `Finally, we'll show you one concrete way to put these ideas into practice through Apex Intelligence—the platform we're building to help knowledge workers turn their history and curation into a portfolio of intelligence assets, backed by cash and reputation.
+
+You don't have to use Apex to get value from this playbook. But if the ideas resonate, you'll see why we're building it—and why we might want a seat in the lifeboat now, not later.`,
+  },
+
+  howToUse: {
+    headline: "How to Use This Playbook",
+    steps: [
+      "Skim Section 1 to ground yourself in what's actually changing.",
+      "Read Section 2 to understand the new \"rules of the game.\"",
+      "Jump to your persona in Section 3 and follow the 90-day plan.",
+      "Use Section 4 if you want a ready-made place to apply these ideas with other people who see the same wave coming.",
+    ],
+    closing: `You don't need to agree with every prediction. You don't need to be perfect. You just need to be early enough and deliberate enough that when the old ladders collapse, you've already built some scaffolding of your own.
+
+That's what this playbook is for.`,
+  },
 };
 
 // =============================================================================
@@ -525,6 +830,9 @@ Apex Intelligence is one execution path that addresses these. Here's how it work
 
 export const aiDisruptionPlaybook = {
   meta: playbookMeta,
+  frontMatter,
+  tableOfContents,
+  introduction,
   sections: [
     { number: 1, ...section1TheShift },
     { number: 2, ...section2NewRules },
