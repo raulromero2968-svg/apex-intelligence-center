@@ -11,6 +11,7 @@ import { vaultRouter } from './routers/vault';
 import { projectORouter } from './routers/projectO';
 import { apexCommonsRouter } from './routers/apexCommons';
 import { resourcesRouter } from './routers/resourcesRouter';
+import { blogRouter } from './routers/blog';
 
 export const appRouter = router({
   varc: varcRouter,
@@ -25,6 +26,7 @@ export const appRouter = router({
   projectO: projectORouter,
   apexCommons: apexCommonsRouter,
   resources: resourcesRouter,
+  blog: blogRouter,
 });
 
 export type AppRouter = typeof appRouter;
