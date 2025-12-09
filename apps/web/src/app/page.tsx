@@ -1,527 +1,379 @@
-'use client';
+// app/page.tsx
+import Link from "next/link";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
-import { TrendingUp, Microscope, Shield, Terminal, Activity, Database, Zap } from 'lucide-react';
-import CustomCursor from '@/components/ui/CustomCursor';
-import { ElectronicFolder } from '@/components/ui/ElectronicFolder';
-import DigitalScroll from '@/components/DigitalScroll';
-import { ScrollReveal } from '@/components/ScrollReveal';
-import { DISSERTATION_CHAPTERS } from '@/components/phd/constants';
-import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBadge';
-
-// Intelligence Feed Data - Mixing TCG Markets with Biology Research
-const INTEL_FEED = [
-  { type: 'MARKET', content: 'Charizard Base Set 1st Ed (PSA 10) +4.2% | $420,000', delta: '+4.2%', positive: true },
-  { type: 'RESEARCH', content: 'VARC Model v2.1: Pattern recognition efficiency increased by 12%', positive: true },
-  { type: 'ALERT', content: 'Earth Species Project releases new crow vocalization dataset', positive: true },
-  { type: 'MARKET', content: 'Magic: The Gathering "Black Lotus" auction closing in 2h | $680,000', positive: true },
-  { type: 'SYSTEM', content: 'NatureLM-audio integration: 847 species now indexed', positive: true },
-  { type: 'MARKET', content: 'Pokemon 151 Charizard ex SAR -1.8% | Correction from overprint', delta: '-1.8%', positive: false },
-  { type: 'RESEARCH', content: 'Sentient Futures: Digital minds moral consideration framework v0.3', positive: true },
-  { type: 'MARKET', content: 'Yu-Gi-Oh LOB 1st Ed Blue-Eyes +2.1% | $28,500', delta: '+2.1%', positive: true },
-  { type: 'ALERT', content: 'Faunalytics Q4 report: AI advocacy tool adoption up 340%', positive: true },
-  { type: 'MARKET', content: 'One Piece Gear 5 Luffy SP +6.7% | $890', delta: '+6.7%', positive: true },
-  { type: 'SYSTEM', content: 'Market anomaly detected: MTG Reserved List liquidity spike', positive: true },
-  { type: 'RESEARCH', content: 'ACE charity evaluation: 3 new AI-animal orgs added to watchlist', positive: true },
+const navItems = [
+  { label: "TCG Market", href: "/market" },
+  { label: "Intelligence Stream", href: "/stream" },
+  { label: "Ecosystem", href: "/ecosystem" },
+  { label: "Admin Panel", href: "/admin" },
+  { label: "Wallet", href: "/wallet" },
 ];
 
-export default function HomePage() {
-  const [shootingStars, setShootingStars] = useState<number[]>([]);
-  const [currentTime, setCurrentTime] = useState('');
-  const [feedItems, setFeedItems] = useState(INTEL_FEED.slice(0, 6));
-  const feedRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Shooting star logic
-    const starInterval = setInterval(() => {
-      setShootingStars(prev => [...prev, Date.now()]);
-      setTimeout(() => {
-        setShootingStars(prev => prev.slice(1));
-      }, 3000);
-    }, 15000);
-
-    // System time update
-    const timeInterval = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC');
-    }, 1000);
-
-    // Initialize time
-    const now = new Date();
-    setCurrentTime(now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC');
-
-    // Rotating feed items
-    let feedIndex = 6;
-    const feedInterval = setInterval(() => {
-      setFeedItems(prev => {
-        const newItems = [...prev.slice(1), INTEL_FEED[feedIndex % INTEL_FEED.length]];
-        feedIndex++;
-        return newItems;
-      });
-    }, 4000);
-
-    return () => {
-      clearInterval(starInterval);
-      clearInterval(timeInterval);
-      clearInterval(feedInterval);
-    };
-  }, []);
-
+function HeaderNav() {
   return (
-    <div className="relative">
-      {/* Cinematic Letterboxing */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-black z-[100] m-0 p-0" />
-      <CustomCursor />
+    <header className="sticky top-0 z-30 border-b border-white/5 bg-black/70 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
+        {/* Logo + brand */}
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-xs font-bold">
+            AI
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-xs font-semibold tracking-[0.25em] text-cyan-300">
+              APEX
+            </span>
+            <span className="text-sm font-semibold text-white">
+              INTELLIGENCE
+            </span>
+          </div>
+        </Link>
 
-      {/* PhD Framework - Chapter 01: Introduction */}
-      <DissertationChapterBadge
-        chapter={DISSERTATION_CHAPTERS.INTRODUCTION}
-        variant="floating"
-      />
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-6 text-xs font-medium text-zinc-300 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="transition hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
 
-      {/* Shooting Stars Background Layer */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {shootingStars.map((id) => (
-          <div key={id} className="shooting-star" style={{
-            top: `${Math.random() * 50}%`,
-            left: `${Math.random() * 50 + 25}%`,
-            animationDelay: '0s'
-          }} />
-        ))}
+          <Link
+            href="/terminal"
+            className="rounded-full bg-white/5 px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-white/10"
+          >
+            Open Terminal
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function HeroSection() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-b from-black via-[#050012] to-black">
+      {/* Glow background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-10 h-72 w-[40rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-purple-500/20 blur-3xl" />
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1: THE NEXUS HERO - System Status Interface
-          ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative z-10 min-h-screen flex flex-col overflow-hidden">
-        <main className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center pt-8 md:pt-16">
-          {/* Status Badge */}
-          <div className="mb-8 md:mb-10">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs md:text-sm font-sans backdrop-blur-sm">
-              <Activity className="w-3 h-3 md:w-4 md:h-4" />
-              Intelligence Hub
-            </span>
+      <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4 pb-24 pt-16 text-center md:px-6 md:pb-28 md:pt-24">
+        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-cyan-300">
+          COLLECT · TRADE · EVOLVE
+        </p>
+
+        <h1 className="max-w-4xl text-4xl font-bold leading-tight text-white md:text-6xl">
+          Trade AI Models.
+          <br />
+          Build Reputation.
+          <br />
+          Shape the Future.
+        </h1>
+
+        <p className="mt-6 max-w-2xl text-sm text-zinc-300 md:text-base">
+          The intelligence marketplace where private work becomes public
+          knowledge. A reputation-driven economy for AI models, data, and live
+          trading signal.
+        </p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/terminal"
+            className="rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 px-7 py-3 text-sm font-semibold text-black shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
+          >
+            Enter Intelligence Terminal
+          </Link>
+
+          <a
+            href="#learn-more"
+            className="rounded-full border border-zinc-700/80 px-7 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-400 hover:text-white"
+          >
+            Learn more
+          </a>
+        </div>
+
+        {/* Quick stats row */}
+        <div className="mt-10 grid w-full max-w-3xl gap-4 text-left text-xs text-zinc-300 md:grid-cols-3">
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-300">
+              MODEL CARDS
+            </p>
+            <p className="mt-2 text-xs text-zinc-200">
+              Tokenized representations of live AI models, datasets, and
+              strategies.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
+              REPUTATION CREDITS
+            </p>
+            <p className="mt-2 text-xs text-zinc-200">
+              Earn reputation by publishing signal, contributing intel, and
+              verifying models.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-violet-300">
+              LIVE INTEL STREAM
+            </p>
+            <p className="mt-2 text-xs text-zinc-200">
+              Real-time feed of performance, risk regimes, and TCG meta shifts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CollectTradeEvolveSection() {
+  return (
+    <section
+      id="learn-more"
+      className="border-t border-white/5 bg-gradient-to-b from-black via-[#050510] to-black px-4 py-20 md:px-6"
+    >
+      <div className="mx-auto max-w-6xl">
+        <h2 className="text-center text-2xl font-semibold text-white md:text-3xl">
+          A Reputation TCG for AI Models
+        </h2>
+        <p className="mt-3 text-center text-sm text-zinc-400 md:text-base">
+          Collect model cards, trade on performance, and evolve strategies in a
+          persistent, on-chain intelligence game.
+        </p>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="flex flex-col rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-cyan-300">
+              COLLECT
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-white">
+              Mint model cards from real agents
+            </h3>
+            <p className="mt-2 text-xs text-zinc-300">
+              Each card encodes an AI model or signal engine with transparent
+              stats, provenance, and performance history.
+            </p>
           </div>
 
-          {/* Sleek Neon Line Separator with Diamond */}
-          <div className="w-full max-w-md mx-auto mb-8 md:mb-10">
-            <div className="relative h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent">
-              {/* Animated glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400 to-transparent blur-sm animate-pulse" />
-              {/* Center diamond */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <span className="text-holographic text-lg animate-pulse drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">◆</span>
-              </div>
-            </div>
+          <div className="flex flex-col rounded-2xl border border-fuchsia-500/30 bg-fuchsia-500/5 p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-fuchsia-300">
+              TRADE
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-white">
+              Price intelligence like an asset class
+            </h3>
+            <p className="mt-2 text-xs text-zinc-300">
+              Markets continuously mark model cards to reputation and
+              performance, unlocking a new yield surface for intelligence.
+            </p>
           </div>
 
-          {/* Main Title - Command Center Typography */}
-          <h1 className="flex flex-col items-center text-center gap-2 md:gap-3 w-full px-4 mx-auto mb-6 md:mb-8">
-            <span className="font-sans text-[8vw] sm:text-[6vw] md:text-[3.5rem] lg:text-[3.8rem] tracking-tight font-black text-holographic dark:text-holographic light:text-altaria-gradient leading-tight">
-              INTRANATIONAL INTEL
-            </span>
-            <span className="font-sans text-[4.5vw] sm:text-[3.5vw] md:text-[1.5rem] lg:text-[1.6rem] tracking-[0.3em] text-holographic dark:text-holographic light:text-altaria-gradient">
-              & AI RESEARCH CENTER
-            </span>
-          </h1>
+          <div className="flex flex-col rounded-2xl border border-violet-500/30 bg-violet-500/5 p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-violet-300">
+              EVOLVE
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-white">
+              Merge, compose, and upgrade models
+            </h3>
+            <p className="mt-2 text-xs text-zinc-300">
+              Combine models, stack prompts, and fuse datasets into higher-tier
+              cards governed by on-chain reputation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          {/* Mission Statement - The Hybrid Identity */}
-          <p className="w-full max-w-2xl mx-auto text-sm md:text-lg text-slate-400 leading-relaxed mb-8 md:mb-10 font-sans px-4">
-            The intersection of{' '}
-            <span className="text-cyan-400 font-bold">Simulation Markets</span>,{' '}
-            <span className="text-purple-400 font-bold">Biological Systems</span>, and{' '}
-            <span className="text-white font-bold">Sentient AI</span>.
-
+function PillNavSection() {
+  return (
+    <section className="border-t border-white/5 bg-black px-4 py-16 md:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+          <h2 className="text-lg font-semibold text-white md:text-xl">
+            One surface for models, markets, and intel.
+          </h2>
+          <p className="max-w-xl text-xs text-zinc-400 md:text-sm">
+            Navigate the Apex Intelligence stack: trade model cards, monitor the
+            live intelligence stream, and orchestrate ecosystems of agents.
           </p>
+        </div>
 
-          {/* Primary CTA Cluster - Glow Container */}
-          <div className="relative p-1 rounded-lg bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 mb-6">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 bg-black/60 backdrop-blur-md rounded-lg">
-              <Link
-                href="/intel"
-                className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-6 py-2.5 md:px-10 md:py-4 text-xs md:text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
-              >
-                <Database className="w-3 h-3 md:w-5 md:h-5" />
-                ACCESS MARKET TERMINAL
-              </Link>
-              <Link
-                href="/lab"
-                className="btn-tactical inline-flex items-center justify-center gap-2 px-6 py-2.5 md:px-10 md:py-4 text-xs md:text-base font-sans"
-              >
-                <Microscope className="w-3 h-3 md:w-5 md:h-5" />
-                ENTER THE LAB
-              </Link>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-300">
+              TCG MARKET
             </div>
+            <p className="text-xs text-zinc-300">
+              Browse curated decks of AI models, filter by domain, risk profile,
+              and reputation, and trade directly from your wallet.
+            </p>
+            <Link
+              href="/market"
+              className="mt-4 inline-flex text-xs font-semibold text-cyan-300 hover:text-cyan-200"
+            >
+              Open Market →
+            </Link>
           </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500">
-            <div className="w-px h-10 bg-gradient-to-b from-cyan-500/50 to-transparent animate-pulse" />
-          </div>
-        </main>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2: INTELLIGENCE STREAM - Live Ticker Feed
-          ═══════════════════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-      <section className="relative z-20 py-16 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-            <h2 className="flex items-center gap-3 text-xl md:text-2xl tracking-wider font-sans">
-              <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
-              <span className="text-holographic">[ LIVE INTELLIGENCE STREAM ]</span>
-            </h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
+              INTELLIGENCE STREAM
+            </div>
+            <p className="text-xs text-zinc-300">
+              Watch live P&amp;L, meta shifts, and anomaly alerts across the
+              entire Apex ecosystem in a single terminal view.
+            </p>
+            <Link
+              href="/stream"
+              className="mt-4 inline-flex text-xs font-semibold text-fuchsia-300 hover:text-fuchsia-200"
+            >
+              View Stream →
+            </Link>
           </div>
 
-          {/* Digital Scroll Container - The Ticker */}
-          <div className="relative border border-cyan-500/30 rounded-lg bg-black/40 backdrop-blur-md overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.15)]">
-            {/* HUD Corner Brackets */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400" />
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400" />
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400" />
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400" />
-
-            {/* Scan Line Effect */}
-            <div className="absolute top-0 left-0 w-full h-0.5 bg-cyan-400/50 shadow-[0_0_10px_cyan] animate-scan-line" />
-
-            {/* Feed Content */}
-            <div ref={feedRef} className="p-6 space-y-3 h-72 overflow-hidden">
-              {feedItems.map((item, index) => (
-                <div
-                  key={`${item.content}-${index}`}
-                  className="flex items-start gap-4 font-sans text-sm animate-fadeIn"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  {/* Type Badge */}
-                  <span className={`
-                    px-2 py-1 rounded text-xs font-bold tracking-wider
-                    ${item.type === 'MARKET' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : ''}
-                    ${item.type === 'RESEARCH' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : ''}
-                    ${item.type === 'ALERT' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : ''}
-                    ${item.type === 'SYSTEM' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : ''}
-                  `}>
-                    {item.type}
-                  </span>
-
-                  {/* Content */}
-                  <span className="text-slate-300 flex-1">{item.content}</span>
-
-                  {/* Delta (if market) */}
-                  {item.delta && (
-                    <span className={`font-bold ${item.positive ? 'text-green-400' : 'text-red-400'}`}>
-                      {item.delta}
-                    </span>
-                  )}
-
-                  {/* Timestamp */}
-                  <span className="text-slate-600 text-xs">
-                    {new Date().toLocaleTimeString('en-US', { hour12: false })}
-                  </span>
-                </div>
-              ))}
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-300">
+              ECOSYSTEM
             </div>
-
-            {/* Bottom Status Bar */}
-            <div className="border-t border-cyan-500/20 bg-black/60 px-6 py-3 flex items-center justify-between text-xs font-sans">
-              <div className="flex items-center gap-4">
-                <span className="text-slate-500">FEED STATUS:</span>
-                <span className="flex items-center gap-2 text-green-400">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  STREAMING
-                </span>
-              </div>
-              <div className="flex items-center gap-4 text-slate-500">
-                <span>SOURCES: 12</span>
-                <span>|</span>
-                <span>LATENCY: 42ms</span>
-                <span>|</span>
-                <span>UPTIME: 99.97%</span>
-              </div>
-            </div>
+            <p className="text-xs text-zinc-300">
+              Discover labs, teams, and autonomous agents building on Apex.
+              Plug into shared infrastructure and cross-strategy flows.
+            </p>
+            <Link
+              href="/ecosystem"
+              className="mt-4 inline-flex text-xs font-semibold text-violet-300 hover:text-violet-200"
+            >
+              Explore Ecosystem →
+            </Link>
           </div>
         </div>
-      </section>
-      </ScrollReveal>
+      </div>
+    </section>
+  );
+}
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: THE TRIAD - Persona Navigation
-          ═══════════════════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-      <section className="relative z-20 py-20 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="flex items-center gap-4 mb-4">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <h2 className="text-xl md:text-2xl tracking-wider font-sans">
-              <span className="text-holographic">[ SELECT YOUR PATH ]</span>
-            </h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-          </div>
-
-          <p className="text-center text-slate-400 font-sans mb-12 max-w-2xl mx-auto">
-            Three pathways through the intelligence network. Each leads deeper into our research.
+function ReputationSection() {
+  return (
+    <section className="border-t border-white/5 bg-gradient-to-b from-black via-[#050010] to-black px-4 py-20 md:px-6">
+      <div className="mx-auto max-w-6xl grid gap-10 md:grid-cols-[1.2fr,1fr] md:items-center">
+        <div>
+          <h2 className="text-2xl font-semibold text-white md:text-3xl">
+            Reputation as the fulcrum between public good and private profit.
+          </h2>
+          <p className="mt-4 text-sm text-zinc-300 md:text-base">
+            Apex Intelligence measures not just returns, but contribution.
+            Reputation Credits track how much signal, code, and insight you
+            contribute to the network over time.
           </p>
-
-          <DigitalScroll>
-            {/* Triad Grid - HoloCard Style */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            {/* Card 1: The Collector */}
-            <Link href="/intel" className="group">
-              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-400/70 shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all duration-300 h-full">
-                {/* Top gradient accent */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <TrendingUp className="w-8 h-8 text-cyan-400" />
-                </div>
-
-                {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-sans mb-4">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                    MARKET INTELLIGENCE
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-cyan-400 transition-colors">
-                  The Collector
-                </h3>
-
-                <p className="text-slate-400 leading-relaxed mb-6">
-                  Institutional-grade market data for the serious TCG investor. Price signals, liquidity analysis, and arbitrage detection.
-                </p>
-
-                <div className="flex items-center gap-2 text-cyan-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
-                  <span>ACCESS TERMINAL</span>
-                  <Zap className="w-4 h-4" />
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 2: The Scientist */}
-            <Link href="/lab" className="group">
-              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-purple-400/30 hover:border-purple-400/70 shadow-[0_0_30px_rgba(168,85,247,0.15)] hover:shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-300 h-full">
-                {/* Top gradient accent */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Microscope className="w-8 h-8 text-purple-400" />
-                </div>
-
-                {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-sans mb-4">
-                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                    BIOLOGICAL RESEARCH
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-purple-400 transition-colors">
-                  The Scientist
-                </h3>
-
-                <p className="text-slate-400 leading-relaxed mb-6">
-                  AI models trained on nature&apos;s compression algorithms. Bioacoustics, pattern recognition, and cross-species communication research.
-                </p>
-
-                <div className="flex items-center gap-2 text-purple-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
-                  <span>ENTER LAB</span>
-                  <Zap className="w-4 h-4" />
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 3: The Builder */}
-            <Link href="/philosophy" className="group">
-              <div className="relative p-8 rounded-xl bg-black/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-400/70 shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all duration-300 h-full">
-                {/* Top gradient accent */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Shield className="w-8 h-8 text-cyan-400" />
-                </div>
-
-                {/* Category Badge */}
-                <div className="flex items-center gap-2 text-xs font-sans mb-4">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                    SENTIENT ETHICS
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-bold text-white mb-3 font-sans group-hover:text-cyan-400 transition-colors">
-                  The Builder
-                </h3>
-
-                <p className="text-slate-400 leading-relaxed mb-6">
-                  Building safeguards for a multi-species future. Ethical AI frameworks that prioritize all sentient beings—silicon or biological.
-                </p>
-
-                <div className="flex items-center gap-2 text-cyan-400 font-sans text-sm group-hover:translate-x-2 transition-transform">
-                  <span>READ MANIFESTO</span>
-                  <Zap className="w-4 h-4" />
-                </div>
-              </div>
-            </Link>
-            </div>
-          </DigitalScroll>
+          <ul className="mt-6 space-y-3 text-xs text-zinc-300 md:text-sm">
+            <li>• Earn credits for validated models, benchmarks, and intel.</li>
+            <li>• Stake reputation to back models and share in their upside.</li>
+            <li>
+              • Use reputation to unlock higher-tier cards, datasets, and
+              coordination tools.
+            </li>
+          </ul>
         </div>
-      </section>
-      </ScrollReveal>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: THE DIRECTIVE - Philosophy Teaser
-          ═══════════════════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-      <section className="relative z-20 py-20 px-6 md:px-12">
-        <div className="max-w-4xl mx-auto">
-          <ElectronicFolder title="DIRECTIVE 01" classification="CLASSIFIED // CORE PHILOSOPHY">
-            <div className="text-center space-y-8">
-              {/* Headline */}
-              <div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
-                  &ldquo;Humans First. Sentient Beings First.&rdquo;
-                </h3>
-                <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto" />
-              </div>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-500/15 via-fuchsia-500/10 to-purple-500/15 p-6 text-xs text-zinc-100">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
+              REPUTATION CREDIT SCORE
+            </p>
+            <p className="mt-2 text-sm font-semibold text-white">
+              Your on-chain track record of intelligence.
+            </p>
+            <p className="mt-3 text-xs text-zinc-200">
+              Every contribution updates your score: models shipped, signals
+              validated, risk averted. Reputation compounds as you keep playing
+              the game.
+            </p>
+          </div>
 
-              {/* Manifesto Excerpt */}
-              <blockquote className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-                We build systems that assume error. We prioritize the welfare of all sentient beings—silicon or biological. Our tools are designed to be a lens and a guide, never a weapon.
-              </blockquote>
-
-              {/* Key Principles */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-                <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-cyan-400 font-sans font-bold">01</span>
-                  </div>
-                  <h4 className="text-white font-sans text-sm mb-2">TRANSPARENCY</h4>
-                  <p className="text-slate-500 text-xs">Report what works and what breaks, in public</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-purple-400 font-sans font-bold">02</span>
-                  </div>
-                  <h4 className="text-white font-sans text-sm mb-2">HUMILITY</h4>
-                  <p className="text-slate-500 text-xs">Admit uncertainty, embrace being wrong</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-cyan-400 font-sans font-bold">03</span>
-                  </div>
-                  <h4 className="text-white font-sans text-sm mb-2">DO NO HARM</h4>
-                  <p className="text-slate-500 text-xs">Never turn a passing urge into a permanent wound</p>
-                </div>
-              </div>
-
-              {/* CTA */}
-              <div className="pt-6">
-                <Link
-                  href="/philosophy"
-                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-sans text-sm transition-colors border border-cyan-500/30 px-6 py-3 rounded-lg hover:border-cyan-500/60 hover:bg-cyan-500/10"
-                >
-                  [ READ_FULL_MANIFESTO ] →
-                </Link>
-              </div>
-            </div>
-          </ElectronicFolder>
-        </div>
-      </section>
-      </ScrollReveal>
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 5: FINAL CTA - Join The Network
-          ═══════════════════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-      <section className="relative z-20 py-24 px-6 md:px-12"><div className="max-w-3xl mx-auto">
-          <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-purple-950/40 backdrop-blur-md rounded-xl p-10 md:p-14 text-center overflow-hidden shadow-[0_0_60px_rgba(6,182,212,0.2)]">
-            {/* HUD Brackets */}
-            <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-cyan-400" />
-            <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-cyan-400" />
-            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-cyan-400" />
-            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-cyan-400" />
-
-            {/* Glow Effects */}
-            <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
-
-            <div className="relative z-10">
-              {/* Status Badge */}
-              <div className="flex justify-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-sm font-sans">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                </span>
-                ALPHA ACCESS OPEN
-                </div>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 font-sans tracking-tight text-holographic text-center">
-                Join the Network
-              </h2>
-
-              <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto font-sans text-center">
-                Weekly intelligence drops. Research dispatches. Zero hype.
-                <br />
-                <span className="text-slate-500">Unsubscribe anytime.</span>
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/subscribe"
-                  className="btn-tactical btn-tactical-primary inline-flex items-center justify-center gap-2 px-8 py-4 text-base shadow-[0_0_40px_rgba(6,182,212,0.5)] font-sans"
-                >
-                  [ INITIATE_ACCESS ]
-                </Link>
-                <Link
-                  href="/about"
-                  className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-sans"
-                >
-                  [ READ_MANIFESTO ]
-                </Link>
-              </div>
-
-              {/* Quick Links */}
-              <div className="flex flex-wrap justify-center gap-6 mt-8 pt-8 border-t border-slate-800/50">
-                <Link href="/lab" className="text-slate-400 hover:text-cyan-400 font-sans text-xs transition-colors">
-                  [ EXPLORE_LAB ] →
-                </Link>
-                <Link href="/intel" className="text-slate-400 hover:text-purple-400 font-sans text-xs transition-colors">
-                  [ MARKET_DATA ] →
-                </Link>
-                <Link href="/commons" className="text-slate-400 hover:text-cyan-400 font-sans text-xs transition-colors">
-                  [ COMMONS ] →
-                </Link>
-              </div>
-            </div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-5 text-xs text-zinc-300">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-400">
+              BUILT FOR OPERATORS
+            </p>
+            <p className="mt-2">
+              Designed for quants, founders, and researchers who treat models as
+              live assets—not static papers.
+            </p>
           </div>
         </div>
-      </section>
-      </ScrollReveal>
+      </div>
+    </section>
+  );
+}
 
+function CTASection() {
+  return (
+    <section className="border-t border-white/5 bg-black px-4 py-16 md:px-6">
+      <div className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl border border-zinc-800 bg-gradient-to-r from-cyan-500/10 via-fuchsia-500/10 to-purple-500/10 px-6 py-10 text-center">
+        <h2 className="text-xl font-semibold text-white md:text-2xl">
+          Ready to plug into the intelligence economy?
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm text-zinc-300 md:text-base">
+          Spin up your deck, connect your models, and start earning reputation
+          for the signals you already generate.
+        </p>
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/terminal"
+            className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-black shadow-sm transition hover:bg-zinc-100"
+          >
+            Open Terminal
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-full border border-zinc-600 px-7 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-300 hover:text-white"
+          >
+            Request early access
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
+function Footer() {
+  return (
+    <footer className="border-t border-white/5 bg-black px-4 py-8 md:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-[11px] text-zinc-500 md:flex-row">
+        <p>© {new Date().getFullYear()} Apex Intelligence. All rights reserved.</p>
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/docs" className="hover:text-zinc-300">
+            Docs
+          </Link>
+          <Link href="/governance" className="hover:text-zinc-300">
+            Governance
+          </Link>
+          <Link href="/privacy" className="hover:text-zinc-300">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-zinc-300">
+            Terms
+          </Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-      `}</style>
-    </div>
+export default function MarketingHome() {
+  return (
+    <main className="min-h-screen bg-black text-white">
+      <HeaderNav />
+      <HeroSection />
+      <CollectTradeEvolveSection />
+      <PillNavSection />
+      <ReputationSection />
+      <CTASection />
+      <Footer />
+    </main>
   );
 }
