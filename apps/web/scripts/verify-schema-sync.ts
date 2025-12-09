@@ -7,7 +7,7 @@ function readFile(filePath: string): string {
   return fs.readFileSync(filePath, 'utf8');
 }
 
-function collectSchemaColumns(schemaPath: string): TableColumns {
+function collectSchemaColumnsFromFile(schemaPath: string): TableColumns {
   const src = readFile(schemaPath);
   const tables: TableColumns = {};
 
@@ -18,12 +18,12 @@ function collectSchemaColumns(schemaPath: string): TableColumns {
   while ((match = tableRegex.exec(src)) !== null) {
     const tableVarName = match[1];
     const startPos = match.index + match[0].length;
-    
+
     // Find the matching closing brace for the column definition block
     let braceCount = 1;
     let pos = startPos;
     let columnsBlockEnd = startPos;
-    
+
     while (pos < src.length && braceCount > 0) {
       if (src[pos] === '{') braceCount++;
       else if (src[pos] === '}') braceCount--;
@@ -33,7 +33,7 @@ function collectSchemaColumns(schemaPath: string): TableColumns {
       }
       pos++;
     }
-    
+
     const columnsBlock = src.slice(startPos, columnsBlockEnd);
 
     const columnNames = new Set<string>();
@@ -48,7 +48,53 @@ function collectSchemaColumns(schemaPath: string): TableColumns {
       columnNames.add(colName);
     }
 
-    tables[tableVarName] = columnNames;
+    // Merge columns if table already exists (from another schema file)
+    if (tables[tableVarName]) {
+      columnNames.forEach((col) => tables[tableVarName].add(col));
+    } else {
+      tables[tableVarName] = columnNames;
+    }
+  }
+
+  return tables;
+}
+
+/**
+ * Collect schema columns from multiple schema sources
+ *
+ * The codebase uses both local schema (src/db/schema.ts) and package schema
+ * (@apex/db from packages/db/src/schema). We need to check all sources.
+ */
+function collectSchemaColumns(localSchemaPath: string): TableColumns {
+  const tables: TableColumns = {};
+  const schemaFiles: string[] = [];
+
+  // Add local schema if it exists
+  if (fs.existsSync(localSchemaPath)) {
+    schemaFiles.push(localSchemaPath);
+  }
+
+  // Add @apex/db package schema files
+  const packageSchemaDir = path.join(process.cwd(), '..', '..', 'packages', 'db', 'src', 'schema');
+  if (fs.existsSync(packageSchemaDir)) {
+    const entries = fs.readdirSync(packageSchemaDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith('.ts') && entry.name !== 'index.ts') {
+        schemaFiles.push(path.join(packageSchemaDir, entry.name));
+      }
+    }
+  }
+
+  // Collect columns from all schema files
+  for (const schemaFile of schemaFiles) {
+    const fileColumns = collectSchemaColumnsFromFile(schemaFile);
+    for (const [tableName, columns] of Object.entries(fileColumns)) {
+      if (tables[tableName]) {
+        columns.forEach((col) => tables[tableName].add(col));
+      } else {
+        tables[tableName] = columns;
+      }
+    }
   }
 
   return tables;
@@ -98,6 +144,32 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): void {
     'length',
   ]);
 
+  // File extensions and other patterns that aren't column references
+  const falsePositivePatterns = new Set([
+    'ts',
+    'tsx',
+    'js',
+    'jsx',
+    'json',
+    'md',
+    'css',
+    'scss',
+    '$inferSelect',
+    '$inferInsert',
+    '$type',
+    'default',
+    // Common JavaScript/TypeScript properties that match table names
+    'size',
+    'length',
+    'keys',
+    'values',
+    'entries',
+    'forEach',
+    'filter',
+    'map',
+    'reduce',
+  ]);
+
   const errors: string[] = [];
 
   for (const file of files) {
@@ -113,6 +185,17 @@ function verifyColumnUsage(schemaPath: string, srcRoot: string): void {
 
         // Skip if it's a known Drizzle method
         if (drizzleMethods.has(col)) continue;
+
+        // Skip false positives (file extensions, TypeScript helpers, etc.)
+        if (falsePositivePatterns.has(col)) continue;
+
+        // Skip matches inside string literals or template strings (e.g., code examples in docs)
+        // Check all content before match for unescaped backticks
+        const contextBefore = content.slice(0, matchStart);
+        // Count unescaped backticks (not preceded by backslash) before match
+        // If odd, we're inside a template literal
+        const unescapedBackticks = contextBefore.match(/(?<!\\)`/g) || [];
+        if (unescapedBackticks.length % 2 === 1) continue;
 
         // Check if followed by a parenthesis (indicating a method call)
         const matchEnd = matchStart + usageMatch[0].length;
