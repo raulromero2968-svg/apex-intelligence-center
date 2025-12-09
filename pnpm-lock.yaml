@@ -28,16 +28,16 @@ importers:
         version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))
       '@mdx-js/loader':
         specifier: ^3.1.1
-        version: 3.1.1(webpack@5.102.1(esbuild@0.25.12))
+        version: 3.1.1(webpack@5.102.1)
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.5)(react@18.3.1)
       '@next/mdx':
         specifier: ^16.0.3
-        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
+        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
       '@sentry/nextjs':
         specifier: ^10.27.0
-        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))
+        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
@@ -361,6 +361,9 @@ importers:
       '@langchain/core':
         specifier: ^1.0.5
         version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))
+      '@langchain/google-genai':
+        specifier: ^0.1.6
+        version: 0.1.12(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(zod@4.1.12)
       '@langchain/openai':
         specifier: ^1.1.1
         version: 1.1.2(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(ws@8.18.3)
@@ -369,7 +372,7 @@ importers:
         version: 1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))
       '@mdx-js/loader':
         specifier: ^3.1.1
-        version: 3.1.1(webpack@5.102.1(esbuild@0.25.12))
+        version: 3.1.1(webpack@5.102.1)
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.5)(react@18.3.1)
@@ -378,7 +381,7 @@ importers:
         version: 0.10.4
       '@next/mdx':
         specifier: ^16.0.3
-        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
+        version: 16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.3.1
@@ -393,7 +396,7 @@ importers:
         version: 8.18.0(@types/react@19.2.5)(expo-asset@10.0.10(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(expo-file-system@17.0.1(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)))(expo@51.0.39(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-native@0.75.4(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(@types/react@19.2.5)(react@18.3.1)(typescript@5.9.3))(react@18.3.1)(three@0.165.0)
       '@sentry/nextjs':
         specifier: ^10.27.0
-        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))
+        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
@@ -637,7 +640,7 @@ importers:
         version: 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))
       '@sentry/nextjs':
         specifier: ^10.27.0
-        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))
+        version: 10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)
       bullmq:
         specifier: ^5.63.2
         version: 5.63.2
@@ -2598,6 +2601,10 @@ packages:
     resolution: {integrity: sha512-gOnCAbFgAYKRozywLsxagdevTF7Gm+2Ncz5u5CQAuOv/2VCa0rdGJWvJFDOftPx1tc+q8TXiC2pEJfFKu+yeMQ==}
     engines: {node: '>=14'}
 
+  '@google/generative-ai@0.24.1':
+    resolution: {integrity: sha512-MqO+MLfM6kjxcKoy0p1wRzG3b4ZZXtPI+z2IE26UogS2Cm/XHO+7gGRBh6gcJsOiIVoH93UwKvW4HdgiOZCy9Q==}
+    engines: {node: '>=18.0.0'}
+
   '@graphql-typed-document-node/core@3.2.0':
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
@@ -3307,6 +3314,12 @@ packages:
   '@langchain/core@1.0.5':
     resolution: {integrity: sha512-9Hy/b9+j+mm0Bhnm8xD9B0KpBYTidroLrDHdbrHoMC2DqXoY2umvi1M3M/9D744qsMSaIMP0ZwFcy5YbqI/dGw==}
     engines: {node: '>=20'}
+
+  '@langchain/google-genai@0.1.12':
+    resolution: {integrity: sha512-0Ea0E2g63ejCuormVxbuoyJQ5BYN53i2/fb6WP8bMKzyh+y43R13V8JqOtr3e/GmgNyv3ou/VeaZjx7KAvu/0g==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.3.17 <0.4.0'
 
   '@langchain/langgraph-checkpoint@1.0.0':
     resolution: {integrity: sha512-xrclBGvNCXDmi0Nz28t3vjpxSH6UYx6w5XAXSiiB1WEdc2xD2iY/a913I3x3a31XpInUW/GGfXXfePfaghV54A==}
@@ -15907,6 +15920,8 @@ snapshots:
       - supports-color
     optional: true
 
+  '@google/generative-ai@0.24.1': {}
+
   '@graphql-typed-document-node/core@3.2.0(graphql@15.8.0)':
     dependencies:
       graphql: 15.8.0
@@ -16506,6 +16521,14 @@ snapshots:
       - '@opentelemetry/sdk-trace-base'
       - openai
 
+  '@langchain/google-genai@0.1.12(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12)))(zod@4.1.12)':
+    dependencies:
+      '@google/generative-ai': 0.24.1
+      '@langchain/core': 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))
+      zod-to-json-schema: 3.25.0(zod@4.1.12)
+    transitivePeerDependencies:
+      - zod
+
   '@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76)))':
     dependencies:
       '@langchain/core': 1.0.5(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.9.1(ws@8.18.3)(zod@3.25.76))
@@ -16605,12 +16628,12 @@ snapshots:
       - encoding
       - supports-color
 
-  '@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12))':
+  '@mdx-js/loader@3.1.1(webpack@5.102.1)':
     dependencies:
       '@mdx-js/mdx': 3.1.1
       source-map: 0.7.6
     optionalDependencies:
-      webpack: 5.102.1(esbuild@0.25.12)
+      webpack: 5.102.1
     transitivePeerDependencies:
       - supports-color
 
@@ -16692,11 +16715,11 @@ snapshots:
     dependencies:
       glob: 10.3.10
 
-  '@next/mdx@16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1(esbuild@0.25.12)))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))':
+  '@next/mdx@16.0.3(@mdx-js/loader@3.1.1(webpack@5.102.1))(@mdx-js/react@3.1.1(@types/react@19.2.5)(react@18.3.1))':
     dependencies:
       source-map: 0.7.6
     optionalDependencies:
-      '@mdx-js/loader': 3.1.1(webpack@5.102.1(esbuild@0.25.12))
+      '@mdx-js/loader': 3.1.1(webpack@5.102.1)
       '@mdx-js/react': 3.1.1(@types/react@19.2.5)(react@18.3.1)
 
   '@next/swc-darwin-arm64@14.2.33':
@@ -18250,7 +18273,7 @@ snapshots:
       '@sentry/utils': 7.119.1
       localforage: 1.10.0
 
-  '@sentry/nextjs@10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1(esbuild@0.25.12))':
+  '@sentry/nextjs@10.27.0(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(next@14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.102.1)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.38.0
@@ -18262,7 +18285,7 @@ snapshots:
       '@sentry/opentelemetry': 10.27.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/core@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       '@sentry/react': 10.27.0(react@18.3.1)
       '@sentry/vercel-edge': 10.27.0
-      '@sentry/webpack-plugin': 4.6.1(webpack@5.102.1(esbuild@0.25.12))
+      '@sentry/webpack-plugin': 4.6.1(webpack@5.102.1)
       next: 14.2.33(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       resolve: 1.22.8
       rollup: 4.53.3
@@ -18405,12 +18428,12 @@ snapshots:
       '@opentelemetry/resources': 2.2.0(@opentelemetry/api@1.9.0)
       '@sentry/core': 10.27.0
 
-  '@sentry/webpack-plugin@4.6.1(webpack@5.102.1(esbuild@0.25.12))':
+  '@sentry/webpack-plugin@4.6.1(webpack@5.102.1)':
     dependencies:
       '@sentry/bundler-plugin-core': 4.6.1
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.102.1(esbuild@0.25.12)
+      webpack: 5.102.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -27744,16 +27767,14 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-  terser-webpack-plugin@5.3.14(esbuild@0.25.12)(webpack@5.102.1(esbuild@0.25.12)):
+  terser-webpack-plugin@5.3.14(webpack@5.102.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.44.1
-      webpack: 5.102.1(esbuild@0.25.12)
-    optionalDependencies:
-      esbuild: 0.25.12
+      webpack: 5.102.1
 
   terser@5.44.1:
     dependencies:
@@ -28533,7 +28554,7 @@ snapshots:
 
   webpack-virtual-modules@0.5.0: {}
 
-  webpack@5.102.1(esbuild@0.25.12):
+  webpack@5.102.1:
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -28557,7 +28578,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(esbuild@0.25.12)(webpack@5.102.1(esbuild@0.25.12))
+      terser-webpack-plugin: 5.3.14(webpack@5.102.1)
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:
