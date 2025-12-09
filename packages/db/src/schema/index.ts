@@ -318,18 +318,19 @@ export {
 } from './analyticsEvents';
 
 // Blog Posts - Topic Cluster SEO Architecture (Phase 3)
+// Note: blogPosts/BlogPost are aliased to avoid conflict with blogEngine exports
 export {
   // Tables
   blogClusters,
-  blogPosts,
+  blogPosts as blogPostsSimple,
   blogCitations,
   // Enums
   blogPostTypeEnum,
-  blogPostStatusEnum,
+  blogPostStatusEnum as blogPostStatusEnumSimple,
   citationSourceTypeEnum,
   // Relations
   blogClustersRelations,
-  blogPostsRelations,
+  blogPostsRelations as blogPostsRelationsSimple,
   blogCitationsRelations,
   // Helper functions
   calculateReadingTime,
@@ -337,14 +338,14 @@ export {
   // Types
   type BlogCluster,
   type NewBlogCluster,
-  type BlogPost,
-  type NewBlogPost,
+  type BlogPost as BlogPostSimple,
+  type NewBlogPost as NewBlogPostSimple,
   type BlogCitation,
   type NewBlogCitation,
   type BlogPostType,
-  type BlogPostStatus,
+  type BlogPostStatus as BlogPostStatusSimple,
   type CitationSourceType,
-  type BlogPostCitation,
+  type BlogPostCitation as BlogPostCitationInterface,
   type BlogPostAuthor,
   type BlogPostSeoData,
 } from './blogPosts';

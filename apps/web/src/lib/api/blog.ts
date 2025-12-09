@@ -17,11 +17,11 @@ import { db } from '@/db';
 import { eq, desc, and, asc, sql } from 'drizzle-orm';
 import { cache } from 'react';
 import {
-  blogPosts,
+  blogPostsSimple as blogPosts,
   blogClusters,
-  type BlogPost,
+  type BlogPostSimple as BlogPost,
   type BlogCluster,
-  type BlogPostCitation,
+  type BlogPostCitationInterface as BlogPostCitation,
   type BlogPostAuthor,
   type BlogPostSeoData,
 } from '@apex/db/schema';
