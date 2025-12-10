@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,13 +9,24 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'sans-serif'], // Default Body
-        display: ['var(--font-chakra)', 'sans-serif'], // Titan Headers (Racecar Look)
-        tech: ['var(--font-space)', 'sans-serif'], // Sub-headers (NASA Look)
-        mono: ['var(--font-mono)', 'monospace'], // Terminal Stream
+        sans: ['var(--font-inter)', 'sans-serif'],
+        display: ['var(--font-chakra)', 'sans-serif'],
+        tech: ['var(--font-space)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
       colors: {
-        // Cyberpunk neon palette
+        // Enforcing the "Dark blues and grays" background palette
+        slate: {
+          850: '#151e2e',
+          950: '#020617',
+        },
+        // Enforcing the "Bright cyan or electric blue" accent palette
+        cyan: {
+          400: '#22d3ee',
+          500: '#06b6d4',
+          900: '#164e63',
+        },
+        // Cyberpunk neon palette (preserved)
         'neon-pink': '#FF006E',
         'neon-cyan': '#00F5FF',
         'neon-purple': '#B026FF',
@@ -22,13 +34,13 @@ module.exports = {
         'cyber-dark': '#0A0E27',
         'cyber-darker': '#050814',
         'cyber-gray': '#1A1F3A',
-        // Titan Visual Engine: Intensified Cyberpunk F1 Palette
         'cyan-high': '#06FFF0',
         'purple-high': '#D946EF',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'grid-pattern': "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",
         'cyber-grid': "linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px)",
       },
       animation: {
@@ -90,4 +102,5 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};
+export default config;

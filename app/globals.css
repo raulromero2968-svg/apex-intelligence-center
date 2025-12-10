@@ -2,44 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 2, 6, 23; /* slate-950 */
+  --background-end-rgb: 2, 6, 23;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+/* Custom Scrollbar for a "futuristic" feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a; /* slate-900 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155; /* slate-700 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4; /* cyan-500 */
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
-  body {
-    @apply bg-cyber-darker text-white;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    background-image:
-      radial-gradient(ellipse at top, rgba(176, 38, 255, 0.15), transparent 50%),
-      radial-gradient(ellipse at bottom, rgba(0, 102, 255, 0.15), transparent 50%);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
   .cyber-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
-  }
-  
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-cyber-dark;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-neon-cyan/30;
-    border-radius: 5px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-neon-cyan/50;
   }
 
   .text-glow-pink {
@@ -88,7 +89,7 @@
 
   .neon-border {
     border: 1px solid rgba(0, 245, 255, 0.5);
-    box-shadow: 
+    box-shadow:
       0 0 10px rgba(0, 245, 255, 0.5),
       inset 0 0 10px rgba(0, 245, 255, 0.2);
   }
@@ -112,7 +113,7 @@
   }
 
   .card-cyber {
-    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20 
+    @apply bg-cyber-dark/50 backdrop-blur-md border border-neon-cyan/20
            rounded-lg p-6 hover:border-neon-cyan/40 transition-all duration-300;
   }
 }
