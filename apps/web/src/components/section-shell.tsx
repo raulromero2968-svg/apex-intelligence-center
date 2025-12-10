@@ -9,6 +9,8 @@ type SectionShellProps = {
   path?: string;
   badgeLabel?: string;
   children: ReactNode;
+  /** When true, bypasses max-width constraints for full-width layouts */
+  fullWidth?: boolean;
 };
 
 export function SectionShell({
@@ -18,12 +20,13 @@ export function SectionShell({
   path,
   badgeLabel,
   children,
+  fullWidth = false,
 }: SectionShellProps) {
   const displayPath = path ?? "";
 
   return (
     <main className="min-h-screen bg-black text-white px-4 py-10 md:px-6">
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className={`mx-auto space-y-6 ${fullWidth ? 'max-w-none' : 'max-w-6xl'}`}>
         {/* Breadcrumb */}
         <div className="text-[11px] text-zinc-500">
           <Link href="/" className="text-zinc-400 hover:text-zinc-200">
