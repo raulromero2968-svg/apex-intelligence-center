@@ -330,8 +330,9 @@ export default function RootLayout({
         <div className="flex-1 flex flex-col">
 
           {/* Main Content - Wrapped in AppShell for mobile nav */}
+          {/* pt-[6.5rem] accounts for primary nav (h-16 = 64px) + secondary nav (h-10 = 40px) = 104px */}
 
-          <main className="relative z-10 flex-1 pt-24" id="main">
+          <main className="relative z-10 flex-1 pt-16 md:pt-[6.5rem]" id="main">
 
             <AppShell>
               {children}
