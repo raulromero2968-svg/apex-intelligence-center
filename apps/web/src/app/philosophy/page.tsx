@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     description: 'No holy machines. Self-determination and dignity. Mental health protection. Transparency over mystique.',
     images: [
       {
-        url: '/og/philosophy-simulation.png',
+        url: '/og/philosophy.png',
         width: 1200,
         height: 630,
-        alt: 'Apex Intelligence Philosophy - Simulation Markets & Bostrom Trilemma',
+        alt: 'Apex Intelligence Philosophy - Ethics and Systems Thinking',
       },
     ],
     type: 'website',
@@ -29,19 +29,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Philosophy & Simulation Markets | Apex Intelligence',
-    description: 'Cosmic think tank: TCG sandbox for Bostrom-inspired prediction markets.',
-    images: ['/og/philosophy-simulation.png'],
+    title: 'Philosophy & Ethics | Apex Intelligence',
+    description: 'Our non-negotiable ethical commitments: self-determination, mental health protection, transparency.',
+    images: ['/og/philosophy.png'],
   },
   keywords: [
-    'simulation hypothesis',
-    'Bostrom trilemma',
-    'prediction markets',
-    'EGGROLL training',
-    'existential risk',
-    'TCG market intelligence',
     'AI ethics',
-    'longtermism',
+    'systems thinking',
+    'human dignity',
+    'mental health',
+    'self-determination',
+    'transparency',
+    'animal welfare',
   ],
 };
 
@@ -224,42 +223,42 @@ export default function PhilosophyPage() {
               </div>
             </div>
 
-            {/* Rogue Think Tank Section */}
+            {/* How We Work Section */}
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
                 <h2 className="text-xl font-bold tracking-wider text-white font-sans">
-                  <span className="text-cyan-400">[</span> THE ROGUE THINK TANK <span className="text-cyan-400">]</span>
+                  <span className="text-cyan-400">[</span> HOW WE WORK <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
               </div>
 
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">NOT A UNIVERSITY LAB</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">SMALL AND CAREFUL</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    We combine market-grade data analysis from the TCG world with research-grade caution from AI safety and animal ethics.
+                    We combine market-grade data analysis with research-grade caution from AI safety and animal ethics. We move slowly on purpose.
                   </p>
                 </div>
 
                 <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-purple-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-purple-400">NOT A CORPORATE DIVISION</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-purple-400">HONEST ABOUT LIMITS</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    We prefer dispatches, dossiers, and public notes over glossy PR. We build tools that are brutally honest about their limits.
+                    We share public notes and dispatches, not glossy PR. We build tools that are honest about what they cannot do—no mystique, no fake expertise.
                   </p>
                 </div>
 
                 <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6 hover:border-cyan-400/60 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">INTENTIONALLY SMALL</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans text-cyan-400">INDEPENDENT</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    We stay lean, independent, and transparent enough to admit when something doesn&apos;t work. Opinionated and off-center by design.
+                    We stay lean enough to admit when something doesn&apos;t work, and free enough to shut down projects that start causing harm.
                   </p>
                 </div>
               </div>
 
               <div className="text-center">
                 <p className="text-slate-400 max-w-2xl mx-auto">
-                  <span className="text-white font-bold">Our long-term direction:</span> Start with TCG market intelligence and other bounded systems where we can test methods, calibration, and reliability. Gradually expand into biological science and animal-related data, always under strict ethical protocols.
+                  <span className="text-white font-bold">Our long-term direction:</span> Start with bounded systems where we can test methods, calibration, and reliability. Expand carefully into biological science and animal-related data, always under strict ethical protocols.
                 </p>
               </div>
             </div>
@@ -909,315 +908,6 @@ export default function PhilosophyPage() {
         </div>
       </section>
 
-      {/* Simulation Theory & Markets Section */}
-      <section className="relative z-10 px-6 md:px-12 py-12">
-        <div className="max-w-6xl mx-auto">
-          <ElectronicFolder title="SIMULATION THEORY & MARKETS" classification="COSMIC THINK TANK // BOSTROM FRAMEWORK">
-            {/* Section Header */}
-            <div className="mb-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
-                <h2 className="text-xl font-bold tracking-wider text-white font-sans">
-                  <span className="text-violet-400">[</span> BOSTROM&apos;S TRILEMMA &amp; PREDICTION MARKETS <span className="text-violet-400">]</span>
-                </h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
-              </div>
-
-              <div className="bg-violet-950/20 border border-violet-500/30 rounded-lg p-4 mb-6">
-                <p className="text-violet-200/80 text-sm leading-relaxed">
-                  <span className="font-bold text-violet-400">Why this section exists:</span> Nick Bostrom&apos;s simulation argument provides a philosophical framework for thinking about uncertainty, prediction, and the future of intelligence. We apply these concepts to TCG markets as &ldquo;simulation markets&rdquo;—not as metaphysics, but as a rigorous approach to prediction under uncertainty.
-                </p>
-              </div>
-            </div>
-
-            {/* Main Content Area */}
-            <div className="relative border border-violet-500/40 bg-gradient-to-br from-violet-950/30 to-indigo-950/30 backdrop-blur-sm rounded-xl p-8 overflow-hidden mb-8">
-              <div className="absolute -top-20 -right-20 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
-
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center">
-                    <Box className="w-7 h-7 text-violet-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white font-sans">The Simulation Argument</h3>
-                    <p className="text-slate-400 text-sm">Bostrom&apos;s 2003 trilemma and its implications</p>
-                  </div>
-                </div>
-
-                <p className="text-slate-300 leading-relaxed mb-6">
-                  Nick Bostrom&apos;s <span className="text-violet-400 font-semibold">simulation argument</span> presents a trilemma: either (1) civilizations go extinct before reaching a posthuman stage, (2) posthumans have no interest in running ancestor simulations, or (3) we are almost certainly in a simulation. If posthuman civilizations run simulations, the probability we&apos;re in one approaches <span className="text-white font-bold">99.9%</span>.
-                </p>
-
-                {/* Trilemma Grid */}
-                <div className="grid md:grid-cols-3 gap-4 mb-8">
-                  {/* Extinction Scenario */}
-                  <div className="border border-red-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                    <div className="w-10 h-10 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3">
-                      <AlertTriangle className="w-5 h-5 text-red-400" />
-                    </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-sans text-red-400">EXTINCTION</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      Civilizations go extinct before reaching posthuman stage. In markets: collapse scenarios, mass delisting, regulatory shutdown.
-                    </p>
-                  </div>
-
-                  {/* No Simulation Scenario */}
-                  <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-3">
-                      <BarChart3 className="w-5 h-5 text-cyan-400" />
-                    </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-sans text-cyan-400">NO SIMULATION</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      Posthumans choose not to run simulations. In markets: stable but uninnovative, flat growth, consolidation phases.
-                    </p>
-                  </div>
-
-                  {/* In Simulation Scenario */}
-                  <div className="border border-violet-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-5">
-                    <div className="w-10 h-10 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center mb-3">
-                      <Sparkles 
-                        className="w-5 h-5" 
-                        strokeWidth={2.5} 
-                        fill="none"
-                        stroke="#a855f7"
-                        style={{
-                          filter: 'drop-shadow(0 0 6px #a855f7) drop-shadow(0 0 12px #06b6d4)'
-                        }}
-                      />
-                    </div>
-                    <h4 className="text-md font-bold text-white mb-2 font-sans text-violet-400">IN SIMULATION</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      We&apos;re in a simulation. In markets: outlier events, exponential growth, &ldquo;black swan&rdquo; breakouts.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Future of Humanity Connection */}
-                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-indigo-400" />
-                    Future of Humanity Institute &amp; Cosmos Institute
-                  </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                    The <span className="text-indigo-400 font-bold">Future of Humanity Institute</span> (FHI), founded by Bostrom in 2005, pioneered existential risk research and AI alignment. After FHI&apos;s closure in 2024, organizations like <span className="text-violet-400 font-bold">Cosmos Institute</span> continue the work—emphasizing &ldquo;philosopher-builders&rdquo; for AI flourishing.
-                  </p>
-                  <ul className="space-y-2 text-slate-400 text-sm">
-                    <li className="flex items-start gap-2">
-                      <span className="text-indigo-400">•</span>
-                      FHI contributions: Existential risk frameworks, AI safety research, whole brain emulation
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-indigo-400">•</span>
-                      Bostrom&apos;s 2025 warnings: AI superintelligence and unemployment/dignity crises
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-indigo-400">•</span>
-                      Cosmos Institute approach: Building systems that promote flourishing
-                    </li>
-                  </ul>
-                </div>
-
-                {/* EGGROLL Training Section */}
-                <div className="border-l-4 border-indigo-500 bg-indigo-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-indigo-400" />
-                    EGGROLL Training Methodology
-                  </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                    <span className="text-indigo-400 font-bold">EGGROLL</span> (Evolutionary Gradient-free Gradient-like Rollout) enables stable prediction models without traditional backpropagation—using integer-weight evolution for reduced hallucinations.
-                  </p>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <span className="text-indigo-400 font-bold text-xs uppercase tracking-wider">Advantages</span>
-                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-400">✓</span>
-                          Low compute (no gradients)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-400">✓</span>
-                          Stable integer-weight representations
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-400">✓</span>
-                          Reduced hallucinations in forecasts
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <span className="text-orange-400 font-bold text-xs uppercase tracking-wider">Trade-offs</span>
-                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400">⚠</span>
-                          Less precise than full backprop
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400">⚠</span>
-                          Best for initial models
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400">⚠</span>
-                          Fine-tune with LoRA for precision
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Simulation Markets Application */}
-                <div className="border-l-4 border-violet-500 bg-violet-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
-                    <Cpu className="w-5 h-5 text-violet-400" />
-                    TCG Simulation Markets
-                  </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                    We apply Bostrom&apos;s framework to TCG markets as <span className="text-violet-400 font-bold">simulation markets</span>—treating market prediction like simulated scenarios. Like fantasy football or prediction markets (PredictionStrike, DraftSharks), users can explore outcomes in a virtual environment.
-                  </p>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <span className="text-violet-400 font-bold text-xs uppercase tracking-wider">Methodology</span>
-                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-violet-400">→</span>
-                          Monte Carlo simulations for price distributions
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-violet-400">→</span>
-                          RAG-Fusion for market context retrieval
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-violet-400">→</span>
-                          Confidence intervals, not point estimates
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <span className="text-cyan-400 font-bold text-xs uppercase tracking-wider">Benchmarks</span>
-                      <ul className="space-y-1 text-slate-400 text-sm mt-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          MTBBench: 9-11% accuracy gains with tools
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          EGGROLL: Evolution-based gradient-free training
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-cyan-400">→</span>
-                          Multimodal agents for sequential decisions
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Prediction Markets Integration */}
-                <div className="border-l-4 border-cyan-500 bg-cyan-950/20 rounded-r-lg p-6 mb-6">
-                  <h4 className="text-lg font-bold text-white mb-3 font-sans flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-cyan-400" />
-                    Prediction Markets Integration
-                  </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                    We integrate with major prediction market platforms for real-time probability calibration:
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-slate-800/50 rounded-lg p-3">
-                      <span className="text-cyan-400 font-bold text-sm">Manifold</span>
-                      <p className="text-slate-500 text-xs mt-1">Play-money markets for calibration training</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-lg p-3">
-                      <span className="text-purple-400 font-bold text-sm">Polymarket</span>
-                      <p className="text-slate-500 text-xs mt-1">Crypto-based real-stakes forecasts</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-lg p-3">
-                      <span className="text-emerald-400 font-bold text-sm">Kalshi</span>
-                      <p className="text-slate-500 text-xs mt-1">CFTC-regulated event contracts</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Trade-off Analysis */}
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <div className="border border-green-500/30 bg-green-950/20 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-green-400 font-sans text-sm font-bold">✓ GOOD</span>
-                      <span className="text-slate-400 text-sm">When simulation thinking helps</span>
-                    </div>
-                    <ul className="space-y-2 text-slate-400 text-sm">
-                      <li>• <span className="text-green-300">Uncertainty framework:</span> Forces explicit probability thinking</li>
-                      <li>• <span className="text-green-300">Outlier detection:</span> &ldquo;Simulation&rdquo; scenarios flag black swans</li>
-                      <li>• <span className="text-green-300">Prediction accuracy:</span> Tool-using agents show 9-11% gains</li>
-                      <li>• <span className="text-green-300">Engagement:</span> Fantasy-market model increases user participation</li>
-                    </ul>
-                  </div>
-
-                  <div className="border border-amber-500/30 bg-amber-950/20 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-amber-400 font-sans text-sm font-bold">⚠ CAUTION</span>
-                      <span className="text-slate-400 text-sm">When simulation thinking misleads</span>
-                    </div>
-                    <ul className="space-y-2 text-slate-400 text-sm">
-                      <li>• <span className="text-amber-300">Unfalsifiability:</span> Simulation hypothesis can&apos;t be empirically tested</li>
-                      <li>• <span className="text-amber-300">Compute costs:</span> Complex models require significant resources</li>
-                      <li>• <span className="text-amber-300">Overconfidence:</span> Probability estimates can create false precision</li>
-                      <li>• <span className="text-amber-300">Ethical risks:</span> Prediction markets can enable manipulation</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Ethical Framework */}
-                <div className="border border-emerald-500/30 bg-emerald-950/20 rounded-lg p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Shield className="w-6 h-6 text-emerald-400" />
-                    <h4 className="text-md font-bold text-white font-sans">FHI Longtermism Alignment</h4>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-3">
-                    Our simulation markets align with the <span className="text-emerald-400 font-bold">Future of Humanity Institute&apos;s</span> longtermist ethics:
-                  </p>
-                  <ul className="space-y-2 text-slate-400 text-sm">
-                    <li className="flex items-start gap-2">
-                      <span className="text-emerald-400">•</span>
-                      <span><span className="text-white">Flourishing focus:</span> Simulations explore positive futures, not just doom scenarios</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-emerald-400">•</span>
-                      <span><span className="text-white">Manipulation safeguards:</span> JWT/MFA authentication prevents market gaming</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-emerald-400">•</span>
-                      <span><span className="text-white">Sentient welfare:</span> Consider digital minds in simulations as potential moral patients</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <p className="text-slate-500 text-sm italic text-center mt-6">
-                  Apex Intelligence uses simulation theory as a <em>framework</em> for prediction under uncertainty—not metaphysics. We ground all predictions in empirical data while acknowledging the limits of any model.
-                </p>
-              </div>
-            </div>
-
-            {/* RAG Research Console for Simulation Theory */}
-            <div className="border border-violet-500/30 bg-slate-900/50 backdrop-blur-sm rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-violet-500/20 border border-violet-500/40 flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-violet-400" />
-                </div>
-                <div>
-                  <h4 className="text-md font-bold text-white font-sans">SIMULATION THEORY RESEARCH CONSOLE</h4>
-                  <p className="text-slate-500 text-xs">Query our curated research on simulation theory, EGGROLL training, FHI, and prediction markets</p>
-                </div>
-              </div>
-              <p className="text-slate-400 text-sm mb-4 border-l-2 border-violet-500/50 pl-3">
-                Search for research on Bostrom&apos;s trilemma, Future of Humanity Institute, EGGROLL methodology, or prediction markets. Try queries like: <span className="text-violet-400 font-sans">&ldquo;Bostrom simulation argument&rdquo;</span> or <span className="text-indigo-400 font-sans">&ldquo;EGGROLL training methodology&rdquo;</span>
-              </p>
-              <FibonacciResearch />
-            </div>
-          </ElectronicFolder>
-        </div>
-      </section>
-
       {/* TCG to Biology Bridge Section */}
       <section className="relative z-10 px-6 md:px-12 py-12">
         <div className="max-w-4xl mx-auto">
@@ -1279,7 +969,7 @@ export default function PhilosophyPage() {
 
               <div className="border-t border-slate-700/50 pt-6 text-center">
                 <p className="text-slate-500 text-sm font-sans">
-                  If that sounds like you, welcome to the rogue think tank.
+                  If that sounds like you, we&apos;d like to hear from you.
                 </p>
               </div>
             </div>
@@ -1299,11 +989,11 @@ export default function PhilosophyPage() {
           </div>
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
-            Ready to Go Deeper?
+            Want to Learn More?
           </h2>
 
           <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-            Explore our research streams, meet the team, or join the network.
+            See what we&apos;re building, read about our work, or learn who we are.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1311,13 +1001,13 @@ export default function PhilosophyPage() {
               href="/lab"
               className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-sans"
             >
-              [ EXPLORE_LAB ]
+              Explore the Lab
             </Link>
             <Link
               href="/about"
               className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
             >
-              [ MEET_THE_TEAM ]
+              About Us
             </Link>
           </div>
         </div>
