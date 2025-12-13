@@ -7,8 +7,8 @@ import { DissertationChapterBadge } from '@/components/phd/DissertationChapterBa
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Apex Lab | Research Streams",
-  description: "Three research streams: Market Systems & Forecasting, AI & Animal Welfare, and Sentient-First System Design. Explore our work at the intersection of AI, ethics, and biological science.",
+  title: "Apex Lab | Research",
+  description: "Research at the intersection of systems analysis, AI ethics, and tool design. We build nothing that cannot be shut down if it causes harm.",
 };
 
 export default function LabPage() {
@@ -29,7 +29,7 @@ export default function LabPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
             </span>
-            RESEARCH DIVISION // APEX LAB
+            RESEARCH
           </div>
 
           {/* Main Title */}
@@ -43,7 +43,8 @@ export default function LabPage() {
           </h1>
 
           <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-sans">
-            Three research streams. One mission: build systems that benefit all sentient beings.
+            Research at the intersection of systems analysis, ethics, and tool design.
+            We build nothing that cannot be shut down if it starts causing harm.
             <span className="inline-block w-3 h-5 bg-purple-400 ml-1 animate-pulse align-middle" />
           </p>
         </div>
@@ -352,15 +353,16 @@ export default function LabPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            JOIN THE NETWORK
+            FOLLOW THE WORK
           </div>
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-sans">
-            Interested in Our Research?
+            Interested in the research?
           </h2>
 
           <p className="text-lg text-slate-400 mb-8 max-w-xl mx-auto">
-            Subscribe for lab notes, field reports, and dispatches from the intersection of AI, ethics, and biological science.
+            Subscribe for updates on what we&apos;re learning, where we&apos;re uncertain, and what we got wrong.
+            No hype, no rush—just honest work.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -368,13 +370,13 @@ export default function LabPage() {
               href="/subscribe"
               className="inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-4 rounded-lg transition-all text-lg shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)] font-sans"
             >
-              [ GET_UPDATES ]
+              Subscribe for Updates
             </Link>
             <Link
               href="/philosophy"
               className="btn-tactical inline-flex items-center justify-center gap-2 px-8 py-4 text-lg"
             >
-              [ READ_PHILOSOPHY ]
+              Read Our Philosophy
             </Link>
           </div>
         </div>

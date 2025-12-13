@@ -11,11 +11,11 @@ export const revalidate = 3600;
 
 // Dynamic OG metadata for simulation markets (KB-07 SEO patterns)
 export const metadata: Metadata = {
-  title: "Our Philosophy | Apex Intelligence",
-  description: "Humans First. Sentient Beings First. Our guiding principles for building AI systems that prioritize welfare over performance. Explore our simulation markets for Bostrom-inspired existential scenario modeling.",
+  title: "Philosophy & Ethics | Apex Intelligence",
+  description: "No holy machines. Self-determination and dignity. Mental health protection. Transparency over mystique. Our non-negotiable ethical commitments.",
   openGraph: {
-    title: 'Philosophy & Simulation Markets | Apex Intelligence',
-    description: 'Explore TCG as cosmic prediction simulations. Bostrom-inspired existential scenarios with EGGROLL-trained models.',
+    title: 'Philosophy & Ethics | Apex Intelligence',
+    description: 'No holy machines. Self-determination and dignity. Mental health protection. Transparency over mystique.',
     images: [
       {
         url: '/og/philosophy-simulation.png',
@@ -63,7 +63,7 @@ export default function PhilosophyPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            CLASSIFIED // CORE DOCTRINE
+            PHILOSOPHY & ETHICS
           </div>
 
           {/* Main Title */}
@@ -77,7 +77,8 @@ export default function PhilosophyPage() {
           </h1>
 
           <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-sans">
-            Sentient-first systems. Radical transparency. Allergic to hype.
+            We are not here to manage death. We are here to manage life: attention, mental health,
+            dignity, and the conditions under which people can actually think and create.
             <span className="inline-block w-3 h-5 bg-cyan-400 ml-1 animate-pulse align-middle" />
           </p>
         </div>
@@ -86,43 +87,86 @@ export default function PhilosophyPage() {
       {/* Core Philosophy Section */}
       <section className="relative z-10 px-6 md:px-12 py-12">
         <div className="max-w-6xl mx-auto">
-          <ElectronicFolder title="CORE DOCTRINE" classification="ROGUE THINK TANK // APEX PHILOSOPHY">
-            {/* Humans First / Sentient Beings First */}
+          <ElectronicFolder title="NON-NEGOTIABLE ETHICAL LINES" classification="APEX INTELLIGENCE // CORE COMMITMENTS">
+            {/* No Holy Machines */}
             <div className="mb-12">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
                 <h2 className="text-xl font-bold tracking-wider text-white font-sans">
-                  <span className="text-cyan-400">[</span> HUMANS FIRST. SENTIENT BEINGS FIRST. <span className="text-cyan-400">]</span>
+                  <span className="text-cyan-400">[</span> NO HOLY MACHINES <span className="text-cyan-400">]</span>
                 </h2>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
               </div>
 
+              <div className="relative border border-cyan-500/40 bg-gradient-to-br from-cyan-950/30 to-slate-950/50 backdrop-blur-sm rounded-xl p-8 mb-8">
+                <p className="text-slate-300 text-lg leading-relaxed text-center max-w-3xl mx-auto">
+                  No matter how sophisticated the systems we build become, we will not treat them as holy
+                  if they are being used to strip people of self-determination, land, or sanity.
+                  If we realize that a system we created is doing that—directly or indirectly—our
+                  obligation is to resist, redesign, or shut it down, not to decorate or justify it.
+                </p>
+              </div>
+
               <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {/* Humans First Card */}
+                {/* Self-Determination Card */}
                 <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6">
                   <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4">
                     <Brain className="w-6 h-6 text-cyan-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3 font-sans">HUMANS FIRST</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">SELF-DETERMINATION & DIGNITY</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    We prioritize the safety, clarity, and well-being of the people who use our tools and read our work. We assume humans are messy, distracted, and imperfect—and design systems that work <em>because</em> of that reality, not in spite of it.
+                    Apex exists to serve people, not to turn them into data points or lab material.
+                    We especially prioritize queer people, neurodivergent folks, and those from marginalized
+                    or low-income backgrounds—anyone historically treated as disposable. When there is a
+                    conflict between institutional convenience and human dignity, we side with dignity.
                   </p>
                 </div>
 
-                {/* Sentient Beings Card */}
+                {/* Mental Health Card */}
                 <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6">
                   <div className="w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-4">
                     <Heart className="w-6 h-6 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3 font-sans">SENTIENT BEINGS FIRST</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">MENTAL HEALTH PROTECTION</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    We deliberately extend concern beyond our own species. If a system touches animals or potentially sentient digital minds, we treat that as morally serious—not an afterthought. When uncertain, we slow down.
+                    We do NOT design or endorse systems that push people toward self-harm, deliberately
+                    destabilize their sanity, or create psychotic or derealized states as &ldquo;content&rdquo;
+                    or &ldquo;engagement.&rdquo; We aim for tools that hydrate mental health, not deplete it.
+                  </p>
+                </div>
+
+                {/* Transparency Card */}
+                <div className="border border-cyan-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6">
+                  <div className="w-12 h-12 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4">
+                    <Eye className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">TRANSPARENCY OVER MYSTIQUE</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    No fake holiness, no &ldquo;wizard behind the curtain&rdquo; vibes. We explicitly reject
+                    mystique as a weapon (&ldquo;genius,&rdquo; &ldquo;holy work,&rdquo; &ldquo;chosen few&rdquo;)
+                    used to justify harm. We name what systems are doing in plain language, especially where
+                    power and automation are involved.
+                  </p>
+                </div>
+
+                {/* Networks Not Temples Card */}
+                <div className="border border-purple-500/30 bg-slate-900/50 backdrop-blur-sm rounded-lg p-6">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center mb-4">
+                    <Shield className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3 font-sans">NETWORKS, NOT TEMPLES</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    We prefer distributed, human-scale nodes over one central bunker of power.
+                    We build for people who still show up for each other: teachers, nurses, parents, workers.
+                    We are not a religion, cult, or &ldquo;spiritual movement.&rdquo; No one here is more
+                    &ldquo;evolved&rdquo; or &ldquo;chosen.&rdquo;
                   </p>
                 </div>
               </div>
 
               <p className="text-slate-400 text-center max-w-3xl mx-auto leading-relaxed">
-                Apex Intelligence started in a very human place: people trying to make sense of noisy markets, irrational behavior, and incomplete information. From there, our philosophy expanded—but the core remains simple: build systems that don&apos;t break the world or the creatures in it.
+                These are not aspirations. They are constraints on what we will build, fund, or tolerate.
+                If something we make starts causing harm, we are obligated to resist, redesign, or shut it down.
               </p>
             </div>
 

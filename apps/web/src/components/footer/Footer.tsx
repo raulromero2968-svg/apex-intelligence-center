@@ -11,21 +11,21 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Column 1: Brand & Description */}
           <div className="md:col-span-1">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="flex items-center text-white font-bold text-base tracking-tight font-sans mb-4 hover:text-cyan-400 transition-colors group"
             >
               <Image
                 src="/images/apex-wolf-black-bg-final.png"
                 width={32}
                 height={32}
-                alt="Intranational Intel Logo"
+                alt="Apex Intelligence Logo"
                 className="rounded-full mr-2 group-hover:drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]"
               />
-              <span className="text-sm">INTRANATIONAL INTEL</span>
+              <span className="text-sm">APEX INTELLIGENCE</span>
             </Link>
             <p className="text-slate-500 text-xs font-sans leading-relaxed">
-              A cosmic think tank at the intersection of AI, markets, and biological systems.
+              Architectures for life. Tools that protect dignity and support self-determination.
             </p>
           </div>
 
@@ -151,7 +151,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-xs font-sans">
           <div className="flex items-center gap-4">
-            <span>© 2025 INTRANATIONAL INTEL & AI RESEARCH CENTER. ALL RIGHTS RESERVED.</span>
+            <span>© 2025 APEX INTELLIGENCE. ALL RIGHTS RESERVED.</span>
           </div>
           <div className="flex items-center gap-6">
             <Link href="/legal/privacy-policy" className="hover:text-cyan-400 transition-colors">
