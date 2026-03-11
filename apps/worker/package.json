@@ -14,7 +14,7 @@
     "@apex/digital-twin": "workspace:*",
     "@apex/shared": "workspace:*",
     "@langchain/anthropic": "^1.0.1",
-    "@langchain/core": "^1.0.5",
+    "@langchain/core": "^1.1.31",
     "@sentry/nextjs": "^10.27.0",
     "bullmq": "^5.63.2",
     "drizzle-orm": "^0.44.7",
