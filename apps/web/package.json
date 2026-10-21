@@ -107,7 +107,7 @@
     "jose": "^5.10.0",
     "langchain": "^1.0.4",
     "lucide-react": "^0.553.0",
-    "next": "^14.2.35",
+    "next": "^15.5.27",
     "next-mdx-remote": "^5.0.0",
     "node-telegram-bot-api": "^0.66.0",
     "numeric": "^1.2.6",
@@ -147,8 +147,8 @@
     "eslint-config-next": "^14.2.13",
     "jsdom": "^26.1.0",
     "prisma": "^6.19.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.5",
     "vercel": "^33.0.0",
-    "vitest": "^4.0.10"
+    "vitest": "^5.0.5"
   }
 }
