@@ -99,7 +99,7 @@
     "jose": "^5.10.0",
     "langchain": "^1.0.4",
     "lucide-react": "^0.553.0",
-    "next": "^14.2.35",
+    "next": "^15.5.27",
     "next-mdx-remote": "^5.0.0",
     "node-telegram-bot-api": "^0.66.0",
     "numeric": "^1.2.6",
@@ -138,6 +138,6 @@
     "tsx": "^4.20.6",
     "turbo": "^2.1.2",
     "vercel": "^33.0.0",
-    "vitest": "^4.0.10"
+    "vitest": "^5.0.5"
   }
 }
